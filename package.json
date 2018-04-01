@@ -14,12 +14,15 @@
   },
   "dependencies": {
     "d3": "^5.0.0",
+    "dagre": "^0.8.2",
+    "dagre-d3": "^0.6.1",
     "gojs": "^1.8.15",
     "immutable": "^3.8.2",
     "jointjs": "^2.0.1",
     "jsplumb": "^2.6.9",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "underscore": "^1.8.3"
   },
   "scripts": {
     "start": "react-scripts start",
