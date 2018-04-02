@@ -8,8 +8,19 @@ import 'jointjs/css/layout.css';
 import './Example.css';
 
 const LINK_ATTRS = {
-	'.marker-arrowheads': { display: 'none' },
-	'.link-tools': { display: 'none' }
+	'.connection': {
+		stroke: 'gray',
+		strokeWidth: 2,
+		pointerEvents: 'none',
+		targetMarker: {
+			type: 'path',
+			fill: 'gray',
+			stroke: 'none',
+			d: 'M 10 -10 0 0 10 10 z'
+		}
+	},
+	'.marker-arrowheads': {display: 'none'},
+	'.link-tools': {display: 'none'}
 };
 
 export default class UMLExample extends React.Component {
@@ -68,7 +79,9 @@ export default class UMLExample extends React.Component {
 			marginX: 100,
 			marginY: 100,
 			rankDir: 'TB',
-			ranker: typeToUse
+			ranker: typeToUse,
+			setVertices: true,
+			setLabels: true,
 		});
 	};
 
@@ -94,13 +107,29 @@ export default class UMLExample extends React.Component {
 			for (const attrId in umlClass) {
 				if (classes[umlClass[attrId]]) {
 					link = new joint.dia.Link({
-						source: { id },
-						target: { id: umlClass[attrId] },
-						router: { name: 'metro' }
+						source: {id},
+						target: {id: umlClass[attrId]},
+						router: {
+							name: 'metro'
+						},
+						attrs: LINK_ATTRS,
+						labelSize: {
+							width: 20,
+							height: 20
+						},
+						labelPosition: 'r',
+						labels: [{
+							attrs: {
+								rect: {
+									fill: 'white'
+								},
+								text: {
+									text: attrId
+								}
+							}
+						}]
 					});
-					link.attr(LINK_ATTRS);
 					links.push(link);
-					console.log(link.attributes.weight, link);
 				}
 				attributes.push(`${attrId} - ${umlClass[attrId]}`);
 			}
@@ -110,7 +139,6 @@ export default class UMLExample extends React.Component {
 				id: id,
 				attributes
 			});
-
 			acc.unshift(node);
 			return acc.concat(links);
 		}, []);
