@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Example from './Example';
 import logo from './logo.svg';
 import './App.css';
 import UMLExample from './UMLExample';
@@ -16,7 +15,6 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
         <UMLExample/>
-        <Example/>
       </div>
     );
   }

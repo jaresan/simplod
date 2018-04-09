@@ -17,7 +17,7 @@ export const classes = {
 	},
 	'skos:ConceptScheme': {
 		'rdfs:label': 'String',
-		'rdfs:comment': 'skos:ConceptScheme'
+		'rdfs:comment': 'String'
 	},
 	'nku:KontrolovanáOsoba': {
 		'owl:sameAs': 'rov:RegisteredOrganization',

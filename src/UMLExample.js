@@ -7,20 +7,30 @@ import { createUMLInstance } from './utils';
 import 'jointjs/css/layout.css';
 import './Example.css';
 
-const LINK_ATTRS = {
-	'.connection': {
-		stroke: 'gray',
-		strokeWidth: 2,
-		pointerEvents: 'none',
-		targetMarker: {
-			type: 'path',
-			fill: 'gray',
-			stroke: 'none',
-			d: 'M 10 -10 0 0 10 10 z'
-		}
+const DEFAULT_LINK_ATTRS = {
+	router: {
+		name: 'metro'
 	},
-	'.marker-arrowheads': {display: 'none'},
-	'.link-tools': {display: 'none'}
+	labelSize: {
+		width: 20,
+		height: 20
+	},
+	labelPosition: 'r',
+	attrs : {
+		'.connection': {
+			stroke: 'gray',
+			strokeWidth: 2,
+			pointerEvents: 'none',
+			targetMarker: {
+				type: 'path',
+				fill: 'gray',
+				stroke: 'none',
+				d: 'M 10 -10 0 0 10 10 z'
+			}
+		},
+		'.marker-arrowheads': {display: 'none'},
+		'.link-tools': {display: 'none'}
+	}
 };
 
 export default class UMLExample extends React.Component {
@@ -81,7 +91,7 @@ export default class UMLExample extends React.Component {
 			rankDir: 'TB',
 			ranker: typeToUse,
 			setVertices: true,
-			setLabels: true,
+			setLabels: true
 		});
 	};
 
@@ -109,15 +119,7 @@ export default class UMLExample extends React.Component {
 					link = new joint.dia.Link({
 						source: {id},
 						target: {id: umlClass[attrId]},
-						router: {
-							name: 'metro'
-						},
-						attrs: LINK_ATTRS,
-						labelSize: {
-							width: 20,
-							height: 20
-						},
-						labelPosition: 'r',
+						...DEFAULT_LINK_ATTRS,
 						labels: [{
 							attrs: {
 								rect: {
