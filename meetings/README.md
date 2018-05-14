@@ -1,3 +1,24 @@
+# 2018-05-14: Meeting notes
+- vybrané věci by měly být vizuálně zvýrazněné
+- v SPO deskriptorech jsou i váhy hran, lze později zakomponovat<br>(aplikace musí být schopna pracovat i bez vah)
+- transformace dat vstup &rarr; interní reprezentace musí být zcela oddělená
+  - datové property tříd jsou ty, které jsou např. typu z xsd namespacu
+    - bude dáno výčtem typů/popisem
+- použít yasgui na generování SPARQL dotazů v postranní liště
+  - ruční zadání endpointu uživatelem
+  - generování v průběhu klikání v grafu, RUN button
+- při vybrání classy generovat dotaz na get všech property dané třídy (ve where, jako optional)
+- next meeting: 04.06.2018
+
+### Action Items:
+- [ ] Zobrazení dat z SPO deskriptorů
+  - oddělená logika transformace vstup &rarr; schéma
+- [ ] Generování SPARQL dotazu pomocí yasgui při klikání v grafu
+  - specifikace endpointu + run a zobrazení resultu
+
+### SPO deskriptory
+- využití náhodně generovaných id uzlů pro každý predikát zvlášť &rarr; potřeba agregovat
+- IRI s rdf:predicate určuje typ predikátu. Stejná IRI pak má i rdf:object, rdf:subject, eventuelně váhu
 # 2018-04-09: Meeting notes
 - UML zobrazení se zdá ok
   - další úpravy vzhledu podle typu vstupních dat
