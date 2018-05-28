@@ -1,0 +1,19 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://onto.fel.cvut.cz/ontologies/dataset-descriptor/s-p-o-summary/di-0117fa8346770c87fd27b966ebc4216c>
+  <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/s-p-o-summary/hasWeight> 1620.
+
+<http://onto.fel.cvut.cz/ontologies/dataset-descriptor/s-p-o-summary/di-0117fa8346770c87fd27b966ebc4216c>
+  rdf:object _:genid-0344987d11e74290b270b9283b301b85-node1bn6bkrk7x35231.
+
+_:genid-0344987d11e74290b270b9283b301b85-node1bn6bkrk7x35231 a owl:Thing.
+
+<http://onto.fel.cvut.cz/ontologies/dataset-descriptor/s-p-o-summary/di-0117fa8346770c87fd27b966ebc4216c>
+  rdf:predicate <http://purl.org/linked-data/cube#dataSet>.
+
+<http://onto.fel.cvut.cz/ontologies/dataset-descriptor/s-p-o-summary/di-0117fa8346770c87fd27b966ebc4216c>
+  rdf:subject _:genid-0344987d11e74290b270b9283b301b85-node1bn6bkrk7x35232.
+
+_:genid-0344987d11e74290b270b9283b301b85-node1bn6bkrk7x35232 a <http://purl.org/linked-data/cube#Observation>.

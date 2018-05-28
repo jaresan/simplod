@@ -488,7 +488,7 @@
     // disallow mixed spaces and tabs for indentation
     "no-multi-assign": 0,
     // disallow use of chained assignment expressions
-    "no-multiple-empty-lines": 1,
+    "no-multiple-empty-lines": 0,
     // disallow multiple empty lines
     "no-negated-condition": 0,
     // disallow negated conditions
@@ -504,7 +504,7 @@
     // disallow all tabs
     "no-ternary": 0,
     // disallow ternary operators
-    "no-trailing-spaces": 1,
+    "no-trailing-spaces": 0,
     // disallow trailing whitespace at the end of lines
     "no-underscore-dangle": 0,
     // disallow dangling underscores in identifiers
