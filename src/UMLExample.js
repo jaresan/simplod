@@ -8,9 +8,6 @@ import 'jointjs/css/layout.css';
 import './Example.css';
 
 const DEFAULT_LINK_ATTRS = {
-	router: {
-		name: 'metro'
-	},
 	labelSize: {
 		width: 20,
 		height: 20
@@ -46,9 +43,15 @@ export default class UMLExample extends React.Component {
 	};
 
 	componentDidMount() {
-		this.createGraph();
-		this.registerEventHandlers();
-		this.changeLayoutType();
+    fetch('http://localhost:5000/api/hardExample', {method: 'GET', mode: 'cors'})
+      .then(data => data.json())
+      .then(json => {
+				this.createGraph({
+					data: json.data, prefixes: json.prefixes
+				});
+				this.registerEventHandlers();
+				this.changeLayoutType();
+			});
 	}
 
 	paperOnClick = event => {
@@ -83,13 +86,12 @@ export default class UMLExample extends React.Component {
 			layoutTypes
 		});
 		joint.layout.DirectedGraph.layout(this.graph, {
-			nodeSep: 100,
-			rankSep: 100,
-			edgeSep: 80,
+			nodeSep: 40,
+			rankSep: 40,
+			edgeSep: 20,
 			marginX: 100,
 			marginY: 100,
 			rankDir: 'TB',
-			ranker: typeToUse,
 			setVertices: true,
 			setLabels: true
 		});
@@ -100,50 +102,86 @@ export default class UMLExample extends React.Component {
 		this.paper.on('blank:pointerclick', this.paperOnClick);
 	};
 
-	createGraph() {
+	createGraph({ data, prefixes }) {
 		this.graph = new joint.dia.Graph();
 		this.paper = new joint.dia.Paper({
 			el: this.element,
-			width: 2000,
-			height: 1500,
+			width: 20000,
+			height: 15000,
 			model: this.graph,
 			gridSize: 1
 		});
 
-		const elements = _.reduce(classes, (acc, umlClass, id) => {
-			let link = null;
+		const elements = _.reduce(data, (acc, classData, classId) => {
 			const links = [];
 			const attributes = [];
-			for (const attrId in umlClass) {
-				if (classes[umlClass[attrId]]) {
-					link = new joint.dia.Link({
-						source: {id},
-						target: {id: umlClass[attrId]},
-						...DEFAULT_LINK_ATTRS,
-						labels: [{
-							attrs: {
-								rect: {
-									fill: 'white'
-								},
-								text: {
-									text: attrId
-								}
-							}
-						}]
-					});
-					links.push(link);
-				}
-				attributes.push(`${attrId} - ${umlClass[attrId]}`);
+			for (const property of classData.properties) {
+				attributes.push(`${property.type} - ${property.name}`);
 			}
 
+			for (const linkData of classData.methods) {
+				const link = new joint.dia.Link({
+					source: { id: classId },
+					target: { id: linkData.object },
+					...DEFAULT_LINK_ATTRS,
+					labels: [{
+						attrs: {
+							rect: {
+								fill: 'white'
+							},
+							text: {
+								text: linkData.predicate
+							}
+						}
+					}]
+				});
+				links.push(link);
+			}
+
+			// FIXME: Replace prefixes properly
 			const node = createUMLInstance({
-				name: id,
-				id: id,
+				name: classId,
+				id: classId,
 				attributes
 			});
 			acc.unshift(node);
 			return acc.concat(links);
-		}, []);
+    }, []);
+
+		// const elements = _.reduce(classes, (acc, umlClass, id) => {
+		// 	let link = null;
+		// 	const links = [];
+		// 	const attributes = [];
+		// 	for (const attrId in umlClass) {
+		// 		if (classes[umlClass[attrId]]) {
+		// 			link = new joint.dia.Link({
+		// 				source: {id},
+		// 				target: {id: umlClass[attrId]},
+		// 				...DEFAULT_LINK_ATTRS,
+		// 				labels: [{
+		// 					attrs: {
+		// 						rect: {
+		// 							fill: 'white'
+		// 						},
+		// 						text: {
+		// 							text: attrId
+		// 						}
+		// 					}
+		// 				}]
+		// 			});
+		// 			links.push(link);
+		// 		}
+		// 		attributes.push(`${attrId} - ${umlClass[attrId]}`);
+		// 	}
+
+		// 	const node = createUMLInstance({
+		// 		name: id,
+		// 		id: id,
+		// 		attributes
+		// 	});
+		// 	acc.unshift(node);
+		// 	return acc.concat(links);
+		// }, []);
 
 		this.graph.addCells(elements);
 	}

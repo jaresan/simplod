@@ -18,8 +18,11 @@ const edgePredicates = [predicateSpecIRI, hasWeightIRI, objectSpecIRI, subjectSp
 
 const parseSPO = ttlString => new Promise((res, err) => {
   getQuads(ttlString)
-    .then(quads => {
-      res(parseQuads(quads));
+    .then(({quads, prefixes}) => {
+      res({
+        data: parseQuads(quads),
+        __prefixes__: prefixes
+      });
     });
 });
 
@@ -31,8 +34,7 @@ const getQuads = ttlString => new Promise((res, err) => {
     if (quad) {
       quads.push(quad);
     } else if (!error) {
-      res(quads);
-      console.log("# That's all, folks!", prefixes);
+      res({quads, prefixes});
     }
   });
 });
@@ -129,11 +131,13 @@ const parseQuads = quads => {
     const edge = edges[key];
     if (edge.dataProperty) {
       acc[edge.subject].properties.push({
-        [edge.predicate]: edge.dataProperty
+        type: edge.predicate,
+        name: edge.dataProperty
       });
     } else {
       acc[edge.subject].methods.push({
-        [edge.predicate]: edge.object
+        predicate: edge.predicate,
+        object: edge.object
       });
     }
 
