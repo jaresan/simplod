@@ -8,7 +8,7 @@
   - ruční zadání endpointu uživatelem
   - generování v průběhu klikání v grafu, RUN button
 - při vybrání classy generovat dotaz na get všech property dané třídy (ve where, jako optional)
-- next meeting: 04.06.2018
+- next meeting: ~04.06.2018~ 07.06.2018 09:15
 
 ### Action Items:
 - [ ] Zobrazení dat z SPO deskriptorů
