@@ -3,7 +3,8 @@ const N3 = require('n3');
 const propertyToName = {
   'http://www.w3.org/2001/XMLSchema#integer': 'Int',
   'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString': 'String',
-  'http://www.w3.org/2001/XMLSchema#string': 'String'
+  'http://www.w3.org/2001/XMLSchema#string': 'String',
+  'http://www.w3.org/2001/XMLSchema#decimal': 'Decimal'
 };
 
 const propertyTypes = Object.keys(propertyToName);
@@ -54,7 +55,7 @@ const parseQuads = quads => {
 
   // {
   //   [className]: {
-  //     properties: [{ type: name }],
+  //     properties: [{ predicate: type }],
   //     methods: [{predicateName, objectClass}]
   //   }
   // }
@@ -80,7 +81,6 @@ const parseQuads = quads => {
   }, { });
 
 
-  // FIXME: Classes vs classMapping confusion, clear it up
   const predicateKeys = {
     [predicateSpecIRI]: 'predicate',
     [objectSpecIRI]: 'object',
@@ -88,16 +88,6 @@ const parseQuads = quads => {
     [hasWeightIRI]: 'weight'
   };
 
-  // FIXME: Better names (predicateIRI etc)
-  // {
-  //   [edgeResourceId]: {
-  //     subject: subjectClass,
-  //     object: objectClass,
-  //     predicate: predicateType,
-  //     weight: weight,
-  //     [dataProperty: propertyType <- optional key]
-  //   }
-  // }
   const edges = quads.reduce((acc, quad) => {
     let predicateID = '';
     let key = '';
@@ -131,13 +121,14 @@ const parseQuads = quads => {
     const edge = edges[key];
     if (edge.dataProperty) {
       acc[edge.subject].properties.push({
-        type: edge.predicate,
-        name: edge.dataProperty
+        predicate: edge.predicate,
+        type: edge.dataProperty
       });
     } else {
       acc[edge.subject].methods.push({
         predicate: edge.predicate,
-        object: edge.object
+        object: edge.object,
+        weight: edge.weight
       });
     }
 

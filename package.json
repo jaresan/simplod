@@ -27,8 +27,7 @@
     "rdfstore": "^0.9.17",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "underscore": "^1.8.3",
-    "yasgui": "^2.7.27"
+    "underscore": "^1.8.3"
   },
   "scripts": {
     "start": "concurrently --kill-others-on-fail 'yarn server' 'yarn client'",

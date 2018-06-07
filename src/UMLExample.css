@@ -13,9 +13,23 @@
 
 .uml-example-container {
   background: #cccccc;
-  width: 1500px;
-  height: 1500px;
   overflow: auto;
+  width: 60%;
   border: solid 1px black;
-  margin: 50px;
+}
+
+.application-container {
+  display: flex;
+  flex-direction: row;
+  margin: 32px;
+  height: 1000px;
+}
+
+#yasgui {
+  overflow: auto;
+  width: 40%;
+}
+
+#yasgui .yasqe {
+  text-align: left;
 }

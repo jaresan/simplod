@@ -1,11 +1,10 @@
 import React from 'react';
 import joint from 'jointjs';
 import * as _ from 'underscore';
-import { classes } from './constants/sample';
-import { createUMLInstance } from './utils';
+import { createUMLInstance, parseSPARQLQuery } from './utils';
 
 import 'jointjs/css/layout.css';
-import './Example.css';
+import './UMLExample.css';
 
 const DEFAULT_LINK_ATTRS = {
 	labelSize: {
@@ -13,11 +12,10 @@ const DEFAULT_LINK_ATTRS = {
 		height: 20
 	},
 	labelPosition: 'r',
-	attrs : {
+	attrs: {
 		'.connection': {
 			stroke: 'gray',
 			strokeWidth: 2,
-			pointerEvents: 'none',
 			targetMarker: {
 				type: 'path',
 				fill: 'gray',
@@ -39,43 +37,84 @@ export default class UMLExample extends React.Component {
 	}
 
 	state = {
-		layoutTypes: ['network-simplex', 'longest-path']
+		layoutTypes: ['network-simplex', 'longest-path'],
+		prefixes: {},
+		selectedClasses: {}
 	};
 
 	componentDidMount() {
-    fetch('http://localhost:5000/api/hardExample', {method: 'GET', mode: 'cors'})
-      .then(data => data.json())
-      .then(json => {
+		fetch('http://localhost:5000/api/hardExample', {method: 'GET', mode: 'cors'})
+			.then(data => data.json())
+			.then(json => {
+				console.log(json);
+				window.temp1 = json;
+				this.setState({
+					prefixes: json.__prefixes__
+				});
 				this.createGraph({
-					data: json.data, prefixes: json.prefixes
+					data: json.data, prefixes: json.__prefixes__
 				});
 				this.registerEventHandlers();
 				this.changeLayoutType();
 			});
+
+
+		const yasgui = window.YASGUI(document.getElementById("yasgui"), {
+			api: {
+				corsProxy: 'http://sparql.org/sparql'
+			},
+			catalogueEndpoints: {},
+			endpoint: 'http://linked.opendata.cz/sparql'
+		});
+		window.yasgui = yasgui;
 	}
 
-	paperOnClick = event => {
-		this.graph.getCells().forEach(cell => {
-			cell.findView(this.paper).unhighlight(null, {
+	toggleSelected = (cellView, select) => {
+		if (select) {
+			cellView.highlight(null, {
 				highlighter: {
 					name: 'addClass',
 					options: {
 						className: 'selected'
 					}
 				}
-			})
+			});
+			this.setState({
+				selectedClasses: {
+					...this.state.selectedClasses,
+					[cellView.model.attributes.id]: cellView.model.attributes.classData
+				}
+			});
+			window.yasgui.current()
+				.setQuery(parseSPARQLQuery({classes: this.state.selectedClasses, prefixes: this.state.prefixes}))
+		} else {
+			cellView.unhighlight(null, {
+				highlighter: {
+					name: 'addClass',
+					options: {
+						className: 'selected'
+					}
+				}
+			});
+			this.setState({
+				selectedClasses: {}
+			});
+			window.yasgui.current()
+				.setQuery(parseSPARQLQuery({classes: this.state.selectedClasses, prefixes: this.state.prefixes}))
+		}
+	};
+
+	paperOnClick = event => {
+		this.graph.getCells().forEach(cell => {
+			this.toggleSelected(cell.findView(this.paper), false);
 		});
 	};
 
+
+	// FIXME: Refactor into OOP, each UML instance with it's own onclick handle, use register to distribute clicks
 	cellOnClick = cellView => {
-		cellView.highlight(null, {
-			highlighter: {
-				name: 'addClass',
-				options: {
-					className: 'selected'
-				}
-			}
-		});
+		this.toggleSelected(cellView, true);
+		console.log(cellView);
 	};
 
 	changeLayoutType = () => {
@@ -102,7 +141,8 @@ export default class UMLExample extends React.Component {
 		this.paper.on('blank:pointerclick', this.paperOnClick);
 	};
 
-	createGraph({ data, prefixes }) {
+	// FIXME: Replace all IRIs with prefixes where appropriate
+	createGraph({data, prefixes}) {
 		this.graph = new joint.dia.Graph();
 		this.paper = new joint.dia.Paper({
 			el: this.element,
@@ -116,13 +156,13 @@ export default class UMLExample extends React.Component {
 			const links = [];
 			const attributes = [];
 			for (const property of classData.properties) {
-				attributes.push(`${property.type} - ${property.name}`);
+				attributes.push(`${property.predicate} - ${property.type}`);
 			}
 
 			for (const linkData of classData.methods) {
 				const link = new joint.dia.Link({
-					source: { id: classId },
-					target: { id: linkData.object },
+					source: {id: classId},
+					target: {id: linkData.object},
 					...DEFAULT_LINK_ATTRS,
 					labels: [{
 						attrs: {
@@ -142,55 +182,25 @@ export default class UMLExample extends React.Component {
 			const node = createUMLInstance({
 				name: classId,
 				id: classId,
-				attributes
+				attributes,
+				classData
 			});
+
 			acc.unshift(node);
 			return acc.concat(links);
-    }, []);
-
-		// const elements = _.reduce(classes, (acc, umlClass, id) => {
-		// 	let link = null;
-		// 	const links = [];
-		// 	const attributes = [];
-		// 	for (const attrId in umlClass) {
-		// 		if (classes[umlClass[attrId]]) {
-		// 			link = new joint.dia.Link({
-		// 				source: {id},
-		// 				target: {id: umlClass[attrId]},
-		// 				...DEFAULT_LINK_ATTRS,
-		// 				labels: [{
-		// 					attrs: {
-		// 						rect: {
-		// 							fill: 'white'
-		// 						},
-		// 						text: {
-		// 							text: attrId
-		// 						}
-		// 					}
-		// 				}]
-		// 			});
-		// 			links.push(link);
-		// 		}
-		// 		attributes.push(`${attrId} - ${umlClass[attrId]}`);
-		// 	}
-
-		// 	const node = createUMLInstance({
-		// 		name: id,
-		// 		id: id,
-		// 		attributes
-		// 	});
-		// 	acc.unshift(node);
-		// 	return acc.concat(links);
-		// }, []);
+		}, []);
 
 		this.graph.addCells(elements);
 	}
 
 	render() {
 		return (
-			<div className="uml-example-container">
-				<button onClick={this.changeLayoutType}>{ this.state.layoutTypes[this.state.layoutTypes.length - 1] }</button>
-				<div ref={ node => this.element = node }/>
+			<div className="application-container">
+				<div className="uml-example-container">
+					<button onClick={this.changeLayoutType}>{ this.state.layoutTypes[this.state.layoutTypes.length - 1] }</button>
+					<div ref={ node => this.element = node }/>
+				</div>
+				<div id="yasgui"/>
 			</div>
 		);
 	}

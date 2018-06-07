@@ -1,3 +1,21 @@
+# 2018-06-07: Meeting notes
+- použité rdfjs, n3 na parsování :+1:
+- SPO deskriptory se parsují ok
+- do příštího meetingu udělat checklist, kde si uživatel bude moct zaklikávat property
+  - při UI interakci se prozatím celá query nahradí nově vygenerovanou
+- přepsat architekturu + refactoring tak, aby se aplikace už dala někam nasadit
+- graf je celkem nepřehledný, ale vyřešíme až po business logice
+- next meeting: 04.07.2018 9:15
+
+### Action Items:
+- [ ] zkusit lépe handlovat prefixy
+  - buď přes servicu (e.g. [PrefixCC](https://prefix.cc/), [RDF Translator](https://rdf-translator.appspot.com/), nebo manuálně parsovat)
+- [ ] opravit OPTIONAL generování
+  - [ ] ne 1 velký OPTIONAL, ale každý zvlášť
+  - [ ] duplicity proměnných
+- [ ] checklist pro uživatele na jednotlivé property 
+  - [ ] změna názvu proměnné, OPTIONAL, zobrazení v result setu, odstranění z dotazu
+- [ ] refactoring, aby se dala aplikace někam nasadit pro účely testování
 # 2018-05-14: Meeting notes
 - vybrané věci by měly být vizuálně zvýrazněné
 - v SPO deskriptorech jsou i váhy hran, lze později zakomponovat<br>(aplikace musí být schopna pracovat i bez vah)
@@ -11,9 +29,9 @@
 - next meeting: ~04.06.2018~ 07.06.2018 09:15
 
 ### Action Items:
-- [ ] Zobrazení dat z SPO deskriptorů
+- [x] Zobrazení dat z SPO deskriptorů
   - oddělená logika transformace vstup &rarr; schéma
-- [ ] Generování SPARQL dotazu pomocí yasgui při klikání v grafu
+- [x] Generování SPARQL dotazu pomocí yasgui při klikání v grafu
   - specifikace endpointu + run a zobrazení resultu
 
 ### SPO deskriptory
