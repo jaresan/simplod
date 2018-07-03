@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
 import UMLExample from './UMLExample';
+import Yasgui from './Yasgui';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <UMLExample/>
+        <div className="application-container">
+          <UMLExample/>
+          <Yasgui/>
+        </div>
       </div>
     );
   }
