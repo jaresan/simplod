@@ -1,5 +1,6 @@
 import joint from 'jointjs';
-import _ from 'lodash';
+import _ from 'underscore';
+import possiblePrefixes from 'src/constants/possiblePrefixes';
 
 export const createUMLInstance = ({size = {width: 250, height: 150}, name, attributes, methods, ...props}) =>
 	new joint.shapes.uml.Class({
@@ -32,48 +33,65 @@ export const createUMLInstance = ({size = {width: 250, height: 150}, name, attri
 		...props
 	});
 
-// FIXME: Instead of prop.predicate in the variable name use name from the user set parameter
-const getProperties = classData => {
-	const properties = classData.methods.concat(classData.properties);
-	return properties.map((prop, index) => `<${prop.predicate}> ?${prop.predicate.replace(/.*(\/|#)/, '')}`);
+const parsePrefix = (iri) => {
+	const suffix = iri.replace(/.*(\/|#)/, '');
+	const prefixIri = iri.replace(/(\/|#)[^\/#]*$/, '$1');
+	const alias = possiblePrefixes[prefixIri];
+
+	return {
+		alias,
+		suffix,
+		prefixIri
+	}
 };
 
 export const parseSPARQLQuery = ({
- prefixes,
- classes
+	selectedClasses,
+	selectedProperties
 }) => {
 	let queryParts = {
-		optional: '',
+		properties: '',
 		values: ''
 	};
-	if (Object.keys(classes).length) {
-		queryParts = _.reduce(classes, (acc, classData, classType) => {
+	let types = Object.keys(selectedClasses);
+	const usedPrefixes = {};
 
-			// FIXME: Proper indentation, fix duplicate predicate searches
-			acc.optional = acc.optional.concat(
-				getProperties(classData).map(propString => `\nOPTIONAL {
-					?s ${propString}.
-				}`)
-			);
-			acc.values.push(`(<${classType}>)`);
-			return acc;
-		}, {
-			optional: [],
-			values: []
+	if (types.length) {
+		types = types.map(type => {
+			const { alias, suffix, prefixIri } = parsePrefix(type);
+			if (alias) {
+				usedPrefixes[alias] = prefixIri;
+				return `(${alias}:${suffix})`;
+			} else {
+				return `(<${type}>)`;
+			}
 		});
+		queryParts.values = `\n  VALUES (?type) {\n\t${types.join('\n\t')}\n  }`;
+		queryParts.properties = _.map(selectedProperties, (value, predicate) => {
+			const name = value.show ? `?${value.name}` : '[]';
 
-		queryParts.optional = queryParts.optional.join('\n');
+			const { alias, suffix, prefixIri } = parsePrefix(predicate);
+			if (alias) {
+				usedPrefixes[alias] = prefixIri;
+				predicate = `${alias}:${suffix}`
+			} else {
+				predicate = `<${predicate}>`;
+			}
 
-		queryParts.values = `\nVALUES (?type) {
-			${queryParts.values.join('\n')}
-		}`;
+			let result = `?s ${predicate} ${name}.`;
+			if (value.optional) {
+				result = `\n  OPTIONAL{\n\t${result}\n  }`;
+			} else {
+				result = '\n  ' + result;
+			}
+			return result;
+		}).join('');
 	}
 
-
-	return `${_.map(prefixes, (iri, name) => `PREFIX ${name}: <${iri}>`).join('\n')}
+	return `${_.map(usedPrefixes, (iri, name) => `PREFIX ${name}: <${iri}>`).join('\n')}
 
 SELECT * WHERE {
-  ?s a ?type.${queryParts.optional}${queryParts.values}
+  ?s a ?type.${queryParts.properties}${queryParts.values}
 }
 LIMIT 100`;
 };

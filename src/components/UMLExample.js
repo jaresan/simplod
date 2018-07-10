@@ -6,7 +6,6 @@ import Actions from 'src/actions';
 import { createUMLInstance } from 'src/utils';
 
 import 'jointjs/css/layout.css';
-import './UMLExample.css';
 
 const DEFAULT_LINK_ATTRS = {
 	labelSize: {
@@ -55,9 +54,6 @@ class UMLExample extends React.Component {
 	}
 
 	// FIXME: Refactor into OOP, each UML instance with it's own onclick handle, use register to distribute clicks
-	cellOnClick = cellView => {
-		this.props.onCellClick(cellView);
-	};
 
 	setLayout() {
 		joint.layout.DirectedGraph.layout(this.graph, {
@@ -74,7 +70,7 @@ class UMLExample extends React.Component {
 	}
 
 	registerEventHandlers = () => {
-		this.paper.on('cell:pointerclick', this.cellOnClick);
+		this.paper.on('cell:pointerclick', this.props.onCellClick);
 		this.paper.on('blank:pointerclick', this.props.onPaperClick);
 	};
 

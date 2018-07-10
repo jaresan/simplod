@@ -14,7 +14,7 @@ function* onPaperClick() {
 
 function* onCellClick(action) {
 	const cellView = action.payload.cellView;
-	yield put(Actions.Creators.r_selectCell(cellView));
+	yield put(Actions.Creators.r_toggleCell(cellView));
 	yield updateQuery();
 }
 

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { getSelectedProperties, getSelectedData } from 'src/selectors/index';
+import { parseSPARQLQuery } from 'src/utils';
 
 class Yasgui extends Component {
 	constructor() {
@@ -8,8 +10,8 @@ class Yasgui extends Component {
 	}
 
 	componentDidUpdate(prevProps, prevState, snapshot) {
-		if (this.props.query !== prevProps.query) {
-			this.yasgui.setQuery(this.props.query);
+		if (this.props.selectedProperties !== prevProps.selectedProperties) {
+			this.yasgui.setQuery(parseSPARQLQuery(this.props));
 		}
 	}
 
@@ -30,7 +32,8 @@ class Yasgui extends Component {
 }
 
 const mapStateToProps = appState => ({
-	query: appState.yasgui.get('query')
+	selectedProperties: getSelectedProperties(appState),
+	selectedClasses: getSelectedData(appState)
 });
 
 const mapDispatchToProps = {

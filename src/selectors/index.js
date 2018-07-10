@@ -1,8 +1,14 @@
-export const getSelectedDataAndPrefixes = appState => {
-	const classes = appState.graphModel.get('selectedObjects').map(cellView => cellView.model.attributes.classData);
+import { createSelector } from 'reselect';
 
-	return {
-		classes: classes.toJS(),
-		prefixes: appState.yasgui.get('prefixes')
-	}
-};
+export const getSelectedData = appState =>
+	appState.graphModel.getIn(['selected', 'objects']).map(cellView => cellView.model.attributes.classData).toJS();
+
+export const getPrefixes = appState => appState.yasgui.get('prefixes');
+
+export const getSelectedProperties = appState => appState.graphModel.getIn(['selected', 'properties']).toJS();
+
+export const getSelectedDataAndPrefixes = createSelector(
+	getSelectedData,
+	getPrefixes,
+	(classes, prefixes) => ({ classes, prefixes })
+);

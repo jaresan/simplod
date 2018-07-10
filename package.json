@@ -15,12 +15,14 @@
     "react-scripts": "1.1.1"
   },
   "dependencies": {
+    "classnames": "^2.2.6",
     "cors": "^2.8.4",
     "d3": "^5.0.0",
     "dagre": "^0.8.2",
     "immutable": "^3.8.2",
     "jointjs": "^2.0.1",
     "n3": "^1.0.0-beta.1",
+    "prop-types": "^15.6.2",
     "rdfstore": "^0.9.17",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
@@ -28,6 +30,7 @@
     "redux": "^4.0.0",
     "redux-saga": "^0.16.0",
     "redux-thunk": "^2.3.0",
+    "reselect": "^3.0.1",
     "underscore": "^1.8.3"
   },
   "scripts": {
