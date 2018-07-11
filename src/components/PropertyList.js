@@ -15,6 +15,10 @@ class PropertyList extends Component {
 		this.props.toggleShow(id, show);
 	};
 
+	onToggleDisabled = (id, disabled) => {
+		this.props.toggleDisabled(id, disabled)
+	};
+
 	onSaveName = (id, name) => {
 		this.props.onSaveName(id, name);
 	};
@@ -30,6 +34,8 @@ class PropertyList extends Component {
 				show={val.show}
 				optional={val.optional}
 				name={val.name}
+				disabled={val.disabled}
+				onToggleDisabled={ (e) => this.onToggleDisabled(id, e.target.checked) }
 				onToggleOptional={e => this.onToggleOptional(id, e.target.checked)}
 				onToggleShow={e => this.onToggleShow(id, e.target.checked)}
 				onSaveName={e => this.onSaveName(id, e.target.value)}
@@ -55,6 +61,7 @@ const mapStateToProps = appState => ({
 const mapDispatchToProps = {
 	toggleOptional: Actions.Creators.r_toggleOptional,
 	toggleShow: Actions.Creators.r_toggleShow,
+	toggleDisabled: Actions.Creators.r_toggleDisabled,
 	onSaveName: Actions.Creators.r_savePropertyName,
 	unselectProperty: Actions.Creators.r_unselectProperty
 };

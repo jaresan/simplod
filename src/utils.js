@@ -68,10 +68,14 @@ export const parseSPARQLQuery = ({
 		});
 		queryParts.values = `\n  VALUES (?type) {\n\t${types.join('\n\t')}\n  }`;
 		queryParts.properties = _.map(selectedProperties, (value, predicate) => {
+			if (value.disabled) {
+				return;
+			}
 			const name = value.show ? `?${value.name}` : '[]';
 
 			const { alias, suffix, prefixIri } = parsePrefix(predicate);
 			if (alias) {
+				// FIXME: Separate getPrefixes logic
 				usedPrefixes[alias] = prefixIri;
 				predicate = `${alias}:${suffix}`
 			} else {

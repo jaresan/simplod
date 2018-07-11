@@ -1,3 +1,16 @@
+# 2018-07-11: Meeting notes
+- nejdříve pevný základ a komplet funkčnost pro běžné use casy, až pak složitější
+- aplikace dostane uri zdroje SPO deskriptorů a endpoint
+- next meeting: 08.08.2018 9:15
+
+### Action Items:
+- [ ] předávat TTL a endpoint jako parametr aplikaci
+- upravit výpis zvolených properties
+  - [ ] k jakým třídam patří
+  - [ ] jaký to je predikát (ne pouze variable name)
+    - také prefixovat
+  - stromová struktura?
+- [ ] možnost ukládání nastavení (výběru uživatele)
 # 2018-06-07: Meeting notes
 - použité rdfjs, n3 na parsování :+1:
 - SPO deskriptory se parsují ok
@@ -5,17 +18,17 @@
   - při UI interakci se prozatím celá query nahradí nově vygenerovanou
 - přepsat architekturu + refactoring tak, aby se aplikace už dala někam nasadit
 - graf je celkem nepřehledný, ale vyřešíme až po business logice
-- next meeting: 04.07.2018 9:15
+- next meeting: ~04.07.2018~ 11.7.2018 9:15
 
 ### Action Items:
-- [ ] zkusit lépe handlovat prefixy
+- [x] zkusit lépe handlovat prefixy
   - buď přes servicu (e.g. [PrefixCC](https://prefix.cc/), [RDF Translator](https://rdf-translator.appspot.com/), nebo manuálně parsovat)
-- [ ] opravit OPTIONAL generování
-  - [ ] ne 1 velký OPTIONAL, ale každý zvlášť
-  - [ ] duplicity proměnných
-- [ ] checklist pro uživatele na jednotlivé property 
-  - [ ] změna názvu proměnné, OPTIONAL, zobrazení v result setu, odstranění z dotazu
-- [ ] refactoring, aby se dala aplikace někam nasadit pro účely testování
+- [x] opravit OPTIONAL generování
+  - [x] ne 1 velký OPTIONAL, ale každý zvlášť
+  - [x] duplicity proměnných
+- [x] checklist pro uživatele na jednotlivé property 
+  - [x] změna názvu proměnné, OPTIONAL, zobrazení v result setu, odstranění z dotazu
+- [x] refactoring, aby se dala aplikace někam nasadit pro účely testování
 # 2018-05-14: Meeting notes
 - vybrané věci by měly být vizuálně zvýrazněné
 - v SPO deskriptorech jsou i váhy hran, lze později zakomponovat<br>(aplikace musí být schopna pracovat i bez vah)

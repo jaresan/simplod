@@ -44,6 +44,11 @@ export default (state = initialState, action) => {
 			return state.setIn(['selected', 'properties', id, 'show'], show);
 		}
 
+		case Types.r_toggleDisabled: {
+			const {id, disabled} = action.payload;
+			return state.setIn(['selected', 'properties', id, 'disabled'], disabled);
+		}
+
 		case Types.r_savePropertyName: {
 			const {id, name} = action.payload;
 			return state.setIn(['selected', 'properties', id, 'name'], name);

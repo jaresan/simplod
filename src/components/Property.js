@@ -6,6 +6,7 @@ import './Property.css';
 class Property extends Component {
 	static propTypes = {
 		show: PropTypes.bool.isRequired,
+		disabled: PropTypes.bool.isRequired,
 		optional: PropTypes.bool.isRequired,
 		name: PropTypes.string.isRequired,
 		onToggleShow: PropTypes.func,
@@ -26,16 +27,19 @@ class Property extends Component {
 					<input type="checkbox" name="optional" value="optional" checked={this.props.optional} onChange={this.props.onToggleOptional}/>
 					Optional
 				</label>
+				<label>
+					<input type="checkbox" name="disabled" value="disabled" checked={this.props.disabled} onChange={this.props.onToggleDisabled}/>
+					Disabled
+				</label>
 				<input
 					type="text"
-					disabled={!this.props.show}
+					disabled={!this.props.show || this.props.disabled}
 					className={cx({
-						disabled: !this.props.show
+						disabled: !this.props.show || this.props.disabled
 					})}
 					defaultValue={this.props.name}
 					onBlur={this.props.onSaveName}
 				/>
-				<button onClick={this.props.onDelete}>X</button>
 			</li>
 		);
 	}
