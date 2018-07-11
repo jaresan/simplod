@@ -16,18 +16,18 @@ class Yasgui extends Component {
 	}
 
 	componentDidMount() {
-		const yasgui = window.YASGUI(document.getElementById("yasgui"), {
+		const yasgui = window.YASGUI(this.element, {
 			api: {
-				corsProxy: 'http://sparql.org/sparql'
+				corsProxy: 'https://sparql.org/sparql'
 			},
-			catalogueEndpoints: {},
-			endpoint: 'http://linked.opendata.cz/sparql'
+			catalogueEndpoints: [],
+			endpoint: 'https://linked.opendata.cz/sparql'
 		});
 		this.yasgui = yasgui.current();
 	}
 
 	render() {
-		return <div id="yasgui"/>;
+		return <div id="yasgui" ref={ ref => this.element = ref }/>;
 	}
 }
 
@@ -36,7 +36,6 @@ const mapStateToProps = appState => ({
 	selectedClasses: getSelectedData(appState)
 });
 
-const mapDispatchToProps = {
-};
+const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Yasgui);

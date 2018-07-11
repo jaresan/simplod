@@ -34,13 +34,13 @@
     "underscore": "^1.8.3"
   },
   "scripts": {
-    "dev": "concurrently --kill-others-on-fail 'npm run server:dev' 'npm run client'",
-    "start": "concurrently --kill-others-on-fail 'npm run server' 'npm run client'",
+    "start:dev": "concurrently --kill-others-on-fail 'npm run server:dev' 'npm run client'",
+    "start": "node server/server.js",
     "client": "react-scripts start",
-    "server:dev": "nodemon src/server/server.js",
-    "server": "node src/server/server.js",
+    "server:dev": "nodemon server/server.js",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "heroku-postbuild": "react-scripts build"
   }
 }
