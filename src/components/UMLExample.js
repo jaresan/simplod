@@ -38,19 +38,35 @@ class UMLExample extends React.Component {
 	}
 
 	componentDidMount() {
-		fetch('http://localhost:5000/api/hardExample', {method: 'GET', mode: 'cors'})
-			.then(data => data.json())
-			.then(json => {
-				this.setState({
-					prefixes: json.__prefixes__
+		if (process.env.NODE_ENV === 'development') {
+			fetch('http://localhost:5000/api/hardExample', {method: 'GET', mode: 'cors'})
+				.then(data => data.json())
+				.then(json => {
+					this.setState({
+						prefixes: json.__prefixes__
+					});
+					this.createGraph({
+						data: json.data, prefixes: json.__prefixes__
+					});
+					this.props.setPrefixes(json.__prefixes__);
+					this.registerEventHandlers();
+					this.setLayout();
 				});
-				this.createGraph({
-					data: json.data, prefixes: json.__prefixes__
+		} else {
+			fetch('/api/hardExample', {method: 'GET', mode: 'cors'})
+				.then(data => data.json())
+				.then(json => {
+					this.setState({
+						prefixes: json.__prefixes__
+					});
+					this.createGraph({
+						data: json.data, prefixes: json.__prefixes__
+					});
+					this.props.setPrefixes(json.__prefixes__);
+					this.registerEventHandlers();
+					this.setLayout();
 				});
-				this.props.setPrefixes(json.__prefixes__);
-				this.registerEventHandlers();
-				this.setLayout();
-			});
+		}
 	}
 
 	// FIXME: Refactor into OOP, each UML instance with it's own onclick handle, use register to distribute clicks

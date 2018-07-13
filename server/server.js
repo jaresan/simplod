@@ -25,8 +25,11 @@ app.get('/api/easyExample', async (req, res) => {
 		.then(data => res.json(data));
 });
 
-
-app.use(express.static(__dirname+'/../build'));
+if (process.env.NODE_ENV === 'development') {
+	app.use(express.static(path.join(__dirname, 'public')))
+} else {
+	app.use(express.static(__dirname + '/../build'));
+}
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
 app.get('*', (req, res) => {
