@@ -1,7 +1,7 @@
 # 2018-07-11: Meeting notes
 - nejdříve pevný základ a komplet funkčnost pro běžné use casy, až pak složitější
 - aplikace dostane uri zdroje SPO deskriptorů a endpoint
-- next meeting: 08.08.2018 9:15
+- next meeting: ~08.08.2018~ 22.08.2018 9:15
 
 ### Action Items:
 - [ ] předávat TTL a endpoint jako parametr aplikaci
