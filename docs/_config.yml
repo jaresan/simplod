@@ -1,1 +1,4 @@
 theme: jekyll-theme-cayman
+title: Linked data viewer
+sidebar:
+  nav: "docs"

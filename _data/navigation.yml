@@ -1,7 +1,4 @@
-theme: jekyll-theme-cayman
-docs_list_title: SALD Documentation
 docs:
-
 - title: Introduction
   url: /docs/index.md
 
