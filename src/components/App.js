@@ -11,9 +11,13 @@ class App extends Component {
     return (
       <div className="App">
         <div className="application-container">
-          <UMLExample/>
+          <UMLExample
+            ttlURL={window.ttlURL}
+          />
           <PropertyList/>
-          <Yasgui/>
+          <Yasgui
+            endpointURL={window.endpointURL}
+          />
         </div>
       </div>
     );

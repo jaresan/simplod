@@ -16,14 +16,23 @@ class Yasgui extends Component {
 	}
 
 	componentDidMount() {
+		window.YASGUI.defaults.catalogueEndpoints = [{
+      endpoint: this.props.endpointURL
+    }];
+
+		const corsProxy = process.env.NODE_ENV === 'development' ? 'https://localhost:5000/api/sparql' : '/api/sparql';
 		const yasgui = window.YASGUI(this.element, {
 			api: {
-				corsProxy: 'https://sparql.org/sparql'
+				corsProxy
 			},
-			catalogueEndpoints: [],
-			endpoint: 'https://linked.opendata.cz/sparql'
-		});
-		this.yasgui = yasgui.current();
+			endpoint: this.props.endpointURL,
+      catalogueEndpoints: [{
+				endpoint: this.props.endpointURL
+			}],
+		}).current();
+
+		this.yasgui = yasgui;
+		yasgui.setEndpoint(this.props.endpointURL);
 	}
 
 	render() {

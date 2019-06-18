@@ -28,7 +28,7 @@ const parseSPO = ttlString => new Promise((res, err) => {
 });
 
 const getQuads = ttlString => new Promise((res, err) => {
-  const parser = N3.Parser();
+  const parser = new N3.Parser();
   const quads = [];
 
   parser.parse(ttlString, (error, quad, prefixes) => {

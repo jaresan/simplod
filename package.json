@@ -22,6 +22,7 @@
     "immutable": "^3.8.2",
     "jointjs": "^2.0.1",
     "n3": "^1.0.0-beta.1",
+    "node-fetch": "^2.6.0",
     "prop-types": "^15.6.2",
     "rdfstore": "^0.9.17",
     "react": "^16.2.0",
