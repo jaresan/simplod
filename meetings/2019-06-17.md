@@ -1,17 +1,12 @@
 # 2019-06-17: Meeting notes
 - refresh, co od aplikace očekáváme
 - předpokládaný termín obhajoby leden 2020
+- next meeting: 26.06.2019, to be confirmed
 
 ### Bugs noted:
 - [ ] yasgui &rarr; ctrl + space autocomplete not working
 
 ### Action Items:
-- upravit výpis zvolených properties
-  - [ ] k jakým třídam patří
-  - [ ] jaký to je predikát (ne pouze variable name)
-    - také prefixovat
-  - stromová struktura?
-- [ ] možnost ukládání nastavení (výběru uživatele)
 - [ ] Remove BE entirely (can keep simple script as a cors proxy deployed somewhere)
     - [ ] Move all logic to the JS app
     - [ ] Initial loading screen when the app is fetching data

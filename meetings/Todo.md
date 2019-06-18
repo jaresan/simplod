@@ -12,3 +12,10 @@
 - [ ] Start working on the text in LaTeX
     - [ ] Online LaTeX editor &rarr; [Overleaf](https://www.overleaf.com/)
         - [ ] import MFF template
+- [x] předávat TTL a endpoint jako parametr aplikaci
+- upravit výpis zvolených properties
+  - [ ] k jakým třídam patří
+  - [ ] jaký to je predikát (ne pouze variable name)
+    - také prefixovat
+  - stromová struktura?
+- [ ] možnost ukládání nastavení (výběru uživatele)
