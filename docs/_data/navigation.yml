@@ -1,0 +1,8 @@
+docs_list_title: Documentation
+docs:
+  - title: Introduction
+    url: /
+  - title: Installation
+    url: install.html
+  - title: Demo
+    url: demo.html

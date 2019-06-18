@@ -1,1 +1,5 @@
 theme: jekyll-theme-cayman
+title: Linked data viewer
+baseurl: /simplod
+sidebar:
+  nav: "docs"
