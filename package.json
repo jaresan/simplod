@@ -1,7 +1,8 @@
 {
   "name": "simplod",
+  "homepage": "https://jaresan.github.io/simplod/",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "devDependencies": {
     "@types/d3": "^5.0.0",
     "@types/react": "^16.0.40",

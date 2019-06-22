@@ -6,6 +6,7 @@ import Actions from 'src/actions';
 import { createUMLInstance } from 'src/utils';
 
 import 'jointjs/css/layout.css';
+import { parseSPO } from '../parseSPO';
 
 const DEFAULT_LINK_ATTRS = {
 	labelSize: {
@@ -38,9 +39,10 @@ class UMLExample extends React.Component {
 	}
 
 	componentDidMount() {
-    fetch(this.props.ttlURL, {method: 'GET', mode: 'cors'})
-      .then(data => data.json())
-      .then(json => {
+    fetch('http://sparql-proxy-api.herokuapp.com/api/ttl/easyExample')
+      .then(res => res.text())
+      .then(async ttl => {
+				const json = await parseSPO(ttl);
         this.setState({
           prefixes: json.__prefixes__
         });
@@ -50,7 +52,7 @@ class UMLExample extends React.Component {
         this.props.setPrefixes(json.__prefixes__);
         this.registerEventHandlers();
         this.setLayout();
-      });
+			});
   }
 
 	// FIXME: Refactor into OOP, each UML instance with it's own onclick handle, use register to distribute clicks

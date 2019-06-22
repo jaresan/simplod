@@ -1,4 +1,4 @@
-const N3 = require('n3');
+import N3 from 'n3';
 
 const propertyToName = {
   'http://www.w3.org/2001/XMLSchema#integer': 'Int',
@@ -17,7 +17,7 @@ const subjectSpecIRI = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#subject';
 
 const edgePredicates = [predicateSpecIRI, hasWeightIRI, objectSpecIRI, subjectSpecIRI];
 
-const parseSPO = ttlString => new Promise((res, err) => {
+export const parseSPO = ttlString => new Promise((res, err) => {
   getQuads(ttlString)
     .then(({quads, prefixes}) => {
       res({
@@ -134,8 +134,4 @@ const parseQuads = quads => {
 
     return acc;
   }, classes);
-};
-
-module.exports = {
-  parseSPO
 };

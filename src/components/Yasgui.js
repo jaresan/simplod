@@ -20,10 +20,9 @@ class Yasgui extends Component {
       endpoint: this.props.endpointURL
     }];
 
-		const corsProxy = process.env.NODE_ENV === 'development' ? 'https://localhost:5000/api/sparql' : '/api/sparql';
 		const yasgui = window.YASGUI(this.element, {
 			api: {
-				corsProxy
+				corsProxy: 'http://sparql-proxy-api.herokuapp.com/api/sparql'
 			},
 			endpoint: this.props.endpointURL,
       catalogueEndpoints: [{
