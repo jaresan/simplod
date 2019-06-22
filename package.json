@@ -1,19 +1,14 @@
 {
   "name": "simplod",
-  "homepage": "https://jaresan.github.io/simplod/",
+  "homepage": "./",
   "version": "0.1.0",
   "private": false,
   "devDependencies": {
     "@types/d3": "^5.0.0",
     "@types/react": "^16.0.40",
     "concurrently": "^3.5.1",
-    "eslint": "^4.19.1",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-import": "^2.9.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.7.0",
     "nodemon": "^1.17.5",
-    "react-scripts": "^1.1.1"
+    "react-scripts": "^3.0.1"
   },
   "dependencies": {
     "classnames": "^2.2.6",
@@ -33,17 +28,23 @@
     "redux-saga": "^0.16.0",
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
+    "serve": "^11.0.2",
     "underscore": "^1.8.3"
   },
   "scripts": {
-    "start:dev": "concurrently --kill-others-on-fail 'npm run server:dev' 'npm run client'",
-    "start": "node server/server.js",
-    "client": "NODE_ENV=development && react-scripts start",
-    "server:dev": "export NODE_ENV=development && nodemon server/server.js",
+    "start:dev": "NODE_ENV=development && react-scripts start",
+    "start": "serve build",
     "build": "react-scripts build",
+    "build:pages": "react-scripts build && rm -rf docs/build && cp -r build docs/build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "pages": "cd docs && bundle exec jekyll serve",
     "heroku-postbuild": "react-scripts build"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

@@ -3,6 +3,14 @@ layout: default
 title: Linked data viewer
 sidebar:
   nav: "docs"
+styles:
+  - demo
 ---
-
-<h1>Demo 2</h1>
+<h1>Application demo</h1>
+<script type="text/javascript">
+  function resizeFrameHeight() {
+    const frame = document.getElementById('demo-frame');
+    frame.height = `${frame.contentWindow.document.body.scrollHeight + 64}px`;
+  }
+</script>
+<iframe id="demo-frame" onload="resizeFrameHeight()" src="./build/index.html"/>

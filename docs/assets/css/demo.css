@@ -1,0 +1,11 @@
+#demo-frame {
+    width: 100%;
+    resize: both;
+    overflow: visible;
+}
+
+#content {
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+}
