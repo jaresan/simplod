@@ -7,6 +7,7 @@ import { createUMLInstance } from 'src/utils';
 
 import 'jointjs/css/layout.css';
 import { parseSPO } from '../parseSPO';
+import { easyExample } from '../constants/api';
 
 const DEFAULT_LINK_ATTRS = {
 	labelSize: {
@@ -39,7 +40,7 @@ class UMLExample extends React.Component {
 	}
 
 	componentDidMount() {
-    fetch('http://sparql-proxy-api.herokuapp.com/api/ttl/easyExample')
+    fetch(easyExample)
       .then(res => res.text())
       .then(async ttl => {
 				const json = await parseSPO(ttl);

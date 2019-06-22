@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getSelectedProperties, getSelectedData } from 'src/selectors/index';
 import { parseSPARQLQuery } from 'src/utils';
+import { sparqlProxy } from '../constants/api';
 
 class Yasgui extends Component {
 	constructor() {
@@ -22,7 +23,7 @@ class Yasgui extends Component {
 
 		const yasgui = window.YASGUI(this.element, {
 			api: {
-				corsProxy: 'http://sparql-proxy-api.herokuapp.com/api/sparql'
+				corsProxy: sparqlProxy
 			},
 			endpoint: this.props.endpointURL,
       catalogueEndpoints: [{
