@@ -1,22 +1,48 @@
+# 2019-06-26: Meeting notes
+- diskuze ohledně struktury textu vs Bc. práce
+    - požadavky součástí analýzy
+    - \+ admin dokumentace (jak nasadit lokálně, co potřebuji)
+    - \+ kapitola testování
+    - \+ vyhodnocení
+        - jak byly splněny požadavky?
+        - [System usability scale form](https://www.measuringux.com/SUS.pdf) &rarr; dotazník pro testery
+        \+ připravit testovací scénáře, podle kterých bude postupovat i oponent
+    - \+ kapitola testování - unit testy, automatizované testy
+- jak zakomponovat SOLID do aplikace?
+    - SOLID pody jako úložiště pro jednotlivé naklikané náhledy od uživatelů
+    - úložiště ttl struktur
+    - [SOLID Community](https://solid.community) - free hostovaný solid pod
+- next meeting: 08.07.2019 12:00
+
+### Action items:
+- [ ] Zpracování náhledů naklikaných uživateli přes SOLID
+    - [ ] ukládání/parsování náhledů
+    - [ ] přihlášení
+    - [ ] ukládání views do SOLID podů
+    - (aplikace by měla být použitelná i bez přihlašování)
+- [ ] Pracovat na textu práce
+    - lze již psát úvod, motivaci, analýzu, design
+
 # 2019-06-17: Meeting notes
 - refresh, co od aplikace očekáváme
 - předpokládaný termín obhajoby leden 2020
 - next meeting: 26.06.2019, to be confirmed
 
 ### Bugs noted:
-- [ ] yasgui &rarr; ctrl + space autocomplete not working
+- [x] yasgui &rarr; ctrl + space autocomplete not working
 
 ### Action Items:
-- [ ] Remove BE entirely (can keep simple script as a cors proxy deployed somewhere)
-    - [ ] Move all logic to the JS app
+- [x] Remove BE entirely (can keep simple script as a cors proxy deployed somewhere)
+    - [x] Move all logic to the JS app
     - [ ] Initial loading screen when the app is fetching data
-- [ ] Read up on [Solid](https://solid.mit.edu/)
-- [ ] Create Github pages for the project
-    - [ ] Basic documentation (deployment & info)
-    - [ ] App demo &rarr; static version deployed on the pages
-- [ ] Start working on the text in LaTeX
-    - [ ] Online LaTeX editor &rarr; [Overleaf](https://www.overleaf.com/)
-        - [ ] import MFF template
+- [x] Read up on [Solid](https://solid.mit.edu/)
+- [x] Create Github pages for the project
+    - [x] Basic documentation (deployment & info)
+    - [x] App demo &rarr; static version deployed on the pages
+- [x] Start working on the text in LaTeX
+    - [x] Online LaTeX editor &rarr; [Overleaf](https://www.overleaf.com/)
+        - [x] import MFF template
+
 # 2018-07-11: Meeting notes
 - nejdříve pevný základ a komplet funkčnost pro běžné use casy, až pak složitější
 - aplikace dostane uri zdroje SPO deskriptorů a endpoint
