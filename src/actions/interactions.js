@@ -7,3 +7,4 @@ export const r_toggleShow = (id, show) => ({ id, show });
 export const r_toggleDisabled = (id, disabled) => ({ id, disabled });
 export const r_savePropertyName = (id, name) => ({ id, name });
 export const r_unselectProperty = id => ({id});
+export const r_saveCellViews = i => i;

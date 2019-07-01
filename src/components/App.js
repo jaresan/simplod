@@ -3,7 +3,7 @@ import UMLExample from './UMLExample';
 import Yasgui from './Yasgui';
 import PropertyList from './PropertyList';
 import './UMLExample.css';
-
+import ControlPanel from './ControlPanel';
 
 // FIXME: Split css (use sass/modules?)
 class App extends Component {
@@ -15,9 +15,12 @@ class App extends Component {
             ttlURL={window.ttlURL}
           />
           <PropertyList/>
-          <Yasgui
-            endpointURL={window.endpointURL}
-          />
+          <div className="right-menu">
+            <ControlPanel/>
+            <Yasgui
+              endpointURL={window.endpointURL}
+            />
+          </div>
         </div>
       </div>
     );

@@ -20,6 +20,7 @@
     "n3": "^1.0.0-beta.1",
     "node-fetch": "^2.6.0",
     "prop-types": "^15.6.2",
+    "rdflib": "^0.20.1",
     "rdfstore": "^0.9.17",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
@@ -29,6 +30,7 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
     "serve": "^11.0.2",
+    "solid-auth-client": "^2.3.0",
     "underscore": "^1.8.3"
   },
   "scripts": {

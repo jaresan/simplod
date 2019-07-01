@@ -11,6 +11,13 @@
   margin: 50px;
 }
 
+.right-menu {
+  max-width: 50%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 .uml-example-container {
   background: #cccccc;
   overflow: auto;
@@ -27,7 +34,6 @@
 
 #yasgui {
   overflow: auto;
-  width: 40%;
 }
 
 #yasgui .yasqe {

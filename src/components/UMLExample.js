@@ -53,6 +53,7 @@ class UMLExample extends React.Component {
         this.props.setPrefixes(json.__prefixes__);
         this.registerEventHandlers();
         this.setLayout();
+        this.props.saveCellViews(this.paper._views);
 			});
   }
 
@@ -145,7 +146,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
 	onPaperClick: Actions.Creators.s_onPaperClick,
 	onCellClick: Actions.Creators.s_onCellClick,
-	setPrefixes: Actions.Creators.r_setPrefixes
+	setPrefixes: Actions.Creators.r_setPrefixes,
+  saveCellViews: Actions.Creators.r_saveCellViews,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UMLExample);

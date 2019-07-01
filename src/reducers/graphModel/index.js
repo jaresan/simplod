@@ -4,16 +4,22 @@ import { defaultHighlighter } from 'src/constants/jointjs';
 import { unselectCell, selectCell } from './cell';
 
 const initialState = new fromJS({
-	objects: {},
+	cellViews: {},
 	selected: {
 		objects: {},
 		properties: {}
-	}
+	},
+	dirty: true
 });
 
 const Types = Actions.Types;
-export default (state = initialState, action) => {
+
+const getNewState = (state = initialState, action) => {
 	switch (action.type) {
+    case Types.r_saveCellViews: {
+      return state.set('cellViews', fromJS(action.payload));
+    }
+
 		case Types.r_deselectAll: {
 			state.getIn(['selected', 'objects']).forEach(cellView => {
 				cellView.unhighlight(null, defaultHighlighter)
@@ -59,7 +65,35 @@ export default (state = initialState, action) => {
 			return state.deleteIn(['selected', 'properties', id]);
 		}
 
+    case Types.r_viewLoaded: {
+      const { objectIds, properties } = action.payload;
+
+      state.getIn(['selected', 'objects']).forEach(cellView => {
+        cellView.unhighlight(null, defaultHighlighter)
+      });
+      state = state
+        .setIn(['selected', 'objects'], new Map())
+        .setIn(['selected', 'properties'], new Map());
+
+      for (let objId of objectIds) {
+        state = selectCell(state, state.getIn(['cellViews', objId]));
+      }
+
+      return state
+        .setIn(['selected', 'properties'], fromJS(properties));
+    }
+
 		default:
 			return state;
 	}
+};
+
+export default (state = initialState, action) => {
+  const newState = getNewState(state, action);
+
+  if (newState.getIn(['selected', 'objects']).size) {
+    return newState.set('dirty', true)
+  } else {
+    return newState.set('dirty', false)
+  }
 };
