@@ -1,5 +1,6 @@
 ## Application:
 ### Bugs:
+- [ ] Saving view to solid pod with different extensions doesn't work properly
 
 ### Action Items:
 - [ ] předávat TTL a endpoint jako parametr aplikaci
@@ -9,12 +10,16 @@
   - [ ] jaký to je predikát (ne pouze variable name)
     - také prefixovat
   - stromová struktura?
-- [ ] možnost ukládání nastavení (výběru uživatele)
-- [ ] Zpracování náhledů naklikaných uživateli přes SOLID
-    - [ ] uložení/parsování náhledů
-    - [ ] přihlášení
-    - [ ] ukládání views do SOLID podů
-- [ ] Pracovat na textu práce
+- [ ] Save view in RDF format
+- [ ] Rename/give hint for property checkboxes
+- [ ] Add app folder uri to SOLID Pod (probably prefs.ttl) on first login,
+  so that users can work with the app from whenever
+- [x] možnost ukládání nastavení (výběru uživatele)
+- [x] Zpracování náhledů naklikaných uživateli přes SOLID
+    - [x] uložení/parsování náhledů
+    - [x] přihlášení
+    - [x] ukládání views do SOLID podů
+- [x] Pracovat na textu práce
     - lze již psát úvod, motivaci, analýzu, design
 
 

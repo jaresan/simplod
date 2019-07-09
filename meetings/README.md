@@ -1,3 +1,27 @@
+# 2019-07-08: Meeting notes
+- potřeba mít nápovědu/příklad použití při implementování nových featur
+    - UX a UI celkově předělám po zprovoznění všech funkčností
+- osnovu ještě trochu pozměnit podle poznámek, jinak ok
+- view by mělo být ukládáno v RDF formátu, aby s ním mohli pracovat i ostatní aplikace
+- potřeba přejmenovat/vysvětlit checkboxy u properties
+- přidat do SOLID Podu uri folder, se kterým aplikace může pracovat
+    - pravděpodobně do prefs.ttl
+- next meeting: 17.07.2019 12:00
+
+### Action items:
+- [ ] Předávat schema a endpoint url v parametru url aplikace
+- [ ] Opravit text dle připomínek + pokračovat
+
+### Bugs noted:
+- [ ] Saving view to solid pod with different extensions doesn't work properly
+
+### TODO:
+- [ ] Save view in RDF format
+- [ ] Rename/give hint for property checkboxes
+- [ ] Add app folder uri to SOLID Pod (probably prefs.ttl) on first login, and
+    use that as default when saving views
+
+
 # 2019-06-26: Meeting notes
 - diskuze ohledně struktury textu vs Bc. práce
     - požadavky součástí analýzy
@@ -15,12 +39,12 @@
 - next meeting: 08.07.2019 12:00
 
 ### Action items:
-- [ ] Zpracování náhledů naklikaných uživateli přes SOLID
-    - [ ] ukládání/parsování náhledů
-    - [ ] přihlášení
-    - [ ] ukládání views do SOLID podů
+- [x] Zpracování náhledů naklikaných uživateli přes SOLID
+    - [x] ukládání/parsování náhledů
+    - [x] přihlášení
+    - [x] ukládání views do SOLID podů
     - (aplikace by měla být použitelná i bez přihlašování)
-- [ ] Pracovat na textu práce
+- [x] Pracovat na textu práce
     - lze již psát úvod, motivaci, analýzu, design
 
 # 2019-06-17: Meeting notes
