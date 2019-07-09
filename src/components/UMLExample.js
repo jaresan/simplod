@@ -7,7 +7,6 @@ import { createUMLInstance } from 'src/utils';
 
 import 'jointjs/css/layout.css';
 import { parseSPO } from '../parseSPO';
-import { easyExample } from '../constants/api';
 
 const DEFAULT_LINK_ATTRS = {
 	labelSize: {
@@ -40,7 +39,7 @@ class UMLExample extends React.Component {
 	}
 
 	componentDidMount() {
-    fetch(easyExample)
+    fetch(this.props.schemaURL)
       .then(res => res.text())
       .then(async ttl => {
 				const json = await parseSPO(ttl);

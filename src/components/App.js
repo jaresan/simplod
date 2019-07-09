@@ -5,20 +5,29 @@ import PropertyList from './PropertyList';
 import './UMLExample.css';
 import ControlPanel from './ControlPanel';
 
+
 // FIXME: Split css (use sass/modules?)
 class App extends Component {
+  componentWillMount() {
+    const params = new URLSearchParams(window.location.search);
+
+    this.schemaURL = params.get('schemaURL');
+    this.endpointURL = params.get('endpointURL') || 'http://dbpedia.org/sparql';
+  }
+
+
   render() {
     return (
       <div className="App">
         <div className="application-container">
           <UMLExample
-            ttlURL={window.ttlURL}
+            schemaURL={this.schemaURL}
           />
           <PropertyList/>
           <div className="right-menu">
             <ControlPanel/>
             <Yasgui
-              endpointURL={window.endpointURL}
+              endpointURL={this.endpointURL}
             />
           </div>
         </div>

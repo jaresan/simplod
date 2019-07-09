@@ -13,4 +13,16 @@ styles:
     frame.height = `${frame.contentWindow.document.body.scrollHeight + 64}px`;
   }
 </script>
-<iframe id="demo-frame" onload="resizeFrameHeight()" src="./build/index.html"/>
+
+<iframe id="demo-frame"></iframe>
+
+<script>
+  const frame = document.getElementById('demo-frame');
+  frame.onload = resizeFrameHeight;
+  const params = new URLSearchParams(window.location.search);
+  const { origin, pathname } = window.location;
+  const url = new URL(`${origin}${pathname}/../build/index.html`);
+  url.searchParams.set('schemaURL', params.get('schemaURL'));
+  url.searchParams.set('endpointURL', params.get('endpointURL') || 'http://dbpedia.org/sparql');
+  frame.src = url;
+</script>
