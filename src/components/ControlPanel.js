@@ -5,14 +5,10 @@ import './ControlPanel.css';
 import { getViewSelection, getSession, getDirty, getFolderUri, getFolderUriChanging, getViews } from '../selectors';
 
 class ControlPanel extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      creatingView: false,
-      newViewName: '',
-    }
-  }
+  state = {
+    creatingView: false,
+    newViewName: '',
+  };
 
   componentDidMount = async () => {
     this.props.onSolidStart();

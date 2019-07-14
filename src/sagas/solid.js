@@ -62,18 +62,23 @@ function* onViewLoad({ payload: { uri } }) {
 
 function* fetchViews() {
   const folderUri = yield select(getFolderUri);
+  if (!folderUri) return;
 
-  let folderContent = yield call(auth.fetch, folderUri);
-  folderContent = yield folderContent.text();
+  try {
+    let folderContent = yield call(auth.fetch, folderUri);
+    folderContent = yield folderContent.text();
 
-  const store = new rdf.graph();
-  rdf.parse(folderContent, store, folderUri);
+    const store = new rdf.graph();
+    rdf.parse(folderContent, store, folderUri);
 
-  const resource = new rdf.Namespace('http://www.w3.org/ns/ldp#')('Resource');
-  const type = rdf.Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')('type');
-  const viewUris = store.statementsMatching(null, type, resource).map(s => s.subject.value);
+    const resource = new rdf.Namespace('http://www.w3.org/ns/ldp#')('Resource');
+    const type = rdf.Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')('type');
+    const viewUris = store.statementsMatching(null, type, resource).map(s => s.subject.value);
 
-  yield put(Actions.Creators.r_setExistingViews(viewUris));
+    yield put(Actions.Creators.r_setExistingViews(viewUris));
+  } catch (e) {
+    alert(`There was a problem fetching saved views from ${folderUri}. Please recheck the uri and try again.`)
+  }
 }
 
 function* onDeleteView({ payload: viewUri }) {
