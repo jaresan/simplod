@@ -20,6 +20,8 @@ export const getSession = appState => appState.solid.get('session');
 
 export const getDirty = appState => appState.graphModel.get('dirty');
 
+export const getFolderUri = appState => appState.solid.get('folderUri');
+
 export const getSelectedDataAndPrefixes = createSelector(
 	getSelectedData,
 	getPrefixes,

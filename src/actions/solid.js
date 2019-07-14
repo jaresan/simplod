@@ -1,5 +1,10 @@
-export const r_solidLoggedIn = session => session;
+export const r_setSolidSession = session => session;
 export const r_solidLoggedOut = () => {};
+export const s_onSolidLogin = () => {};
+export const s_onSolidLogout = () => {};
 export const r_viewLoaded = json => json;
 export const s_onViewSave = uri => ({ uri });
 export const s_onViewLoad = uri => ({ uri });
+export const r_setFolderUri = uri => uri;
+export const s_onSolidStart = () => {};
+export const s_saveFolderUri = uri => uri;

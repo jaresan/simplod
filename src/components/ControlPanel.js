@@ -1,37 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getSession, getDirty } from 'src/selectors/index';
+import { getSession, getDirty, getFolderUri } from 'src/selectors/index';
 import Actions from 'src/actions';
-import auth from 'solid-auth-client';
 import './ControlPanel.css';
 
 class ControlPanel extends Component {
   componentDidMount = async () => {
-    window.auth = auth;
-    const session = await auth.currentSession();
-    if (session) {
-      this.props.solidLoggedIn(session);
-    }
+    this.props.onSolidStart();
   };
 
-  onLogin = async () => {
-    let session = await auth.currentSession();
-    let popupUri = 'https://solid.community/common/popup.html';
-    if (!session) {
-      session = await auth.popupLogin({ popupUri });
-    }
-    this.props.solidLoggedIn(session);
+  onLogin = () => {
+    this.props.onSolidLogin();
   };
 
-  onLogout = async () => {
-    await auth.logout();
-    this.props.solidLoggedOut();
+  onLogout = () => {
+    this.props.onSolidLogout();
   };
 
   onSave = () => {
     const uri = prompt('Please specify the URI where to save the view.');
 
-    console.log(uri);
     if (uri) {
       this.props.onSave(uri);
     }
@@ -45,10 +33,20 @@ class ControlPanel extends Component {
     }
   };
 
+  saveFolderUri = () => {
+    this.props.saveFolderUri(this.props.folderUri);
+  };
+
   getLoginData = () => {
     if (this.props.session) {
       return (
         <>
+          <span>
+            App folder:
+            <input value={this.props.folderUri} onChange={e => this.props.setFolderUri(e.target.value)}/>
+            <button onClick={this.saveFolderUri}>Submit</button>
+          </span>
+          <br/>
           <span>Logged in as: {this.props.session.webId}</span>
           <br/>
           <button className="primary-button" onClick={this.onLogout} title="Logout">Logout</button>
@@ -85,13 +83,17 @@ class ControlPanel extends Component {
 const mapStateToProps = appState => ({
   session: getSession(appState),
   isDirty: getDirty(appState),
+  folderUri: getFolderUri(appState),
 });
 
 const mapDispatchToProps = {
-  solidLoggedIn: Actions.Creators.r_solidLoggedIn,
-  solidLoggedOut: Actions.Creators.r_solidLoggedOut,
+  onSolidLogin: Actions.Creators.s_onSolidLogin,
+  onSolidLogout: Actions.Creators.s_onSolidLogout,
+  onSolidStart: Actions.Creators.s_onSolidStart,
   onSave: Actions.Creators.s_onViewSave,
   onLoad: Actions.Creators.s_onViewLoad,
+  saveFolderUri: Actions.Creators.s_saveFolderUri,
+  setFolderUri: Actions.Creators.r_setFolderUri,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ControlPanel);

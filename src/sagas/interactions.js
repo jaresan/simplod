@@ -1,4 +1,4 @@
-import { takeEvery, put, take, select } from 'redux-saga/effects';
+import { takeEvery, put, select, all } from 'redux-saga/effects';
 import { getSelectedDataAndPrefixes } from 'src/selectors';
 import Actions from 'src/actions';
 
@@ -20,8 +20,8 @@ function* onCellClick(action) {
 
 
 export default function*() {
-	yield [
+	yield all([
 		takeEvery(Actions.Types.s_onPaperClick, onPaperClick),
 		takeEvery(Actions.Types.s_onCellClick, onCellClick)
-	];
+	]);
 }

@@ -7,7 +7,7 @@ export const createUMLInstance = ({size = {width: 250, height: 150}, name, attri
 		size, name, attributes, methods,
 		attrs: {
 			rect: {
-				onclick: 'javascript:console.log(\'a\')'
+				onclick: ''
 			},
 			'.uml-class-name-rect': {
 				fill: '#ff8450',
@@ -35,7 +35,7 @@ export const createUMLInstance = ({size = {width: 250, height: 150}, name, attri
 
 const parsePrefix = (iri) => {
 	const suffix = iri.replace(/.*(\/|#)/, '');
-	const prefixIri = iri.replace(/(\/|#)[^\/#]*$/, '$1');
+	const prefixIri = iri.replace(/(\/|#)[^/#]*$/, '$1');
 	const alias = possiblePrefixes[prefixIri];
 
 	return {
