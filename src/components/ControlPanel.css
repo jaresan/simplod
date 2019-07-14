@@ -11,3 +11,12 @@
 .primary-button[disabled] {
     background: #9d9d9d;
 }
+
+.folderUri-input:invalid {
+    border: 1px solid black;
+    background: #ff6464;
+}
+
+.folderUri-input:disabled {
+    background: lightgrey;
+}

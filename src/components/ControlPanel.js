@@ -2,9 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Actions from 'src/actions';
 import './ControlPanel.css';
-import { getViewSelection, getSession, getDirty, getFolderUri, getFolderUriChanging } from '../selectors';
+import { getViewSelection, getSession, getDirty, getFolderUri, getFolderUriChanging, getViews } from '../selectors';
 
 class ControlPanel extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      creatingView: false,
+      newViewName: '',
+    }
+  }
+
   componentDidMount = async () => {
     this.props.onSolidStart();
   };
@@ -31,7 +40,74 @@ class ControlPanel extends Component {
     downloadAnchorNode.remove();
   };
 
-  onSave = () => {
+
+  onSaveNewView = () => {
+    const uri = this.props.folderUri.replace(/\/?$/, `/${this.state.newViewName}`);
+    this.onSave(uri);
+    this.setState({
+      creatingView: false,
+    })
+  };
+
+  onDeleteView = uri => {
+    if (window.confirm(`Are you sure you want to delete view at ${uri}?`)) {
+      this.props.deleteView(uri);
+    }
+  };
+
+  getNewViewInput = () => {
+    if (this.state.creatingView) {
+      return (
+        <li>
+          <span>
+            <input
+              onChange={e =>
+                this.setState({
+                  newViewName: e.target.value
+                })
+              }
+            />
+            <button onClick={this.onSaveNewView}>Save</button>
+          </span>
+        </li>
+      )
+    } else if (this.props.isDirty) {
+      return (
+        <li>
+          <button
+            onClick={() => this.setState({
+              creatingView: true,
+            })}
+          >
+            New view
+          </button>
+        </li>
+      )
+    }
+  };
+
+  getViewList = () => {
+    if (!this.props.session || !this.props.views.length) {
+      return;
+    }
+
+    return (
+      <ul>
+        {
+          this.props.views.map(v =>
+            <li key={v}>
+              { v.replace(/.*\//, '') }
+              <button onClick={() => this.onLoadView(v)}>Load</button>
+              <button onClick={() => this.onDeleteView(v)}>X</button>
+            </li>
+          )
+        }
+        { this.getNewViewInput() }
+      </ul>
+    )
+  };
+
+  onSave = (uri) => {
     // FIXME: Add load/delete buttons next to views in the list
     // FIXME: When creating a new view focus a newly created input in the view list and save there
 
@@ -39,12 +115,9 @@ class ControlPanel extends Component {
       return this.downloadView();
     }
 
-    if (!this.props.folderUri) {
-      alert('Please fill in the folder uri first and try again.');
-      this.folderUriInput.focus();
-      return;
+    if (!uri) {
+      uri = prompt('Please specify the URI where to save the view.');
     }
-    const uri = prompt('Please specify the URI where to save the view.');
 
 
     if (uri) {
@@ -52,11 +125,14 @@ class ControlPanel extends Component {
     }
   };
 
-  onLoad = () => {
-    const uri = prompt('Please specify the URI to load.');
+  onLoadView = (uri) => {
+    console.log(uri);
+    if (!uri) {
+      uri = prompt('Please specify the URI to load.');
+    }
 
     if (uri) {
-      this.props.onLoad(uri);
+      this.props.onLoadView(uri);
     }
   };
 
@@ -90,6 +166,10 @@ class ControlPanel extends Component {
             }
           </span>
           <br/>
+          <span>
+            Your saved views: {this.getViewList()}
+          </span>
+          <br/>
           <span>Logged in as: {this.props.session.webId}</span>
           <br/>
           <button className="primary-button" onClick={this.onLogout} title="Logout">Logout</button>
@@ -113,11 +193,11 @@ class ControlPanel extends Component {
         disabled={!this.props.isDirty}
       >
         {
-          this.props.session ? "Save view" : "Download view"
+          this.props.session ? "Save view at URI" : "Download view"
         }
       </button>
       &nbsp;
-      <button className="primary-button" onClick={this.onLoad}>Load view</button>
+      <button className="primary-button" onClick={this.onLoadView}>Load view by URI</button>
     </>
   );
 
@@ -137,6 +217,7 @@ const mapStateToProps = appState => ({
   folderUri: getFolderUri(appState),
   view: getViewSelection(appState),
   folderUriChanging: getFolderUriChanging(appState),
+  views: getViews(appState),
 });
 
 const mapDispatchToProps = {
@@ -144,10 +225,11 @@ const mapDispatchToProps = {
   onSolidLogout: Actions.Creators.s_onSolidLogout,
   onSolidStart: Actions.Creators.s_onSolidStart,
   onSave: Actions.Creators.s_onViewSave,
-  onLoad: Actions.Creators.s_onViewLoad,
+  onLoadView: Actions.Creators.s_onViewLoad,
   saveFolderUri: Actions.Creators.s_saveFolderUri,
   setFolderUri: Actions.Creators.r_setFolderUri,
   toggleFolderUriChanging: Actions.Creators.r_toggleFolderUriChanging,
+  deleteView: Actions.Creators.s_deleteView,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ControlPanel);

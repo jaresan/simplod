@@ -1,9 +1,8 @@
 import { takeEvery, select, call, put, all } from 'redux-saga/effects';
-import { getViewSelection } from 'src/selectors';
+import { getFolderUri, getViewSelection } from '../selectors';
 import Actions from 'src/actions';
 import auth from 'solid-auth-client';
 import rdf from 'rdflib';
-
 
 
 function* onViewSave({ payload: { uri } }) {
@@ -33,6 +32,8 @@ function* onViewSave({ payload: { uri } }) {
   } catch (e) {
     alert('An error occured while trying to save the view.')
   }
+
+  yield fetchViews();
 }
 
 function* onViewLoad({ payload: { uri } }) {
@@ -56,6 +57,36 @@ function* onViewLoad({ payload: { uri } }) {
     }
   } catch (e) {
     alert('An error occured while trying to load the view.')
+  }
+}
+
+function* fetchViews() {
+  const folderUri = yield select(getFolderUri);
+
+  let folderContent = yield call(auth.fetch, folderUri);
+  folderContent = yield folderContent.text();
+
+  const store = new rdf.graph();
+  rdf.parse(folderContent, store, folderUri);
+
+  const resource = new rdf.Namespace('http://www.w3.org/ns/ldp#')('Resource');
+  const type = rdf.Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')('type');
+  const viewUris = store.statementsMatching(null, type, resource).map(s => s.subject.value);
+
+  yield put(Actions.Creators.r_setExistingViews(viewUris));
+}
+
+function* onDeleteView({ payload: viewUri }) {
+  try {
+    const res = yield call(auth.fetch, viewUri, { method: 'DELETE'});
+
+    if (res.status >= 200 && res.status < 300) {
+      yield put(Actions.Creators.r_viewDeleted(viewUri));
+    } else {
+      alert('An error occured while trying to delete the view.')
+    }
+  } catch (e) {
+    alert('An error occured while trying to delete the view.')
   }
 }
 
@@ -88,6 +119,8 @@ function* onSaveFolderUri({ payload: folderUri }) {
 
   if (error || test.status < 200 || test.status >= 300) {
     alert(`Cannot fetch given folder uri: ${folderUri}. Please check the URI and access rights on the SOLID pod and try again.`);
+    yield put(Actions.Creators.r_resetFolderUri());
+    yield put(Actions.Creators.r_toggleFolderUriChanging(false));
     return;
   }
 
@@ -107,10 +140,12 @@ function* onSaveFolderUri({ payload: folderUri }) {
   });
   if (res.status >= 200 && res.status < 300) {
     yield put(Actions.Creators.r_setFolderUri(folderUri));
-    yield put(Actions.Creators.r_toggleFolderUriChanging(false));
+    yield fetchViews();
   } else {
+    yield put(Actions.Creators.r_resetFolderUri());
     alert('An error occurred while saving the folder uri to /settings/prefs.ttl. Please check the uri provided and access permissions again.')
   }
+  yield put(Actions.Creators.r_toggleFolderUriChanging(false));
 }
 
 function* onStart() {
@@ -132,6 +167,7 @@ function* onLogin() {
   const folderUri = yield loadFolderUri();
   yield put(Actions.Creators.r_setFolderUri(folderUri));
   yield put(Actions.Creators.r_toggleFolderUriChanging(false));
+  yield fetchViews();
 
   // FIXME: Add list of views from folderuri
 }
@@ -150,5 +186,6 @@ export default function*() {
     takeEvery(Actions.Types.s_onSolidLogout, onLogout),
     takeEvery(Actions.Types.s_onSolidStart, onStart),
     takeEvery(Actions.Types.s_saveFolderUri, onSaveFolderUri),
+    takeEvery(Actions.Types.s_deleteView, onDeleteView),
   ]);
 }

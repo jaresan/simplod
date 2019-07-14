@@ -24,6 +24,8 @@ export const getFolderUri = appState => appState.solid.get('folderUri');
 
 export const getFolderUriChanging = appState => appState.solid.get('folderUriChanging');
 
+export const getViews = appState => appState.solid.get('views');
+
 export const getSelectedDataAndPrefixes = createSelector(
 	getSelectedData,
 	getPrefixes,

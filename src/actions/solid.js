@@ -9,3 +9,7 @@ export const r_setFolderUri = uri => uri;
 export const s_onSolidStart = () => {};
 export const s_saveFolderUri = uri => uri;
 export const r_toggleFolderUriChanging = bool => bool;
+export const r_setExistingViews = uris => uris;
+export const r_viewDeleted = uri => uri;
+export const s_deleteView = uri => uri;
+export const r_resetFolderUri = () => {};
