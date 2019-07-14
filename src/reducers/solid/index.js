@@ -4,6 +4,7 @@ import Actions from 'src/actions';
 const initialState = new fromJS({
   session: '',
   folderUri: '',
+  folderUriChanging: false,
 });
 
 const Types = Actions.Types;
@@ -15,6 +16,8 @@ export default (state = initialState, action) => {
       return initialState;
     case Types.r_setFolderUri:
       return state.set('folderUri', action.payload);
+    case Types.r_toggleFolderUriChanging:
+      return state.set('folderUriChanging', action.payload);
     default:
       return state;
   }

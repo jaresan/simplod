@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getSession, getDirty, getFolderUri } from 'src/selectors/index';
 import Actions from 'src/actions';
 import './ControlPanel.css';
+import { getViewSelection, getSession, getDirty, getFolderUri, getFolderUriChanging } from '../selectors';
 
 class ControlPanel extends Component {
   componentDidMount = async () => {
@@ -17,8 +17,35 @@ class ControlPanel extends Component {
     this.props.onSolidLogout();
   };
 
+  downloadView = () => {
+    const name = prompt('Specify the filename.');
+    if (!name) return;
+
+    const view = this.props.view;
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(view));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("download", name + ".json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  };
+
   onSave = () => {
+    // FIXME: Add load/delete buttons next to views in the list
+    // FIXME: When creating a new view focus a newly created input in the view list and save there
+
+    if (!this.props.session) {
+      return this.downloadView();
+    }
+
+    if (!this.props.folderUri) {
+      alert('Please fill in the folder uri first and try again.');
+      this.folderUriInput.focus();
+      return;
+    }
     const uri = prompt('Please specify the URI where to save the view.');
+
 
     if (uri) {
       this.props.onSave(uri);
@@ -34,7 +61,11 @@ class ControlPanel extends Component {
   };
 
   saveFolderUri = () => {
-    this.props.saveFolderUri(this.props.folderUri);
+    if (!this.props.folderUri.match(/^https?:\/\//)) {
+      alert('Folder uri has to be an absolute URL.')
+    } else {
+      this.props.saveFolderUri(this.props.folderUri);
+    }
   };
 
   getLoginData = () => {
@@ -43,8 +74,20 @@ class ControlPanel extends Component {
         <>
           <span>
             App folder:
-            <input value={this.props.folderUri} onChange={e => this.props.setFolderUri(e.target.value)}/>
-            <button onClick={this.saveFolderUri}>Submit</button>
+            <input
+              className="folderUri-input"
+              required
+              disabled={!this.props.folderUriChanging}
+              ref={e => this.folderUriInput = e}
+              value={this.props.folderUri}
+              onChange={e => this.props.setFolderUri(e.target.value)}
+            />
+            {
+              this.props.folderUriChanging ?
+                <button onClick={this.saveFolderUri}>Submit</button>
+                :
+                <button onClick={() => this.props.toggleFolderUriChanging(true)}>Change</button>
+            }
           </span>
           <br/>
           <span>Logged in as: {this.props.session.webId}</span>
@@ -64,7 +107,15 @@ class ControlPanel extends Component {
   getControlPanel = () => (
     <>
       &nbsp;
-      <button className="primary-button" onClick={this.onSave} disabled={!this.props.isDirty}>Save view</button>
+      <button
+        className="primary-button"
+        onClick={this.onSave}
+        disabled={!this.props.isDirty}
+      >
+        {
+          this.props.session ? "Save view" : "Download view"
+        }
+      </button>
       &nbsp;
       <button className="primary-button" onClick={this.onLoad}>Load view</button>
     </>
@@ -84,6 +135,8 @@ const mapStateToProps = appState => ({
   session: getSession(appState),
   isDirty: getDirty(appState),
   folderUri: getFolderUri(appState),
+  view: getViewSelection(appState),
+  folderUriChanging: getFolderUriChanging(appState),
 });
 
 const mapDispatchToProps = {
@@ -94,6 +147,7 @@ const mapDispatchToProps = {
   onLoad: Actions.Creators.s_onViewLoad,
   saveFolderUri: Actions.Creators.s_saveFolderUri,
   setFolderUri: Actions.Creators.r_setFolderUri,
+  toggleFolderUriChanging: Actions.Creators.r_toggleFolderUriChanging,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ControlPanel);

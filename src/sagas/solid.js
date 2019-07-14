@@ -5,12 +5,11 @@ import auth from 'solid-auth-client';
 import rdf from 'rdflib';
 
 
-// FIXME: Add list of views from folderuri
-// FIXME: Generate views as ttl? --> set its file type to smth like xx:view
-// FIXME: When creating a new view focus a newly created input in the view list and save there
-// FIXME: Add load/delete buttons next to views in the list
+
 function* onViewSave({ payload: { uri } }) {
   const view = yield select(getViewSelection);
+  
+  // FIXME: Add entry to folderUri settings file && the file itself
   try {
     const res = yield call(auth.fetch, uri, {
       method: 'PUT',
@@ -79,7 +78,19 @@ function* loadFolderUri() {
   return folderUri;
 }
 
-function* onSaveFolderUri({ payload }) {
+function* onSaveFolderUri({ payload: folderUri }) {
+  let error, test = {};
+  try {
+    test = yield call(auth.fetch, folderUri);
+  } catch (e) {
+    error = true;
+  }
+
+  if (error || test.status < 200 || test.status >= 300) {
+    alert(`Cannot fetch given folder uri: ${folderUri}. Please check the URI and access rights on the SOLID pod and try again.`);
+    return;
+  }
+
   const res = yield call(auth.fetch, 'https://jaresan.solid.community/settings/prefs.ttl', {
     method: 'POST',
     headers: {
@@ -91,11 +102,12 @@ function* onSaveFolderUri({ payload }) {
     INSERT DATA { 
       <${window.origin}> 
         a acl:agent; 
-        ws:storage <${payload}>. 
+        ws:storage <${folderUri}>. 
     }`
   });
   if (res.status >= 200 && res.status < 300) {
-    yield put(Actions.Creators.r_setFolderUri(payload));
+    yield put(Actions.Creators.r_setFolderUri(folderUri));
+    yield put(Actions.Creators.r_toggleFolderUriChanging(false));
   } else {
     alert('An error occurred while saving the folder uri to /settings/prefs.ttl. Please check the uri provided and access permissions again.')
   }
@@ -119,6 +131,9 @@ function* onLogin() {
 
   const folderUri = yield loadFolderUri();
   yield put(Actions.Creators.r_setFolderUri(folderUri));
+  yield put(Actions.Creators.r_toggleFolderUriChanging(false));
+
+  // FIXME: Add list of views from folderuri
 }
 
 function* onLogout() {

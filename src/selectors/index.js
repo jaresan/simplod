@@ -22,6 +22,8 @@ export const getDirty = appState => appState.graphModel.get('dirty');
 
 export const getFolderUri = appState => appState.solid.get('folderUri');
 
+export const getFolderUriChanging = appState => appState.solid.get('folderUriChanging');
+
 export const getSelectedDataAndPrefixes = createSelector(
 	getSelectedData,
 	getPrefixes,
