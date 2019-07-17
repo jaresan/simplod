@@ -27,7 +27,7 @@ function* onViewSave({ payload: { uri } }) {
         Either you don't have access to the requested resource or the permissions on it are not set up correctly.
       `);
     } else if (res.status < 200 || res.status >= 300) {
-      alert('An error occured while trying to load the view.')
+      alert('An error occured while trying to save the view.')
     }
   } catch (e) {
     alert('An error occured while trying to save the view.')

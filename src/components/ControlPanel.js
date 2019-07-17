@@ -39,7 +39,7 @@ class ControlPanel extends Component {
 
   onSaveNewView = () => {
     const uri = this.props.folderUri.replace(/\/?$/, `/${this.state.newViewName}`);
-    this.onSave(uri);
+    this.onSaveView(uri);
     this.setState({
       creatingView: false,
     })
@@ -103,10 +103,7 @@ class ControlPanel extends Component {
     )
   };
 
-  onSave = (uri) => {
-    // FIXME: Add load/delete buttons next to views in the list
-    // FIXME: When creating a new view focus a newly created input in the view list and save there
-
+  onSaveView = (uri) => {
     if (!this.props.session) {
       return this.downloadView();
     }
@@ -122,7 +119,6 @@ class ControlPanel extends Component {
   };
 
   onLoadView = (uri) => {
-    console.log(uri);
     if (!uri) {
       uri = prompt('Please specify the URI to load.');
     }
@@ -185,7 +181,7 @@ class ControlPanel extends Component {
       &nbsp;
       <button
         className="primary-button"
-        onClick={this.onSave}
+        onClick={() => this.onSaveView()}
         disabled={!this.props.isDirty}
       >
         {
@@ -193,7 +189,7 @@ class ControlPanel extends Component {
         }
       </button>
       &nbsp;
-      <button className="primary-button" onClick={this.onLoadView}>Load view by URI</button>
+      <button className="primary-button" onClick={() => this.onLoadView()}>Load view by URI</button>
     </>
   );
 
