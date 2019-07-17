@@ -1,10 +1,10 @@
 ## Application:
 ### Bugs:
-- [ ] Saving view to solid pod with different extensions doesn't work properly
+- [x] Saving view to solid pod with different extensions doesn't work properly
 
 ### Action Items:
-- [ ] předávat TTL a endpoint jako parametr aplikaci
-    - [ ] Initial loading screen when the app is fetching data
+- [ ] Vytvářet adresář v SOLID podu, pokud non-existent
+    - můžeme počítat s tím, že aplikace je trusted
 - upravit výpis zvolených properties
   - [ ] k jakým třídam patří
   - [ ] jaký to je predikát (ne pouze variable name)
@@ -21,9 +21,13 @@
     - [x] ukládání views do SOLID podů
 - [x] Pracovat na textu práce
     - lze již psát úvod, motivaci, analýzu, design
+- [x] předávat TTL a endpoint jako parametr aplikaci
+    - [ ] Initial loading screen when the app is fetching data
 
 
 ## Text:
+- [ ] zadefinovat use casy v textu
+    - view management -> lze mazat, nahrávat a dál?
 
 Oproti Bc. práci:
 - požadavky součástí analýzy
