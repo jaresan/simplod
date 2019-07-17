@@ -112,7 +112,7 @@ function* loadFolderUri() {
       folderUri = storage.value;
     }
   } catch (e) {
-    alert('An error occurred while getting the folder uri from /settings/prefs.ttl. Please make sure https://jaresan.github.io is in your trusted apps on profile/card#me.')
+    alert('An error occurred while getting the folder uri from /settings/prefs.ttl. Please make sure https://jaresan.github.io is in your trusted apps in your SOLID pod at profile/card#me.')
   }
 
   return folderUri;
