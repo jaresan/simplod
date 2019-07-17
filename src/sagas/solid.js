@@ -96,19 +96,23 @@ function* onDeleteView({ payload: viewUri }) {
 }
 
 function* loadFolderUri() {
-  let ttl = yield call(auth.fetch, 'https://jaresan.solid.community/settings/prefs.ttl');
-  ttl = yield ttl.text();
-
-  const store = new rdf.graph();
-  rdf.parse(ttl, store, 'https://jaresan.solid.community/settings/prefs.ttl');
-
-  const WS = new rdf.Namespace('http://www.w3.org/ns/pim/space#');
-  const me = new rdf.sym(window.origin);
-  const storage = store.any(me, WS('storage'));
-
   let folderUri = '';
-  if (storage) {
-    folderUri = storage.value;
+  try {
+    let ttl = yield call(auth.fetch, 'https://jaresan.solid.community/settings/prefs.ttl');
+    ttl = yield ttl.text();
+
+    const store = new rdf.graph();
+    rdf.parse(ttl, store, 'https://jaresan.solid.community/settings/prefs.ttl');
+
+    const WS = new rdf.Namespace('http://www.w3.org/ns/pim/space#');
+    const me = new rdf.sym(window.origin);
+    const storage = store.any(me, WS('storage'));
+
+    if (storage) {
+      folderUri = storage.value;
+    }
+  } catch (e) {
+    alert('An error occurred while getting the folder uri from /settings/prefs.ttl. Please make sure https://jaresan.github.io is in your trusted apps on profile/card#me.')
   }
 
   return folderUri;
