@@ -20,7 +20,17 @@ export const getSession = appState => appState.solid.get('session');
 
 export const getDirty = appState => appState.graphModel.get('dirty');
 
-export const getFolderUri = appState => appState.solid.get('folderUri');
+export const getFolderUri = (appState, original) => {
+  if (original) {
+    return appState.solid.get('folderUri');
+  }
+  let uri = appState.solid.get('folderUri');
+  if (uri[uri.length - 1] !== '/') {
+    uri = uri + '/';
+  }
+
+  return uri;
+};
 
 export const getFolderUriChanging = appState => appState.solid.get('folderUriChanging');
 

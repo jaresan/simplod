@@ -3,7 +3,7 @@ import Actions from 'src/actions';
 
 const initialState = new fromJS({
   session: '',
-  lastFoldeUri: '',
+  lastFolderUri: '',
   folderUri: '',
   folderUriChanging: false,
   views: []

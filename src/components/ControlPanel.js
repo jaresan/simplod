@@ -206,7 +206,7 @@ class ControlPanel extends Component {
 const mapStateToProps = appState => ({
   session: getSession(appState),
   isDirty: getDirty(appState),
-  folderUri: getFolderUri(appState),
+  folderUri: getFolderUri(appState, true),
   view: getViewSelection(appState),
   folderUriChanging: getFolderUriChanging(appState),
   views: getViews(appState),
