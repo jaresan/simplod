@@ -97,12 +97,17 @@ function* onDeleteView({ payload: viewUri }) {
 
 function* loadFolderUri() {
   let folderUri = '';
+
   try {
-    let ttl = yield call(auth.fetch, 'https://jaresan.solid.community/settings/prefs.ttl');
+    let session = yield auth.currentSession();
+    const { webId } = session || {};
+
+    const origin = new URL(webId);
+    let ttl = yield call(auth.fetch, `${origin}/settings/prefs.ttl`);
     ttl = yield ttl.text();
 
     const store = new rdf.graph();
-    rdf.parse(ttl, store, 'https://jaresan.solid.community/settings/prefs.ttl');
+    rdf.parse(ttl, store, `${origin}/settings/prefs.ttl`);
 
     const WS = new rdf.Namespace('http://www.w3.org/ns/pim/space#');
     const me = new rdf.sym(window.origin);
@@ -133,7 +138,10 @@ function* onSaveFolderUri({ payload: folderUri }) {
     return;
   }
 
-  const res = yield call(auth.fetch, 'https://jaresan.solid.community/settings/prefs.ttl', {
+  let session = yield auth.currentSession();
+  const { webId } = session || {};
+  const origin = new URL(webId);
+  const res = yield call(auth.fetch, `${origin}/settings/prefs.ttl`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/sparql-update'
@@ -158,7 +166,7 @@ function* onSaveFolderUri({ payload: folderUri }) {
 }
 
 function* onStart() {
-  const session = yield call(auth.currentSession);
+  const session = yield auth.currentSession();
 
   if (session) {
     yield onLogin();
@@ -166,7 +174,7 @@ function* onStart() {
 }
 
 function* onLogin() {
-  let session = yield call(auth.currentSession);
+  let session = yield auth.currentSession();
   if (!session) {
     const popupUri = 'https://solid.community/common/popup.html';
     session = yield call(auth.popupLogin, { popupUri });
