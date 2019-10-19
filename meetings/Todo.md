@@ -3,6 +3,7 @@
 - [x] Saving view to solid pod with different extensions doesn't work properly
 
 ### Action Items:
+- [ ] Přidat unit testy
 - [ ] Vytvářet adresář v SOLID podu, pokud non-existent
     - můžeme počítat s tím, že aplikace je trusted
 - upravit výpis zvolených properties
