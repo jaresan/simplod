@@ -97,8 +97,8 @@ function* onDeleteView({ payload: viewUri }) {
   }
 }
 
-function* loadFolderUri() {
-  let folderUri = '';
+function* loadFolderUris() {
+  let folderUris = [''];
 
   try {
     let session = yield auth.currentSession();
@@ -113,16 +113,17 @@ function* loadFolderUri() {
 
     const WS = new rdf.Namespace('http://www.w3.org/ns/pim/space#');
     const me = new rdf.sym(window.origin);
-    const storage = store.any(me, WS('storage'));
-
-    if (storage) {
-      folderUri = storage.value;
-    }
+    folderUris = store.statementsMatching(me, WS('storage')).map(r => r.object.value);
   } catch (e) {
     alert('An error occurred while getting the folder uri from /settings/prefs.ttl. Please make sure https://jaresan.github.io is in your trusted apps in your SOLID pod at profile/card#me.')
   }
 
-  return folderUri;
+  return folderUris;
+}
+
+function* loadFolderUri() {
+  const uris = yield loadFolderUris();
+  return uris[uris.length - 1];
 }
 
 
@@ -149,6 +150,23 @@ function* tryCreateFolder(folderUri) {
   }
 }
 
+function* getSettingsFileUri() {
+  let session = yield auth.currentSession();
+  const { webId } = session || {};
+  const profile = new URL(webId);
+  const profileOrigin = profile.origin;
+
+
+  const predicate = rdf.Namespace('http://www.w3.org/ns/pim/space#')('preferencesFile');
+  const subject = rdf.Namespace(profileOrigin)('#me');
+  const store = new rdf.graph();
+  let ttl = yield call(auth.fetch, profile);
+  ttl = yield ttl.text();
+  rdf.parse(ttl, store, profileOrigin);
+
+  return store.any(subject, predicate, null).value;
+}
+
 function* onSaveFolderUri({ payload: folderUri }) {
   let error, test = {};
   try {
@@ -171,20 +189,11 @@ function* onSaveFolderUri({ payload: folderUri }) {
     }
   }
 
-  let session = yield auth.currentSession();
-  const { webId } = session || {};
-  const profile = new URL(webId);
-  const profileOrigin = profile.origin;
+  const settingsFileUri = yield getSettingsFileUri();
+  let folderUris = yield loadFolderUris();
+  folderUris = folderUris.map(uri => `<${uri}>`).join(',');
 
-  const predicate = rdf.Namespace('http://www.w3.org/ns/pim/space#')('preferencesFile');
-  const subject = rdf.Namespace(profileOrigin)('#me');
-  const store = new rdf.graph();
-  let ttl = yield call(auth.fetch, profile);
-  ttl = yield ttl.text();
-  rdf.parse(ttl, store, profileOrigin);
-  const settingsFile = store.any(subject, predicate, null).value;
-
-  const res = yield call(auth.fetch, settingsFile, {
+  const res = yield call(auth.fetch, settingsFileUri, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/sparql-update'
@@ -192,11 +201,8 @@ function* onSaveFolderUri({ payload: folderUri }) {
     body: `
     @prefix ws: <http://www.w3.org/ns/pim/space#>.
     @prefix acl: <http://www.w3.org/ns/auth/acl#>.
-    INSERT DATA { 
-      <${window.origin}> 
-        a acl:agent; 
-        ws:storage <${folderUri}>. 
-    }`
+    DELETE DATA { <${window.origin}> ws:storage ${folderUris}. };
+    INSERT DATA { <${window.origin}> a acl:agent; ws:storage <${folderUri}>. }`
   });
   if (res.status >= 200 && res.status < 300) {
     yield put(Actions.Creators.r_setFolderUri(folderUri));
