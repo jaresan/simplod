@@ -15,7 +15,7 @@ class Property extends Component {
 		onDelete: PropTypes.func
 	};
 
-	// FIXME: Add submit on enter
+	// TODO: Add submit on enter
 	render() {
 		return (
 			<li>

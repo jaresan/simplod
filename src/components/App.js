@@ -6,7 +6,7 @@ import './UMLExample.css';
 import ControlPanel from './ControlPanel';
 
 
-// FIXME: Split css (use sass/modules?)
+// TODO: Split css (use sass/modules?)
 class App extends Component {
   componentWillMount() {
     const params = new URLSearchParams(window.location.search);

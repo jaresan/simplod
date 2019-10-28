@@ -4,6 +4,8 @@ import Actions from 'src/actions';
 import auth from 'solid-auth-client';
 import rdf from 'rdflib';
 
+// FIXME: Move all predicate etc specifiers to constants
+// TODO: Split to multiple different files in a 'solid' directory
 
 function* onViewSave({ payload: { uri } }) {
   const view = yield select(getViewSelection);
@@ -102,7 +104,7 @@ function* loadFolderUri() {
     let session = yield auth.currentSession();
     const { webId } = session || {};
 
-    const origin = new URL(webId);
+    const { origin } = new URL(webId);
     let ttl = yield call(auth.fetch, `${origin}/settings/prefs.ttl`);
     ttl = yield ttl.text();
 
@@ -123,6 +125,30 @@ function* loadFolderUri() {
   return folderUri;
 }
 
+
+function* tryCreateFolder(folderUri) {
+  // TODO: Check for proper uri
+  // Need to remove last slash otherwise match wouldn't work properly
+  folderUri = folderUri.replace(/\/*$/, '');
+  const [_, uri, folderName] = /(.*)\/(.*)/.exec(folderUri);
+
+  try {
+    const result = yield call(auth.fetch, uri, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/turtle',
+        Slug: folderName,
+        Link: '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"',
+      },
+      body: ''
+    });
+    return result.status > 200 && result.status < 300;
+  } catch(e) {
+    console.error(e);
+    return false;
+  }
+}
+
 function* onSaveFolderUri({ payload: folderUri }) {
   let error, test = {};
   try {
@@ -132,16 +158,33 @@ function* onSaveFolderUri({ payload: folderUri }) {
   }
 
   if (error || test.status < 200 || test.status >= 300) {
-    alert(`Cannot fetch given folder uri: ${folderUri}. Please check the URI and access rights on the SOLID pod and try again.`);
-    yield put(Actions.Creators.r_resetFolderUri());
-    yield put(Actions.Creators.r_toggleFolderUriChanging(false));
-    return;
+    // Folder not found, try creating it
+    const folderCreated = yield tryCreateFolder(folderUri);
+
+    if (!folderCreated) {
+      alert(`Cannot fetch given folder uri: ${folderUri}. Please check the URI and access rights on the SOLID pod and try again.`);
+      yield put(Actions.Creators.r_resetFolderUri());
+      yield put(Actions.Creators.r_toggleFolderUriChanging(false));
+      return;
+    } else {
+      alert(`Folder successfully created at ${folderUri}`);
+    }
   }
 
   let session = yield auth.currentSession();
   const { webId } = session || {};
-  const origin = new URL(webId);
-  const res = yield call(auth.fetch, `${origin}/settings/prefs.ttl`, {
+  const profile = new URL(webId);
+  const profileOrigin = profile.origin;
+
+  const predicate = rdf.Namespace('http://www.w3.org/ns/pim/space#')('preferencesFile');
+  const subject = rdf.Namespace(profileOrigin)('#me');
+  const store = new rdf.graph();
+  let ttl = yield call(auth.fetch, profile);
+  ttl = yield ttl.text();
+  rdf.parse(ttl, store, profileOrigin);
+  const settingsFile = store.any(subject, predicate, null).value;
+
+  const res = yield call(auth.fetch, settingsFile, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/sparql-update'
@@ -168,6 +211,7 @@ function* onSaveFolderUri({ payload: folderUri }) {
 function* onStart() {
   const session = yield auth.currentSession();
 
+  // Automatically log in the user if they have their session saved
   if (session) {
     yield onLogin();
   }
@@ -185,8 +229,6 @@ function* onLogin() {
   yield put(Actions.Creators.r_setFolderUri(folderUri));
   yield put(Actions.Creators.r_toggleFolderUriChanging(false));
   yield fetchViews();
-
-  // FIXME: Add list of views from folderuri
 }
 
 function* onLogout() {
