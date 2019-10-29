@@ -123,7 +123,7 @@ function* loadFolderUris() {
 
 function* loadFolderUri() {
   const uris = yield loadFolderUris();
-  return uris[uris.length - 1];
+  return uris[uris.length - 1] || '';
 }
 
 
@@ -193,6 +193,8 @@ function* onSaveFolderUri({ payload: folderUri }) {
   let folderUris = yield loadFolderUris();
   folderUris = folderUris.map(uri => `<${uri}>`).join(',');
 
+  const deleteData = folderUris.length ? `DELETE DATA { <${window.origin}> ws:storage ${folderUris}. };` : '';
+
   const res = yield call(auth.fetch, settingsFileUri, {
     method: 'POST',
     headers: {
@@ -201,7 +203,7 @@ function* onSaveFolderUri({ payload: folderUri }) {
     body: `
     @prefix ws: <http://www.w3.org/ns/pim/space#>.
     @prefix acl: <http://www.w3.org/ns/auth/acl#>.
-    DELETE DATA { <${window.origin}> ws:storage ${folderUris}. };
+    ${deleteData}
     INSERT DATA { <${window.origin}> a acl:agent; ws:storage <${folderUri}>. }`
   });
   if (res.status >= 200 && res.status < 300) {
