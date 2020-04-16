@@ -1,4 +1,4 @@
-import {Property, Method, Edge, Node, Canvas} from '../handlers';
+import {Canvas} from '../handlers';
 
 export class Wrapper {
   defaultStyle = {};
@@ -43,6 +43,5 @@ export class Wrapper {
 
   onStateChanged = state => {
     this.setState(state);
-    // console.log('state changed', state);
   };
 }

@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import { parseSPO } from '../parseSPO';
 import { AntVExample } from './AntVExample';
 import possiblePrefixes from '../constants/possiblePrefixes';
-import { invertObj, keys, map, reduce } from 'ramda';
+import { invertObj, keys, map } from 'ramda';
 
 // TODO: Split css (use sass/modules?)
 class App extends Component {

@@ -1,4 +1,4 @@
-import {fromJS, Map} from 'immutable';
+import {fromJS} from 'immutable';
 import ActionTypes from 'src/actions/model';
 
 const initialState = new fromJS({

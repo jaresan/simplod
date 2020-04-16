@@ -41,7 +41,7 @@ export class AntVExample extends React.Component {
   }
 
   render() {
-    const {schema} = this.props;
     return <div ref={ref => this.mountNode = ref}/>;
   }
 }
+

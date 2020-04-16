@@ -80,9 +80,4 @@ export class Edge extends Wrapper {
   onClick = () => {
     this.handler.onSelect(this);
   };
-
-  onStateChanged = state => {
-    this.setState(state);
-    // console.log('state changed', state);
-  };
 }

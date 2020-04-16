@@ -1,6 +1,4 @@
 import G6 from '@antv/g6';
-import {setState} from './setState';
-import React from 'react';
 import E from './Elements';
 const NODE_TYPE = 'graphNode';
 
@@ -37,53 +35,6 @@ const attrs = {
     fill: 'orange',
     opacity: 1
   })
-};
-
-const stateStyles = {
-  default: {
-    'node-container': {
-      stroke: 'black', // Apply the color to the stroke. For filling, use fill: cfg.color instead
-      fill: 'steelblue',
-      opacity: 1,
-      lineWidth: 1
-    },
-    'node-title': {
-      fill: '#fff',
-      opacity: 1
-    },
-    property: {
-      opacity: 1
-    }
-  },
-  hover: {
-    'node-container': {
-      fill: 'lightsteelblue'
-    }
-  },
-  selected: {
-    'node-container': {
-      fill: 'green',
-      stroke: '#000',
-      lineWidth: 3
-    }
-  },
-  inRelation: {
-    'node-container': {
-      stroke: '#000',
-      lineWidth: 3
-    }
-  },
-  notInRelation: {
-    'node-container': {
-      opacity: 0.1
-    },
-    'node-title': {
-      opacity: 0.1
-    },
-    property: {
-      opacity: 0.1
-    }
-  }
 };
 
 const NodeImplementation = {

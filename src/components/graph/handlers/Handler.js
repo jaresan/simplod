@@ -11,18 +11,8 @@ export class Handler {
   static subscribed = false;
   static Actions = Actions;
 
-  static onStateChange() {}
-  // static onHover = setState('hover', true);
-  // static onBlur = setState('hover', false);
-  // static onDeselect = setState('selected', false);
-  // static onSelect = setState('selected', true);
-
   static subscribeToChanges = (id, recipient) => {
     this.recipients[id] = recipient;
-    if (!this.subscribed) {
-      store.subscribe(() => this.onChange(store.getState()));
-      this.subscribed = true;
-    }
   };
 
   static onSelect(ref) {
@@ -32,17 +22,18 @@ export class Handler {
   /**
    * Subscription method to redux store responding to changes on the store;
    */
-  static onChange = state => {
-    // FIXME: Add substore to class wrapper mapping
-    // FIXME: Get id and class
-
-    // FIXME: Map newState to wrapper state directly so that the redux logic doesn't leak to wrappers
+  static onStateChange = state => {
     Object.values(this.recipients)
       .forEach(recipient => {
         const subState = state.model.getIn(['entities', recipient.id]);
-        if (subState) {
+        if (subState !== recipient.lastState) {
+
+          // FIXME: Map to relevant properties for the wrapper instead of sending subState.toJS() as a whole
           recipient.onStateChanged(subState.toJS());
+          recipient.lastState = subState;
         }
       });
   };
 }
+
+store.subscribe(() => Handler.onStateChange(store.getState()));
