@@ -4,7 +4,7 @@ import SolidSaga from './solid';
 
 export default function*() {
 	yield all([
-		InteractionsSaga(),
-		SolidSaga(),
+		// InteractionsSaga(),
+		// SolidSaga(),
 	]);
 };

@@ -1,5 +1,6 @@
 // Prefix file specification downloaded from https://prefix.cc/context
 export default {
+	"http://linked.opendata.cz/resource/court/cz/kinds#": "courts",
 	"http://www.loc.gov/mads/rdf/v1#": "mads",
 	"http://id.loc.gov/ontologies/bflc/": "bflc",
 	"http://www.w3.org/1999/02/22-rdf-syntax-ns#": "rdf",

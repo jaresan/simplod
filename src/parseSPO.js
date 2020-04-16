@@ -1,4 +1,4 @@
-import N3 from 'n3';
+import {Parser} from 'n3';
 
 const propertyToName = {
   'http://www.w3.org/2001/XMLSchema#integer': 'Int',
@@ -28,7 +28,7 @@ export const parseSPO = ttlString => new Promise((res, err) => {
 });
 
 const getQuads = ttlString => new Promise((res, err) => {
-  const parser = new N3.Parser();
+  const parser = new Parser();
   const quads = [];
 
   parser.parse(ttlString, (error, quad, prefixes) => {
