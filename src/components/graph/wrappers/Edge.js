@@ -56,10 +56,6 @@ export class Edge extends Wrapper {
     // Have to subscribe again because of the constructor override
     this.handler.subscribeToChanges(id, this);
   }
-  setState = keys => {
-    Object.assign(this.state.style, keys);
-    this.updateStyles();
-  };
 
   updateStyles = () => {
     this.target
@@ -75,9 +71,5 @@ export class Edge extends Wrapper {
           );
         shape.attr(style);
       });
-  };
-
-  onClick = () => {
-    this.handler.onSelect(this);
   };
 }

@@ -1,5 +1,5 @@
 import G6 from '@antv/g6';
-import E from './Elements';
+import E from './ElementCreators';
 const NODE_TYPE = 'graphNode';
 
 const PROP_LINE_HEIGHT = 12;
@@ -43,14 +43,14 @@ const NodeImplementation = {
     const containerAttrs = attrs['node-container'](properties.length, methods.length);
     const {width} = containerAttrs;
     const propFields = properties.reduce((acc, {predicate, type}, i)=> acc.concat(E.Property({
-      id: `${id}-${predicate}-${type}`,
+      id: `property:${id}-${predicate}-${type}`,
       attrs: attrs.property({predicate, type, i}),
       name: `property#${i}`
     })), []);
 
     const methodFields = methods.reduce((acc, {predicate, object, weight}, i) => acc.concat(
       E.Method({
-        id: `${id}-${predicate}-${object}`,
+        id: `method:${id}-${predicate}-${object}`,
         attrs: attrs.property({predicate, type: object, i: i + properties.length}),
         name: `property#${i + properties.length}`,
         data: {target: object, source: id}

@@ -29,6 +29,7 @@ export class Handler {
         if (subState !== recipient.lastState) {
 
           // FIXME: Map to relevant properties for the wrapper instead of sending subState.toJS() as a whole
+          // defined selectors and mapping between redux state -> UI state
           recipient.onStateChanged(subState.toJS());
           recipient.lastState = subState;
         }

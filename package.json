@@ -11,7 +11,7 @@
     "react-scripts": "^3.0.1"
   },
   "engines": {
-    "node": "^10.0.0"
+    "node": ">10.0.0"
   },
   "dependencies": {
     "@antv/g6": "^3.4.0",
@@ -19,6 +19,7 @@
     "cors": "^2.8.4",
     "d3": "^5.0.0",
     "dagre": "^0.8.2",
+    "emotion": "^10.0.27",
     "immutable": "^3.8.2",
     "jointjs": "^2.0.1",
     "keymirror": "^0.1.1",

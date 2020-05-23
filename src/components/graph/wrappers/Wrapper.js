@@ -1,6 +1,10 @@
 import {Canvas} from '../handlers';
 
 export class Wrapper {
+  // nodeType denotes the type of the node from AntD to use when rendering this object --> e.g. wrapped as a text
+  static nodeType = 'text';
+
+  // Default styling of components to be applied for this wrapper
   defaultStyle = {};
   styles = {};
   state = {style: {}};
@@ -35,10 +39,12 @@ export class Wrapper {
 
   setTarget = target => {
     this.target = target;
+    this.resetStyle();
   };
 
   onClick = () => {
     console.log(`Clicked ${this.constructor.name} -`, this.target, this.id);
+    this.handler.onSelect(this);
   };
 
   onStateChanged = state => {

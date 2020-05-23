@@ -26,10 +26,4 @@ export class Property extends Wrapper {
   defaultStyle = defaultStyle;
   styles = styles;
   handler = PropertyHandler;
-
-  updateTargetStyle = style => this.target.attr(style);
-
-  onClick = () => {
-    this.handler.onSelect(this);
-  };
 }

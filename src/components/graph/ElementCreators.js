@@ -9,20 +9,25 @@ const wrappers = {
   edge: Edge
 };
 
-const wrap = (wrapperType, isNode) => ({id, ...props}) => {
+const wrap = (wrapperType, isNode) => ({id, attrs, ...props}) => {
   let nodeType = wrapperType;
 
-  let handler;
+  let wrapper;
   if (wrappers[wrapperType]) {
-    handler = new wrappers[wrapperType](id);
+    wrapper = new wrappers[wrapperType](id);
     nodeType = isNode ? wrappers[wrapperType].nodeType : undefined;
   }
 
+  const defaultStyle = (wrapper && wrapper.defaultStyle) || {};
   return {
     type: nodeType,
     draggable: true,
-    handler,
-    ...props
+    wrapper,
+    ...props,
+    attrs: {
+      ...attrs,
+      ...defaultStyle
+    }
   };
 };
 

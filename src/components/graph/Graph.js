@@ -2,24 +2,24 @@ import {curry} from 'ramda';
 import {Canvas as CanvasWrapper, Edge as EdgeWrapper} from './wrappers';
 
 const handle = curry((methodName, e) => {
-  const targetHandler = (
-    e.target.get('handler')
-    || (e.target.getModel && e.target.getModel().handler)
+  const targetWrapper = (
+    e.target.get('wrapper')
+    || (e.target.getModel && e.target.getModel().wrapper)
   );
-  const itemHandler = (e.item && e.item.get('handler'));
 
-  if (targetHandler && !targetHandler.target) {
-    targetHandler.setTarget(e.target)
+  if (targetWrapper && !targetWrapper.target) {
+    targetWrapper.setTarget(e.target)
   }
 
-  if (itemHandler && !itemHandler.target) {
-    itemHandler.setTarget(e.item);
+  const itemWrapper = (e.item && e.item.get('wrapper'));
+  if (itemWrapper && !itemWrapper.target) {
+    itemWrapper.setTarget(e.item);
   }
 
-  let handler = targetHandler || itemHandler;
-
-  if (handler && typeof handler[methodName] == 'function') {
-    return handler[methodName]();
+  const wrapper = targetWrapper || itemWrapper;
+  // Default to CanvasWrapper if there's no handler which could resolve the function call
+  if (wrapper && typeof wrapper[methodName] == 'function') {
+    return wrapper[methodName]();
   } else {
     return CanvasWrapper[methodName] && CanvasWrapper[methodName](e.target, e);
   }
@@ -34,9 +34,9 @@ export class Graph {
     this.registerEdgeHandlers();
   }
 
-  // Edge handlers have to be registered manually as they don't have a custom draw function in which this could be done
+  // Edge handlers have to be registered manually because they don't have a custom draw function in which this could be done
   registerEdgeHandlers() {
-    this.graph.getEdges().forEach(e => e.set('handler', new EdgeWrapper(e)));
+    this.graph.getEdges().forEach(e => e.set('wrapper', new EdgeWrapper(e)));
   }
 
   registerBehaviours(graph) {
