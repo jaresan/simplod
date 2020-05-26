@@ -1,9 +1,38 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getSelectedProperties } from 'src/selectors/index';
-import * as _ from 'underscore';
+import {map} from 'ramda';
 import Actions from 'src/actions/interactions';
-import Property from './Property';
+import styled from '@emotion/styled';
+
+const Input = styled.input`
+	background: ${({disabled}) => disabled ? 'lightgrey' : 'default'};
+`;
+
+const Property = ({show, disabled, optional, name, onToggleShow, onToggleOptional, onSaveName, onDelete, onToggleDisabled}) => (
+	<li>
+		<label>
+			<input type="checkbox" name="show" value="show" checked={show} onChange={onToggleShow}/>
+			Show
+		</label>
+		<label>
+			<input type="checkbox" name="optional" value="optional" checked={optional}
+						 onChange={onToggleOptional}/>
+			Optional
+		</label>
+		<label>
+			<input type="checkbox" name="disabled" value="disabled" checked={disabled}
+						 onChange={onToggleDisabled}/>
+			Disabled
+		</label>
+		<Input
+			type="text"
+			disabled={!show || disabled}
+			defaultValue={name}
+			onBlur={onSaveName}
+		/>
+	</li>
+);
 
 class PropertyList extends Component {
 
@@ -28,19 +57,21 @@ class PropertyList extends Component {
 	};
 
 	getProperties = () => {
-		return _.map(this.props.selectedProperties, (val, id) =>
+		console.log(this.props.selectedProperties);
+		return map(([id, val]) =>
 			<Property
 				key={id}
 				show={val.show}
 				optional={val.optional}
 				name={val.name}
 				disabled={val.disabled}
-				onToggleDisabled={ (e) => this.onToggleDisabled(id, e.target.checked) }
+				onToggleDisabled={e => this.onToggleDisabled(id, e.target.checked) }
 				onToggleOptional={e => this.onToggleOptional(id, e.target.checked)}
 				onToggleShow={e => this.onToggleShow(id, e.target.checked)}
 				onSaveName={e => this.onSaveName(id, e.target.value)}
 				onDelete={() => this.onDelete(id)}
-			/>
+			/>,
+			Object.entries(this.props.selectedProperties)
 		);
 	};
 

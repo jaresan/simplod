@@ -14,7 +14,7 @@ export const getSelectedData = appState =>
 
 export const getPrefixes = appState => appState.yasgui.get('prefixes');
 
-export const getSelectedProperties = appState => appState.graphModel.getIn(['selected', 'properties']).toJS();
+export const getSelectedProperties = appState => appState.model.getIn(['entities']).filter(e => e.get('selected')).toJS();
 
 export const getSession = appState => appState.solid.get('session');
 

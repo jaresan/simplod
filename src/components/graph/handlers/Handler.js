@@ -16,7 +16,7 @@ export class Handler {
   };
 
   static onSelect(ref) {
-    this.dispatch(Actions.Model.Creators.r_toggleSelect(ref.id));
+    this.dispatch(Actions.Model.Creators.r_toggleSelect(ref.get('id')));
   }
 
   /**

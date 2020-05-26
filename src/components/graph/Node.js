@@ -43,17 +43,18 @@ const NodeImplementation = {
     const containerAttrs = attrs['node-container'](properties.length, methods.length);
     const {width} = containerAttrs;
     const propFields = properties.reduce((acc, {predicate, type}, i)=> acc.concat(E.Property({
-      id: `property:${id}-${predicate}-${type}`,
+      id: `PROPERTY_${id}-${predicate}-${type}`,
       attrs: attrs.property({predicate, type, i}),
-      name: `property#${i}`
+      name: `property#${i}`,
+      data: {source: id, predicate}
     })), []);
 
     const methodFields = methods.reduce((acc, {predicate, object, weight}, i) => acc.concat(
       E.Method({
-        id: `method:${id}-${predicate}-${object}`,
+        id: `PROPERTY_${id}-${predicate}-${object}`,
         attrs: attrs.property({predicate, type: object, i: i + properties.length}),
         name: `property#${i + properties.length}`,
-        data: {target: object, source: id}
+        data: {target: object, source: id, predicate}
       })
     ), []);
 

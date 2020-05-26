@@ -1,4 +1,5 @@
 import {Wrapper} from './Wrapper';
+import { Method as MethodHandler } from '../handlers';
 
 const defaultStyle = {
   opacity: 1,
@@ -24,4 +25,5 @@ export class Method extends Wrapper {
   static nodeType = 'text';
   defaultStyle = defaultStyle;
   styles = styles;
+  handler = MethodHandler;
 }

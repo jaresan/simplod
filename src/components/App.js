@@ -86,7 +86,7 @@ class App extends Component {
               data={this.state.schemaData}
             />
           }
-          {/*<PropertyList/>*/}
+          <PropertyList/>
           <RightMenu>
             <ControlPanel/>
             <Yasgui

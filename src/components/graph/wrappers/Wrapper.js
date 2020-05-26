@@ -44,7 +44,7 @@ export class Wrapper {
 
   onClick = () => {
     console.log(`Clicked ${this.constructor.name} -`, this.target, this.id);
-    this.handler.onSelect(this);
+    this.handler.onSelect(this.target);
   };
 
   onStateChanged = state => {

@@ -20,6 +20,7 @@ const wrap = (wrapperType, isNode) => ({id, attrs, ...props}) => {
 
   const defaultStyle = (wrapper && wrapper.defaultStyle) || {};
   return {
+    id,
     type: nodeType,
     draggable: true,
     wrapper,
