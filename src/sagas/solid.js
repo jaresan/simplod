@@ -1,15 +1,15 @@
 import { takeEvery, select, call, put, all } from 'redux-saga/effects';
 import { getFolderUri, getViewSelection } from '../selectors';
-import Actions from 'src/actions';
+import Actions from 'src/actions/solid';
 import auth from 'solid-auth-client';
 import rdf from 'rdflib';
 
 // FIXME: Move all predicate etc specifiers to constants
 // TODO: Split to multiple different files in a 'solid' directory
 
-function* onViewSave({ payload: { uri } }) {
+function* onViewSave({uri}) {
   const view = yield select(getViewSelection);
-  
+
   // FIXME: Add entry to folderUri settings file && the file itself
   try {
     const res = yield call(auth.fetch, uri, {
@@ -38,7 +38,7 @@ function* onViewSave({ payload: { uri } }) {
   yield fetchViews();
 }
 
-function* onViewLoad({ payload: { uri } }) {
+function* onViewLoad({uri}) {
   try {
     const res = yield call(auth.fetch, uri);
     const session = yield auth.currentSession();
@@ -83,7 +83,7 @@ function* fetchViews() {
   }
 }
 
-function* onDeleteView({ payload: viewUri }) {
+function* onDeleteView({uri: viewUri}) {
   try {
     const res = yield call(auth.fetch, viewUri, { method: 'DELETE'});
 
@@ -167,7 +167,7 @@ function* getSettingsFileUri() {
   return store.any(subject, predicate, null).value;
 }
 
-function* onSaveFolderUri({ payload: folderUri }) {
+function* onSaveFolderUri({ uri: folderUri }) {
   let error, test = {};
   try {
     test = yield call(auth.fetch, folderUri);
@@ -247,12 +247,12 @@ function* onLogout() {
 
 export default function*() {
   yield all([
-    takeEvery(Actions.Types.s_onViewSave, onViewSave),
-    takeEvery(Actions.Types.s_onViewLoad, onViewLoad),
-    takeEvery(Actions.Types.s_onSolidLogin, onLogin),
-    takeEvery(Actions.Types.s_onSolidLogout, onLogout),
-    takeEvery(Actions.Types.s_onSolidStart, onStart),
-    takeEvery(Actions.Types.s_saveFolderUri, onSaveFolderUri),
-    takeEvery(Actions.Types.s_deleteView, onDeleteView),
+    takeEvery(Actions.Types.S_ON_VIEW_SAVE, onViewSave),
+    takeEvery(Actions.Types.S_ON_VIEW_LOAD, onViewLoad),
+    takeEvery(Actions.Types.S_ON_SOLID_LOGIN, onLogin),
+    takeEvery(Actions.Types.S_ON_SOLID_LOGOUT, onLogout),
+    takeEvery(Actions.Types.S_ON_SOLID_START, onStart),
+    takeEvery(Actions.Types.S_SAVE_FOLDER_URI, onSaveFolderUri),
+    takeEvery(Actions.Types.S_DELETE_VIEW, onDeleteView),
   ]);
 }

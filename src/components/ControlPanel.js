@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Actions from 'src/actions';
+import Actions from 'src/actions/solid';
 import './ControlPanel.css';
 import { getViewSelection, getSession, getDirty, getFolderUri, getFolderUriChanging, getViews } from '../selectors';
 

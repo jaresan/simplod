@@ -3,6 +3,6 @@ import Actions from 'src/actions';
 
 export class Canvas extends Handler {
   static deselectAll = () => {
-    Actions.Model.r_deselectAll();
+    this.dispatch(Actions.Model.Creators.r_deselectAll());
   };
 }

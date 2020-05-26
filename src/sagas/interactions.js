@@ -7,21 +7,12 @@ function* updateQuery() {
 	yield put(Actions.Creators.r_updateQuery(classes, prefixes));
 }
 
-function* onPaperClick() {
+function* onCanvasClick() {
 	yield put(Actions.Creators.r_deselectAll());
-	yield updateQuery();
-}
-
-function* onCellClick(action) {
-	const cellView = action.payload.cellView;
-	yield put(Actions.Creators.r_toggleCell(cellView));
 	yield updateQuery();
 }
 
 
 export default function*() {
-	yield all([
-		takeEvery(Actions.Types.s_onPaperClick, onPaperClick),
-		takeEvery(Actions.Types.s_onCellClick, onCellClick)
-	]);
+	yield all([]);
 }

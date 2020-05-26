@@ -1,3 +1,7 @@
-export const r_linkYasgui = yasgui => yasgui;
-export const r_updateQuery =  (classes, prefixes) => ({ classes, prefixes });
-export const r_setPrefixes = prefixes => prefixes;
+import { createActions } from 'reduxsauce'
+
+export default createActions({
+  r_linkYasgui: null,
+  r_updateQuery: ['classes', 'prefixes'],
+  r_setPrefixes: ['prefixes'],
+}, {prefix: 'Yasgui.'});

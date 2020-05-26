@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getSelectedProperties } from 'src/selectors/index';
 import * as _ from 'underscore';
-import Actions from 'src/actions';
+import Actions from 'src/actions/interactions';
 import Property from './Property';
 
 class PropertyList extends Component {

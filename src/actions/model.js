@@ -1,6 +1,7 @@
-import keyMirror from 'keymirror';
+import { createActions } from 'reduxsauce'
 
-export default keyMirror({
-  r_toggleSelect: null,
-  r_deselectAll: null
-})
+export default createActions({
+  r_toggleSelect: ['id', 'selected'],
+  r_deselectAll: null,
+}, {prefix: 'Model.'});
+

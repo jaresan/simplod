@@ -1,16 +1,20 @@
 import { fromJS } from 'immutable';
-import Actions from 'src/actions';
+import Actions from 'src/actions/yasgui';
 
 const initialState = new fromJS({
 	prefixes: {}
 });
 
-const Types = Actions.Types;
+const setPrefixes = (state, {prefixes}) => state.set('prefixes', prefixes);
+
+const handlers = {
+	[Actions.Types.R_SET_PREFIXES]: setPrefixes
+};
+
 export default (state = initialState, action) => {
-	switch (action.type) {
-		case Types.r_setPrefixes:
-			return state.set('prefixes', action.payload);
-		default:
-			return state;
+	if (typeof handlers[action.type] === 'function') {
+		return handlers[action.type](state, action);
 	}
-}
+
+	return state;
+};

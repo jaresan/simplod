@@ -1,10 +1,11 @@
-export const s_onPaperClick = () => {};
-export const s_onCellClick = cellView => ({ cellView });
-export const r_toggleCell = cellView => ({ cellView });
-export const r_deselectAll = () => {};
-export const r_toggleOptional = (id, optional) => ({ id, optional });
-export const r_toggleShow = (id, show) => ({ id, show });
-export const r_toggleDisabled = (id, disabled) => ({ id, disabled });
-export const r_savePropertyName = (id, name) => ({ id, name });
-export const r_unselectProperty = id => ({id});
-export const r_saveCellViews = i => i;
+// FIXME:  Remove r_ from interactions, nothing to do here
+import { createActions } from 'reduxsauce'
+
+export default createActions({
+  s_onPaperClick: null,
+  r_toggleOptional: ['id', 'optional'],
+  r_toggleShow: ['id', 'show'],
+  r_toggleDisabled: ['id', 'disabled'],
+  r_savePropertyName: ['id', 'name'],
+  r_unselectProperty: ['id'],
+}, {prefix: 'Interactions.'});

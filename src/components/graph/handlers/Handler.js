@@ -9,14 +9,14 @@ import Actions from 'src/actions';
 export class Handler {
   static recipients = {};
   static subscribed = false;
-  static Actions = Actions;
+  static dispatch = action => store.dispatch(action);
 
   static subscribeToChanges = (id, recipient) => {
     this.recipients[id] = recipient;
   };
 
   static onSelect(ref) {
-    this.Actions.Model.r_toggleSelect(ref.id);
+    this.dispatch(Actions.Model.Creators.r_toggleSelect(ref.id));
   }
 
   /**

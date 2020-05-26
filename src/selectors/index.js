@@ -24,7 +24,7 @@ export const getFolderUri = (appState, original) => {
   if (original) {
     return appState.solid.get('folderUri');
   }
-  let uri = appState.solid.get('folderUri');
+  let uri = appState.solid.get('folderUri') || '/';
   if (uri[uri.length - 1] !== '/') {
     uri = uri + '/';
   }

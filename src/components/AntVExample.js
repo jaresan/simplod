@@ -17,6 +17,7 @@ export class AntVExample extends React.Component {
     const graph = new G6.Graph({
       container: this.mountNode,
       width, height,
+      // renderer: 'svg',
       fitViewPadding: [20, 40, 50, 20],
       modes: {
         default: [

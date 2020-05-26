@@ -5,8 +5,8 @@ import solid from './solid';
 import model from './model';
 
 export default combineReducers({
-	// yasgui,
-	// graphModel,
-	// solid,
+	yasgui,
+	graphModel,
+	solid,
 	model
 });

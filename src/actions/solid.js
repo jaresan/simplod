@@ -1,15 +1,19 @@
-export const r_setSolidSession = session => session;
-export const r_solidLoggedOut = () => {};
-export const s_onSolidLogin = () => {};
-export const s_onSolidLogout = () => {};
-export const r_viewLoaded = json => json;
-export const s_onViewSave = uri => ({ uri });
-export const s_onViewLoad = uri => ({ uri });
-export const r_setFolderUri = uri => uri;
-export const s_onSolidStart = () => {};
-export const s_saveFolderUri = uri => uri;
-export const r_toggleFolderUriChanging = bool => bool;
-export const r_setExistingViews = uris => uris;
-export const r_viewDeleted = uri => uri;
-export const s_deleteView = uri => uri;
-export const r_resetFolderUri = () => {};
+import { createActions } from 'reduxsauce'
+
+export default createActions({
+  r_setSolidSession: ['session'],
+  r_solidLoggedOut: null,
+  s_onSolidLogin: null,
+  s_onSolidLogout: null,
+  r_viewLoaded: ['json'],
+  s_onViewSave: ['uri'],
+  s_onViewLoad: ['uri'],
+  r_setFolderUri: ['uri'],
+  s_onSolidStart: null,
+  s_saveFolderUri: ['uri'],
+  r_toggleFolderUriChanging: ['changing'],
+  r_setExistingViews: ['uris'],
+  r_viewDeleted: ['uri'],
+  s_deleteView: ['uri'],
+  r_resetFolderUri: null
+}, {prefix: 'Solid.'});

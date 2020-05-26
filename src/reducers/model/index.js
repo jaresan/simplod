@@ -1,11 +1,11 @@
 import {fromJS} from 'immutable';
-import ActionTypes from 'src/actions/model';
+import Actions from 'src/actions/model';
 
 const initialState = new fromJS({
   entities: {}
 });
 
-const toggleSelect = (state, [id, selected]) => {
+const toggleSelect = (state, {id, selected}) => {
   if (typeof selected !== 'undefined') {
     return state.setIn(['entities', id, 'selected'], selected);
   }
@@ -20,13 +20,13 @@ const deselectAll = state => state
     );
 
 const handlers = {
-  [ActionTypes.r_toggleSelect]: toggleSelect,
-  [ActionTypes.r_deselectAll]: deselectAll
+  [Actions.Types.R_TOGGLE_SELECT]: toggleSelect,
+  [Actions.Types.R_DESELECT_ALL]: deselectAll
 };
 
 export default (state = initialState, action) => {
   if (typeof handlers[action.type] === 'function') {
-    return handlers[action.type](state, action.payload);
+    return handlers[action.type](state, action);
   }
 
   return state;

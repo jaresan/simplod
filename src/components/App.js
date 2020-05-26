@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-// import Yasgui from './Yasgui';
-// import PropertyList from './PropertyList';
-// import ControlPanel from './ControlPanel';
+import Yasgui from './Yasgui';
+import PropertyList from './PropertyList';
+import ControlPanel from './ControlPanel';
+import {connect} from 'react-redux';
 import { parseSPO } from '../parseSPO';
 import { AntVExample } from './AntVExample';
 import possiblePrefixes from '../constants/possiblePrefixes';
 import { invertObj, keys, map } from 'ramda';
+import Actions from '../actions';
 
 // TODO: Split css (use sass/modules?)
 class App extends Component {
@@ -55,6 +57,8 @@ class App extends Component {
         this.setState({
           schemaData
         });
+
+        this.props.setPrefixes(json.__prefixes__);
       });
   }
 
@@ -65,25 +69,26 @@ class App extends Component {
         <div className="application-container">
           {
             this.state.schemaData && <AntVExample
-              width={window.innerWidth}
-              height={window.innerHeight}
+              width={window.innerWidth / 2}
+              height={window.innerHeight / 2}
               data={this.state.schemaData}
             />
           }
-          {/*<UMLExample*/}
-          {/*  schemaURL={this.schemaURL}*/}
-          {/*/>*/}
           {/*<PropertyList/>*/}
-          {/*<div className="right-menu">*/}
-          {/*  <ControlPanel/>*/}
-          {/*  <Yasgui*/}
-          {/*    endpointURL={this.endpointURL}*/}
-          {/*  />*/}
-          {/*</div>*/}
+          <div className="right-menu">
+            <ControlPanel/>
+            <Yasgui
+              endpointURL={this.endpointURL}
+            />
+          </div>
         </div>
       </div>
     );
   }
 }
 
-export default App;
+const mapDispatchToProps = {
+  setPrefixes: Actions.Yasgui.Creators.r_setPrefixes
+};
+
+export default connect(null, mapDispatchToProps)(App);
