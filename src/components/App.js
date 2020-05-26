@@ -8,13 +8,27 @@ import { AntVExample } from './AntVExample';
 import possiblePrefixes from '../constants/possiblePrefixes';
 import { invertObj, keys, map } from 'ramda';
 import Actions from '../actions';
+import styled from '@emotion/styled';
 
-// TODO: Split css (use sass/modules?)
+const Container = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin: 32px;
+  height: 1000px;
+`;
+
+const RightMenu = styled.div`
+  max-width: 50%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+`;
 class App extends Component {
   state = {
     schemaData: null
   };
-  componentWillMount() {
+
+  componentDidMount() {
     const params = new URLSearchParams(window.location.search);
 
     this.schemaURL = params.get('schemaURL');
@@ -24,9 +38,7 @@ class App extends Component {
       this.endpointURL = "https://linked.opendata.cz/sparql";
       this.schemaURL = "https://sparql-proxy-api.jaresantonin.now.sh/hardExample";
     }
-  }
 
-  componentDidMount() {
     fetch(this.schemaURL)
       .then(res => res.text())
       .then(async ttl => {
@@ -66,7 +78,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <div className="application-container">
+        <Container>
           {
             this.state.schemaData && <AntVExample
               width={window.innerWidth / 2}
@@ -75,13 +87,13 @@ class App extends Component {
             />
           }
           {/*<PropertyList/>*/}
-          <div className="right-menu">
+          <RightMenu>
             <ControlPanel/>
             <Yasgui
               endpointURL={this.endpointURL}
             />
-          </div>
-        </div>
+          </RightMenu>
+        </Container>
       </div>
     );
   }

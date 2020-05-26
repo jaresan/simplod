@@ -1,37 +1,5 @@
-import joint from 'jointjs';
-import _ from 'underscore';
+import {map} from 'ramda';
 import possiblePrefixes from 'src/constants/possiblePrefixes';
-
-export const createUMLInstance = ({size = {width: 250, height: 150}, name, attributes, methods, ...props}) =>
-	new joint.shapes.uml.Class({
-		size, name, attributes, methods,
-		attrs: {
-			rect: {
-				onclick: ''
-			},
-			'.uml-class-name-rect': {
-				fill: '#ff8450',
-				stroke: '#fff',
-				'stroke-width': 0.5,
-			},
-			'.uml-class-attrs-rect, .uml-class-methods-rect': {
-				fill: '#fe976a',
-				stroke: '#fff',
-				'stroke-width': 0.5
-			},
-			'.uml-class-attrs-text': {
-				ref: '.uml-class-attrs-rect',
-				'ref-y': 0.5,
-				'y-alignment': 'middle'
-			},
-			'.uml-class-methods-text': {
-				ref: '.uml-class-methods-rect',
-				'ref-y': 0.5,
-				'y-alignment': 'middle'
-			}
-		},
-		...props
-	});
 
 const parsePrefix = (iri) => {
 	const suffix = iri.replace(/.*(\/|#)/, '');
@@ -67,7 +35,7 @@ export const parseSPARQLQuery = ({
 			}
 		});
 		queryParts.values = `\n  VALUES (?type) {\n\t${types.join('\n\t')}\n  }`;
-		queryParts.properties = _.map(selectedProperties, (value, predicate) => {
+		queryParts.properties = map(([predicate, value]) => {
 			if (value.disabled) {
 				return;
 			}
@@ -89,10 +57,10 @@ export const parseSPARQLQuery = ({
 				result = '\n  ' + result;
 			}
 			return result;
-		}).join('');
+		}, Object.entries(selectedProperties)).join('');
 	}
 
-	return `${_.map(usedPrefixes, (iri, name) => `PREFIX ${name}: <${iri}>`).join('\n')}
+	return `${map((name, iri) => `PREFIX ${name}: <${iri}>`, Object.entries(usedPrefixes)).join('\n')}
 
 SELECT * WHERE {
   ?s a ?type.${queryParts.properties}${queryParts.values}

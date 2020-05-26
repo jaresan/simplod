@@ -3,6 +3,14 @@ import { connect } from 'react-redux';
 import { getSelectedProperties, getSelectedData } from 'src/selectors/index';
 import { parseSPARQLQuery } from 'src/utils';
 import { sparqlProxy } from '../constants/api';
+import styled from '@emotion/styled';
+
+const Container = styled.div`
+	overflow: auto;
+	.yasqe {
+		text-align: left;
+	}
+`;
 
 class Yasgui extends Component {
 	constructor() {
@@ -36,7 +44,7 @@ class Yasgui extends Component {
 	}
 
 	render() {
-		return <div id="yasgui" ref={ ref => this.element = ref }/>;
+		return <Container id="yasgui" ref={ ref => this.element = ref }/>;
 	}
 }
 

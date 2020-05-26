@@ -131,7 +131,7 @@ function* tryCreateFolder(folderUri) {
   // TODO: Check for proper uri
   // Need to remove last slash otherwise match wouldn't work properly
   folderUri = folderUri.replace(/\/*$/, '');
-  const [_, uri, folderName] = /(.*)\/(.*)/.exec(folderUri);
+  const [, uri, folderName] = /(.*)\/(.*)/.exec(folderUri);
 
   try {
     const result = yield call(auth.fetch, uri, {
@@ -143,7 +143,7 @@ function* tryCreateFolder(folderUri) {
       },
       body: ''
     });
-    return result.status > 200 && result.status < 300;
+    return result.status >= 200 && result.status < 300;
   } catch(e) {
     console.error(e);
     return false;

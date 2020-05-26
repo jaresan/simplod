@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import cx from 'classnames';
-import './Property.css';
+import styled from '@emotion/styled';
+
+const Input = styled.input`
+	background: ${({disabled}) => disabled ? 'lightgrey' : 'default'};
+`;
 
 class Property extends Component {
 	static propTypes = {
@@ -31,12 +34,9 @@ class Property extends Component {
 					<input type="checkbox" name="disabled" value="disabled" checked={this.props.disabled} onChange={this.props.onToggleDisabled}/>
 					Disabled
 				</label>
-				<input
+				<Input
 					type="text"
 					disabled={!this.props.show || this.props.disabled}
-					className={cx({
-						disabled: !this.props.show || this.props.disabled
-					})}
 					defaultValue={this.props.name}
 					onBlur={this.props.onSaveName}
 				/>

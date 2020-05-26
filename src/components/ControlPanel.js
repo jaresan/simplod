@@ -1,8 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Actions from 'src/actions/solid';
-import './ControlPanel.css';
+import styled from '@emotion/styled';
 import { getViewSelection, getSession, getDirty, getFolderUri, getFolderUriChanging, getViews } from '../selectors';
+
+const PrimaryButton = styled.button`
+  background: ${({disabled}) => disabled ? '#9d9d9d' : '#337ab7'};
+  border-color: #2e6da4;
+  border-radius: 4px;
+  padding: 12px;
+  font-size: 12px;
+  color: white;
+  outline: none;
+`;
+
+const FolderUriInput = styled.input`
+  border: 1px solid black;
+  background: ${({disabled, invalid}) => (disabled && 'lightgrey') || (invalid && '#ff6464')};
+`;
 
 class ControlPanel extends Component {
   state = {
@@ -142,8 +157,7 @@ class ControlPanel extends Component {
         <>
           <span>
             App folder:
-            <input
-              className="folderUri-input"
+            <FolderUriInput
               required
               disabled={!this.props.folderUriChanging}
               ref={e => this.folderUriInput = e}
@@ -164,13 +178,13 @@ class ControlPanel extends Component {
           <br/>
           <span>Logged in as: {this.props.session.webId}</span>
           <br/>
-          <button className="primary-button" onClick={this.onLogout} title="Logout">Logout</button>
+          <PrimaryButton onClick={this.onLogout} title="Logout">Logout</PrimaryButton>
         </>
       )
     } else {
       return (
         <>
-          <button className="primary-button" onClick={this.onLogin} title="Login">Login</button>
+          <PrimaryButton onClick={this.onLogin} title="Login">Login</PrimaryButton>
         </>
       )
     }
@@ -179,17 +193,16 @@ class ControlPanel extends Component {
   getControlPanel = () => (
     <>
       &nbsp;
-      <button
-        className="primary-button"
+      <PrimaryButton
         onClick={() => this.onSaveView()}
         disabled={!this.props.isDirty}
       >
         {
           this.props.session ? "Save view at URI" : "Download view"
         }
-      </button>
+      </PrimaryButton>
       &nbsp;
-      <button className="primary-button" onClick={() => this.onLoadView()}>Load view by URI</button>
+      <PrimaryButton onClick={() => this.onLoadView()}>Load view by URI</PrimaryButton>
     </>
   );
 
