@@ -1,4 +1,5 @@
-import { createSelector } from 'reselect';
+import {createSelector} from 'reselect';
+import entityTypes from 'src/constants/entityTypes';
 
 export const getViewSelection = appState => {
   const { selected: { objects, properties } } = appState.graphModel.toJS();
@@ -10,11 +11,11 @@ export const getViewSelection = appState => {
 };
 
 export const getSelectedData = appState =>
-	appState.graphModel.getIn(['selected', 'objects']).map(cellView => cellView.model.attributes.classData).toJS();
+  appState.model.getIn(['entities', entityTypes.class]).filter(e => e.get('selected')).toJS();
 
 export const getPrefixes = appState => appState.yasgui.get('prefixes');
 
-export const getSelectedProperties = appState => appState.model.getIn(['entities']).filter(e => e.get('selected')).toJS();
+export const getSelectedProperties = appState => appState.model.getIn(['entities', entityTypes.property]).filter(e => e.get('selected')).toJS();
 
 export const getSession = appState => appState.solid.get('session');
 

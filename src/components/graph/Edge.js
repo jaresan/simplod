@@ -1,5 +1,6 @@
 import G6 from '@antv/g6';
 import {flatten, values} from 'ramda';
+import entityTypes from '../../constants/entityTypes';
 const EDGE_TYPE = 'graphEdge';
 
 export const Edge = data => ({
@@ -16,7 +17,12 @@ export const getEdges = data => flatten(Object.entries(data).map(([id, {methods}
         source: id,
         target: targetId,
         predicate,
-        weight
+        weight,
+        data: {
+          source: id,
+          target: targetId,
+          type: entityTypes.edge
+        }
       })
     }
     return acc;

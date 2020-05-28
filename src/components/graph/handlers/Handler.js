@@ -10,28 +10,34 @@ export class Handler {
   static recipients = {};
   static subscribed = false;
   static dispatch = action => store.dispatch(action);
+  static entityType = 'unknown';
 
   static subscribeToChanges = (id, recipient) => {
     this.recipients[id] = recipient;
   };
 
-  static onSelect(ref) {
-    this.dispatch(Actions.Model.Creators.r_toggleSelect(ref.get('id')));
+  static registerResource(data, id) {
+    this.dispatch(Actions.Model.Creators.r_registerResource(this.entityType, data, id));
+  }
+
+  static onSelect(id) {
+    this.dispatch(Actions.Model.Creators.r_toggleSelect(this.entityType, id));
   }
 
   /**
    * Subscription method to redux store responding to changes on the store;
    */
-  static onStateChange = state => {
+  static onStateChange(state) {
     Object.values(this.recipients)
       .forEach(recipient => {
-        const subState = state.model.getIn(['entities', recipient.id]);
+        const subState = state.model.getIn(['entities', recipient.handler.entityType, recipient.id]);
         if (subState !== recipient.lastState) {
-
           // FIXME: Map to relevant properties for the wrapper instead of sending subState.toJS() as a whole
           // defined selectors and mapping between redux state -> UI state
           recipient.onStateChanged(subState.toJS());
           recipient.lastState = subState;
+
+          this.dispatch(Actions.Interactions.Creators.s_dataChanged());
         }
       });
   };

@@ -19,8 +19,9 @@ class Yasgui extends Component {
 	}
 
 	componentDidUpdate(prevProps, prevState, snapshot) {
-		if (this.props.selectedProperties !== prevProps.selectedProperties) {
-			this.yasgui.setQuery(parseSPARQLQuery(this.props));
+		const {selectedProperties} = this.props;
+		if (selectedProperties !== prevProps.selectedProperties) {
+			this.yasgui.setQuery(parseSPARQLQuery(selectedProperties));
 		}
 	}
 
@@ -49,8 +50,7 @@ class Yasgui extends Component {
 }
 
 const mapStateToProps = appState => ({
-	selectedProperties: getSelectedProperties(appState),
-	selectedClasses: getSelectedData(appState)
+	selectedProperties: getSelectedProperties(appState)
 });
 
 const mapDispatchToProps = {};

@@ -15,6 +15,12 @@ export class Wrapper {
     this.handler.subscribeToChanges(id, this);
   }
 
+  setTarget = target => {
+    this.target = target;
+    this.resetStyle();
+    this.handler.registerResource(target.get('data'), this.id);
+  };
+
   onHover = () => {
     this.setState({hover: true});
   };
@@ -37,14 +43,9 @@ export class Wrapper {
     this.updateTargetStyle(style);
   };
 
-  setTarget = target => {
-    this.target = target;
-    this.resetStyle();
-  };
-
   onClick = () => {
-    console.log(`Clicked ${this.constructor.name} -`, this.target, this.id);
-    this.handler.onSelect(this.target);
+    // console.log(`Clicked ${this.constructor.name} -`, this.target, this.id);
+    this.handler.onSelect(this.id);
   };
 
   onStateChanged = state => {

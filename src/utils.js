@@ -1,4 +1,4 @@
-import {map} from 'ramda';
+import {map, groupBy, prop, invertObj} from 'ramda';
 import possiblePrefixes from 'src/constants/possiblePrefixes';
 
 const parsePrefix = (iri) => {
@@ -13,54 +13,53 @@ const parsePrefix = (iri) => {
 	}
 };
 
-export const parseSPARQLQuery = ({
-	selectedClasses,
-	selectedProperties
-}) => {
+export const parseSPARQLQuery = selectedProperties => {
 	let queryParts = {
 		properties: '',
 		values: ''
 	};
-	let types = Object.keys(selectedClasses);
+	let types = Object.keys(groupBy(prop('source'), Object.values(selectedProperties)));
 	const usedPrefixes = {};
+	const invertedPrefixes = invertObj(possiblePrefixes);
 
 	if (types.length) {
 		types = types.map(type => {
 			const { alias, suffix, prefixIri } = parsePrefix(type);
-			if (alias) {
-				usedPrefixes[alias] = prefixIri;
-				return `(${alias}:${suffix})`;
+			const prefixed = type.match(/(^\w+):/);
+			const prefix = prefixed && prefixed[1];
+			if (invertedPrefixes[prefix]) {
+				usedPrefixes[prefix] = invertedPrefixes[prefix];
+				return `(${type})`;
 			} else {
 				return `(<${type}>)`;
 			}
 		});
 		queryParts.values = `\n  VALUES (?type) {\n\t${types.join('\n\t')}\n  }`;
-		queryParts.properties = map(([predicate, value]) => {
-			if (value.disabled) {
+		queryParts.properties = map(({disabled, show, name, predicate, optional}) => {
+			if (disabled) {
 				return;
 			}
-			const name = value.show ? `?${value.name}` : '[]';
+			name = show ? `?${name}` : '[]';
 
-			const { alias, suffix, prefixIri } = parsePrefix(predicate);
-			if (alias) {
-				// FIXME: Separate getPrefixes logic
-				usedPrefixes[alias] = prefixIri;
-				predicate = `${alias}:${suffix}`
+			const prefixed = predicate.match(/(^\w+):/);
+			const prefix = prefixed && prefixed[1];
+			if (invertedPrefixes[prefix]) {
+				usedPrefixes[prefix] = invertedPrefixes[prefix];
 			} else {
 				predicate = `<${predicate}>`;
 			}
 
 			let result = `?s ${predicate} ${name}.`;
-			if (value.optional) {
+			if (optional) {
 				result = `\n  OPTIONAL{\n\t${result}\n  }`;
 			} else {
 				result = '\n  ' + result;
 			}
 			return result;
-		}, Object.entries(selectedProperties)).join('');
+		}, Object.values(selectedProperties)).join('');
 	}
 
-	return `${map((name, iri) => `PREFIX ${name}: <${iri}>`, Object.entries(usedPrefixes)).join('\n')}
+	return `${map(([name, iri]) => `PREFIX ${name}: <${iri}>`, Object.entries(usedPrefixes)).join('\n')}
 
 SELECT * WHERE {
   ?s a ?type.${queryParts.properties}${queryParts.values}

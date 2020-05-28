@@ -1,5 +1,6 @@
 import {Wrapper} from './Wrapper';
-import { path } from 'ramda';
+import {path} from 'ramda';
+import {Edge as EdgeHandler} from '../handlers';
 
 const styles = {
   hover: {
@@ -37,10 +38,11 @@ const defaultStyle = {
 export class Edge extends Wrapper {
   styles = styles;
   defaultStyle = defaultStyle;
+  handler = EdgeHandler;
 
   constructor(edge) {
     const {source, target, predicate} = edge.getModel();
-    const id = `${source}-${predicate}-${target}`;
+    const id = `edge_${source}-${predicate}-${target}`;
 
     super(id);
     Object.assign(this, {
@@ -53,7 +55,6 @@ export class Edge extends Wrapper {
       },
     });
 
-    // Have to subscribe again because of the constructor override
     this.handler.subscribeToChanges(id, this);
   }
 

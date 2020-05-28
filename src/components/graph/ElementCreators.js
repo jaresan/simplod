@@ -9,13 +9,13 @@ const wrappers = {
   edge: Edge
 };
 
-const wrap = (wrapperType, isNode) => ({id, attrs, ...props}) => {
-  let nodeType = wrapperType;
+const wrap = (type, isNode) => ({id, attrs, ...props}) => {
+  let nodeType = type;
 
   let wrapper;
-  if (wrappers[wrapperType]) {
-    wrapper = new wrappers[wrapperType](id);
-    nodeType = isNode ? wrappers[wrapperType].nodeType : undefined;
+  if (wrappers[type]) {
+    wrapper = new wrappers[type](id);
+    nodeType = isNode ? wrappers[type].nodeType : undefined;
   }
 
   const defaultStyle = (wrapper && wrapper.defaultStyle) || {};

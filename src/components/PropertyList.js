@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getSelectedProperties } from 'src/selectors/index';
 import {map} from 'ramda';
-import Actions from 'src/actions/interactions';
+import Actions from 'src/actions/model';
 import styled from '@emotion/styled';
 
 const Input = styled.input`
@@ -57,7 +57,6 @@ class PropertyList extends Component {
 	};
 
 	getProperties = () => {
-		console.log(this.props.selectedProperties);
 		return map(([id, val]) =>
 			<Property
 				key={id}
@@ -90,9 +89,9 @@ const mapStateToProps = appState => ({
 });
 
 const mapDispatchToProps = {
-	toggleOptional: Actions.Creators.r_toggleOptional,
-	toggleShow: Actions.Creators.r_toggleShow,
-	toggleDisabled: Actions.Creators.r_toggleDisabled,
+	toggleOptional: Actions.Creators.r_togglePropertyOptional,
+	toggleShow: Actions.Creators.r_togglePropertyShow,
+	toggleDisabled: Actions.Creators.r_togglePropertyDisabled,
 	onSaveName: Actions.Creators.r_savePropertyName,
 	unselectProperty: Actions.Creators.r_unselectProperty
 };

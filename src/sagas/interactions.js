@@ -1,18 +1,15 @@
 import { takeEvery, put, select, all } from 'redux-saga/effects';
 import { getSelectedDataAndPrefixes } from 'src/selectors';
-import Actions from 'src/actions';
+import Interactions from 'src/actions/interactions';
+import Query from 'src/actions/yasgui';
 
-function* updateQuery() {
+function* dataChanged() {
 	const { classes, prefixes } = yield select(getSelectedDataAndPrefixes);
-	yield put(Actions.Creators.r_updateQuery(classes, prefixes));
+	yield put(Query.Creators.r_updateQuery(classes, prefixes));
 }
-
-function* onCanvasClick() {
-	yield put(Actions.Creators.r_deselectAll());
-	yield updateQuery();
-}
-
 
 export default function*() {
-	yield all([]);
+	yield all([
+		takeEvery(Interactions.Types.S_DATA_CHANGED, dataChanged)
+	]);
 }
