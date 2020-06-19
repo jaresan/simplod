@@ -12,17 +12,15 @@ const Input = styled.input`
 const Property = ({show, disabled, optional, name, onToggleShow, onToggleOptional, onSaveName, onDelete, onToggleDisabled}) => (
 	<li>
 		<label>
-			<input type="checkbox" name="show" value="show" checked={show} onChange={onToggleShow}/>
+			<input type="checkbox" name="show" value="show" checked={!!show} onChange={onToggleShow}/>
 			Show
 		</label>
 		<label>
-			<input type="checkbox" name="optional" value="optional" checked={optional}
-						 onChange={onToggleOptional}/>
+			<input type="checkbox" name="optional" value="optional" checked={!!optional} onChange={onToggleOptional}/>
 			Optional
 		</label>
 		<label>
-			<input type="checkbox" name="disabled" value="disabled" checked={disabled}
-						 onChange={onToggleDisabled}/>
+			<input type="checkbox" name="disabled" value="disabled" checked={!!disabled} onChange={onToggleDisabled}/>
 			Disabled
 		</label>
 		<Input

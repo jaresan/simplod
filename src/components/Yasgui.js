@@ -13,8 +13,8 @@ const Container = styled.div`
 `;
 
 class Yasgui extends Component {
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
 		this.yasgui = null;
 	}
 
@@ -26,6 +26,7 @@ class Yasgui extends Component {
 	}
 
 	componentDidMount() {
+		console.log(this.props, 'a');
 		window.YASGUI.defaults.catalogueEndpoints = [{
       endpoint: this.props.endpointURL
     }];

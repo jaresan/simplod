@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import { parseSPO } from '../parseSPO';
 import { AntVExample } from './AntVExample';
 import possiblePrefixes from '../constants/possiblePrefixes';
-import { invertObj, keys, map } from 'ramda';
+import { invertObj, keys, map, uniq } from 'ramda';
 import Actions from '../actions';
 import styled from '@emotion/styled';
 
@@ -28,9 +28,9 @@ class App extends Component {
     schemaData: null
   };
 
-  componentDidMount() {
+  constructor() {
+    super();
     const params = new URLSearchParams(window.location.search);
-
     this.schemaURL = params.get('schemaURL');
     this.endpointURL = params.get('endpointURL') || 'http://dbpedia.org/sparql';
 
@@ -56,7 +56,7 @@ class App extends Component {
         };
 
         const schemaData = keys(json.data).reduce((acc, key) => {
-          const {properties, methods} = json.data[key];
+          const {properties, methods} = map(uniq, json.data[key]);
           return Object.assign(acc, {
             [getPrefixed(key)]: {
               properties: map(map(getPrefixed), properties),
