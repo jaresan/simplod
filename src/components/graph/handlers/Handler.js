@@ -33,7 +33,7 @@ export class Handler {
         const subState = state.model.getIn(['entities', recipient.handler.entityType, recipient.id]);
         if (subState !== recipient.lastState) {
           // FIXME: Map to relevant properties for the wrapper instead of sending subState.toJS() as a whole
-          // defined selectors and mapping between redux state -> UI state
+          // define selectors and mapping between redux state -> UI state
           recipient.onStateChanged(subState.toJS());
           recipient.lastState = subState;
 

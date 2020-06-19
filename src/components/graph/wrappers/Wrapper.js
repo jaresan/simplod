@@ -12,13 +12,13 @@ export class Wrapper {
 
   constructor(id) {
     this.id = id;
-    this.handler.subscribeToChanges(id, this);
   }
 
   setTarget = target => {
     this.target = target;
     this.resetStyle();
     this.handler.registerResource(target.get('data'), this.id);
+    this.handler.subscribeToChanges(this.id, this);
   };
 
   onHover = () => {

@@ -48,7 +48,7 @@ class App extends Component {
         const {__prefixes__: prefixes} = json;
         const getPrefixed = id => {
           for (let key of keys(prefixes)) {
-            if (id.includes(key)) {
+            if (id && id.includes(key)) {
               return `${prefixes[key]}:${id.replace(key, '')}`;
             }
           }
@@ -56,8 +56,7 @@ class App extends Component {
         };
 
         const schemaData = keys(json.data).reduce((acc, key) => {
-          const {methods, properties} = json.data[key];
-
+          const {properties, methods} = json.data[key];
           return Object.assign(acc, {
             [getPrefixed(key)]: {
               properties: map(map(getPrefixed), properties),
