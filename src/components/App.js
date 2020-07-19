@@ -5,7 +5,6 @@ import ControlPanel from './ControlPanel';
 import {connect} from 'react-redux';
 import { parseSPO } from '../parseSPO';
 import { AntVExample } from './AntVExample';
-import possiblePrefixes from '../constants/possiblePrefixes';
 import { invertObj, keys, map, uniq } from 'ramda';
 import Actions from '../actions';
 import styled from '@emotion/styled';
@@ -43,24 +42,12 @@ class App extends Component {
       .then(res => res.text())
       .then(async ttl => {
         const json = await parseSPO(ttl);
-        json.__prefixes__ = invertObj(json.__prefixes__);
-        Object.assign(json.__prefixes__, possiblePrefixes);
-        const {__prefixes__: prefixes} = json;
-        const getPrefixed = id => {
-          for (let key of keys(prefixes)) {
-            if (id && id.includes(key)) {
-              return `${prefixes[key]}:${id.replace(key, '')}`;
-            }
-          }
-          return id;
-        };
-
         const schemaData = keys(json.data).reduce((acc, key) => {
           const {properties, methods} = map(uniq, json.data[key]);
           return Object.assign(acc, {
-            [getPrefixed(key)]: {
-              properties: map(map(getPrefixed), properties),
-              methods: map(map(getPrefixed), methods)
+            [key]: {
+              properties,
+              methods
             }
           })
         }, {});
@@ -69,7 +56,7 @@ class App extends Component {
           schemaData
         });
 
-        this.props.setPrefixes(json.__prefixes__);
+        this.props.setPrefixes(invertObj(json.__prefixes__));
       });
   }
 
@@ -88,7 +75,7 @@ class App extends Component {
           <PropertyList/>
           <RightMenu>
             <ControlPanel/>
-            <Yasgui
+            <YasguiContainer
               endpointURL={this.endpointURL}
             />
           </RightMenu>

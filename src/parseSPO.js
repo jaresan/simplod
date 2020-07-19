@@ -1,4 +1,6 @@
 import {Parser} from 'n3';
+import { curry, invertObj, keys } from 'ramda';
+import possiblePrefixes from './constants/possiblePrefixes';
 
 const propertyToName = {
   'http://www.w3.org/2001/XMLSchema#integer': 'Int',
@@ -9,19 +11,11 @@ const propertyToName = {
 
 const propertyTypes = Object.keys(propertyToName);
 
-const predicateSpecIRI = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate';
-const hasWeightIRI = 'http://onto.fel.cvut.cz/ontologies/dataset-descriptor/s-p-o-summary/hasWeight';
-const typeIRI = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
-const objectSpecIRI = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#object';
-const subjectSpecIRI = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#subject';
-
-const edgePredicates = [predicateSpecIRI, hasWeightIRI, objectSpecIRI, subjectSpecIRI];
-
 export const parseSPO = ttlString => new Promise((res, err) => {
   getQuads(ttlString)
     .then(({quads, prefixes}) => {
       res({
-        data: parseQuads(quads),
+        data: parseQuads(quads, Object.assign(possiblePrefixes, invertObj(prefixes))),
         __prefixes__: prefixes
       });
     });
@@ -40,8 +34,31 @@ const getQuads = ttlString => new Promise((res, err) => {
   });
 });
 
-const parseQuads = quads => {
+const getWithPrefix = curry((prefixes, iri) => {
+  for (let key of keys(prefixes)) {
+    if (iri && iri.includes(key)) {
+      return `${prefixes[key]}:${iri.replace(key, '')}`;
+    }
+  }
+  return iri;
+});
+
+const parseQuads = (quads, prefixes) => {
+  const prefixed = getWithPrefix(prefixes);
+  const predicateSpecIRI = prefixed('http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate');
+  const hasWeightIRI = prefixed('http://onto.fel.cvut.cz/ontologies/dataset-descriptor/s-p-o-summary/hasWeight');
+  const typeIRI = prefixed('http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+  const objectSpecIRI = prefixed('http://www.w3.org/1999/02/22-rdf-syntax-ns#object');
+  const subjectSpecIRI = prefixed('http://www.w3.org/1999/02/22-rdf-syntax-ns#subject');
+
+  const edgePredicates = [predicateSpecIRI, hasWeightIRI, objectSpecIRI, subjectSpecIRI];
   const isEdge = quad => edgePredicates.includes(quad.predicate.id);
+  quads.forEach(quad => {
+    quad.object.id = prefixed(quad.object.id);
+    quad.subject.id = prefixed(quad.subject.id);
+    quad.predicate.id = prefixed(quad.predicate.id);
+  });
+
   const getDataProperty = (quad, classMapping) => {
     if (quad.predicate.id !== objectSpecIRI) {
       return null;
@@ -53,12 +70,15 @@ const parseQuads = quads => {
       || propertyToName[classType];
   };
 
-  // {
-  //   [className]: {
-  //     properties: [{ predicate: type }],
-  //     methods: [{predicateName, objectClass}]
-  //   }
-  // }
+
+  /** Will look like:
+   const classes = {
+      [className]: {
+        properties: [{ predicate: type }],
+        methods: [{predicateName, objectClass}]
+      }
+    }
+  **/
   const classes = {};
 
   // {
