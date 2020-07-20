@@ -1,6 +1,6 @@
 import {Parser} from 'n3';
 import { curry, invertObj, keys } from 'ramda';
-import possiblePrefixes from './constants/possiblePrefixes';
+import possiblePrefixes from '../constants/possiblePrefixes';
 
 const propertyToName = {
   'http://www.w3.org/2001/XMLSchema#integer': 'Int',
@@ -11,7 +11,7 @@ const propertyToName = {
 
 const propertyTypes = Object.keys(propertyToName);
 
-export const parseSPO = ttlString => new Promise((res, err) => {
+export const parseTTL = ttlString => new Promise((res, err) => {
   getQuads(ttlString)
     .then(({quads, prefixes}) => {
       res({
@@ -137,6 +137,7 @@ const parseQuads = (quads, prefixes) => {
     return acc;
   }, { });
 
+  console.log(edges);
   return Object.keys(edges).reduce((acc, key) => {
     const edge = edges[key];
     if (edge.dataProperty) {

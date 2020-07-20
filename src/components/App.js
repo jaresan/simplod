@@ -3,7 +3,7 @@ import Yasgui from './Yasgui';
 import PropertyList from './PropertyList';
 import ControlPanel from './ControlPanel';
 import {connect} from 'react-redux';
-import { parseSPO } from '../parseSPO';
+import { parseTTL } from '../data/parseTTL';
 import { AntVExample } from './AntVExample';
 import { invertObj, keys, map, uniq } from 'ramda';
 import Actions from '../actions';
@@ -41,7 +41,7 @@ class App extends Component {
     fetch(this.schemaURL)
       .then(res => res.text())
       .then(async ttl => {
-        const json = await parseSPO(ttl);
+        const json = await parseTTL(ttl);
         const schemaData = keys(json.data).reduce((acc, key) => {
           const {properties, methods} = map(uniq, json.data[key]);
           return Object.assign(acc, {
