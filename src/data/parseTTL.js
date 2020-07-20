@@ -3,10 +3,10 @@ import { curry, invertObj, keys } from 'ramda';
 import possiblePrefixes from '../constants/possiblePrefixes';
 
 const propertyToName = {
-  'http://www.w3.org/2001/XMLSchema#integer': 'Int',
+  'xml:integer': 'Int',
   'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString': 'String',
-  'http://www.w3.org/2001/XMLSchema#string': 'String',
-  'http://www.w3.org/2001/XMLSchema#decimal': 'Decimal'
+  'xml:string': 'String',
+  'xml:decimal': 'Decimal'
 };
 
 const propertyTypes = Object.keys(propertyToName);
@@ -65,6 +65,7 @@ const parseQuads = (quads, prefixes) => {
     }
 
     const classType = classMapping[quad.object.value];
+    console.log(classType, quad.object.value, quad.object.datatypeString);
     return propertyToName[quad.object.datatypeString]
       || propertyToName[quad.object.id]
       || propertyToName[classType];
@@ -137,7 +138,6 @@ const parseQuads = (quads, prefixes) => {
     return acc;
   }, { });
 
-  console.log(edges);
   return Object.keys(edges).reduce((acc, key) => {
     const edge = edges[key];
     if (edge.dataProperty) {
