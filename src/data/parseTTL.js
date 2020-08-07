@@ -65,7 +65,6 @@ const parseQuads = (quads, prefixes) => {
     }
 
     const classType = classMapping[quad.object.value];
-    console.log(classType, quad.object.value, quad.object.datatypeString);
     return propertyToName[quad.object.datatypeString]
       || propertyToName[quad.object.id]
       || propertyToName[classType];

@@ -4,6 +4,9 @@ import { getSelectedProperties, getSelectedData } from 'src/selectors/index';
 import { parseSPARQLQuery } from 'src/utils';
 import { sparqlProxy } from '../constants/api';
 import styled from '@emotion/styled';
+import YASGUI from '@triply/yasgui';
+import "@triply/yasgui/build/yasgui.min.css";
+
 
 const Container = styled.div`
 	overflow: auto;
@@ -12,7 +15,7 @@ const Container = styled.div`
 	}
 `;
 
-class Yasgui extends Component {
+class YasguiContainer extends Component {
 	constructor(props) {
 		super(props);
 		this.yasgui = null;
@@ -21,32 +24,23 @@ class Yasgui extends Component {
 	componentDidUpdate(prevProps, prevState, snapshot) {
 		const {selectedProperties} = this.props;
 		if (selectedProperties !== prevProps.selectedProperties) {
-			this.yasgui.setQuery(parseSPARQLQuery(selectedProperties));
+			this.yasgui.getTab().setQuery(parseSPARQLQuery(selectedProperties));
 		}
 	}
 
 	componentDidMount() {
-		console.log(this.props, 'a');
-		window.YASGUI.defaults.catalogueEndpoints = [{
-      endpoint: this.props.endpointURL
-    }];
-
-		const yasgui = window.YASGUI(this.element, {
-			api: {
-				corsProxy: sparqlProxy
-			},
-			endpoint: this.props.endpointURL,
-      catalogueEndpoints: [{
-				endpoint: this.props.endpointURL
-			}],
-		}).current();
+		const yasgui = new YASGUI(this.yasguiMountNode, {corsProxy: sparqlProxy});
 
 		this.yasgui = yasgui;
-		yasgui.setEndpoint(this.props.endpointURL);
+		yasgui.getTab().setEndpoint(this.props.endpointURL);
+		window.current = yasgui;
+		window.yasgui = YASGUI;
+		// Force usage of cors
+		YASGUI.__defineGetter__('corsEnabled', () => ({}))
 	}
 
 	render() {
-		return <Container id="yasgui" ref={ ref => this.element = ref }/>;
+		return <Container id="yasgui" ref={ref => this.yasguiMountNode = ref}/>;
 	}
 }
 
@@ -56,4 +50,4 @@ const mapStateToProps = appState => ({
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Yasgui);
+export default connect(mapStateToProps, mapDispatchToProps)(YasguiContainer);

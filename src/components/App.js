@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Yasgui from './Yasgui';
+import YasguiContainer from './YasguiContainer';
 import PropertyList from './PropertyList';
 import ControlPanel from './ControlPanel';
 import {connect} from 'react-redux';
@@ -38,7 +38,18 @@ class App extends Component {
       this.schemaURL = "https://sparql-proxy-api.jaresantonin.now.sh/hardExample";
     }
 
-    fetch(this.schemaURL)
+
+        this.setState({
+          schemaData
+        });
+
+  componentDidMount() {
+    this.fetchData(this.schemaURL);
+  }
+
+  // FIXME: Move fetch to sagas
+  fetchData = url => {
+    fetch(url)
       .then(res => res.text())
       .then(async ttl => {
         const json = await parseTTL(ttl);
@@ -58,12 +69,14 @@ class App extends Component {
 
         this.props.setPrefixes(invertObj(json.__prefixes__));
       });
-  }
+  };
 
 
   render() {
     return (
       <div className="App">
+        <input type="text" ref={e => this.dataSchemaInput = e} placeholder="Data schema URL"/>
+        <button onClick={() => this.fetchData(this.dataSchemaInput.value)}>Reload schema URL</button>
         <Container>
           {
             this.state.schemaData && <AntVExample
