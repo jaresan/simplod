@@ -8,5 +8,6 @@ export default createActions({
   r_togglePropertyShow: ['id', 'show'],
   r_togglePropertyDisabled: ['id', 'disabled'],
   r_savePropertyName: ['id', 'name'],
+  r_clearData: null
 }, {prefix: 'Model.'});
 

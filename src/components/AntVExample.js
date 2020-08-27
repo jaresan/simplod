@@ -18,35 +18,37 @@ export class AntVExample extends React.Component {
   }
 
   loadData() {
+    // FIXME: Add graph handling to reducers and sagas --> graph instance should be available in the state
     const {data, width, height} = this.props;
 
     const graphData = {nodes: getNodes(data), edges: getEdges(data)};
 
-    if (!this.graph) {
-      this.graph = new G6.Graph({
-        container: this.mountNode,
-        width, height,
-        // renderer: 'svg',
-        fitViewPadding: [20, 40, 50, 20],
-        modes: {
-          default: [
-            // {
-            //   type: 'activate-relations',
-            //   trigger: 'click',
-            //   activeState: 'inRelation',
-            //   inactiveState: 'notInRelation',
-            // },
-            'drag-canvas', 'zoom-canvas', 'drag-node',
-          ]
-        },
-        layout: {
-          type: 'grid',
-          preventOverlap: true,
-          workerEnabled: true
-        },
-        plugins: [minimap]
-      });
+    if (this.graph) {
+      this.graph.destroy();
     }
+    this.graph = new G6.Graph({
+      container: this.mountNode,
+      width, height,
+      // renderer: 'svg',
+      fitViewPadding: [20, 40, 50, 20],
+      modes: {
+        default: [
+          // {
+          //   type: 'activate-relations',
+          //   trigger: 'click',
+          //   activeState: 'inRelation',
+          //   inactiveState: 'notInRelation',
+          // },
+          'drag-canvas', 'zoom-canvas', 'drag-node',
+        ]
+      },
+      layout: {
+        type: 'grid',
+        preventOverlap: true,
+        workerEnabled: true
+      },
+      plugins: [minimap]
+    });
 
 
     // FIXME: Don't create new graph, reload old one

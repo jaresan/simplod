@@ -49,6 +49,7 @@ class App extends Component {
 
   // FIXME: Move fetch to sagas
   fetchData = url => {
+    this.props.clearData();
     fetch(url)
       .then(res => res.text())
       .then(async ttl => {
@@ -99,7 +100,8 @@ class App extends Component {
 }
 
 const mapDispatchToProps = {
-  setPrefixes: Actions.Yasgui.Creators.r_setPrefixes
+  setPrefixes: Actions.Yasgui.Creators.r_setPrefixes,
+  clearData: Actions.Model.Creators.r_clearData
 };
 
 export default connect(null, mapDispatchToProps)(App);

@@ -1,5 +1,6 @@
 import {curry} from 'ramda';
 import {Canvas as CanvasWrapper, Edge as EdgeWrapper} from './wrappers';
+import {Handler} from './handlers/Handler';
 
 const handle = curry((methodName, e) => {
   const targetWrapper = (
@@ -51,5 +52,10 @@ export class Graph {
 
   render() {
     this.graph.render();
+  }
+
+  destroy() {
+    Handler.reset();
+    this.graph.destroy();
   }
 }

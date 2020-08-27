@@ -41,6 +41,10 @@ export class Handler {
         }
       });
   };
+
+  static reset() {
+    this.recipients = {};
+  }
 }
 
 store.subscribe(() => Handler.onStateChange(store.getState()));
