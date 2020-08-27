@@ -1,6 +1,5 @@
 import {curry} from 'ramda';
 import {Canvas as CanvasWrapper, Edge as EdgeWrapper} from './wrappers';
-import {Handler} from './handlers/Handler';
 
 const handle = curry((methodName, e) => {
   const targetWrapper = (
@@ -27,11 +26,23 @@ const handle = curry((methodName, e) => {
 });
 
 export class Graph {
-  constructor(graph, data) {
+  behaviours = {
+    click: 'onClick',
+    dblclick: 'onDoubleClick',
+    mouseover: 'onHover',
+    mouseout: 'onBlur',
+    contextmenu: 'onContextMenu'
+  };
+  constructor(graph) {
     this.graph = graph;
-    this.registerBehaviours(graph);
-    graph.data(data);
-    graph.render();
+  }
+
+  loadData(data) {
+    this.graph.clear();
+
+    this.deregisterBehaviours();
+    this.registerBehaviours();
+    this.graph.data(data);
     this.registerEdgeHandlers();
   }
 
@@ -40,14 +51,12 @@ export class Graph {
     this.graph.getEdges().forEach(e => e.set('wrapper', new EdgeWrapper(e)));
   }
 
-  registerBehaviours(graph) {
-    Object.entries({
-      click: 'onClick',
-      dblclick: 'onDoubleClick',
-      mouseover: 'onHover',
-      mouseout: 'onBlur',
-      contextmenu: 'onContextMenu'
-    }).forEach(([key, targetMethod]) => graph.on(key, handle(targetMethod)));
+  registerBehaviours() {
+    Object.entries(this.behaviours).forEach(([key, targetMethod]) => this.graph.on(key, handle(targetMethod)));
+  }
+
+  deregisterBehaviours() {
+    Object.keys(this.behaviours).forEach((key) => this.graph.off(key));
   }
 
   render() {
@@ -55,7 +64,6 @@ export class Graph {
   }
 
   destroy() {
-    Handler.reset();
     this.graph.destroy();
   }
 }

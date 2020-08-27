@@ -42,7 +42,7 @@ export class Handler {
       });
   };
 
-  static reset() {
+  static clear() {
     this.recipients = {};
   }
 }

@@ -35,10 +35,7 @@ export const parseSPARQLQuery = selectedProperties => {
 			}
 		});
 		queryParts.values = `\n  VALUES (?type) {\n\t${types.join('\n\t')}\n  }`;
-		queryParts.properties = map(({disabled, show, name, predicate, optional}) => {
-			if (disabled) {
-				return;
-			}
+		queryParts.properties = map(({show, name, predicate, optional}) => {
 			name = show ? `?${name}` : '[]';
 
 			const prefixed = predicate.match(/(^\w+):/);

@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import { parseTTL } from '../data/parseTTL';
 import { AntVExample } from './AntVExample';
 import { invertObj, keys, map, uniq } from 'ramda';
+import {Handler} from './graph/handlers/Handler';
 import Actions from '../actions';
 import styled from '@emotion/styled';
 
@@ -49,6 +50,8 @@ class App extends Component {
 
   // FIXME: Move fetch to sagas
   fetchData = url => {
+    // FIXME: Move Handler clearing somewhere else (ideally to saga which pings graph which pings handler)
+    Handler.clear();
     this.props.clearData();
     fetch(url)
       .then(res => res.text())
@@ -78,6 +81,7 @@ class App extends Component {
       <div className="App">
         <input type="text" ref={e => this.dataSchemaInput = e} placeholder="Data schema URL"/>
         <button onClick={() => this.fetchData(this.dataSchemaInput.value)}>Reload schema URL</button>
+        <button onClick={() => this.fetchData('https://sparql-proxy-api.jaresantonin.now.sh/hardExample')}>Hard example</button>
         <Container>
           {
             this.state.schemaData && <AntVExample

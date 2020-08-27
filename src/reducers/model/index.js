@@ -17,7 +17,6 @@ const registerResource = (state, {entityType, id, data}) => state.updateIn(['ent
 
 const toggleOptional = (state, {id, optional}) => state.setIn(['entities', entityTypes.property, id, 'optional'], optional);
 const toggleShow = (state, {id, show}) => state.setIn(['entities', entityTypes.property, id, 'show'], show);
-const toggleDisabled = (state, {id, disabled}) => state.setIn(['entities', entityTypes.property, id, 'disabled'], disabled);
 const savePropertyName = (state, {id, name}) => state.setIn(['entities', entityTypes.property, id, 'name'], name);
 const clearData = () => initialState;
 
@@ -27,7 +26,6 @@ const handlers = {
   [Actions.Types.R_REGISTER_RESOURCE]: registerResource,
   [Actions.Types.R_TOGGLE_PROPERTY_OPTIONAL]: toggleOptional,
   [Actions.Types.R_TOGGLE_PROPERTY_SHOW]: toggleShow,
-  [Actions.Types.R_TOGGLE_PROPERTY_DISABLED]: toggleDisabled,
   [Actions.Types.R_SAVE_PROPERTY_NAME]: savePropertyName,
   [Actions.Types.R_CLEAR_DATA]: clearData
 };
