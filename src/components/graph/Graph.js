@@ -56,7 +56,7 @@ export class Graph {
   }
 
   deregisterBehaviours() {
-    Object.keys(this.behaviours).forEach((key) => this.graph.off(key));
+    Object.keys(this.behaviours).forEach(key => this.graph.off(key));
   }
 
   render() {

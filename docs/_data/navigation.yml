@@ -8,3 +8,5 @@ docs:
     url: ./dataSchema.html
   - title: Demo
     url: ./demo.html?schemaURL=https%3A%2F%2Fsparql-proxy-api.jaresantonin.now.sh%2FeasyExample&endpointURL=https%3A%2F%2Flinked.opendata.cz%2Fsparql
+  - title: Fullscreen Demo
+    url: ./fullscreenDemo.html?schemaURL=https%3A%2F%2Fsparql-proxy-api.jaresantonin.now.sh%2FeasyExample&endpointURL=https%3A%2F%2Flinked.opendata.cz%2Fsparql

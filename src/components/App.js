@@ -38,11 +38,7 @@ class App extends Component {
       this.endpointURL = "https://linked.opendata.cz/sparql";
       this.schemaURL = "https://sparql-proxy-api.jaresantonin.now.sh/hardExample";
     }
-
-
-        this.setState({
-          schemaData
-        });
+  }
 
   componentDidMount() {
     this.fetchData(this.schemaURL);

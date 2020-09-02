@@ -1,0 +1,14 @@
+---
+layout: default
+title: Linked data viewer
+---
+<h1>Demo</h1>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const { origin, pathname } = window.location;
+  const url = new URL(`${origin}${pathname}/../build/index.html`);
+  url.searchParams.set('schemaURL', params.get('schemaURL'));
+  url.searchParams.set('endpointURL', params.get('endpointURL') || 'http://dbpedia.org/sparql');
+  window.location = url;
+</script>
