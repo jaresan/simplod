@@ -6,7 +6,8 @@ import entityTypes from 'src/constants/entityTypes';
 const initialState = new fromJS({
   entities: {
     ...Object.keys(entityTypes).reduce((acc, type) => Object.assign(acc, {[type]: {}}), {})
-  }
+  },
+  dirty: false
 });
 
 const toggleSelect = (state, {entityType, id, selected}) => state.updateIn(['entities', entityType, id, 'selected'], current => isNil(selected) ? !current : selected);
@@ -31,9 +32,15 @@ const handlers = {
 };
 
 export default (state = initialState, action) => {
+  let newState = state;
   if (typeof handlers[action.type] === 'function') {
-    return handlers[action.type](state, action);
+    newState = handlers[action.type](state, action);
   }
 
-  return state;
+  const dirty = newState
+    .get('entities')
+    .some(x => x.reduce((acc, e) => e.get('selected') || acc, false));
+  newState = newState.set('dirty', dirty);
+
+  return newState;
 };

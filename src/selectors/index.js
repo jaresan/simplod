@@ -19,7 +19,7 @@ export const getSelectedProperties = appState => appState.model.getIn(['entities
 
 export const getSession = appState => appState.solid.get('session');
 
-export const getDirty = appState => appState.graphModel.get('dirty');
+export const getDirty = appState => appState.model.get('dirty');
 
 export const getFolderUri = (appState, original) => {
   if (original) {
