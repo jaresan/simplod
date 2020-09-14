@@ -2,21 +2,11 @@ import {curry} from 'ramda';
 import {Canvas as CanvasWrapper, Edge as EdgeWrapper} from './wrappers';
 
 const handle = curry((methodName, e) => {
-  const targetWrapper = (
+  const wrapper = (
     e.target.get('wrapper')
     || (e.target.getModel && e.target.getModel().wrapper)
   );
 
-  if (targetWrapper && !targetWrapper.target) {
-    targetWrapper.setTarget(e.target)
-  }
-
-  const itemWrapper = (e.item && e.item.get('wrapper'));
-  if (itemWrapper && !itemWrapper.target) {
-    itemWrapper.setTarget(e.item);
-  }
-
-  const wrapper = targetWrapper || itemWrapper;
   // Default to CanvasWrapper if there's no handler which could resolve the function call
   if (wrapper && typeof wrapper[methodName] == 'function') {
     return wrapper[methodName]();
@@ -24,6 +14,20 @@ const handle = curry((methodName, e) => {
     return CanvasWrapper[methodName] && CanvasWrapper[methodName](e.target, e);
   }
 });
+
+const setWrappers = node => {
+  const wrapper = (
+    node.get('wrapper')
+    || (node.getModel && node.getModel().wrapper)
+  );
+
+  if (wrapper) {
+    wrapper.setTarget(node)
+  }
+
+  const children = (node.get('group') && node.get('group').get('children')) || [];
+  children.forEach(setWrappers);
+};
 
 export class Graph {
   behaviours = {
@@ -43,12 +47,18 @@ export class Graph {
     this.deregisterBehaviours();
     this.registerBehaviours();
     this.graph.data(data);
+    this.render();
     this.registerEdgeHandlers();
+    this.registerNodeHandlers();
   }
 
   // Edge handlers have to be registered manually because they don't have a custom draw function in which this could be done
   registerEdgeHandlers() {
     this.graph.getEdges().forEach(e => e.set('wrapper', new EdgeWrapper(e)));
+  }
+
+  registerNodeHandlers() {
+    this.graph.getNodes().forEach(setWrappers);
   }
 
   registerBehaviours() {

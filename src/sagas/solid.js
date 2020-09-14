@@ -1,6 +1,7 @@
 import { takeEvery, select, call, put, all } from 'redux-saga/effects';
 import { getFolderUri, getViewSelection } from '../selectors';
-import Actions from 'src/actions/solid';
+import SolidActions from 'src/actions/solid';
+import ModelActions from 'src/actions/model';
 import auth from 'solid-auth-client';
 import rdf from 'rdflib';
 
@@ -47,7 +48,8 @@ function* onViewLoad({uri}) {
     const logStatus = webId ? `You are logged in as ${webId}.` : 'You are not logged in.';
     if (res.status >= 200 && res.status < 300) {
       const json = yield res.json();
-      yield put(Actions.Creators.r_viewLoaded(json));
+      yield put(ModelActions.Creators.r_deselectAll());
+      yield put(ModelActions.Creators.r_viewLoaded(json));
     } else if (res.status === 401) {
       alert(`
         The request returned 401 - unauthorized.
@@ -77,7 +79,7 @@ function* fetchViews() {
     const type = rdf.Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')('type');
     const viewUris = store.statementsMatching(null, type, resource).map(s => s.subject.value);
 
-    yield put(Actions.Creators.r_setExistingViews(viewUris));
+    yield put(SolidActions.Creators.r_setExistingViews(viewUris));
   } catch (e) {
     alert(`There was a problem fetching saved views from ${folderUri}. Please recheck the uri and try again.`)
   }
@@ -88,7 +90,7 @@ function* onDeleteView({uri: viewUri}) {
     const res = yield call(auth.fetch, viewUri, { method: 'DELETE'});
 
     if (res.status >= 200 && res.status < 300) {
-      yield put(Actions.Creators.r_viewDeleted(viewUri));
+      yield put(SolidActions.Creators.r_viewDeleted(viewUri));
     } else {
       alert('An error occured while trying to delete the view.')
     }
@@ -181,8 +183,8 @@ function* onSaveFolderUri({ uri: folderUri }) {
 
     if (!folderCreated) {
       alert(`Cannot fetch given folder uri: ${folderUri}. Please check the URI and access rights on the SOLID pod and try again.`);
-      yield put(Actions.Creators.r_resetFolderUri());
-      yield put(Actions.Creators.r_toggleFolderUriChanging(false));
+      yield put(SolidActions.Creators.r_resetFolderUri());
+      yield put(SolidActions.Creators.r_toggleFolderUriChanging(false));
       return;
     } else {
       alert(`Folder successfully created at ${folderUri}`);
@@ -207,13 +209,13 @@ function* onSaveFolderUri({ uri: folderUri }) {
     INSERT DATA { <${window.origin}> a acl:agent; ws:storage <${folderUri}>. }`
   });
   if (res.status >= 200 && res.status < 300) {
-    yield put(Actions.Creators.r_setFolderUri(folderUri));
+    yield put(SolidActions.Creators.r_setFolderUri(folderUri));
     yield fetchViews();
   } else {
-    yield put(Actions.Creators.r_resetFolderUri());
+    yield put(SolidActions.Creators.r_resetFolderUri());
     alert('An error occurred while saving the folder uri to /settings/prefs.ttl. Please check the uri provided and access permissions again.')
   }
-  yield put(Actions.Creators.r_toggleFolderUriChanging(false));
+  yield put(SolidActions.Creators.r_toggleFolderUriChanging(false));
 }
 
 function* onStart() {
@@ -231,28 +233,28 @@ function* onLogin() {
     const popupUri = 'https://solid.community/common/popup.html';
     session = yield call(auth.popupLogin, { popupUri });
   }
-  yield put(Actions.Creators.r_setSolidSession(session));
+  yield put(SolidActions.Creators.r_setSolidSession(session));
 
   const folderUri = yield loadFolderUri();
-  yield put(Actions.Creators.r_setFolderUri(folderUri));
-  yield put(Actions.Creators.r_toggleFolderUriChanging(false));
+  yield put(SolidActions.Creators.r_setFolderUri(folderUri));
+  yield put(SolidActions.Creators.r_toggleFolderUriChanging(false));
   yield fetchViews();
 }
 
 function* onLogout() {
   yield call(auth.logout);
-  yield put(Actions.Creators.r_solidLoggedOut());
+  yield put(SolidActions.Creators.r_solidLoggedOut());
 }
 
 
 export default function*() {
   yield all([
-    takeEvery(Actions.Types.S_ON_VIEW_SAVE, onViewSave),
-    takeEvery(Actions.Types.S_ON_VIEW_LOAD, onViewLoad),
-    takeEvery(Actions.Types.S_ON_SOLID_LOGIN, onLogin),
-    takeEvery(Actions.Types.S_ON_SOLID_LOGOUT, onLogout),
-    takeEvery(Actions.Types.S_ON_SOLID_START, onStart),
-    takeEvery(Actions.Types.S_SAVE_FOLDER_URI, onSaveFolderUri),
-    takeEvery(Actions.Types.S_DELETE_VIEW, onDeleteView),
+    takeEvery(SolidActions.Types.S_ON_VIEW_SAVE, onViewSave),
+    takeEvery(SolidActions.Types.S_ON_VIEW_LOAD, onViewLoad),
+    takeEvery(SolidActions.Types.S_ON_SOLID_LOGIN, onLogin),
+    takeEvery(SolidActions.Types.S_ON_SOLID_LOGOUT, onLogout),
+    takeEvery(SolidActions.Types.S_ON_SOLID_START, onStart),
+    takeEvery(SolidActions.Types.S_SAVE_FOLDER_URI, onSaveFolderUri),
+    takeEvery(SolidActions.Types.S_DELETE_VIEW, onDeleteView),
   ]);
 }

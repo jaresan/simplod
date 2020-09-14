@@ -2,12 +2,12 @@ import {createSelector} from 'reselect';
 import entityTypes from 'src/constants/entityTypes';
 
 export const getViewSelection = appState => {
-  const { selected: { objects, properties } } = appState.graphModel.toJS();
+  const {entities} = appState.model.toJS();
 
-  return {
-    objectIds: Object.keys(objects),
-    properties: properties
-  }
+  return Object.entries(entities).reduce((acc, [key, val]) => {
+    const selected = Object.entries(val).reduce((acc2, [key, entity]) => entity.selected ? Object.assign(acc2, {[key]: entity}) : acc2, {});
+    return Object.assign(acc, {[key]: selected});
+  }, {});
 };
 
 export const getSelectedData = appState =>

@@ -50,7 +50,6 @@ export class AntVExample extends React.Component {
     }
 
     this.graph.loadData({nodes: getNodes(data), edges: getEdges(data)});
-    this.graph.render();
   }
 
   render() {

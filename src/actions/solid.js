@@ -5,7 +5,6 @@ export default createActions({
   r_solidLoggedOut: null,
   s_onSolidLogin: null,
   s_onSolidLogout: null,
-  r_viewLoaded: ['json'],
   s_onViewSave: ['uri'],
   s_onViewLoad: ['uri'],
   r_setFolderUri: ['uri'],
