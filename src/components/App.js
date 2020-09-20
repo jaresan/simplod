@@ -1,31 +1,20 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import YasguiContainer from './YasguiContainer';
 import PropertyList from './PropertyList';
 import ControlPanel from './ControlPanel';
 import {connect} from 'react-redux';
-import { parseTTL } from '../data/parseTTL';
-import { AntVExample } from './AntVExample';
-import { invertObj, keys, map, uniq } from 'ramda';
+import {parseTTL} from '../data/parseTTL';
+import {AntVExample} from './AntVExample';
+import {invertObj, keys, map, uniq} from 'ramda';
 import {Handler} from './graph/handlers/Handler';
 import Actions from '../actions';
-import styled from '@emotion/styled';
+import {Radio} from 'antd';
+import {getContainerStyle, getMenuStyle} from './App.styled';
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin: 32px;
-  height: 1000px;
-`;
-
-const RightMenu = styled.div`
-  max-width: 50%;
-  max-height: 100%;
-  display: flex;
-  flex-direction: column;
-`;
 class App extends Component {
   state = {
-    schemaData: null
+    schemaData: null,
+    horizontalLayout: false
   };
 
   constructor() {
@@ -71,29 +60,38 @@ class App extends Component {
       });
   };
 
+  toggleLayout = ({target: {value: horizontalLayout}}) => this.setState({horizontalLayout})
+
 
   render() {
+    const {horizontalLayout} = this.state;
+
     return (
       <div className="App">
         <input type="text" ref={e => this.dataSchemaInput = e} placeholder="Data schema URL"/>
         <button onClick={() => this.fetchData(this.dataSchemaInput.value)}>Reload schema URL</button>
         <button onClick={() => this.fetchData('https://sparql-proxy-api.jaresantonin.now.sh/hardExample')}>Hard example</button>
-        <Container>
+        <Radio.Group onChange={this.toggleLayout} value={this.state.horizontalLayout}>
+          View:
+          <Radio.Button value={true}>Horizontal</Radio.Button>
+          <Radio.Button value={false}>Vertical</Radio.Button>
+        </Radio.Group>
+        <div style={getContainerStyle(horizontalLayout)}>
           {
             this.state.schemaData && <AntVExample
-              width={window.innerWidth / 2}
-              height={window.innerHeight / 2}
+              width={window.innerWidth * (horizontalLayout ? 0.5 : 1)}
+              height={window.innerHeight * (horizontalLayout ? 0.5 : 1)}
               data={this.state.schemaData}
             />
           }
           <PropertyList/>
-          <RightMenu>
+          <div style={getMenuStyle(horizontalLayout)}>
             <ControlPanel/>
             <YasguiContainer
               endpointURL={this.endpointURL}
             />
-          </RightMenu>
-        </Container>
+          </div>
+        </div>
       </div>
     );
   }

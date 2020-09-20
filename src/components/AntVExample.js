@@ -21,11 +21,15 @@ export class AntVExample extends React.Component {
     // FIXME: Add graph handling to reducers and sagas --> graph instance should be available in the state
     const {data, width, height} = this.props;
 
+    if (this.graph) {
+      this.graph.destroy();
+    }
+
     const graph = new G6.Graph({
       container: this.mountNode,
       width, height,
       // renderer: 'svg',
-      fitViewPadding: [20, 40, 50, 20],
+      fitView: true,
       modes: {
         default: [
           // {
@@ -34,20 +38,18 @@ export class AntVExample extends React.Component {
           //   activeState: 'inRelation',
           //   inactiveState: 'notInRelation',
           // },
-          'drag-canvas', 'zoom-canvas', 'drag-node',
+          'drag-canvas', 'drag-node',
         ]
       },
       layout: {
         type: 'grid',
-        preventOverlap: true,
+        preventOverlap: false,
         workerEnabled: true
       },
-      plugins: [minimap]
+      // plugins: [minimap]
     });
 
-    if (!this.graph) {
-      this.graph = new Graph(graph);
-    }
+    this.graph = new Graph(graph);
 
     this.graph.loadData({nodes: getNodes(data), edges: getEdges(data)});
   }
