@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getSelectedProperties, getSelectedData } from 'src/selectors/index';
-import { parseSPARQLQuery } from 'src/utils';
-import { sparqlProxy } from '../constants/api';
+import { parseSPARQLQuery } from 'src/utils/parseQuery';
+import { sparqlProxy } from 'src/constants/api';
 import styled from '@emotion/styled';
 import YASGUI from '@triply/yasgui';
 import "@triply/yasgui/build/yasgui.min.css";

@@ -14,7 +14,7 @@ import {getContainerStyle, getMenuStyle} from './App.styled';
 class App extends Component {
   state = {
     schemaData: null,
-    horizontalLayout: false
+    horizontalLayout: true
   };
 
   constructor() {
