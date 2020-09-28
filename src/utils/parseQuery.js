@@ -36,7 +36,20 @@ export const parseSPARQLQuery = selectedProperties => {
       }
     });
 
-    const typeToVarName = types.reduce((acc, t, i) => Object.assign(acc, {[t]: `s${i}`}), {});
+    let usedNames = [];
+    const typeToVarName = types.reduce((acc, t, i) => {
+      const suffix = t.match(/:(.*)$/);
+      let varName;
+      if (suffix && suffix[1]) {
+        varName = suffix[1].toLowerCase();
+      }
+      if (varName && !usedNames.includes(varName)) {
+        usedNames.push(varName);
+      } else {
+        varName = `s${i}`;
+      }
+      return Object.assign(acc, {[t]: varName});
+    }, {});
     queryParts.typeDefinitions = Object.entries(typeToVarName).map(([type, varName]) => `?${varName} a ${type}.`).join('\n');
     queryParts.properties = Object.values(selectedProperties).map(({asVariable, name, predicate, optional, source}) => {
       name = asVariable ? `?${name}` : '[]';
