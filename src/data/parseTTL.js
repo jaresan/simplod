@@ -3,10 +3,18 @@ import { curry, invertObj, keys } from 'ramda';
 import possiblePrefixes from '../constants/possiblePrefixes';
 
 const propertyToName = {
-  'xml:integer': 'Int',
-  'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString': 'String',
-  'xml:string': 'String',
-  'xml:decimal': 'Decimal'
+  'xml:integer': 'int',
+  'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString': 'string',
+  'xml:string': 'string',
+  'xml:decimal': 'decimal',
+  'owl:Thing': 'thing',
+  customMatch: str => {
+    if (!str) return;
+    const type = str.match(/xsd:(.*)$/);
+    if (type && type[1]) {
+      return type[1].toLowerCase();
+    }
+  }
 };
 
 const propertyTypes = Object.keys(propertyToName);
@@ -65,9 +73,9 @@ const parseQuads = (quads, prefixes) => {
     }
 
     const classType = classMapping[quad.object.value];
-    return propertyToName[quad.object.datatypeString]
-      || propertyToName[quad.object.id]
-      || propertyToName[classType];
+
+    const possibleProp = [quad.object.datatypeString, quad.object.id, classType];
+    return possibleProp.find(p => propertyToName[p] || propertyToName.customMatch(p));
   };
 
 
@@ -90,7 +98,7 @@ const parseQuads = (quads, prefixes) => {
       acc[quad.subject.value] = quad.object.id;
 
       // ObjectId is type
-      if (!propertyTypes.includes(quad.object.id)) {
+      if (!propertyTypes.includes(quad.object.id) && !propertyToName.customMatch(quad.object.id)) {
         classes[quad.object.id] = {
           properties: [],
           methods: []
