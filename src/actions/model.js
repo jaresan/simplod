@@ -5,7 +5,7 @@ export default createActions({
   r_deselectAll: null,
   r_registerResource: ['entityType', 'data', 'id'],
   r_togglePropertyOptional: ['id', 'optional'],
-  r_togglePropertyShow: ['id', 'show'],
+  r_togglePropertyAsVariable: ['id', 'asVariable'],
   r_savePropertyName: ['id', 'name'],
   r_clearData: null,
   r_viewLoaded: ['json']

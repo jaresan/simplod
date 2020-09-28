@@ -10,11 +10,11 @@ const Input = styled.input`
 	background: ${({disabled}) => disabled ? 'lightgrey' : 'default'};	
 `;
 
-const Property = ({show, optional, name, onToggleShow, onToggleOptional, onSaveName}) => (
+const Property = ({asVariable, optional, name, onToggleAsVariable, onToggleOptional, onSaveName}) => (
 	<li>
 		<label>
-			<input type="checkbox" name="show" value="show" checked={!!show} onChange={onToggleShow}/>
-			Show
+			<input type="checkbox" name="show" value="show" checked={!!asVariable} onChange={onToggleAsVariable}/>
+			As variable
 		</label>
 		<label>
 			<input type="checkbox" name="optional" value="optional" checked={!!optional} onChange={onToggleOptional}/>
@@ -22,7 +22,7 @@ const Property = ({show, optional, name, onToggleShow, onToggleOptional, onSaveN
 		</label>
 		<Input
 			type="text"
-			disabled={!show}
+			disabled={!asVariable}
 			defaultValue={name}
 			onChange={onSaveName}
 		/>
@@ -35,8 +35,8 @@ class PropertyList extends Component {
 		this.props.toggleOptional(id, optional);
 	};
 
-	onToggleShow = (id, show) => {
-		this.props.toggleShow(id, show);
+	onToggleAsVariable = (id, asVariable) => {
+		this.props.toggleAsVariable(id, asVariable);
 	};
 
 	onSaveName = (id, name) => {
@@ -51,11 +51,11 @@ class PropertyList extends Component {
 		return map(([id, val]) =>
 			<Property
 				key={id}
-				show={val.show}
+				asVariable={val.asVariable}
 				optional={val.optional}
 				name={val.name}
 				onToggleOptional={e => this.onToggleOptional(id, e.target.checked)}
-				onToggleShow={e => this.onToggleShow(id, e.target.checked)}
+				onToggleAsVariable={e => this.onToggleAsVariable(id, e.target.checked)}
 				onSaveName={e => this.onSaveName(id, e.target.value)}
 				onDelete={() => this.onDelete(id)}
 			/>,
@@ -79,7 +79,7 @@ const mapStateToProps = appState => ({
 
 const mapDispatchToProps = {
 	toggleOptional: Actions.Creators.r_togglePropertyOptional,
-	toggleShow: Actions.Creators.r_togglePropertyShow,
+	toggleAsVariable: Actions.Creators.r_togglePropertyAsVariable,
 	onSaveName: Actions.Creators.r_savePropertyName,
 	unselectProperty: Actions.Creators.r_unselectProperty
 };

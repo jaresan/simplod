@@ -25,7 +25,7 @@ class App extends Component {
 
     if (process.env.NODE_ENV === 'development') {
       this.endpointURL = "https://linked.opendata.cz/sparql";
-      this.schemaURL = "https://sparql-proxy-api.jaresantonin.now.sh/hardExample";
+      this.schemaURL = "https://sparql-proxy-api.jaresantonin.now.sh/easyExample";
     }
   }
 
