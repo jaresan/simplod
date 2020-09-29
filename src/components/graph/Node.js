@@ -27,6 +27,13 @@ const attrs = {
     text: `${predicate}: ${type}`,
     fill: '#000',
   }),
+  'property-container': propCount => ({
+    y: PROP_LINE_HEIGHT * 2,
+    width: 300,
+    height: propCount * PROP_LINE_HEIGHT,
+    stroke: 'black',
+    opacity: 1
+  }),
   'method-container': (propCount, methodCount) => ({
     y: propCount * PROP_LINE_HEIGHT + PROP_LINE_HEIGHT * 2,
     width: 300,
@@ -38,6 +45,9 @@ const attrs = {
 };
 
 const NodeImplementation = {
+  setState(...args) {
+    console.log('setState', args);
+  },
   draw(cfg, group) {
     const {data: {properties, methods}, id} = cfg;
     const containerAttrs = attrs['node-container'](properties.length, methods.length);
@@ -58,11 +68,13 @@ const NodeImplementation = {
       })
     ), []);
 
+    const propertyContainerAttrs = attrs['property-container'](properties.length);
     const methodContainerAttrs = attrs['method-container'](properties.length, methods.length);
 
     return E.create(group, [
       E.Node({id: `node_${id}`, attrs: containerAttrs, name: 'node-container'}),
       E.Text({attrs: attrs['node-title'](width, cfg.label), name: 'node-title'}),
+      E.Rect({attrs: propertyContainerAttrs, name: `property-container`}),
       ...propFields,
       E.Rect({attrs: methodContainerAttrs, name: `method-container`}),
       ...methodFields

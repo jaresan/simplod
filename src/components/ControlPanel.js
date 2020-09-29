@@ -98,7 +98,7 @@ class ControlPanel extends Component {
   };
 
   getViewList = () => {
-    if (!this.props.session || !this.props.views.length) {
+    if (!this.props.session) {
       return;
     }
 

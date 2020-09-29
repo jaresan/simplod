@@ -89,6 +89,7 @@ const parseQuads = (quads, prefixes) => {
   **/
   const classes = {};
 
+  // TODO: Don't show classes with empty properties/methods
   // {
   //   [blankNodeId]: className
   // }
