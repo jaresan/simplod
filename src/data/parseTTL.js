@@ -1,5 +1,5 @@
 import {Parser} from 'n3';
-import { curry, invertObj, keys } from 'ramda';
+import { curry, invertObj, keys, filter } from 'ramda';
 import possiblePrefixes from '../constants/possiblePrefixes';
 
 const propertyToName = {
@@ -78,17 +78,6 @@ const parseQuads = (quads, prefixes) => {
     return possibleProp.find(p => propertyToName[p] || propertyToName.customMatch(p));
   };
 
-
-  /** Will look like:
-   const classes = {
-      [className]: {
-        properties: [{ predicate: type }],
-        methods: [{predicateName, objectClass}]
-      }
-    }
-  **/
-  const classes = {};
-
   // TODO: Don't show classes with empty properties/methods
   // {
   //   [blankNodeId]: className
@@ -97,17 +86,28 @@ const parseQuads = (quads, prefixes) => {
     if (quad.predicate.id === typeIRI) {
       // Empty node --> className mapping
       acc[quad.subject.value] = quad.object.id;
-
-      // ObjectId is type
-      if (!propertyTypes.includes(quad.object.id) && !propertyToName.customMatch(quad.object.id)) {
-        classes[quad.object.id] = {
-          properties: [],
-          methods: []
-        };
-      }
     }
     return acc;
   }, { });
+
+  /** Will look like:
+   const classes = {
+      [className]: {
+        properties: [{ predicate: type }],
+        methods: [{predicateName, objectClass}]
+      }
+    }
+   **/
+  const classes = quads.reduce((acc, quad) => {
+    if (quad.predicate.id === typeIRI) {
+      // Quad describing a type --> object.id is the type IRI, subject.id is a blank node
+      acc[quad.object.id] = {
+        properties: [],
+        methods: []
+      };
+    }
+    return acc;
+  }, {});
 
 
   const predicateKeys = {
@@ -146,7 +146,7 @@ const parseQuads = (quads, prefixes) => {
     return acc;
   }, { });
 
-  return Object.keys(edges).reduce((acc, key) => {
+  const populatedClasses = Object.keys(edges).reduce((acc, key) => {
     const edge = edges[key];
     if (edge.dataProperty) {
       acc[edge.subject].properties.push({
@@ -163,4 +163,7 @@ const parseQuads = (quads, prefixes) => {
 
     return acc;
   }, classes);
+
+  // Classes with not outgoing relationships
+  return filter(c => c.properties.length || c.methods.length, populatedClasses);
 };
