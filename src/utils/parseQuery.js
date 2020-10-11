@@ -51,8 +51,10 @@ export const parseSPARQLQuery = selectedProperties => {
       return Object.assign(acc, {[t]: varName});
     }, {});
     queryParts.typeDefinitions = Object.entries(typeToVarName).map(([type, varName]) => `?${varName} a ${type}.`).join('\n');
-    queryParts.properties = Object.values(selectedProperties).map(({asVariable, name, predicate, optional, source}) => {
-      name = asVariable ? `?${name}` : '[]';
+
+    queryParts.properties = Object.values(selectedProperties).map(({asVariable, name, predicate, optional, source, target}) => {
+      const varName = typeToVarName[target] || name; // Use existing queried entity if available to prevent cartesian products
+      name = asVariable ? `?${varName}` : '[]';
 
       const prefixed = predicate.match(/(^\w+):/);
       const prefix = prefixed && prefixed[1];
