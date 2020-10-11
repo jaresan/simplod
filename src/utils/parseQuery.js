@@ -36,17 +36,20 @@ export const parseSPARQLQuery = selectedProperties => {
       }
     });
 
-    let usedNames = [];
+    let usedNames = {};
+
+    // Class type to variable name, in query as `?varName a type.`
     const typeToVarName = types.reduce((acc, t, i) => {
       const suffix = t.match(/:(.*)$/);
       let varName;
       if (suffix && suffix[1]) {
-        varName = suffix[1].toLowerCase();
+        varName = suffix[1].replace('<', '').replace('>', '');
       }
-      if (varName && !usedNames.includes(varName)) {
-        usedNames.push(varName);
+      if (varName && !usedNames[varName]) {
+        usedNames[varName] = 1;
       } else {
-        varName = `s${i}`;
+        varName = `${varName}${usedNames[varName]}`;
+        usedNames[varName]++;
       }
       return Object.assign(acc, {[t]: varName});
     }, {});
