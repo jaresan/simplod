@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const containerHorizontal = {
   display: 'flex',
   flexDirection: 'row',

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getSelectedProperties, getSelectedData } from 'src/selectors/index';
+import { getSelectedProperties } from 'src/selectors/index';
 import { parseSPARQLQuery } from 'src/utils/parseQuery';
 import { sparqlProxy } from 'src/constants/api';
 import styled from '@emotion/styled';

@@ -17,8 +17,6 @@ const propertyToName = {
   }
 };
 
-const propertyTypes = Object.keys(propertyToName);
-
 export const parseTTL = ttlString => new Promise((res, err) => {
   getQuads(ttlString)
     .then(({quads, prefixes}) => {

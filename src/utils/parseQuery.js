@@ -1,17 +1,17 @@
 import { groupBy, invertObj, map, prop } from 'ramda';
 import possiblePrefixes from 'src/constants/possiblePrefixes';
 
-const parsePrefix = (iri) => {
-  const suffix = iri.replace(/.*(\/|#)/, '');
-  const prefixIri = iri.replace(/(\/|#)[^/#]*$/, '$1');
-  const alias = possiblePrefixes[prefixIri];
-
-  return {
-    alias,
-    suffix,
-    prefixIri
-  }
-};
+// const parsePrefix = (iri) => {
+//   const suffix = iri.replace(/.*(\/|#)/, '');
+//   const prefixIri = iri.replace(/(\/|#)[^/#]*$/, '$1');
+//   const alias = possiblePrefixes[prefixIri];
+//
+//   return {
+//     alias,
+//     suffix,
+//     prefixIri
+//   }
+// };
 
 export const parseSPARQLQuery = selectedProperties => {
   let queryParts = {
@@ -25,7 +25,7 @@ export const parseSPARQLQuery = selectedProperties => {
 
   if (types.length) {
     types = types.map(type => {
-      const { alias, suffix, prefixIri } = parsePrefix(type);
+      // const { alias, suffix, prefixIri } = parsePrefix(type);
       const prefixed = type.match(/(^\w+):/);
       const prefix = prefixed && prefixed[1];
       if (invertedPrefixes[prefix]) {

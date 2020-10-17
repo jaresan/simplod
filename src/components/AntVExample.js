@@ -2,11 +2,11 @@ import React from 'react';
 import G6 from '@antv/g6';
 import {Graph, getNodes, getEdges} from './graph';
 
-const minimap = new G6.Minimap({
-  size: [300, 300],
-  className: 'minimap',
-  type: 'delegate',
-});
+// const minimap = new G6.Minimap({
+//   size: [300, 300],
+//   className: 'minimap',
+//   type: 'delegate',
+// });
 
 export class AntVExample extends React.Component {
   componentDidMount() {
