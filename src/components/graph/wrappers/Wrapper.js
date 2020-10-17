@@ -20,59 +20,65 @@ export class Wrapper {
    * Sets the wrappers node in the graph (the graph's representation of the node).
    * @param node
    */
-  setNode = node => {
+  setNode(node) {
     this.node = node;
     this.resetStyle();
     this.handler.registerResource(node.get('data'), this.id);
     this.handler.subscribeToChanges(this.id, this);
   };
 
-  getNode = () => this.node;
+  getNode() {
+    return this.node;
+  }
 
   /**
    * Sets container node --> properties & other wrappers can reference the container they are a part of.
    * @param containerNode
    */
-  setContainerNode = containerNode => {
+  setContainerNode(containerNode) {
     this.containerNode = containerNode;
   }
 
-  getContainerNode = () => this.containerNode;
+  getContainerNode() {
+    return this.containerNode;
+  }
 
-  getGroup = () => this.node.get('groupGetter')();
-
-  onHover = () => {
+  onHover() {
     this.setState({hover: true});
   };
 
-  onBlur = () => {
+  onBlur() {
     this.setState({hover: false});
   };
 
-  setState = keys => {
+  setState(keys) {
     Object.assign(this.state.style, keys);
     this.updateStyles();
   };
 
-  resetStyle = () => this.getNode().attr(this.defaultStyle);
+  resetStyle() {
+    this.getNode().attr(this.defaultStyle);
+  }
 
-  updateTargetStyle = style => this.getNode().attr(style);
+  updateTargetStyle(style) {
+    this.getNode().attr(style);
+  }
 
   updateStyles = () => {
     const style = Object.entries(this.state.style).reduce((acc, [key, value]) => Object.assign(acc, value ? this.styles[key] : {}), {...this.defaultStyle});
     this.updateTargetStyle(style);
   };
 
-  onClick = () => {
+  onClick() {
     this.onToggleSelect(!this.selected);
   };
 
-  onToggleSelect = selected => {
+  onToggleSelect(selected) {
     this.selected = typeof selected === 'undefined' ? !this.selected : selected;
     this.handler.onToggleSelect(this.id, selected);
   }
 
-  onStateChanged = state => {
+  onStateChanged(state) {
     this.setState(state);
   };
 }

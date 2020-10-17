@@ -57,7 +57,7 @@ const NodeImplementation = {
       attrs: attrs.property({predicate, type, i}),
       name: `property#${i}`,
       data: {target: type, source: id, predicate, name: predicate.match(/(\w+)$/)[1]},
-      groupGetter: () => group
+      containerGetter: () => group.getContainer()
     })), []);
 
     const methodFields = methods.reduce((acc, {predicate, object, weight}, i) => acc.concat(
@@ -66,15 +66,16 @@ const NodeImplementation = {
         attrs: attrs.property({predicate, type: object, i: i + properties.length}),
         name: `property#${i + properties.length}`,
         data: {target: object, source: id, predicate, name: predicate.match(/(\w+)$/)[1]},
-        groupGetter: () => group
+        containerGetter: () => group.getContainer()
       })
     ), []);
 
     const propertyContainerAttrs = attrs['property-container'](properties.length);
     const methodContainerAttrs = attrs['method-container'](properties.length, methods.length);
 
+    group.set('methods', methodFields);
     return E.create(group, [
-      E.Node({id: `node_${id}`, attrs: containerAttrs, name: 'node-container', groupGetter: () => group}),
+      E.Node({id: `node_${id}`, attrs: containerAttrs, name: 'node-container', containerGetter: () => group.getContainer()}),
       E.Text({attrs: attrs['node-title'](width, cfg.label), name: 'node-title'}),
       E.Rect({attrs: propertyContainerAttrs, name: `property-container`}),
       ...propFields,

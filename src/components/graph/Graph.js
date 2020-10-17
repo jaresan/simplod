@@ -1,4 +1,4 @@
-import {curry, flatten, map} from 'ramda';
+import {curry} from 'ramda';
 import {Canvas as CanvasWrapper, Edge as EdgeWrapper} from './wrappers';
 
 const handle = curry((methodName, e) => {

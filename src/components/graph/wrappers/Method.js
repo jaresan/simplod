@@ -27,22 +27,40 @@ export class Method extends Wrapper {
   styles = styles;
   handler = PropertyHandler;
 
-  highlightOutgoingEdges = () => {
+  getSameTargetProperties() {
+    return this
+      .getContainerNode()
+      .getContainer()
+      .get('methods')
+      .filter(m => m.data.target === this.getNode().get('data').target)
+  }
+
+  findEdge() {
+    if (this.edge) {
+      return;
+    }
+
     const model = this.getNode().get('data');
-    this
+    this.edge = this
       .getContainerNode()
       .getOutEdges()
-      .filter(e => {
+      .find(e => {
         const {target} = e.getModel();
         return model.target === target;
       })
-      .forEach(e => e.get('wrapper').highlight());
   }
 
-  onClick = () => {
-    this.onToggleSelect();
-    if (this.selected) {
-      this.highlightOutgoingEdges();
+  toggleSelectOutgoingEdge(select) {
+    if (this.edge) {
+      this.edge.get('wrapper').onToggleSelect(select)
     }
-  };
+  }
+
+  onToggleSelect(...args) {
+    super.onToggleSelect(...args);
+
+    this.findEdge();
+    const similarProps = this.getSameTargetProperties();
+    this.toggleSelectOutgoingEdge(similarProps.some(p => p.wrapper.selected));
+  }
 }

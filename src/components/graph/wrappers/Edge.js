@@ -74,7 +74,7 @@ export class Edge extends Wrapper {
       });
   };
 
-  toggleHighlightProperties = flag => {
+  togglePropertiesSelected(flag) {
     this.edge.getSource()
       .getContainer()
       .getChildren()
@@ -82,14 +82,8 @@ export class Edge extends Wrapper {
       .forEach(prop => prop.get('wrapper').onToggleSelect(flag));
   }
 
-  onClick = () => {
+  onClick() {
     this.onToggleSelect();
-    this.toggleHighlightProperties(this.selected);
-  };
-
-  highlight = () => {
-    this.selected = true;
-
-    this.onToggleSelect(true);
+    this.togglePropertiesSelected(this.selected);
   };
 }
