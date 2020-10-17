@@ -1,4 +1,4 @@
-import {curry} from 'ramda';
+import {curry, flatten, map} from 'ramda';
 import {Canvas as CanvasWrapper, Edge as EdgeWrapper} from './wrappers';
 
 const handle = curry((methodName, e) => {
@@ -16,18 +16,24 @@ const handle = curry((methodName, e) => {
   }
 });
 
-const setWrappers = node => {
+const connectWrappers = (node, containerNode) => {
   const wrapper = (
     node.get('wrapper')
     || (node.getModel && node.getModel().wrapper)
   );
 
   if (wrapper) {
-    wrapper.setTarget(node)
+    wrapper.setNode(node)
+
+    if (containerNode) {
+      node.set('containerNode', containerNode);
+      wrapper.setContainerNode(containerNode);
+    }
   }
 
   const children = (node.get('group') && node.get('group').get('children')) || [];
-  children.forEach(setWrappers);
+  // const container = children.find(ch => (ch.get('wrapper') instanceof NodeWrapper))
+  children.forEach(ch => connectWrappers(ch, node));
 };
 
 export class Graph {
@@ -59,7 +65,7 @@ export class Graph {
   }
 
   registerNodeHandlers() {
-    this.graph.getNodes().forEach(setWrappers);
+    this.graph.getNodes().forEach(connectWrappers);
   }
 
   registerBehaviours() {

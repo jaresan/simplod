@@ -26,4 +26,23 @@ export class Method extends Wrapper {
   defaultStyle = defaultStyle;
   styles = styles;
   handler = PropertyHandler;
+
+  highlightOutgoingEdges = () => {
+    const model = this.getNode().get('data');
+    this
+      .getContainerNode()
+      .getOutEdges()
+      .filter(e => {
+        const {target} = e.getModel();
+        return model.target === target;
+      })
+      .forEach(e => e.get('wrapper').highlight());
+  }
+
+  onClick = () => {
+    this.onToggleSelect();
+    if (this.selected) {
+      this.highlightOutgoingEdges();
+    }
+  };
 }

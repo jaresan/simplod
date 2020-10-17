@@ -47,7 +47,7 @@ export class Edge extends Wrapper {
     super(id);
     Object.assign(this, {
       id,
-      target: edge,
+      edge,
       model: {
         source,
         predicate,
@@ -59,7 +59,7 @@ export class Edge extends Wrapper {
   }
 
   updateStyles = () => {
-    this.target
+    this.edge
       .getContainer()
       .getChildren()
       .forEach(shape => {
@@ -72,5 +72,24 @@ export class Edge extends Wrapper {
           );
         shape.attr(style);
       });
+  };
+
+  toggleHighlightProperties = flag => {
+    this.edge.getSource()
+      .getContainer()
+      .getChildren()
+      .filter(ch => ch.get('data') && ch.get('data').target === this.model.target)
+      .forEach(prop => prop.get('wrapper').onToggleSelect(flag));
+  }
+
+  onClick = () => {
+    this.onToggleSelect();
+    this.toggleHighlightProperties(this.selected);
+  };
+
+  highlight = () => {
+    this.selected = true;
+
+    this.onToggleSelect(true);
   };
 }

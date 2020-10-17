@@ -152,6 +152,7 @@ const parseQuads = (quads, prefixes) => {
         type: edge.dataProperty
       });
     } else {
+      // FIXME: Empty boxes should be shown as properties, not methods
       acc[edge.subject].methods.push({
         predicate: edge.predicate,
         object: edge.object,

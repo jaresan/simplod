@@ -20,8 +20,8 @@ export class Handler {
     this.dispatch(Actions.Model.Creators.r_registerResource(this.entityType, data, id));
   }
 
-  static onSelect(id) {
-    this.dispatch(Actions.Model.Creators.r_toggleSelect(this.entityType, id));
+  static onToggleSelect(id, selected) {
+    this.dispatch(Actions.Model.Creators.r_toggleSelect({entityType: this.entityType, id, selected}));
   }
 
   /**
@@ -33,7 +33,8 @@ export class Handler {
         const subState = state.model.getIn(['entities', recipient.handler.entityType, recipient.id]);
         if (subState && subState !== recipient.lastState) {
           // FIXME: Map to relevant properties for the wrapper instead of sending subState.toJS() as a whole
-          // define selectors and mapping between redux state -> UI state
+          // define selectors and mapping between redux state -> UI state in Wrappers themselves,
+          // e.g. stateToStyle = {selected: {selected: true}} and then react to the child keys
           recipient.onStateChanged(subState.toJS());
           recipient.lastState = subState;
 

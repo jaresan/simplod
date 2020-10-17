@@ -9,17 +9,37 @@ export class Wrapper {
   styles = {};
   state = {style: {}};
   handler = Canvas;
+  selected = false;
 
   constructor(id) {
     this.id = id;
   }
 
-  setTarget = target => {
-    this.target = target;
+
+  /**
+   * Sets the wrappers node in the graph (the graph's representation of the node).
+   * @param node
+   */
+  setNode = node => {
+    this.node = node;
     this.resetStyle();
-    this.handler.registerResource(target.get('data'), this.id);
+    this.handler.registerResource(node.get('data'), this.id);
     this.handler.subscribeToChanges(this.id, this);
   };
+
+  getNode = () => this.node;
+
+  /**
+   * Sets container node --> properties & other wrappers can reference the container they are a part of.
+   * @param containerNode
+   */
+  setContainerNode = containerNode => {
+    this.containerNode = containerNode;
+  }
+
+  getContainerNode = () => this.containerNode;
+
+  getGroup = () => this.node.get('groupGetter')();
 
   onHover = () => {
     this.setState({hover: true});
@@ -34,9 +54,9 @@ export class Wrapper {
     this.updateStyles();
   };
 
-  resetStyle = () => this.target.attr(this.defaultStyle);
+  resetStyle = () => this.getNode().attr(this.defaultStyle);
 
-  updateTargetStyle = style => this.target.attr(style);
+  updateTargetStyle = style => this.getNode().attr(style);
 
   updateStyles = () => {
     const style = Object.entries(this.state.style).reduce((acc, [key, value]) => Object.assign(acc, value ? this.styles[key] : {}), {...this.defaultStyle});
@@ -44,9 +64,13 @@ export class Wrapper {
   };
 
   onClick = () => {
-    // console.log(`Clicked ${this.constructor.name} -`, this.target, this.id);
-    this.handler.onSelect(this.id);
+    this.onToggleSelect(!this.selected);
   };
+
+  onToggleSelect = selected => {
+    this.selected = typeof selected === 'undefined' ? !this.selected : selected;
+    this.handler.onToggleSelect(this.id, selected);
+  }
 
   onStateChanged = state => {
     this.setState(state);
