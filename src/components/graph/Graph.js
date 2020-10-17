@@ -5,6 +5,7 @@ const handle = curry((methodName, e) => {
   const wrapper = (
     e.target.get('wrapper')
     || (e.target.getModel && e.target.getModel().wrapper)
+    || (e.item && e.item.get('wrapper'))
   );
 
   // Default to CanvasWrapper if there's no handler which could resolve the function call
