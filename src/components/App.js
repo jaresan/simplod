@@ -31,6 +31,7 @@ class App extends Component {
       this.schemaURL = this.courtExampleURL;
       this.schemaURL = this.applicantsURL;
       this.schemaURL = this.govURL;
+      this.endpointURL = "https://data.gov.cz/sparql";
     }
   }
 
