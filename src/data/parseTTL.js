@@ -186,6 +186,5 @@ const parseQuads = (quads, prefixes) => {
       return acc;
   }, {});
 
-  console.log(data, usedPrefixes);
   return {data, usedPrefixes};
 };

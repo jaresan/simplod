@@ -23,7 +23,6 @@ class App extends Component {
     this.schemaURL = params.get('schemaURL');
     this.endpointURL = params.get('endpointURL') || 'http://dbpedia.org/sparql';
 
-    this.endpointURL = "https://linked.opendata.cz/sparql";
     this.courtExampleURL = 'https://sparql-proxy-api.jaresantonin.now.sh/spo-court.ttl';
     this.applicantsURL = 'https://sparql-proxy-api.jaresantonin.now.sh/spo-job-applicants.ttl';
     this.govURL = "https://sparql-proxy-api.jaresantonin.now.sh/data.gov.cz.ttl";
