@@ -25,6 +25,8 @@ export class AntVExample extends React.Component {
       this.graph.destroy();
     }
 
+    const nodes = getNodes(data);
+    const edges = getEdges(data);
     const graph = new G6.Graph({
       container: this.mountNode,
       width, height,
@@ -38,12 +40,13 @@ export class AntVExample extends React.Component {
           //   activeState: 'inRelation',
           //   inactiveState: 'notInRelation',
           // },
-          'drag-canvas', 'drag-node'
+          'drag-canvas', 'drag-node', 'zoom-canvas'
         ]
       },
       layout: {
         type: 'grid',
-        preventOverlap: false,
+        cols: 3,
+        preventOverlap: true,
         workerEnabled: true
       },
       // plugins: [minimap]
@@ -51,7 +54,7 @@ export class AntVExample extends React.Component {
 
     this.graph = new Graph(graph);
 
-    this.graph.loadData({nodes: getNodes(data), edges: getEdges(data)});
+    this.graph.loadData({nodes, edges});
   }
 
   render() {

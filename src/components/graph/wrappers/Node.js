@@ -6,6 +6,6 @@ export class Node extends Wrapper {
   handler = NodeHandler;
 
   onClick = () => {
-    console.log('node clicked');
+    this.node.get('groupController').toggleProperties();
   }
 }

@@ -1,12 +1,13 @@
 import G6 from '@antv/g6';
 import E from './ElementCreators';
+import Group from './wrappers/Group';
 const NODE_TYPE = 'graphNode';
 
 const PROP_LINE_HEIGHT = 12;
 const attrs = {
-  'node-container': (propCount, methodCount) => ({
-    width: 300,
-    height: 50 + (propCount + methodCount) * PROP_LINE_HEIGHT,
+  'node-container': ({propCount, methodCount, label}) => ({
+    width: label.length * 6,
+    height: 24,
     stroke: 'black', // Apply the color to the stroke. For filling, use fill: cfg.color instead
     fill: 'steelblue',
     opacity: 1
@@ -32,6 +33,7 @@ const attrs = {
     width: 300,
     height: propCount * PROP_LINE_HEIGHT,
     stroke: 'black',
+    fill: 'steelblue',
     opacity: 1
   }),
   'method-container': (propCount, methodCount) => ({
@@ -52,14 +54,15 @@ const NodeImplementation = {
   },
   draw(cfg, group) {
     const {data: {properties, methods}, id} = cfg;
-    const containerAttrs = attrs['node-container'](properties.length, methods.length);
+    const containerAttrs = attrs['node-container']({propCount: properties.length, methodCount: methods.length, label: cfg.label});
     const {width} = containerAttrs;
+    const groupController = new Group(group);
     const propFields = properties.reduce((acc, {predicate, object, type}, i)=> acc.concat(E.Property({
       id: `property_${id}-${predicate}-${type}`,
       attrs: attrs.property({predicate, type, i}),
       name: `property#${i}`,
       data: {target: type, source: id, predicate, name: getSuffix(predicate)},
-      containerGetter: () => group.getContainer()
+      groupController
     })), []);
 
     const methodFields = methods.reduce((acc, {predicate, object, weight}, i) => acc.concat(
@@ -68,7 +71,7 @@ const NodeImplementation = {
         attrs: attrs.property({predicate, type: object, i: i + properties.length}),
         name: `property#${i + properties.length}`,
         data: {target: object, source: id, predicate, name: getSuffix(predicate)},
-        containerGetter: () => group.getContainer()
+        groupController
       })
     ), []);
 
@@ -76,14 +79,19 @@ const NodeImplementation = {
     const methodContainerAttrs = attrs['method-container'](properties.length, methods.length);
 
     group.set('methods', methodFields);
+    group.set('wrapper', groupController);
     return E.create(group, [
-      E.Node({id: `node_${id}`, attrs: containerAttrs, name: 'node-container', containerGetter: () => group.getContainer()}),
+      E.Node({id: `node_${id}`, attrs: containerAttrs, name: 'node-container', groupController}),
       E.Text({attrs: attrs['node-title'](width, cfg.label), name: 'node-title'}),
       E.Rect({attrs: propertyContainerAttrs, name: `property-container`}),
       ...propFields,
       E.Rect({attrs: methodContainerAttrs, name: `method-container`}),
       ...methodFields
     ])[0];
+  },
+
+  afterDraw(cfg, group) {
+    group.get('wrapper').toggleProperties(false);
   }
 };
 

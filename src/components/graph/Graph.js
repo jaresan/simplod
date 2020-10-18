@@ -1,18 +1,19 @@
 import {curry} from 'ramda';
 import {Canvas as CanvasWrapper, Edge as EdgeWrapper} from './wrappers';
 
+const getWrapper = n =>
+  (n && n.get('wrapper'))
+  || (n.getModel && n.getModel().wrapper)
+  || (n.getParent && n.getParent() && n.getParent().get('wrapper'));
 const handle = curry((methodName, e) => {
-  const wrapper = (
-    e.target.get('wrapper')
-    || (e.target.getModel && e.target.getModel().wrapper)
-    || (e.item && e.item.get('wrapper'))
-  );
+  const target = e.target || e.item;
+  const wrapper = getWrapper(target)
 
   // Default to CanvasWrapper if there's no handler which could resolve the function call
   if (wrapper && typeof wrapper[methodName] == 'function') {
-    return wrapper[methodName]();
+    return wrapper[methodName](target);
   } else {
-    return CanvasWrapper[methodName] && CanvasWrapper[methodName](e.target, e);
+    return CanvasWrapper[methodName] && CanvasWrapper[methodName](target, e);
   }
 });
 
