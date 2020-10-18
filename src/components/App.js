@@ -23,11 +23,11 @@ class App extends Component {
     this.schemaURL = params.get('schemaURL');
     this.endpointURL = params.get('endpointURL') || 'http://dbpedia.org/sparql';
 
+    this.endpointURL = "https://linked.opendata.cz/sparql";
+    this.courtExampleURL = 'https://sparql-proxy-api.jaresantonin.now.sh/spo-court.ttl';
+    this.applicantsURL = 'https://sparql-proxy-api.jaresantonin.now.sh/spo-job-applicants.ttl';
+    this.govURL = "https://sparql-proxy-api.jaresantonin.now.sh/data.gov.cz.ttl";
     if (process.env.NODE_ENV === 'development') {
-      this.endpointURL = "https://linked.opendata.cz/sparql";
-      this.courtExampleURL = 'https://sparql-proxy-api.jaresantonin.now.sh/spo-court.ttl';
-      this.applicantsURL = 'https://sparql-proxy-api.jaresantonin.now.sh/spo-job-applicants.ttl';
-      this.govURL = "https://sparql-proxy-api.jaresantonin.now.sh/data.gov.cz.ttl";
       this.schemaURL = this.courtExampleURL;
       this.schemaURL = this.applicantsURL;
       this.schemaURL = this.govURL;
@@ -76,7 +76,7 @@ class App extends Component {
       <div className="App">
         <input type="text" ref={e => this.dataSchemaInput = e} placeholder="Data schema URL"/>
         <button onClick={() => this.fetchData(this.dataSchemaInput.value)}>Reload schema URL</button>
-        <button onClick={() => this.fetchData(this.courtExampleURL)}>Hard example</button>
+        <button onClick={() => this.fetchData(this.courtExampleURL)}>Court example</button>
         <button onClick={() => this.fetchData(this.govURL)}>Gov example</button>
         <Radio.Group onChange={this.toggleLayout} value={this.state.horizontalLayout}>
           View:
