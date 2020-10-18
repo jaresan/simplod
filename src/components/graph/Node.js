@@ -44,6 +44,8 @@ const attrs = {
   })
 };
 
+const getSuffix = iri => iri.match(/([^/#:]+)$/)[1];
+
 const NodeImplementation = {
   setState(...args) {
     console.log('setState', args);
@@ -56,7 +58,7 @@ const NodeImplementation = {
       id: `property_${id}-${predicate}-${type}`,
       attrs: attrs.property({predicate, type, i}),
       name: `property#${i}`,
-      data: {target: type, source: id, predicate, name: predicate.match(/(\w+)$/)[1]},
+      data: {target: type, source: id, predicate, name: getSuffix(predicate)},
       containerGetter: () => group.getContainer()
     })), []);
 
@@ -65,7 +67,7 @@ const NodeImplementation = {
         id: `property_${id}-${predicate}-${object}`,
         attrs: attrs.property({predicate, type: object, i: i + properties.length}),
         name: `property#${i + properties.length}`,
-        data: {target: object, source: id, predicate, name: predicate.match(/([^/#:]+)$/)[1]},
+        data: {target: object, source: id, predicate, name: getSuffix(predicate)},
         containerGetter: () => group.getContainer()
       })
     ), []);

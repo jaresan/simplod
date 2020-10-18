@@ -1,5 +1,5 @@
 import {Parser} from 'n3';
-import { curry, invertObj, keys, filter } from 'ramda';
+import { assocPath, curry, invertObj, keys } from 'ramda';
 import possiblePrefixes from '../constants/possiblePrefixes';
 
 const propertyToName = {
@@ -20,6 +20,7 @@ const propertyToName = {
 export const parseTTL = ttlString => new Promise((res, err) => {
   getQuads(ttlString)
     .then(({quads, prefixes}) => {
+      console.log(prefixes);
       res({
         data: parseQuads(quads, Object.assign(possiblePrefixes, invertObj(prefixes))),
         __prefixes__: prefixes
@@ -40,6 +41,8 @@ const getQuads = ttlString => new Promise((res, err) => {
   });
 });
 
+
+// TODO: Really slow.. How much does it affect performance? How about a trie?
 const getWithPrefix = curry((prefixes, iri) => {
   for (let key of keys(prefixes)) {
     if (iri && iri.includes(key)) {
@@ -76,7 +79,6 @@ const parseQuads = (quads, prefixes) => {
     return possibleProp.find(p => propertyToName[p] || propertyToName.customMatch(p));
   };
 
-  // TODO: Don't show classes with empty properties/methods
   // {
   //   [blankNodeId]: className
   // }
@@ -88,25 +90,6 @@ const parseQuads = (quads, prefixes) => {
     return acc;
   }, { });
 
-  /** Will look like:
-   const classes = {
-      [className]: {
-        properties: [{ predicate: type }],
-        methods: [{predicateName, objectClass}]
-      }
-    }
-   **/
-  const classes = quads.reduce((acc, quad) => {
-    if (quad.predicate.id === typeIRI) {
-      // Quad describing a type --> object.id is the type IRI, subject.id is a blank node
-      acc[quad.object.id] = {
-        properties: [],
-        methods: []
-      };
-    }
-    return acc;
-  }, {});
-
 
   const predicateKeys = {
     [predicateSpecIRI]: 'predicate',
@@ -115,54 +98,45 @@ const parseQuads = (quads, prefixes) => {
     [hasWeightIRI]: 'weight'
   };
 
-  const edges = quads.reduce((acc, quad) => {
-    let predicateID = '';
-    let key = '';
-    let value = '';
-    if (isEdge(quad)) {
-      predicateID = quad.subject.id;
+  const edges = Object.values(
+    quads.filter(isEdge).reduce((acc, quad) => {
+      let predicateId = '';
+      let key = '';
+      let value = '';
+
+      predicateId = quad.subject.id;
       key = predicateKeys[quad.predicate.id];
       value = classMapping[quad.object.value] || quad.object.value;
 
-      if (!acc[predicateID]) {
-        acc[predicateID] = {
-          [key]: value
-        }
-      } else {
-        acc[predicateID][key] = value;
-      }
+      acc = assocPath([predicateId, key], value, acc);
 
       const dataProperty = getDataProperty(quad, classMapping);
       if (dataProperty) {
-        acc[predicateID].dataProperty = dataProperty;
+        acc[predicateId].dataProperty = dataProperty;
       }
 
-    } else {
       return acc;
-    }
+    }, { })
+  );
 
-    return acc;
-  }, { });
+  const hasOutgoingEdges = edges.reduce((acc, {subject}) => Object.assign(acc, {[subject]: true}), {});
 
-  const populatedClasses = Object.keys(edges).reduce((acc, key) => {
-    const edge = edges[key];
-    if (edge.dataProperty) {
-      acc[edge.subject].properties.push({
-        predicate: edge.predicate,
-        type: edge.dataProperty
-      });
-    } else {
-      // FIXME: Empty boxes should be shown as properties, not methods
-      acc[edge.subject].methods.push({
-        predicate: edge.predicate,
-        object: edge.object,
-        weight: edge.weight
-      });
-    }
+  // Populated classes with existing outgoing relationships (no outgoing relationships --> data property)
+  return edges
+    .filter(({subject}) => hasOutgoingEdges[subject])
+    .reduce((acc, {dataProperty: type, predicate, object, weight, subject}) => {
+      if (!acc[subject]) {
+        acc[subject] = {
+          properties: [],
+          methods: []
+        };
+      }
+      if (!hasOutgoingEdges[object]) {
+        acc[subject].properties.push({predicate, type: type || object});
+      } else {
+        acc[subject].methods.push({predicate, object, weight});
+      }
 
-    return acc;
-  }, classes);
-
-  // Classes with not outgoing relationships
-  return filter(c => c.properties.length || c.methods.length, populatedClasses);
+      return acc;
+  }, {});
 };
