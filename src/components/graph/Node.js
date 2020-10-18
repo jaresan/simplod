@@ -65,7 +65,7 @@ const NodeImplementation = {
         id: `property_${id}-${predicate}-${object}`,
         attrs: attrs.property({predicate, type: object, i: i + properties.length}),
         name: `property#${i + properties.length}`,
-        data: {target: object, source: id, predicate, name: predicate.match(/(\w+)$/)[1]},
+        data: {target: object, source: id, predicate, name: predicate.match(/([^/#:]+)$/)[1]},
         containerGetter: () => group.getContainer()
       })
     ), []);
