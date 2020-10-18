@@ -23,6 +23,7 @@ export const parseSPARQLQuery = selectedProperties => {
   const usedPrefixes = {};
   const invertedPrefixes = invertObj(possiblePrefixes);
 
+  // FIXME: Take prefixes from the new ones created not static constants
   if (types.length) {
     types = types.map(type => {
       // const { alias, suffix, prefixIri } = parsePrefix(type);

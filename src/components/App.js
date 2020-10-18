@@ -25,6 +25,8 @@ class App extends Component {
 
     if (process.env.NODE_ENV === 'development') {
       this.endpointURL = "https://linked.opendata.cz/sparql";
+      this.courtExampleURL = 'https://sparql-proxy-api.jaresantonin.now.sh/spo-court.ttl';
+      this.schemaURL = this.courtExampleURL;
       this.schemaURL = "https://sparql-proxy-api.jaresantonin.now.sh/data.gov.cz.ttl";
     }
   }
@@ -70,7 +72,7 @@ class App extends Component {
       <div className="App">
         <input type="text" ref={e => this.dataSchemaInput = e} placeholder="Data schema URL"/>
         <button onClick={() => this.fetchData(this.dataSchemaInput.value)}>Reload schema URL</button>
-        <button onClick={() => this.fetchData('https://sparql-proxy-api.jaresantonin.now.sh/spo-court.ttl')}>Hard example</button>
+        <button onClick={() => this.fetchData(this.courtExampleURL)}>Hard example</button>
         <Radio.Group onChange={this.toggleLayout} value={this.state.horizontalLayout}>
           View:
           <Radio.Button value={true}>Horizontal</Radio.Button>

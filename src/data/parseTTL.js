@@ -20,13 +20,33 @@ const propertyToName = {
 export const parseTTL = ttlString => new Promise((res, err) => {
   getQuads(ttlString)
     .then(({quads, prefixes}) => {
-      console.log(prefixes);
+      const {data, prefixes: usedPrefixes} = parseQuads(quads, Object.assign(possiblePrefixes, invertObj(prefixes)));
       res({
-        data: parseQuads(quads, Object.assign(possiblePrefixes, invertObj(prefixes))),
-        __prefixes__: prefixes
+        data,
+        __prefixes__: usedPrefixes
       });
     });
 });
+
+const parsePrefix = (prefixes, iri) => {
+  let url;
+  try {
+    url = new URL(iri);
+  } catch (e) {
+    // Bad URL
+    return iri;
+  }
+
+  const suffix = iri.replace(/.*(\/|#)/, '');
+  const prefixIri = iri.replace(/(\/|#)[^/#]*$/, '$1');
+  const alias = prefixes[prefixIri] || url.host.replace(/(?:www.)?(\w+).*/, '$1');
+
+  return {
+    alias,
+    suffix,
+    prefixIri
+  }
+};
 
 const getQuads = ttlString => new Promise((res, err) => {
   const parser = new Parser();
@@ -43,7 +63,7 @@ const getQuads = ttlString => new Promise((res, err) => {
 
 
 // TODO: Really slow.. How much does it affect performance? How about a trie?
-const getWithPrefix = curry((prefixes, iri) => {
+const getPrefixed = curry((prefixes, iri) => {
   for (let key of keys(prefixes)) {
     if (iri && iri.includes(key)) {
       return `${prefixes[key]}:${iri.replace(key, '')}`;
@@ -53,19 +73,45 @@ const getWithPrefix = curry((prefixes, iri) => {
 });
 
 const parseQuads = (quads, prefixes) => {
-  const prefixed = getWithPrefix(prefixes);
-  const predicateSpecIRI = prefixed('http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate');
-  const hasWeightIRI = prefixed('http://onto.fel.cvut.cz/ontologies/dataset-descriptor/s-p-o-summary/hasWeight');
-  const typeIRI = prefixed('http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
-  const objectSpecIRI = prefixed('http://www.w3.org/1999/02/22-rdf-syntax-ns#object');
-  const subjectSpecIRI = prefixed('http://www.w3.org/1999/02/22-rdf-syntax-ns#subject');
+  const usedPrefixes = {};
+  const usedAliases = {};
+  // let prefix = iri => {
+  //   // TODO: Very slow implementation
+  //   for (let key of keys(prefixes)) {
+  //     if (iri && iri.includes(key)) {
+  //       return `${prefixes[key]}:${iri.replace(key, '')}`;
+  //     }
+  //   }
+  //
+  //   const {alias, prefixIri, suffix} = parsePrefix(prefixes, iri);
+  //
+  //   if (!alias) {
+  //     return iri;
+  //   }
+  //
+  //   let i = 0;
+  //   let newAlias = alias;
+  //   while (usedAliases[newAlias] && usedAliases[newAlias] !== prefixIri) {
+  //     newAlias = `${alias}${i++}`;
+  //   }
+  //   usedAliases[newAlias] = prefixIri;
+  //   usedPrefixes[prefixIri] = newAlias;
+  //
+  //   return `${newAlias}:${suffix}`;
+  // };
+  const prefix = getPrefixed(prefixes)
+  const predicateSpecIRI = prefix('http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate');
+  const hasWeightIRI = prefix('http://onto.fel.cvut.cz/ontologies/dataset-descriptor/s-p-o-summary/hasWeight');
+  const typeIRI = prefix('http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+  const objectSpecIRI = prefix('http://www.w3.org/1999/02/22-rdf-syntax-ns#object');
+  const subjectSpecIRI = prefix('http://www.w3.org/1999/02/22-rdf-syntax-ns#subject');
 
   const edgePredicates = [predicateSpecIRI, hasWeightIRI, objectSpecIRI, subjectSpecIRI];
   const isEdge = quad => edgePredicates.includes(quad.predicate.id);
   quads.forEach(quad => {
-    quad.object.id = prefixed(quad.object.id);
-    quad.subject.id = prefixed(quad.subject.id);
-    quad.predicate.id = prefixed(quad.predicate.id);
+    quad.object.id = prefix(quad.object.id);
+    quad.subject.id = prefix(quad.subject.id);
+    quad.predicate.id = prefix(quad.predicate.id);
   });
 
   const getDataProperty = (quad, classMapping) => {
@@ -122,7 +168,7 @@ const parseQuads = (quads, prefixes) => {
   const hasOutgoingEdges = edges.reduce((acc, {subject}) => Object.assign(acc, {[subject]: true}), {});
 
   // Populated classes with existing outgoing relationships (no outgoing relationships --> data property)
-  return edges
+  const data = edges
     .filter(({subject}) => hasOutgoingEdges[subject])
     .reduce((acc, {dataProperty: type, predicate, object, weight, subject}) => {
       if (!acc[subject]) {
@@ -139,4 +185,7 @@ const parseQuads = (quads, prefixes) => {
 
       return acc;
   }, {});
+
+  console.log(data, usedPrefixes);
+  return {data, usedPrefixes};
 };
