@@ -6,6 +6,7 @@ class Group {
     this.toggleProperties(false);
   }
 
+  // FIXME: Add all wrapper events here and propagate from here to the rest :lenny:
   toggleProperties(show) {
     this.group.toFront();
     this.showProperties = typeof show === 'undefined' ? !this.showProperties : show;
