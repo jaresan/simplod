@@ -13,6 +13,10 @@ import possiblePrefixes from 'src/constants/possiblePrefixes';
 //   }
 // };
 
+const snakeToCamel = (str) => str.replace(
+  /([-]\w)/g,
+  group => group.toUpperCase().replace('-', '')
+);
 export const parseSPARQLQuery = selectedProperties => {
   let queryParts = {
     properties: '',
@@ -45,12 +49,12 @@ export const parseSPARQLQuery = selectedProperties => {
       const suffix = stripped.match(/([^/#:]+)$/)
       let varName;
       if (suffix && suffix[1]) {
-        varName = suffix[1];
+        varName = snakeToCamel(suffix[1]);
       }
       if (varName && !usedNames[varName]) {
         usedNames[varName] = 1;
       } else {
-        varName = `${varName}${usedNames[varName]}`;
+        varName = snakeToCamel(`${varName}${usedNames[varName]}`);
         usedNames[varName]++;
       }
       return Object.assign(acc, {[t]: varName});
