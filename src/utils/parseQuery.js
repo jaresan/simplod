@@ -17,7 +17,7 @@ const snakeToCamel = (str) => str.replace(
   /([-]\w)/g,
   group => group.toUpperCase().replace('-', '')
 );
-export const parseSPARQLQuery = selectedProperties => {
+export const parseSPARQLQuery = (selectedProperties, prefixes) => {
   let queryParts = {
     properties: '',
     values: '',
@@ -25,9 +25,8 @@ export const parseSPARQLQuery = selectedProperties => {
   };
   let types = Object.keys(groupBy(prop('source'), Object.values(selectedProperties)));
   const usedPrefixes = {};
-  const invertedPrefixes = invertObj(possiblePrefixes);
+  const invertedPrefixes = Object.assign(prefixes, invertObj(possiblePrefixes));
 
-  // FIXME: Take prefixes from the new ones created not static constants
   if (types.length) {
     types = types.map(type => {
       // const { alias, suffix, prefixIri } = parsePrefix(type);

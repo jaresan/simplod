@@ -5,7 +5,7 @@ const initialState = new fromJS({
 	prefixes: {}
 });
 
-const setPrefixes = (state, {prefixes}) => state.set('prefixes', prefixes);
+const setPrefixes = (state, {prefixes}) => state.set('prefixes', fromJS(prefixes));
 
 const handlers = {
 	[Actions.Types.R_SET_PREFIXES]: setPrefixes

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getSelectedProperties } from 'src/selectors/index';
+import { getPrefixes, getSelectedProperties } from 'src/selectors/index';
 import { parseSPARQLQuery } from 'src/utils/parseQuery';
 import { sparqlProxy } from 'src/constants/api';
 import styled from '@emotion/styled';
@@ -22,9 +22,9 @@ class YasguiContainer extends Component {
 	}
 
 	componentDidUpdate(prevProps, prevState, snapshot) {
-		const {selectedProperties} = this.props;
+		const {selectedProperties, prefixes} = this.props;
 		if (selectedProperties !== prevProps.selectedProperties) {
-			this.yasgui.getTab().setQuery(parseSPARQLQuery(selectedProperties));
+			this.yasgui.getTab().setQuery(parseSPARQLQuery(selectedProperties, prefixes.toJS()));
 		}
 	}
 
@@ -45,7 +45,8 @@ class YasguiContainer extends Component {
 }
 
 const mapStateToProps = appState => ({
-	selectedProperties: getSelectedProperties(appState)
+	selectedProperties: getSelectedProperties(appState),
+	prefixes: getPrefixes(appState)
 });
 
 const mapDispatchToProps = {};

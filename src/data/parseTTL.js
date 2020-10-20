@@ -20,7 +20,7 @@ const propertyToName = {
 export const parseTTL = ttlString => new Promise((res, err) => {
   getQuads(ttlString)
     .then(({quads, prefixes}) => {
-      const {data, prefixes: usedPrefixes} = parseQuads(quads, Object.assign(possiblePrefixes, invertObj(prefixes)));
+      const {data, usedPrefixes} = parseQuads(quads, Object.assign(possiblePrefixes, invertObj(prefixes)));
       res({
         data,
         __prefixes__: usedPrefixes
@@ -29,9 +29,11 @@ export const parseTTL = ttlString => new Promise((res, err) => {
 });
 
 const parsePrefix = (prefixes, iri) => {
-  let url;
   try {
-    url = new URL(iri);
+    const url = new URL(iri);
+    if (!url.host) {
+      return iri;
+    }
   } catch (e) {
     // Bad URL
     return iri;
@@ -39,7 +41,7 @@ const parsePrefix = (prefixes, iri) => {
 
   const suffix = iri.replace(/.*(\/|#)/, '');
   const prefixIri = iri.replace(/(\/|#)[^/#]*$/, '$1');
-  const alias = prefixes[prefixIri] || url.host.replace(/(?:www.)?(\w+).*/, '$1');
+  const alias = prefixes[prefixIri] || 'ns';
 
   return {
     alias,
@@ -75,31 +77,31 @@ const getPrefixed = curry((prefixes, iri) => {
 const parseQuads = (quads, prefixes) => {
   const usedPrefixes = {};
   const usedAliases = {};
-  // let prefix = iri => {
-  //   // TODO: Very slow implementation
-  //   for (let key of keys(prefixes)) {
-  //     if (iri && iri.includes(key)) {
-  //       return `${prefixes[key]}:${iri.replace(key, '')}`;
-  //     }
-  //   }
-  //
-  //   const {alias, prefixIri, suffix} = parsePrefix(prefixes, iri);
-  //
-  //   if (!alias) {
-  //     return iri;
-  //   }
-  //
-  //   let i = 0;
-  //   let newAlias = alias;
-  //   while (usedAliases[newAlias] && usedAliases[newAlias] !== prefixIri) {
-  //     newAlias = `${alias}${i++}`;
-  //   }
-  //   usedAliases[newAlias] = prefixIri;
-  //   usedPrefixes[prefixIri] = newAlias;
-  //
-  //   return `${newAlias}:${suffix}`;
-  // };
-  const prefix = getPrefixed(prefixes)
+  let prefix = iri => {
+    // TODO: Very slow implementation
+    for (let key of keys(prefixes)) {
+      if (iri && iri.includes(key)) {
+        return `${prefixes[key]}:${iri.replace(key, '')}`;
+      }
+    }
+
+    const {alias, prefixIri, suffix} = parsePrefix(prefixes, iri);
+
+    if (!alias) {
+      return iri;
+    }
+
+    let i = 0;
+    let newAliasRoot = alias;
+    let newAlias = newAliasRoot;
+    while (usedAliases[newAlias] && usedAliases[newAlias] !== prefixIri) {
+      newAlias = `${newAliasRoot}${i++}`;
+    }
+    usedAliases[newAlias] = prefixIri;
+    usedPrefixes[prefixIri] = newAlias;
+
+    return `${newAlias}:${suffix}`;
+  };
   const predicateSpecIRI = prefix('http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate');
   const hasWeightIRI = prefix('http://onto.fel.cvut.cz/ontologies/dataset-descriptor/s-p-o-summary/hasWeight');
   const typeIRI = prefix('http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
