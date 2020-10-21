@@ -7,7 +7,7 @@ const getWrapper = n => {
 }
 
 const handle = curry((methodName, e) => {
-  const wrapper = getWrapper(e.target) || getWrapper(e.item);
+  const wrapper = getWrapper(e.target) || e.item && e.item.get('wrapper'); // Group wrapper for nodes or Edge wrapper
 
   // Default to CanvasWrapper if there's no handler which could resolve the function call
   if (wrapper && typeof wrapper[methodName] == 'function') {

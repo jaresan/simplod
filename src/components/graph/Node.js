@@ -28,20 +28,12 @@ const attrs = {
     text: `${predicate}: ${type}`,
     fill: '#000',
   }),
-  'property-container': propCount => ({
+  'property-container': (propCount, methodCount) => ({
     y: PROP_LINE_HEIGHT * 2,
     width: 300,
-    height: propCount * PROP_LINE_HEIGHT,
+    height: (propCount + methodCount) * PROP_LINE_HEIGHT,
     stroke: 'black',
     fill: 'steelblue',
-    opacity: 1
-  }),
-  'method-container': (propCount, methodCount) => ({
-    y: propCount * PROP_LINE_HEIGHT + PROP_LINE_HEIGHT * 2,
-    width: 300,
-    height: methodCount * PROP_LINE_HEIGHT,
-    stroke: 'black', // Apply the color to the stroke. For filling, use fill: cfg.color instead
-    fill: 'orange',
     opacity: 1
   })
 };
@@ -49,20 +41,15 @@ const attrs = {
 const getSuffix = iri => iri.match(/([^/#:]+)$/)[1];
 
 const NodeImplementation = {
-  setState(...args) {
-    console.log('setState', args);
-  },
   draw(cfg, group) {
     const {data: {properties, methods}, id} = cfg;
     const containerAttrs = attrs['node-container']({propCount: properties.length, methodCount: methods.length, label: cfg.label});
     const {width} = containerAttrs;
-    const groupController = new Group(group);
     const propFields = properties.reduce((acc, {predicate, object, type}, i)=> acc.concat(E.Property({
       id: `property_${id}-${predicate}-${type}`,
       attrs: attrs.property({predicate, type, i}),
       name: `property#${i}`,
-      data: {target: type, source: id, predicate, name: getSuffix(predicate)},
-      groupController
+      data: {target: type, source: id, predicate, name: getSuffix(predicate)}
     })), []);
 
     const methodFields = methods.reduce((acc, {predicate, object, weight}, i) => acc.concat(
@@ -70,28 +57,27 @@ const NodeImplementation = {
         id: `property_${id}-${predicate}-${object}`,
         attrs: attrs.property({predicate, type: object, i: i + properties.length}),
         name: `property#${i + properties.length}`,
-        data: {target: object, source: id, predicate, name: getSuffix(predicate)},
-        groupController
+        data: {target: object, source: id, predicate, name: getSuffix(predicate)}
       })
     ), []);
 
-    const propertyContainerAttrs = attrs['property-container'](properties.length);
-    const methodContainerAttrs = attrs['method-container'](properties.length, methods.length);
+    const propertyContainerAttrs = attrs['property-container'](properties.length, methods.length);
 
     group.set('methods', methodFields);
-    group.set('wrapper', groupController);
+    // FIXME: Separate group for logical pieces --> can have multiple groups, yes
     return E.create(group, [
-      E.Node({id: `node_${id}`, attrs: containerAttrs, name: 'node-container', groupController}),
+      E.Node({id: `node_${id}`, attrs: containerAttrs, name: 'node-container'}),
       E.Text({id: `node_${id}-title`, attrs: attrs['node-title'](width, cfg.label), name: 'node-title'}),
-      E.Rect({id: `node_${id}-prop-container`, attrs: propertyContainerAttrs, name: `property-container`}),
+      E.Rect({id: `node_${id}-prop-container`, attrs: propertyContainerAttrs, name: 'property-container'}),
       ...propFields,
-      E.Rect({id: `node_${id}-method-container`, attrs: methodContainerAttrs, name: `method-container`}),
       ...methodFields
     ])[0];
   },
 
   afterDraw(cfg, group) {
-    group.get('wrapper').toggleProperties(false);
+    const wrapper = new Group(group);
+    group.set('wrapper', wrapper);
+    wrapper.toggleProperties(false);
   }
 };
 

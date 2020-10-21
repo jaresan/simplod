@@ -17,7 +17,7 @@ const defaultStyle = {
 };
 
 const styles = {
-  'hover': {stroke: 'white', strokeWidth: 1},
+  'hover': {stroke: 'white', lineWidth: 1},
   'selected': {fill: 'cyan'},
 };
 

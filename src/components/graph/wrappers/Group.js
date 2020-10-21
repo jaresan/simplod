@@ -1,22 +1,51 @@
-import { invoker, memoizeWith, prop } from 'ramda';
+import { invoker, memoizeWith, pick, assocPath, path } from 'ramda';
 
-const getWrapper = memoizeWith(t => t.get('id'), target => console.log(target.get('id')) || target.get('wrapper') || (target.getModel && target.getModel().wrapper));
+const getWrapper = memoizeWith(t => t.get('id'), target => target.get('wrapper'));
 function propagate(target, key) {
   const wrapper = getWrapper(target);
   return wrapper && wrapper[key] && wrapper[key]();
 }
 
+const styles = {
+  titleOutline: {
+    stroke: 'cyan',
+    lineWidth: 3
+  }
+}
+
 class GroupController {
   constructor(group) {
+    window.group = group;
     this.group = group;
+    this.children = group.getChildren();
+    this.defaultChildrenAttrs = {};
     this.toggleProperties(false);
   }
 
+  // FIXME: Apply styles as an array so that multiple different effects can take place at once and cancelling them
+  // wouldn't mess up styles applied later
+  applyStyle(target, stylePath) {
+    if (!path([target.get('id'), ...stylePath], this.defaultChildrenAttrs)) {
+      this.defaultChildrenAttrs = assocPath([target.get('id'), ...stylePath], pick(Object.keys(path(stylePath, styles)), target.attrs), this.defaultChildrenAttrs);
+    }
+
+    target.attr(path(stylePath, styles));
+  }
+
+  cancelStyle(target, stylePath) {
+    target.attr(path([target.get('id'), ...stylePath], this.defaultChildrenAttrs));
+  }
+
   onHover(target) {
+    // FIXME: Named references instead of array indexes
+    this.applyStyle(this.children[0], ['titleOutline'])
+    this.applyStyle(this.children[2], ['titleOutline'])
     return propagate(target, 'onHover');
   }
 
   onBlur(target) {
+    this.cancelStyle(this.children[0], ['titleOutline'])
+    this.cancelStyle(this.children[2], ['titleOutline'])
     return propagate(target, 'onBlur');
   }
 
@@ -31,7 +60,7 @@ class GroupController {
   }
 
   onClick(target) {
-    if (target.get('name') === 'node-title') {
+    if (this.children.indexOf(target) < 2) {
       this.toggleProperties();
     } else {
       propagate(target, 'onClick');

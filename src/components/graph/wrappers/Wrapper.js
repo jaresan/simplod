@@ -75,6 +75,9 @@ export class Wrapper {
 
   onToggleSelect(selected) {
     this.selected = typeof selected === 'undefined' ? !this.selected : selected;
+    if (this.selected) {
+      console.log('wtf', this.getContainerNode());
+    }
     this.handler.onToggleSelect(this.id, selected);
   }
 

@@ -40,7 +40,7 @@ export class AntVExample extends React.Component {
           //   activeState: 'inRelation',
           //   inactiveState: 'notInRelation',
           // },
-          'drag-canvas', 'drag-node'
+          'drag-canvas', 'drag-node', 'zoom-canvas'
         ]
       },
       layout: {
