@@ -3,9 +3,7 @@ import {Canvas as CanvasWrapper, Edge as EdgeWrapper} from './wrappers';
 
 const getWrapper = n => {
   if (!n) return;
-  return n.get('wrapper')
-    || (n.getModel && n.getModel().wrapper)
-    || (n.getParent && n.getParent() && n.getParent().get('wrapper'));  // Group wrappers
+  return n.getParent && n.getParent() && n.getParent().get('wrapper');  // Group wrapper
 }
 
 const handle = curry((methodName, e) => {

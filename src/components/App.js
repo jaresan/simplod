@@ -28,9 +28,9 @@ class App extends Component {
     this.govURL = "https://sparql-proxy-api.jaresantonin.now.sh/data.gov.cz.ttl";
     if (process.env.NODE_ENV === 'development') {
       this.schemaURL = this.courtExampleURL;
-      this.schemaURL = this.applicantsURL;
-      this.schemaURL = this.govURL;
-      this.endpointURL = "https://data.gov.cz/sparql";
+      // this.schemaURL = this.applicantsURL;
+      // this.schemaURL = this.govURL;
+      // this.endpointURL = "https://data.gov.cz/sparql";
     }
   }
 

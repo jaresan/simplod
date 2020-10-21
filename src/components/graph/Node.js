@@ -82,10 +82,10 @@ const NodeImplementation = {
     group.set('wrapper', groupController);
     return E.create(group, [
       E.Node({id: `node_${id}`, attrs: containerAttrs, name: 'node-container', groupController}),
-      E.Text({attrs: attrs['node-title'](width, cfg.label), name: 'node-title'}),
-      E.Rect({attrs: propertyContainerAttrs, name: `property-container`}),
+      E.Text({id: `node_${id}-title`, attrs: attrs['node-title'](width, cfg.label), name: 'node-title'}),
+      E.Rect({id: `node_${id}-prop-container`, attrs: propertyContainerAttrs, name: `property-container`}),
       ...propFields,
-      E.Rect({attrs: methodContainerAttrs, name: `method-container`}),
+      E.Rect({id: `node_${id}-method-container`, attrs: methodContainerAttrs, name: `method-container`}),
       ...methodFields
     ])[0];
   },
