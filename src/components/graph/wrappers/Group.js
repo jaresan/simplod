@@ -1,4 +1,4 @@
-import { invoker, memoizeWith, pick, assocPath, path } from 'ramda';
+import { invoker, memoizeWith, pick, assocPath, path, identity } from 'ramda';
 
 const getWrapper = memoizeWith(t => t.get('id'), target => target.get('wrapper'));
 function propagate(target, key) {
@@ -15,9 +15,9 @@ const styles = {
 
 class GroupController {
   constructor(group) {
-    window.group = group;
     this.group = group;
     this.children = group.getChildren();
+    this.childrenWrappers = this.children.map(ch => ch.get('wrapper')).filter(identity);
     this.defaultChildrenAttrs = {};
     this.toggleProperties(false);
   }
@@ -37,16 +37,27 @@ class GroupController {
   }
 
   onHover(target) {
+    // TODO: Deselecting a property hides highlight even while hovering
     // FIXME: Named references instead of array indexes
-    this.applyStyle(this.children[0], ['titleOutline'])
-    this.applyStyle(this.children[2], ['titleOutline'])
+    this.updateHighlight(true);
     return propagate(target, 'onHover');
   }
 
   onBlur(target) {
-    this.cancelStyle(this.children[0], ['titleOutline'])
-    this.cancelStyle(this.children[2], ['titleOutline'])
+    this.updateHighlight(false);
     return propagate(target, 'onBlur');
+  }
+
+  updateHighlight(flag) {
+    this.selected = this.childrenWrappers.some(w => w.selected);
+
+    if (!this.selected && !flag) {
+      this.cancelStyle(this.children[0], ['titleOutline'])
+      this.cancelStyle(this.children[2], ['titleOutline'])
+    } else {
+      this.applyStyle(this.children[0], ['titleOutline'])
+      this.applyStyle(this.children[2], ['titleOutline'])
+    }
   }
 
   toggleProperties(show) {
@@ -65,6 +76,7 @@ class GroupController {
     } else {
       propagate(target, 'onClick');
     }
+
     this.group.toFront();
   }
 }

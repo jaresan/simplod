@@ -1,4 +1,5 @@
 import {Canvas} from '../handlers';
+import { pick } from 'ramda';
 
 export class Wrapper {
   // nodeType denotes the type of the node from AntD to use when rendering this object --> e.g. wrapped as a text
@@ -43,6 +44,10 @@ export class Wrapper {
     return this.containerNode;
   }
 
+  getGroupController() {
+    return this.containerNode && this.containerNode.getContainer().get('wrapper');
+  }
+
   onHover() {
     this.setState({hover: true});
   };
@@ -75,13 +80,14 @@ export class Wrapper {
 
   onToggleSelect(selected) {
     this.selected = typeof selected === 'undefined' ? !this.selected : selected;
-    if (this.selected) {
-      console.log('wtf', this.getContainerNode());
-    }
     this.handler.onToggleSelect(this.id, selected);
   }
 
   onStateChanged(state) {
+    Object.assign(this, pick(['selected'], state));
+    if (this.getGroupController()) {
+      this.getGroupController().updateHighlight(this.selected);
+    }
     this.setState(state);
   };
 }
