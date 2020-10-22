@@ -84,7 +84,7 @@ export const parseSPARQLQuery = (selectedProperties, prefixes) => {
 
   return `${map(([name, iri]) => `PREFIX ${name}: <${iri}>`, Object.entries(usedPrefixes)).join('\n')}
 
-SELECT * WHERE {
+SELECT DISTINCT * WHERE {
   ${queryParts.typeDefinitions}
   ${queryParts.properties}
 }
