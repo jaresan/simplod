@@ -1,5 +1,4 @@
 import {Canvas} from '../handlers';
-import { pick } from 'ramda';
 
 export class Wrapper {
   // nodeType denotes the type of the node from AntD to use when rendering this object --> e.g. wrapped as a text
@@ -8,9 +7,10 @@ export class Wrapper {
   // Default styling of components to be applied for this wrapper
   defaultStyle = {};
   styles = {};
-  state = {style: {}};
+  state = {selected: false};
+  lastState = {};
+  style = {};
   handler = Canvas;
-  selected = false;
 
   constructor(id) {
     this.id = id;
@@ -56,8 +56,9 @@ export class Wrapper {
     this.setState({hover: false});
   };
 
-  setState(keys) {
-    Object.assign(this.state.style, keys);
+  setState(state) {
+    Object.assign(this.state, state);
+    this.callOnParent('stateChanged', {target: this, state, lastState: this.lastState});
     this.updateStyles();
   };
 
@@ -70,24 +71,27 @@ export class Wrapper {
   }
 
   updateStyles = () => {
-    const style = Object.entries(this.state.style).reduce((acc, [key, value]) => Object.assign(acc, value ? this.styles[key] : {}), {...this.defaultStyle});
+    const style = Object.entries(this.state).reduce((acc, [key, value]) => Object.assign(acc, value ? this.styles[key] : {}), {...this.defaultStyle});
     this.updateTargetStyle(style);
   };
 
   onClick() {
-    this.onToggleSelect(!this.selected);
+    this.onToggleSelect(!this.state.selected);
   };
 
   onToggleSelect(selected) {
-    this.selected = typeof selected === 'undefined' ? !this.selected : selected;
+    this.state.selected = typeof selected === 'undefined' ? !this.state.selected : selected;
     this.handler.onToggleSelect(this.id, selected);
   }
 
-  onStateChanged(state) {
-    Object.assign(this, pick(['selected'], state));
-    if (this.getGroupController()) {
-      this.getGroupController().updateHighlight(this.selected);
+  callOnParent(methodName, ...args) {
+    const controller = this.getGroupController();
+    if (controller && controller[methodName]) {
+      controller[methodName](...args);
     }
+  }
+
+  onStateChanged(state) {
     this.setState(state);
   };
 }

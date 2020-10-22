@@ -65,7 +65,7 @@ export class Edge extends Wrapper {
       .forEach(shape => {
         const name = shape.get('name');
         const style = Object
-          .entries(this.state.style)
+          .entries(this.state)
           .reduce((acc, [key, value]) =>
             Object.assign(acc, value ? path([key, name], this.styles) : {}),
             {...this.defaultStyle[name]}
@@ -84,6 +84,6 @@ export class Edge extends Wrapper {
 
   onClick() {
     this.onToggleSelect();
-    this.togglePropertiesSelected(this.selected);
+    this.togglePropertiesSelected(this.state.selected);
   };
 }

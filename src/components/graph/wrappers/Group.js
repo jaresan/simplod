@@ -1,4 +1,5 @@
 import { invoker, memoizeWith, pick, assocPath, path, identity } from 'ramda';
+import {Property, Method} from './index';
 
 const getWrapper = memoizeWith(t => t.get('id'), target => target.get('wrapper'));
 function propagate(target, key) {
@@ -14,44 +15,52 @@ const styles = {
 }
 
 class GroupController {
+  state = {
+    selected: false,
+    hover: false
+  };
+
   constructor(group) {
     this.group = group;
     this.children = group.getChildren();
     this.childrenWrappers = this.children.map(ch => ch.get('wrapper')).filter(identity);
-    this.defaultChildrenAttrs = {};
+    this.propertyWrappers = this.childrenWrappers.filter(w => (w instanceof Property) || (w instanceof Method));
+    this.defaultChildAttrs = {};
     this.toggleProperties(false);
   }
 
   // FIXME: Apply styles as an array so that multiple different effects can take place at once and cancelling them
   // wouldn't mess up styles applied later
   applyStyle(target, stylePath) {
-    if (!path([target.get('id'), ...stylePath], this.defaultChildrenAttrs)) {
-      this.defaultChildrenAttrs = assocPath([target.get('id'), ...stylePath], pick(Object.keys(path(stylePath, styles)), target.attrs), this.defaultChildrenAttrs);
+    if (!path([target.get('id'), ...stylePath], this.defaultChildAttrs)) {
+      this.defaultChildAttrs = assocPath([target.get('id'), ...stylePath], pick(Object.keys(path(stylePath, styles)), target.attrs), this.defaultChildAttrs);
     }
 
     target.attr(path(stylePath, styles));
   }
 
   cancelStyle(target, stylePath) {
-    target.attr(path([target.get('id'), ...stylePath], this.defaultChildrenAttrs));
+    target.attr(path([target.get('id'), ...stylePath], this.defaultChildAttrs));
   }
 
   onHover(target) {
-    // TODO: Deselecting a property hides highlight even while hovering
-    // FIXME: Named references instead of array indexes
+    this.state.hover = true;
     this.updateHighlight(true);
     return propagate(target, 'onHover');
   }
 
   onBlur(target) {
-    this.updateHighlight(false);
+    if (!this.propertyWrappers.includes(target)) {
+      this.state.hover = false;
+      this.updateHighlight(false);
+    }
     return propagate(target, 'onBlur');
   }
 
   updateHighlight(flag) {
-    this.selected = this.childrenWrappers.some(w => w.selected);
+    this.state.selected = this.childrenWrappers.some(w => w.state.selected);
 
-    if (!this.selected && !flag) {
+    if (!this.state.selected && !this.state.hover && !flag) {
       this.cancelStyle(this.children[0], ['titleOutline'])
       this.cancelStyle(this.children[2], ['titleOutline'])
     } else {
@@ -78,6 +87,12 @@ class GroupController {
     }
 
     this.group.toFront();
+  }
+
+  stateChanged({target, state, lastState}) {
+    if (state.selected !== lastState.selected) {
+      this.updateHighlight(state.selected);
+    }
   }
 }
 

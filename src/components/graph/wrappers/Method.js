@@ -61,6 +61,6 @@ export class Method extends Wrapper {
 
     this.findEdge();
     const similarProps = this.getSameTargetProperties();
-    this.toggleSelectOutgoingEdge(similarProps.some(p => p.wrapper.selected));
+    this.toggleSelectOutgoingEdge(similarProps.some(p => p.wrapper.state.selected));
   }
 }
