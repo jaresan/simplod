@@ -56,6 +56,7 @@ class GroupController {
     this.state.hover = true;
     this.updateHighlight(true);
     this.getEdges().forEach(e => e.get('wrapper').onHover());
+    this.group.toFront();
     return propagate(target, 'onHover');
   }
 
