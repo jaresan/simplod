@@ -44,7 +44,7 @@ export class AntVExample extends React.Component {
         ]
       },
       layout: {
-        type: 'grid',
+        type: 'circular',
         cols: 3,
         preventOverlap: true,
         workerEnabled: true

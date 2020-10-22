@@ -13,7 +13,7 @@ export const getEdges = data => {
   const res = Object.entries(data).map(([sourceId, {methods}]) =>
     values(methods.reduce((acc, {object: targetId}) => {
       // Prevent duplicates for the same source-target pair
-      if (existingEdges[`${sourceId}`] === targetId || existingEdges[`${targetId}`] === sourceId) {
+      if (sourceId === targetId || existingEdges[`${sourceId}`] === targetId || existingEdges[`${targetId}`] === sourceId) {
         return acc;
       }
       existingEdges[sourceId] = targetId;
