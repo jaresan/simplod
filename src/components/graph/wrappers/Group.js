@@ -29,6 +29,15 @@ class GroupController {
     this.toggleProperties(false);
   }
 
+  getEdges() {
+    if (!this.edges) {
+      const container = this.childrenWrappers[0].getContainerNode();
+      this.edges = container.getOutEdges().concat(container.getInEdges());
+    }
+
+    return this.edges;
+  }
+
   // FIXME: Apply styles as an array so that multiple different effects can take place at once and cancelling them
   // wouldn't mess up styles applied later
   applyStyle(target, stylePath) {
@@ -46,6 +55,7 @@ class GroupController {
   onHover(target) {
     this.state.hover = true;
     this.updateHighlight(true);
+    this.getEdges().forEach(e => e.get('wrapper').onHover());
     return propagate(target, 'onHover');
   }
 
@@ -53,14 +63,16 @@ class GroupController {
     if (!this.propertyWrappers.includes(target)) {
       this.state.hover = false;
       this.updateHighlight(false);
+      this.getEdges().forEach(e => e.get('wrapper').onBlur());
     }
     return propagate(target, 'onBlur');
   }
 
   updateHighlight() {
     this.state.selected = this.childrenWrappers.some(w => w.state.selected);
+    const shouldHighlight = this.state.selected || this.state.hover;
 
-    if (!this.state.selected && !this.state.hover) {
+    if (!shouldHighlight) {
       this.cancelStyle(this.children[0], ['titleOutline'])
       this.cancelStyle(this.children[2], ['titleOutline'])
     } else {

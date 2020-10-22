@@ -33,7 +33,6 @@ const connectWrappers = (node, containerNode) => {
   }
 
   const children = (node.get('group') && node.get('group').get('children')) || [];
-  // const container = children.find(ch => (ch.get('wrapper') instanceof NodeWrapper))
   children.forEach(ch => connectWrappers(ch, node));
 };
 
@@ -56,16 +55,10 @@ export class Graph {
     this.registerBehaviours();
     this.graph.data(data);
     this.render();
-    this.registerEdgeHandlers();
-    this.registerNodeHandlers();
+    this.registerNodeWrappers();
   }
 
-  // Edge handlers have to be registered manually because they don't have a custom draw function in which this could be done
-  registerEdgeHandlers() {
-    this.graph.getEdges().forEach(e => e.set('wrapper', new EdgeWrapper(e)));
-  }
-
-  registerNodeHandlers() {
+  registerNodeWrappers() {
     this.graph.getNodes().forEach(connectWrappers);
   }
 

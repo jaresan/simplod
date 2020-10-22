@@ -5,7 +5,7 @@ import {Edge as EdgeHandler} from '../handlers';
 const styles = {
   hover: {
     'edge-shape': {
-      lineWidth: 1.5,
+      lineWidth: 3,
       opacity: 0.8
     }
   },
@@ -25,8 +25,8 @@ const styles = {
 const defaultStyle = {
   'edge-shape': {
     stroke: '#666',
-    lineWidth: 1,
-    opacity: 0.4
+    lineWidth: 3,
+    opacity: 0.2
   },
   'text-shape': {
     opacity: 0.4,
@@ -55,6 +55,7 @@ export class Edge extends Wrapper {
     });
 
     this.handler.subscribeToChanges(id, this);
+    this.updateStyles();
   }
 
   updateStyles = () => {

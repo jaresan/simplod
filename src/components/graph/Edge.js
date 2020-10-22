@@ -1,6 +1,7 @@
 import G6 from '@antv/g6';
 import {flatten, values} from 'ramda';
 import entityTypes from '../../constants/entityTypes';
+import {Edge as EdgeWrapper} from './wrappers';
 const EDGE_TYPE = 'graphEdge';
 
 export const Edge = data => ({
@@ -33,4 +34,8 @@ export const getEdges = data => {
   return flatten(res);
 }
 
-G6.registerEdge(EDGE_TYPE, {}, 'line');
+G6.registerEdge(EDGE_TYPE, {
+  afterDraw(cfg, {cfg: {item}}) {
+    item.set('wrapper', new EdgeWrapper(item));
+  }
+}, 'line');
