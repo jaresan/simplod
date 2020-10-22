@@ -158,11 +158,6 @@ const parseQuads = (quads, prefixes) => {
 
       acc = assocPath([predicateId, key], value, acc);
 
-      const dataProperty = getDataProperty(quad, classMapping);
-      if (dataProperty) {
-        acc[predicateId].dataProperty = dataProperty;
-      }
-
       return acc;
     }, { })
   );
@@ -172,15 +167,17 @@ const parseQuads = (quads, prefixes) => {
   // Populated classes with existing outgoing relationships (no outgoing relationships --> data property)
   const data = edges
     .filter(({subject}) => hasOutgoingEdges[subject])
-    .reduce((acc, {dataProperty: type, predicate, object, weight, subject}) => {
+    .reduce((acc, {predicate, object, weight, subject}) => {
       if (!acc[subject]) {
         acc[subject] = {
           properties: [],
           methods: []
         };
       }
+
+      // Data property
       if (!hasOutgoingEdges[object]) {
-        acc[subject].properties.push({predicate, type: type || object});
+        acc[subject].properties.push({predicate, type: object});
       } else {
         acc[subject].methods.push({predicate, object, weight});
       }

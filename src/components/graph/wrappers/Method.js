@@ -41,12 +41,13 @@ export class Method extends Wrapper {
     }
 
     const model = this.getNode().get('data');
-    this.edge = this
-      .getContainerNode()
-      .getOutEdges()
+    const containerNode = this.getContainerNode();
+    this.edge = containerNode.getOutEdges()
+      .concat(containerNode.getInEdges())
       .find(e => {
-        const {target} = e.getModel();
-        return model.target === target;
+        const {target, source} = e.getModel();
+        // Edges are bidirectional
+        return (model.target === target && model.source === source) || (model.source === target && model.target === source);
       })
   }
 

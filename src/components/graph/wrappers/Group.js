@@ -57,16 +57,24 @@ class GroupController {
     return propagate(target, 'onBlur');
   }
 
-  updateHighlight(flag) {
+  updateHighlight() {
     this.state.selected = this.childrenWrappers.some(w => w.state.selected);
 
-    if (!this.state.selected && !this.state.hover && !flag) {
+    if (!this.state.selected && !this.state.hover) {
       this.cancelStyle(this.children[0], ['titleOutline'])
       this.cancelStyle(this.children[2], ['titleOutline'])
     } else {
       this.applyStyle(this.children[0], ['titleOutline'])
       this.applyStyle(this.children[2], ['titleOutline'])
     }
+  }
+
+  togglePropertiesSelected(target, selected) {
+    this.propertyWrappers.forEach(p => {
+      if (p.state.target === target) {
+        p.onToggleSelect(selected);
+      }
+    })
   }
 
   toggleProperties(show) {

@@ -41,8 +41,8 @@ export class Edge extends Wrapper {
   handler = EdgeHandler;
 
   constructor(edge) {
-    const {source, target, predicate} = edge.getModel();
-    const id = `edge_${source}-${predicate}-${target}`;
+    const {source, target} = edge.getModel();
+    const id = `edge_${source}-${target}`;
 
     super(id);
     Object.assign(this, {
@@ -50,7 +50,6 @@ export class Edge extends Wrapper {
       edge,
       model: {
         source,
-        predicate,
         target
       },
     });
@@ -75,11 +74,17 @@ export class Edge extends Wrapper {
   };
 
   togglePropertiesSelected(flag) {
-    this.edge.getSource()
+    this.edge
+      .getSource()
       .getContainer()
-      .getChildren()
-      .filter(ch => ch.get('data') && ch.get('data').target === this.model.target)
-      .forEach(prop => prop.get('wrapper').onToggleSelect(flag));
+      .get('wrapper')
+      .togglePropertiesSelected(this.model.target, flag);
+
+    this.edge
+      .getTarget()
+      .getContainer()
+      .get('wrapper')
+      .togglePropertiesSelected(this.model.source, flag);
   }
 
   onClick() {
