@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getQuery } from 'src/selectors/index';
+import { getQuery, getEndpoint } from 'src/selectors/index';
 import styled from '@emotion/styled';
 import YASGUI from '@triply/yasgui';
 import "@triply/yasgui/build/yasgui.min.css";
@@ -22,12 +22,13 @@ class YasguiContainer extends Component {
 
 	componentDidUpdate(prevProps, prevState, snapshot) {
 		this.yasgui.getTab().setQuery(this.props.query);
+		this.yasgui.getTab().setEndpoint(this.props.endpoint);
 	}
 
 	componentDidMount() {
 		const yasgui = new YASGUI(this.yasguiMountNode, {
 			requestConfig: {
-				endpoint: this.props.endpointURL,
+				// endpoint: this.props.endpointURL,
 				// headers: () => ({
 				// 	Accept: 'application/sparql-results+json'
 				// }),
@@ -48,7 +49,8 @@ class YasguiContainer extends Component {
 }
 
 const mapStateToProps = appState => ({
-	query: getQuery(appState)
+	query: getQuery(appState),
+	endpoint: getEndpoint(appState)
 });
 
 const mapDispatchToProps = {};

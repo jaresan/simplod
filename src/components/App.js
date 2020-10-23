@@ -37,6 +37,7 @@ class App extends Component {
 
   componentDidMount() {
     this.fetchData(this.schemaURL);
+    this.props.setEndpoint(this.endpointURL);
   }
 
   // FIXME: Move fetch to sagas
@@ -95,9 +96,7 @@ class App extends Component {
           <PropertyList/>
           <div style={getMenuStyle(horizontalLayout)}>
             <ControlPanel/>
-            <YasguiContainer
-              endpointURL={this.endpointURL}
-            />
+            <YasguiContainer/>
           </div>
         </div>
       </div>
@@ -107,7 +106,8 @@ class App extends Component {
 
 const mapDispatchToProps = {
   setPrefixes: Actions.Yasgui.Creators.r_setPrefixes,
-  clearData: Actions.Model.Creators.r_clearData
+  clearData: Actions.Model.Creators.r_clearData,
+  setEndpoint: Actions.Yasgui.Creators.r_setEndpoint
 };
 
 export default connect(null, mapDispatchToProps)(App);

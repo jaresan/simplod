@@ -1,4 +1,3 @@
-import {createSelector} from 'reselect';
 import entityTypes from 'src/constants/entityTypes';
 
 export const getViewSelection = appState => {
@@ -38,3 +37,4 @@ export const getFolderUriChanging = appState => appState.solid.get('folderUriCha
 export const getViews = appState => appState.solid.get('views');
 
 export const getQuery = appState => appState.yasgui.get('query');
+export const getEndpoint = appState => appState.yasgui.get('endpoint');

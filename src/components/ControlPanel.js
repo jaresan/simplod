@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Actions from 'src/actions/solid';
-import styled from '@emotion/styled';
 import {message, Popconfirm, Button, Input} from 'antd';
-import { getViewSelection, getSession, getDirty, getFolderUri, getFolderUriChanging, getViews } from '../selectors';
+import {
+  getViewSelection,
+  getSession,
+  getDirty,
+  getFolderUri,
+  getFolderUriChanging,
+  getViews,
+  getQuery, getEndpoint
+} from '../selectors';
 
 class ControlPanel extends Component {
   state = {
@@ -199,10 +206,15 @@ class ControlPanel extends Component {
   );
 
   render() {
+    const {query} = this.props;
     return (
       <div className="login-container">
         { this.getLoginData() }
         { this.getControlPanel() }
+        <Button onClick={() => {
+          window.navigator.clipboard.writeText(`${this.props.endpoint}?query=${encodeURIComponent(query)}`);
+          message.success('Query URL copied to clipboard');
+        }}>Copy request URL to clipboard</Button>
       </div>
     );
   }
@@ -215,6 +227,8 @@ const mapStateToProps = appState => ({
   view: getViewSelection(appState),
   folderUriChanging: getFolderUriChanging(appState),
   views: getViews(appState),
+  query: getQuery(appState),
+  endpoint: getEndpoint(appState)
 });
 
 const mapDispatchToProps = {
