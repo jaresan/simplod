@@ -2,6 +2,7 @@ import { takeEvery, select, call, put, all } from 'redux-saga/effects';
 import { getFolderUri, getViewSelection } from '../selectors';
 import SolidActions from 'src/actions/solid';
 import ModelActions from 'src/actions/model';
+import {message} from 'antd';
 import auth from 'solid-auth-client';
 import rdf from 'rdflib';
 
@@ -24,16 +25,16 @@ function* onViewSave({uri}) {
 
     const logStatus = webId ? `You are logged in as ${webId}.` : 'You are not logged in.';
     if (res.status === 401) {
-      alert(`
+      message.error(`
         The request returned 401 - unauthorized.
         ${logStatus}
         Either you don't have access to the requested resource or the permissions on it are not set up correctly.
       `);
     } else if (res.status < 200 || res.status >= 300) {
-      alert('An error occured while trying to save the view.')
+      message.error('An error occured while trying to save the view.')
     }
   } catch (e) {
-    alert('An error occured while trying to save the view.')
+    message.error('An error occured while trying to save the view.')
   }
 
   yield fetchViews();
@@ -51,16 +52,16 @@ function* onViewLoad({uri}) {
       yield put(ModelActions.Creators.r_deselectAll());
       yield put(ModelActions.Creators.r_viewLoaded(json));
     } else if (res.status === 401) {
-      alert(`
+      message.error(`
         The request returned 401 - unauthorized.
         ${logStatus}
         Either you don't have access to the requested resource or the permissions on it are not set up correctly.
       `);
     } else {
-      alert('An error occured while trying to load the view.')
+      message.error('An error occured while trying to load the view.')
     }
   } catch (e) {
-    alert('An error occured while trying to load the view.')
+    message.error('An error occured while trying to load the view.')
   }
 }
 
@@ -81,7 +82,7 @@ function* fetchViews() {
 
     yield put(SolidActions.Creators.r_setExistingViews(viewUris));
   } catch (e) {
-    alert(`There was a problem fetching saved views from ${folderUri}. Please recheck the uri and try again.`)
+    message.error(`There was a problem fetching saved views from ${folderUri}. Please recheck the uri and try again.`)
   }
 }
 
@@ -92,10 +93,10 @@ function* onDeleteView({uri: viewUri}) {
     if (res.status >= 200 && res.status < 300) {
       yield put(SolidActions.Creators.r_viewDeleted(viewUri));
     } else {
-      alert('An error occured while trying to delete the view.')
+      message.error('An error occured while trying to delete the view.')
     }
   } catch (e) {
-    alert('An error occured while trying to delete the view.')
+    message.error('An error occured while trying to delete the view.')
   }
 }
 
@@ -112,12 +113,13 @@ function* loadFolderUris() {
 
     const store = new rdf.graph();
     rdf.parse(ttl, store, `${origin}/settings/prefs.ttl`);
+    Object.assign(window, {ttl});
 
     const WS = new rdf.Namespace('http://www.w3.org/ns/pim/space#');
     const me = new rdf.sym(window.origin);
     folderUris = store.statementsMatching(me, WS('storage')).map(r => r.object.value);
   } catch (e) {
-    alert('An error occurred while getting the folder uri from /settings/prefs.ttl. Please make sure https://jaresan.github.io is in your trusted apps in your SOLID pod at profile/card#me.')
+    message.error('An error occurred while getting the folder uri from /settings/prefs.ttl. Please make sure https://jaresan.github.io is in your trusted apps in your SOLID pod at profile/card#me.')
   }
 
   return folderUris;
@@ -182,12 +184,12 @@ function* onSaveFolderUri({ uri: folderUri }) {
     const folderCreated = yield tryCreateFolder(folderUri);
 
     if (!folderCreated) {
-      alert(`Cannot fetch given folder uri: ${folderUri}. Please check the URI and access rights on the SOLID pod and try again.`);
+      message.error(`Cannot fetch given folder uri: ${folderUri}. Please check the URI and access rights on the SOLID pod and try again.`);
       yield put(SolidActions.Creators.r_resetFolderUri());
       yield put(SolidActions.Creators.r_toggleFolderUriChanging(false));
       return;
     } else {
-      alert(`Folder successfully created at ${folderUri}`);
+      message.success(`Folder successfully created at ${folderUri}`);
     }
   }
 
@@ -213,7 +215,7 @@ function* onSaveFolderUri({ uri: folderUri }) {
     yield fetchViews();
   } else {
     yield put(SolidActions.Creators.r_resetFolderUri());
-    alert('An error occurred while saving the folder uri to /settings/prefs.ttl. Please check the uri provided and access permissions again.')
+    message.error('An error occurred while saving the folder uri to /settings/prefs.ttl. Please check the uri provided and access permissions again.')
   }
   yield put(SolidActions.Creators.r_toggleFolderUriChanging(false));
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Actions from 'src/actions/solid';
 import styled from '@emotion/styled';
+import {message} from 'antd';
 import { getViewSelection, getSession, getDirty, getFolderUri, getFolderUriChanging, getViews } from '../selectors';
 
 const PrimaryButton = styled.button`
@@ -145,7 +146,7 @@ class ControlPanel extends Component {
 
   saveFolderUri = () => {
     if (!this.props.folderUri.match(/^https?:\/\//)) {
-      alert('Folder uri has to be an absolute URL.')
+      message.error('Folder uri has to be an absolute URL.');
     } else {
       this.props.saveFolderUri(this.props.folderUri);
     }

@@ -10,6 +10,7 @@ import {Handler} from './graph/handlers/Handler';
 import Actions from '../actions';
 import {Radio} from 'antd';
 import {getContainerStyle, getMenuStyle} from './App.styled';
+import './App.styles';
 
 class App extends Component {
   state = {
