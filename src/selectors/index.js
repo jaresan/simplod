@@ -13,7 +13,7 @@ export const getViewSelection = appState => {
 export const getSelectedData = appState =>
   appState.model.getIn(['entities', entityTypes.class]).filter(e => e.get('selected')).toJS();
 
-export const getPrefixes = appState => appState.yasgui.get('prefixes');
+export const getPrefixes = appState => appState.yasgui.get('prefixes').toJS();
 
 export const getSelectedProperties = appState => appState.model.getIn(['entities', entityTypes.property]).filter(e => e.get('selected')).toJS();
 
@@ -37,8 +37,4 @@ export const getFolderUriChanging = appState => appState.solid.get('folderUriCha
 
 export const getViews = appState => appState.solid.get('views');
 
-export const getSelectedDataAndPrefixes = createSelector(
-	getSelectedData,
-	getPrefixes,
-	(classes, prefixes) => ({ classes, prefixes })
-);
+export const getQuery = appState => appState.yasgui.get('query');

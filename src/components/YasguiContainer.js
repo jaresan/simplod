@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getPrefixes, getSelectedProperties } from 'src/selectors/index';
-import { parseSPARQLQuery } from 'src/utils/parseQuery';
-import { sparqlProxy } from 'src/constants/api';
+import { getQuery } from 'src/selectors/index';
 import styled from '@emotion/styled';
 import YASGUI from '@triply/yasgui';
 import "@triply/yasgui/build/yasgui.min.css";
@@ -23,17 +21,21 @@ class YasguiContainer extends Component {
 	}
 
 	componentDidUpdate(prevProps, prevState, snapshot) {
-		const {selectedProperties, prefixes} = this.props;
-		if (selectedProperties !== prevProps.selectedProperties) {
-			this.yasgui.getTab().setQuery(parseSPARQLQuery(selectedProperties, prefixes.toJS()));
-		}
+		this.yasgui.getTab().setQuery(this.props.query);
 	}
 
 	componentDidMount() {
-		const yasgui = new YASGUI(this.yasguiMountNode, {corsProxy: sparqlProxy});
+		const yasgui = new YASGUI(this.yasguiMountNode, {
+			requestConfig: {
+				endpoint: this.props.endpointURL,
+				// headers: () => ({
+				// 	Accept: 'application/sparql-results+json'
+				// }),
+				// method: 'GET',
+			}
+		});
 
 		this.yasgui = yasgui;
-		yasgui.getTab().setEndpoint(this.props.endpointURL);
 		window.current = yasgui;
 		window.yasgui = YASGUI;
 		// Force usage of cors
@@ -46,8 +48,7 @@ class YasguiContainer extends Component {
 }
 
 const mapStateToProps = appState => ({
-	selectedProperties: getSelectedProperties(appState),
-	prefixes: getPrefixes(appState)
+	query: getQuery(appState)
 });
 
 const mapDispatchToProps = {};
