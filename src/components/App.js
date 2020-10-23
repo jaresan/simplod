@@ -8,7 +8,7 @@ import {AntVExample} from './AntVExample';
 import {invertObj, keys, map, uniq} from 'ramda';
 import {Handler} from './graph/handlers/Handler';
 import Actions from '../actions';
-import {Radio} from 'antd';
+import {Radio, Button} from 'antd';
 import {getContainerStyle, getMenuStyle} from './App.styled';
 import './App.styles';
 
@@ -75,9 +75,10 @@ class App extends Component {
     return (
       <div className="App">
         <input type="text" ref={e => this.dataSchemaInput = e} placeholder="Data schema URL"/>
-        <button onClick={() => this.fetchData(this.dataSchemaInput.value)}>Reload schema URL</button>
-        <button onClick={() => this.fetchData(this.courtExampleURL)}>Court example</button>
-        <button onClick={() => this.fetchData(this.govURL)}>Gov example</button>
+        <Button onClick={() => this.fetchData(this.dataSchemaInput.value)}>Reload schema URL</Button>
+        <Button onClick={() => this.fetchData(this.courtExampleURL)}>Court example</Button>
+        <Button onClick={() => this.fetchData(this.govURL)}>Gov example</Button>
+        <br/>
         <Radio.Group onChange={this.toggleLayout} value={this.state.horizontalLayout}>
           View:
           <Radio.Button value={true}>Horizontal</Radio.Button>

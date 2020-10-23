@@ -2,23 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Actions from 'src/actions/solid';
 import styled from '@emotion/styled';
-import {message} from 'antd';
+import {message, Popconfirm, Button, Input} from 'antd';
 import { getViewSelection, getSession, getDirty, getFolderUri, getFolderUriChanging, getViews } from '../selectors';
-
-const PrimaryButton = styled.button`
-  background: ${({disabled}) => disabled ? '#9d9d9d' : '#337ab7'};
-  border-color: #2e6da4;
-  border-radius: 4px;
-  padding: 12px;
-  font-size: 12px;
-  color: white;
-  outline: none;
-`;
-
-const FolderUriInput = styled.input`
-  border: 1px solid black;
-  background: ${({disabled, invalid}) => (disabled && 'lightgrey') || (invalid && '#ff6464')};
-`;
 
 class ControlPanel extends Component {
   state = {
@@ -62,9 +47,7 @@ class ControlPanel extends Component {
   };
 
   onDeleteView = uri => {
-    if (window.confirm(`Are you sure you want to delete view at ${uri}?`)) {
-      this.props.deleteView(uri);
-    }
+    this.props.deleteView(uri);
   };
 
   getNewViewInput = () => {
@@ -72,27 +55,27 @@ class ControlPanel extends Component {
       return (
         <li>
           <span>
-            <input
+            <Input
               onChange={e =>
                 this.setState({
                   newViewName: e.target.value
                 })
               }
             />
-            <button onClick={this.onSaveNewView}>Save</button>
+            <Button onClick={this.onSaveNewView}>Save</Button>
           </span>
         </li>
       )
     } else if (this.props.isDirty) {
       return (
         <li>
-          <button
+          <Button
             onClick={() => this.setState({
               creatingView: true,
             })}
           >
             New view
-          </button>
+          </Button>
         </li>
       )
     }
@@ -109,8 +92,15 @@ class ControlPanel extends Component {
           this.props.views.map(v =>
             <li key={v}>
               { v.replace(/.*\//, '') }
-              <button onClick={() => this.onLoadView(v)}>Load</button>
-              <button onClick={() => this.onDeleteView(v)}>X</button>
+              <Button onClick={() => this.onLoadView(v)}>Load</Button>
+              <Popconfirm
+                title="Are you sure you want to delete this view?"
+                onConfirm={() => this.onDeleteView(v)}
+                okText="Delete"
+                cancelText="Cancel"
+              >
+                <Button>X</Button>
+              </Popconfirm>
             </li>
           )
         }
@@ -158,7 +148,7 @@ class ControlPanel extends Component {
         <>
           <span>
             App folder:
-            <FolderUriInput
+            <Input
               required
               disabled={!this.props.folderUriChanging}
               ref={e => this.folderUriInput = e}
@@ -167,9 +157,9 @@ class ControlPanel extends Component {
             />
             {
               this.props.folderUriChanging ?
-                <button onClick={this.saveFolderUri}>Submit</button>
+                <Button onClick={this.saveFolderUri}>Submit</Button>
                 :
-                <button onClick={() => this.props.toggleFolderUriChanging(true)}>Change</button>
+                <Button onClick={() => this.props.toggleFolderUriChanging(true)}>Change</Button>
             }
           </span>
           <br/>
@@ -179,13 +169,13 @@ class ControlPanel extends Component {
           <br/>
           <span>Logged in as: {this.props.session.webId}</span>
           <br/>
-          <PrimaryButton onClick={this.onLogout} title="Logout">Logout</PrimaryButton>
+          <Button type="primary" onClick={this.onLogout} title="Logout">Logout</Button>
         </>
       )
     } else {
       return (
         <>
-          <PrimaryButton onClick={this.onLogin} title="Login">Login</PrimaryButton>
+          <Button type="primary" onClick={this.onLogin} title="Login">Login</Button>
         </>
       )
     }
@@ -194,16 +184,17 @@ class ControlPanel extends Component {
   getControlPanel = () => (
     <>
       &nbsp;
-      <PrimaryButton
+      <Button
+        type="primary"
         onClick={() => this.onSaveView()}
         disabled={!this.props.isDirty}
       >
         {
           this.props.session ? "Save view at URI" : "Download view"
         }
-      </PrimaryButton>
+      </Button>
       &nbsp;
-      <PrimaryButton onClick={() => this.onLoadView()}>Load view by URI</PrimaryButton>
+      <Button type="primary" onClick={() => this.onLoadView()}>Load view by URI</Button>
     </>
   );
 

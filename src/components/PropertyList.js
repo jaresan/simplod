@@ -3,24 +3,32 @@ import { connect } from 'react-redux';
 import { getSelectedProperties } from '../selectors';
 import {map} from 'ramda';
 import Actions from 'src/actions/model';
+import {Checkbox, Input} from 'antd';
 import styled from '@emotion/styled';
 
 
-const Input = styled.input`	
-	background: ${({disabled}) => disabled ? 'lightgrey' : 'default'};	
+const StyledInput = styled(Input)`	
+	background: ${({disabled}) => disabled ? 'lightgrey' : 'default'};
+	width: 128px;	
 `;
 
 const Property = ({asVariable, optional, name, onToggleAsVariable, onToggleOptional, onSaveName}) => (
 	<li>
-		<label>
-			<input type="checkbox" name="show" value="show" checked={!!asVariable} onChange={onToggleAsVariable}/>
+		<Checkbox
+			onChange={onToggleAsVariable}
+			name="As variable"
+			checked={asVariable}
+		>
 			As variable
-		</label>
-		<label>
-			<input type="checkbox" name="optional" value="optional" checked={!!optional} onChange={onToggleOptional}/>
+		</Checkbox>
+		<Checkbox
+			checked={!!optional}
+			name="Optional"
+			onChange={onToggleOptional}
+		>
 			Optional
-		</label>
-		<Input
+		</Checkbox>
+		<StyledInput
 			type="text"
 			disabled={!asVariable}
 			defaultValue={name}

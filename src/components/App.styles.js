@@ -1,1 +1,1 @@
-import 'antd/lib/message/style/index.css';
+import 'antd/dist/antd.compact.css';
