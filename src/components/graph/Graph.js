@@ -1,5 +1,5 @@
 import {curry} from 'ramda';
-import {Canvas as CanvasWrapper, Edge as EdgeWrapper} from './wrappers';
+import {Canvas as CanvasWrapper} from './wrappers';
 
 const getWrapper = n => {
   if (!n) return;

@@ -48,6 +48,8 @@ export class Edge extends Wrapper {
     Object.assign(this, {
       id,
       edge,
+      sourceGroup: edge.getSource().getContainer().get('wrapper'),
+      targetGroup: edge.getTarget().getContainer().get('wrapper'),
       model: {
         source,
         target
@@ -75,17 +77,20 @@ export class Edge extends Wrapper {
   };
 
   togglePropertiesSelected(flag) {
-    this.edge
-      .getSource()
-      .getContainer()
-      .get('wrapper')
-      .togglePropertiesSelected(this.model.target, flag);
+    this.sourceGroup.togglePropertiesSelected(this.model.target, flag);
+    this.targetGroup.togglePropertiesSelected(this.model.source, flag);
+  }
 
-    this.edge
-      .getTarget()
-      .getContainer()
-      .get('wrapper')
-      .togglePropertiesSelected(this.model.source, flag);
+  setState(state) {
+    super.setState(state);
+    if (this.lastState.selected !== state.selected) {
+      this.updateNodeHighlights();
+    }
+  };
+
+  updateNodeHighlights() {
+    this.sourceGroup.updateHighlight();
+    this.targetGroup.updateHighlight();
   }
 
   onClick() {

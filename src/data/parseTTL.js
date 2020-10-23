@@ -1,21 +1,6 @@
 import {Parser} from 'n3';
-import { assocPath, curry, invertObj, keys } from 'ramda';
+import { assocPath, invertObj, keys } from 'ramda';
 import possiblePrefixes from '../constants/possiblePrefixes';
-
-const propertyToName = {
-  'xml:integer': 'int',
-  'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString': 'string',
-  'xml:string': 'string',
-  'xml:decimal': 'decimal',
-  'owl:Thing': 'thing',
-  customMatch: str => {
-    if (!str) return;
-    const type = str.match(/xsd:(.*)$/);
-    if (type && type[1]) {
-      return type[1].toLowerCase();
-    }
-  }
-};
 
 export const parseTTL = ttlString => new Promise((res, err) => {
   getQuads(ttlString)
@@ -63,17 +48,6 @@ const getQuads = ttlString => new Promise((res, err) => {
   });
 });
 
-
-// TODO: Really slow.. How much does it affect performance? How about a trie?
-const getPrefixed = curry((prefixes, iri) => {
-  for (let key of keys(prefixes)) {
-    if (iri && iri.includes(key)) {
-      return `${prefixes[key]}:${iri.replace(key, '')}`;
-    }
-  }
-  return iri;
-});
-
 const parseQuads = (quads, prefixes) => {
   const usedPrefixes = {};
   const usedAliases = {};
@@ -115,17 +89,6 @@ const parseQuads = (quads, prefixes) => {
     quad.subject.id = prefix(quad.subject.id);
     quad.predicate.id = prefix(quad.predicate.id);
   });
-
-  const getDataProperty = (quad, classMapping) => {
-    if (quad.predicate.id !== objectSpecIRI) {
-      return null;
-    }
-
-    const classType = classMapping[quad.object.value];
-
-    const possibleProp = [quad.object.datatypeString, quad.object.id, classType];
-    return possibleProp.find(p => propertyToName[p] || propertyToName.customMatch(p));
-  };
 
   // {
   //   [blankNodeId]: className

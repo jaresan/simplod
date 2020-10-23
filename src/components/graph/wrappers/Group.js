@@ -32,7 +32,7 @@ class GroupController {
   getEdges() {
     if (!this.edges) {
       const container = this.childrenWrappers[0].getContainerNode();
-      this.edges = container.getOutEdges().concat(container.getInEdges());
+      this.edges = container.getOutEdges().concat(container.getInEdges()).map(e => e.get('wrapper'));
     }
 
     return this.edges;
@@ -55,7 +55,7 @@ class GroupController {
   onHover(target) {
     this.state.hover = true;
     this.updateHighlight(true);
-    this.getEdges().forEach(e => e.get('wrapper').onHover());
+    this.getEdges().forEach(e => e.onHover());
     this.group.toFront();
     return propagate(target, 'onHover');
   }
@@ -64,13 +64,13 @@ class GroupController {
     if (!this.propertyWrappers.includes(target)) {
       this.state.hover = false;
       this.updateHighlight(false);
-      this.getEdges().forEach(e => e.get('wrapper').onBlur());
+      this.getEdges().forEach(e => e.onBlur());
     }
     return propagate(target, 'onBlur');
   }
 
   updateHighlight() {
-    this.state.selected = this.childrenWrappers.some(w => w.state.selected);
+    this.state.selected = this.childrenWrappers.some(w => w.state.selected) || this.getEdges().some(e => e.state.selected);
     const shouldHighlight = this.state.selected || this.state.hover;
 
     if (!shouldHighlight) {
