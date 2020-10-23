@@ -19,6 +19,7 @@ class YasguiContainer extends Component {
 	constructor(props) {
 		super(props);
 		this.yasgui = null;
+		localStorage.removeItem('yagui__config')
 	}
 
 	componentDidUpdate(prevProps, prevState, snapshot) {
