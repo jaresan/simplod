@@ -16,7 +16,7 @@ import possiblePrefixes from 'src/constants/possiblePrefixes';
 const snakeToCamel = (str) => str.replace(
   /([-]\w)/g,
   group => group.toUpperCase().replace('-', '')
-);
+).replace(/-/g, '');
 export const parseSPARQLQuery = (selectedProperties, prefixes) => {
   let queryParts = {
     properties: '',
@@ -61,7 +61,7 @@ export const parseSPARQLQuery = (selectedProperties, prefixes) => {
     queryParts.typeDefinitions = Object.entries(typeToVarName).map(([type, varName]) => `?${varName} a ${type}.`).join('\n');
 
     queryParts.properties = Object.values(selectedProperties).map(({asVariable, name, predicate, optional, source, target}) => {
-      const varName = typeToVarName[target] || name; // Use existing queried entity if available to prevent cartesian products
+      const varName = snakeToCamel(typeToVarName[target] || name); // Use existing queried entity if available to prevent cartesian products
       name = asVariable ? `?${varName}` : '[]';
 
       const prefixed = predicate.match(/(^\w+):/);
