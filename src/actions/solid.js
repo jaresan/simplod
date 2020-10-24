@@ -16,5 +16,6 @@ export default createActions({
   s_deleteView: ['uri'],
   r_resetFolderUri: null,
   s_loadFiles: ['url'],
-  r_filesLoaded: ['files']
+  r_filesLoaded: ['files'],
+  s_saveOwnView: ['uri']
 }, {prefix: 'Solid.'});

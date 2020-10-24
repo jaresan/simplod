@@ -40,19 +40,63 @@ function* onViewSave({uri}) {
   }
 }
 
+
+function* saveOwnView({uri}) {
+  const view = yield select(getViewSelection);
+
+  // FIXME: Extract url sanitization
+  const {webId} = yield auth.currentSession();
+  const {origin} = new URL(webId);
+
+  uri = `${origin}/${uri.replace(origin, '').replace(/^\//, '')}`; // Enforce domain if relative URL provided
+  uri = uri.replace(/(.json)?$/, '.json');
+
+  const loading = message.loading('Saving view...');
+  const errMsg = 'An error occured while trying to save the view.';
+  try {
+    const res = yield call(auth.fetch, uri, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(view)
+    });
+
+    const logStatus = webId ? `You are logged in as ${webId}.` : 'You are not logged in.';
+    if (res.status === 401) {
+      message.error(`
+        The request returned 401 - unauthorized.
+        ${logStatus}
+        Either you don't have access to the requested resource or the permissions on it are not set up correctly.
+      `);
+    } else if (res.status < 200 || res.status >= 300) {
+      message.error(errMsg)
+    }
+  } catch (e) {
+    message.error(errMsg)
+  } finally {
+    loading();
+  }
+
+  yield loadFiles({url: uri.replace(/\/[^/]*$/, '')});
+}
+
 function* loadOwnView({uri}) {
   const {webId} = yield auth.currentSession();
   const {origin} = new URL(webId);
 
   const loading = message.loading('Loading view...');
+  const errMsg = 'There was an error loading the view. Please make sure it corresponds to the data schema.';
   try {
     const res = yield call(auth.fetch, nPath.join(origin, uri));
-    const json = yield res.json();
-    yield put(ModelActions.Creators.r_deselectAll());
-    yield put(ModelActions.Creators.r_viewLoaded(json));
-    message.success('View loaded');
+    if (res.status < 200 || res.status >= 300) {
+      message.error(errMsg)
+    } else {
+      const json = yield res.json();
+      yield put(ModelActions.Creators.r_deselectAll());
+      yield put(ModelActions.Creators.r_viewLoaded(json));
+      message.success('View loaded');
+    }
   } catch (e) {
-    message.error('There was an error loading the view. Please make sure it corresponds to the data schema.')
+    message.error(errMsg)
   } finally {
     loading();
   }
@@ -242,6 +286,7 @@ export default function*() {
     takeEvery(SolidActions.Types.S_ON_SOLID_START, onStart),
     // takeEvery(SolidActions.Types.S_SAVE_FOLDER_URI, onSaveFolderUri),
     takeEvery(SolidActions.Types.S_DELETE_VIEW, onDeleteView),
-    takeEvery(SolidActions.Types.S_LOAD_FILES, loadFiles)
+    takeEvery(SolidActions.Types.S_LOAD_FILES, loadFiles),
+    takeEvery(SolidActions.Types.S_SAVE_OWN_VIEW, saveOwnView)
   ]);
 }

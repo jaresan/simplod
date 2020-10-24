@@ -15,6 +15,8 @@ import {
   getFiles
 } from '../selectors';
 
+const newViewSuffix = '__newView';
+
 class ControlPanel extends Component {
   state = {
     creatingView: false,
@@ -137,10 +139,6 @@ class ControlPanel extends Component {
   };
 
   onLoadView = (uri) => {
-    if (!uri) {
-      uri = prompt('Please specify the URI to load.');
-    }
-
     this.props.loadOwnView(uri);
   };
 
@@ -208,7 +206,33 @@ class ControlPanel extends Component {
     </>
   );
 
-  renderTreeNode = ({title, isLeaf, key}) => {
+  saveNewView = key => {
+    this.props.saveOwnView(key);
+  };
+
+  renderTreeNode = ({title, isLeaf, key, isNewViewInput}) => {
+    if (isNewViewInput) {
+      const ref = React.createRef();
+      key = key.replace(newViewSuffix, '');
+      return <>
+        <Input
+          ref={ref}
+          style={{width: 128}}
+          name="View name"
+          autoComplete="off"
+          type="text"
+          onPressEnter={({target: {value}}) => {
+            this.saveNewView(path.join(key, value));
+            ref.current.setValue('');
+          }}
+          placeholder="New view name"
+        />
+        <Button onClick={() => {
+          this.saveNewView(path.join(key, ref.current.input.value));
+          ref.current.setValue('');
+        }}>Save</Button>
+      </>
+    }
     if (!isLeaf) {
       return <span>{title}</span>;
     }
@@ -255,10 +279,15 @@ class ControlPanel extends Component {
 
     const isLeaf = content === null;
     const {__loaded, ...rest} = (content || {});
+    const folderInitialized = !isLeaf && __loaded;
+    const children = folderInitialized ? Object.entries(rest).map(this.getFileSubtree(key)) : null;
+    if (folderInitialized) {
+      children.push({isNewViewInput: true, key: `${key}${newViewSuffix}`, isLeaf: true});
+    }
     return {
       title,
       key,
-      children: !isLeaf && __loaded ? Object.entries(rest).map(this.getFileSubtree(key)) : null,
+      children,
       isLeaf
     };
   });
@@ -274,6 +303,7 @@ class ControlPanel extends Component {
     const treeData = this.getFileTreeData();
     return (
       <Tree.DirectoryTree
+        selectable={false}
         titleRender={this.renderTreeNode}
         loadData={this.loadTreeNodeData}
         defaultExpandedKeys={['/']}
@@ -321,7 +351,8 @@ const mapDispatchToProps = {
   setFolderUri: Actions.Creators.r_setFolderUri,
   toggleFolderUriChanging: Actions.Creators.r_toggleFolderUriChanging,
   deleteView: Actions.Creators.s_deleteView,
-  loadFiles: Actions.Creators.s_loadFiles
+  loadFiles: Actions.Creators.s_loadFiles,
+  saveOwnView: Actions.Creators.s_saveOwnView
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ControlPanel);
