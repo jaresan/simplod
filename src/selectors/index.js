@@ -34,7 +34,6 @@ export const getFolderUri = (appState, original) => {
 
 export const getFolderUriChanging = appState => appState.solid.get('folderUriChanging');
 
-export const getViews = appState => appState.solid.get('views') || [];
 export const getFiles = appState => appState.solid.get('files').toJS();
 
 export const getQuery = appState => appState.yasgui.get('query');

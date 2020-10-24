@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Actions from 'src/actions/solid';
-import {message, Popconfirm, Button, Input, Tree} from 'antd';
-import {CloseOutlined} from '@ant-design/icons';
+import { message, Popconfirm, Button, Input, Tree, Popover, Tooltip } from 'antd';
+import {CloseOutlined, PlusOutlined} from '@ant-design/icons';
 import {curry} from 'ramda';
 import path from 'path';
 import {
@@ -11,7 +11,6 @@ import {
   getDirty,
   getFolderUri,
   getFolderUriChanging,
-  getViews,
   getQuery, getEndpoint,
   getFiles
 } from '../selectors';
@@ -21,6 +20,7 @@ const newViewSuffix = '__newView';
 class ControlPanel extends Component {
   state = {
     creatingView: false,
+    folderWithNewView: '',
     newViewName: '',
   };
 
@@ -96,34 +96,6 @@ class ControlPanel extends Component {
     }
   };
 
-  getViewList = () => {
-    if (!this.props.session) {
-      return;
-    }
-
-    return (
-      <ul>
-        {
-          this.props.views.map(v =>
-            <li key={v}>
-              { v.replace(/.*\//, '') }
-              <Button onClick={() => this.onLoadView(v)}>Load</Button>
-              <Popconfirm
-                title="Are you sure you want to delete this view?"
-                onConfirm={() => this.onDeleteFile(v)}
-                okText="Delete"
-                cancelText="Cancel"
-              >
-                <Button>X</Button>
-              </Popconfirm>
-            </li>
-          )
-        }
-        { this.getNewViewInput() }
-      </ul>
-    )
-  };
-
   onSaveView = (uri) => {
     if (!this.props.session) {
       return this.downloadView();
@@ -155,27 +127,6 @@ class ControlPanel extends Component {
     if (this.props.session) {
       return (
         <>
-          <span>
-            App folder:
-            <Input
-              required
-              disabled={!this.props.folderUriChanging}
-              ref={e => this.folderUriInput = e}
-              value={this.props.folderUri}
-              onChange={e => this.props.setFolderUri(e.target.value)}
-            />
-            {
-              this.props.folderUriChanging ?
-                <Button onClick={this.saveFolderUri}>Submit</Button>
-                :
-                <Button onClick={() => this.props.toggleFolderUriChanging(true)}>Change</Button>
-            }
-          </span>
-          <br/>
-          <span>
-            Your saved views: {this.getViewList()}
-          </span>
-          <br/>
           <span>Logged in as: {this.props.session.webId}</span>
           <br/>
           <Button type="primary" onClick={this.onLogout} title="Logout">Logout</Button>
@@ -211,29 +162,42 @@ class ControlPanel extends Component {
     this.props.saveOwnView(key);
   };
 
-  renderTreeNode = ({title, isLeaf, key, isNewViewInput}) => {
+  renderTreeNode = ({title, isLeaf, key, isNewViewInput, isPlusIcon}) => {
+    key = key.replace(newViewSuffix, '');
     if (isNewViewInput) {
       const ref = React.createRef();
-      key = key.replace(newViewSuffix, '');
+      const onSave = () => {
+        this.saveNewView(path.join(key, ref.current.input.value));
+        ref.current.setValue('');
+        this.setState({folderWithNewView: ''});
+      }
       return <>
         <Input
+          autoFocus
           ref={ref}
           style={{width: 128}}
           name="View name"
           autoComplete="off"
           type="text"
-          onPressEnter={({target: {value}}) => {
-            this.saveNewView(path.join(key, value));
-            ref.current.setValue('');
-          }}
+          onPressEnter={onSave}
           placeholder="New view name"
         />
-        <Button onClick={() => {
-          this.saveNewView(path.join(key, ref.current.input.value));
-          ref.current.setValue('');
-        }}>Save</Button>
+        <Button onClick={onSave}>Save</Button>
       </>
     }
+
+    if (isPlusIcon) {
+      if (!this.props.isDirty) {
+        return <Tooltip
+          title="No properties selected, newly created file would be empty"
+        >
+          <PlusOutlined disabled style={{color: 'grey'}}/>
+        </Tooltip>
+      } else {
+        return <PlusOutlined disabled onClick={() => {this.setState({folderWithNewView: key})}} style={{color: 'blue'}}/>;
+      }
+    }
+
     if (!isLeaf) {
       return <span>{title}</span>;
     }
@@ -293,7 +257,8 @@ class ControlPanel extends Component {
     const folderInitialized = !isLeaf && __loaded;
     const children = folderInitialized ? Object.entries(rest).map(this.getFileSubtree(key)) : null;
     if (folderInitialized) {
-      children.push({isNewViewInput: true, key: `${key}${newViewSuffix}`, isLeaf: true});
+      const isNewViewInput = key === this.state.folderWithNewView && this.props.isDirty;
+      children.push({isPlusIcon: !isNewViewInput, isNewViewInput, key: `${key}${newViewSuffix}`, isLeaf: true});
     }
     return {
       title,
@@ -314,6 +279,7 @@ class ControlPanel extends Component {
     const treeData = this.getFileTreeData();
     return (
       <Tree.DirectoryTree
+        showLine={{showLeafIcon: false}}
         selectable={false}
         titleRender={this.renderTreeNode}
         loadData={this.loadTreeNodeData}
@@ -346,7 +312,6 @@ const mapStateToProps = appState => ({
   folderUri: getFolderUri(appState, true),
   view: getViewSelection(appState),
   folderUriChanging: getFolderUriChanging(appState),
-  views: getViews(appState),
   query: getQuery(appState),
   endpoint: getEndpoint(appState),
   files: getFiles(appState)

@@ -69,6 +69,8 @@ function* saveOwnView({uri}) {
       `);
     } else if (res.status < 200 || res.status >= 300) {
       message.error(errMsg)
+    } else {
+      message.success('New view created');
     }
   } catch (e) {
     message.error(errMsg)
@@ -254,6 +256,7 @@ function* loadFiles({url}) {
   url = `${origin}/${url.replace(origin, '').replace(/^\//, '')}`; // Enforce domain if relative URL provided
   url = url.replace(/\/?$/, '/');
   const suffix = s => s.replace(url, '');
+  const isTypeValid = s => s.match(/.json$/);
   const getValue = pipe(path(['subject', 'value']), suffix, replace(/\/$/, ''));
   const filePath = ['/'].concat(url.replace(origin, '').split('/')).filter(identity);
   const res = yield auth.fetch(url);
@@ -280,7 +283,7 @@ function* loadFiles({url}) {
 
   const files = store.statementsMatching(null, type, resource)
     .map(getValue)
-    .filter(name => !folders[name])
+  .filter(name => !folders[name] && isTypeValid(name))
     .reduce((acc, name) => Object.assign(acc, {[name]: null}), {});
 
   yield put(SolidActions.Creators.r_filesLoaded(assocPath(filePath, {...folders, ...files, __loaded: true}, {})));
