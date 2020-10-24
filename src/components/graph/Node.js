@@ -69,7 +69,7 @@ const NodeImplementation = {
     const expandIconAttrs = {
       x: width + 3,
       y: 5,
-      img: '/images/expand.png',
+      img: 'images/expand.png',
       width: 10,
       height: 10
     };
@@ -77,7 +77,7 @@ const NodeImplementation = {
     const selectAllIconAttrs = {
       x: -16,
       y: 2,
-      img: '/images/plus.png',
+      img: 'images/plus.png',
       width: 16,
       height: 16
     };
