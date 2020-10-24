@@ -2,6 +2,7 @@ import { takeEvery, select, call, put, all } from 'redux-saga/effects';
 import { getViewSelection } from '../selectors';
 import SolidActions from 'src/actions/solid';
 import ModelActions from 'src/actions/model';
+import nPath from 'path';
 import {pipe, path, assocPath, identity, replace} from 'ramda';
 import {message} from 'antd';
 import auth from 'solid-auth-client';
@@ -39,8 +40,25 @@ function* onViewSave({uri}) {
   }
 }
 
-function* onViewLoad({uri}) {
-  return;
+function* loadOwnView({uri}) {
+  const {webId} = yield auth.currentSession();
+  const {origin} = new URL(webId);
+
+  const loading = message.loading('Loading view...');
+  try {
+    const res = yield call(auth.fetch, nPath.join(origin, uri));
+    const json = yield res.json();
+    yield put(ModelActions.Creators.r_deselectAll());
+    yield put(ModelActions.Creators.r_viewLoaded(json));
+    message.success('View loaded');
+  } catch (e) {
+    message.error('There was an error loading the view. Please make sure it corresponds to the data schema.')
+  } finally {
+    loading();
+  }
+}
+
+function* loadExternalView({uri}) {
   try {
     const res = yield call(auth.fetch, uri);
     const session = yield auth.currentSession();
@@ -218,7 +236,7 @@ function* loadFiles({url}) {
 export default function*() {
   yield all([
     takeEvery(SolidActions.Types.S_ON_VIEW_SAVE, onViewSave),
-    takeEvery(SolidActions.Types.S_ON_VIEW_LOAD, onViewLoad),
+    takeEvery(SolidActions.Types.S_LOAD_OWN_VIEW, loadOwnView),
     takeEvery(SolidActions.Types.S_ON_SOLID_LOGIN, onLogin),
     takeEvery(SolidActions.Types.S_ON_SOLID_LOGOUT, onLogout),
     takeEvery(SolidActions.Types.S_ON_SOLID_START, onStart),

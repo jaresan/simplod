@@ -6,7 +6,7 @@ export default createActions({
   s_onSolidLogin: null,
   s_onSolidLogout: null,
   s_onViewSave: ['uri'],
-  s_onViewLoad: ['uri'],
+  s_loadOwnView: ['uri'],
   r_setFolderUri: ['uri'],
   s_onSolidStart: null,
   s_saveFolderUri: ['uri'],

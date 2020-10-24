@@ -141,7 +141,7 @@ class ControlPanel extends Component {
       uri = prompt('Please specify the URI to load.');
     }
 
-    this.props.onLoadView(uri);
+    this.props.loadOwnView(uri);
   };
 
   saveFolderUri = () => {
@@ -228,7 +228,6 @@ class ControlPanel extends Component {
   loadTreeNodeData = ({ key, children }) => {
     return new Promise(resolve => {
       if (children) {
-        console.log({key, children});
         resolve();
         return;
       }
@@ -317,7 +316,7 @@ const mapDispatchToProps = {
   onSolidLogout: Actions.Creators.s_onSolidLogout,
   onSolidStart: Actions.Creators.s_onSolidStart,
   onSave: Actions.Creators.s_onViewSave,
-  onLoadView: Actions.Creators.s_onViewLoad,
+  loadOwnView: Actions.Creators.s_loadOwnView,
   saveFolderUri: Actions.Creators.s_saveFolderUri,
   setFolderUri: Actions.Creators.r_setFolderUri,
   toggleFolderUriChanging: Actions.Creators.r_toggleFolderUriChanging,
