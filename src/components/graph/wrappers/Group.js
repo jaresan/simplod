@@ -101,8 +101,8 @@ class GroupController {
 
   swapExpandIcon() {
     const icon = this.children['expand-icon'];
-    const collapseIconPath = '/images/collapse.png';
-    const expandIconPath = '/images/expand.png';
+    const collapseIconPath = 'images/collapse.png';
+    const expandIconPath = 'images/expand.png';
 
     if (icon.attrs.img.src.match(collapseIconPath)) {
       icon.attrs.img.src = expandIconPath;
