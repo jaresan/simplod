@@ -1,4 +1,4 @@
-import { invoker, memoizeWith, pick, assocPath, path, identity } from 'ramda';
+import { invoker, memoizeWith, pick, assocPath, path, identity, map, filter } from 'ramda';
 import {Property, Method} from './index';
 
 const getWrapper = memoizeWith(t => t.get('id'), target => target.get('wrapper'));
@@ -22,16 +22,16 @@ class GroupController {
 
   constructor(group) {
     this.group = group;
-    this.children = group.getChildren();
-    this.childrenWrappers = this.children.map(ch => ch.get('wrapper')).filter(identity);
-    this.propertyWrappers = this.childrenWrappers.filter(w => (w instanceof Property) || (w instanceof Method));
+    this.children = group.getChildren().reduce((acc, ch) => Object.assign(acc, {[ch.get('name')]: ch}), {});
+    this.childrenWrappers = filter(identity, map(ch => ch.get('wrapper'), this.children));
+    this.propertyWrappers = filter(w => (w instanceof Property) || (w instanceof Method), this.childrenWrappers);
     this.defaultChildAttrs = {};
     this.toggleProperties(false);
   }
 
   getEdges() {
     if (!this.edges) {
-      const container = this.childrenWrappers[0].getContainerNode();
+      const container = this.childrenWrappers['node-container'].getContainerNode();
       this.edges = container.getOutEdges().concat(container.getInEdges()).map(e => e.get('wrapper'));
     }
 
@@ -61,7 +61,7 @@ class GroupController {
   }
 
   onBlur(target) {
-    if (!this.propertyWrappers.includes(target)) {
+    if (!this.propertyWrappers[target.get('name')]) {
       this.state.hover = false;
       this.updateHighlight(false);
       this.getEdges().forEach(e => e.onBlur());
@@ -70,21 +70,19 @@ class GroupController {
   }
 
   updateHighlight() {
-    this.state.selected = this.childrenWrappers.some(w => w.state.selected) || this.getEdges().some(e => e.state.selected);
+    this.state.selected = Object.values(this.childrenWrappers).some(w => w.state.selected) || this.getEdges().some(e => e.state.selected);
     const shouldHighlight = this.state.selected || this.state.hover;
 
-    if (!shouldHighlight) {
-      this.cancelStyle(this.children[0], ['titleOutline'])
-      this.cancelStyle(this.children[2], ['titleOutline'])
-    } else {
-      this.applyStyle(this.children[0], ['titleOutline'])
-      this.applyStyle(this.children[2], ['titleOutline'])
+    const nodesAffected = ['node-container', 'property-container', 'expand-icon-container'];
+    const updateStyle = shouldHighlight ? this.applyStyle.bind(this) : this.cancelStyle.bind(this);
+    nodesAffected.forEach(name => updateStyle(this.children[name], ['titleOutline']));
+    if (shouldHighlight) {
       this.group.toFront();
     }
   }
 
   togglePropertiesSelected(target, selected) {
-    this.propertyWrappers.forEach(p => {
+    Object.values(this.propertyWrappers).forEach(p => {
       if (p.state.target === target) {
         p.onToggleSelect(selected);
       }
@@ -97,17 +95,31 @@ class GroupController {
     this.showProperties = typeof show === 'undefined' ? !this.showProperties : show;
     const method = this.showProperties ? invoker(0, 'show') : invoker(0, 'hide');
 
-    // FIXME: Dynamic lookup instead of slice(2)
-    this.group.getChildren().slice(2).forEach(method)
+    const isProperty = p => p.get('name').match(/^property/);
+    this.group.getChildren().filter(isProperty).forEach(method)
+  }
+
+  swapExpandIcon() {
+    const icon = this.children['expand-icon'];
+    const collapseIconPath = '/images/collapse.png';
+    const expandIconPath = '/images/expand.png';
+
+    if (icon.attrs.img.src.match(collapseIconPath)) {
+      icon.attrs.img.src = expandIconPath;
+    } else {
+      icon.attrs.img.src = collapseIconPath;
+    }
   }
 
   onClick(target) {
-    if (this.children.indexOf(target) < 2) {
+    const name = target.get('name');
+
+    if (['node-container', 'expand-icon-container', 'node-title', 'expand-icon'].includes(name)) {
       this.toggleProperties();
+      this.swapExpandIcon()
     } else {
       propagate(target, 'onClick');
     }
-
     this.group.toFront();
   }
 

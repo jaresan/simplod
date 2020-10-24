@@ -6,8 +6,8 @@ const NODE_TYPE = 'graphNode';
 const PROP_LINE_HEIGHT = 12;
 const attrs = {
   'node-container': ({propCount, methodCount, label}) => ({
-    width: label.length * 6,
-    height: 24,
+    width: label.length * 8,
+    height: 20,
     stroke: 'black', // Apply the color to the stroke. For filling, use fill: cfg.color instead
     fill: 'steelblue',
     opacity: 1
@@ -22,16 +22,16 @@ const attrs = {
   }),
   property: ({predicate, type, i}) => ({
     x: 4, // center
-    y: PROP_LINE_HEIGHT * (i+1) + PROP_LINE_HEIGHT,
+    y: PROP_LINE_HEIGHT * (i+1) + PROP_LINE_HEIGHT - 2,
     textAlign: 'left',
     textBaseline: 'top',
     text: `${predicate}: ${type}`,
     fill: '#000',
   }),
   'property-container': (propCount, methodCount) => ({
-    y: PROP_LINE_HEIGHT * 2,
+    y: PROP_LINE_HEIGHT * 2 - 4,
     width: 300,
-    height: (propCount + methodCount) * PROP_LINE_HEIGHT,
+    height: (propCount + methodCount) * PROP_LINE_HEIGHT + 6,
     stroke: 'black',
     fill: 'steelblue',
     opacity: 1
@@ -44,7 +44,7 @@ const NodeImplementation = {
   draw(cfg, group) {
     const {data: {properties, methods}, id} = cfg;
     const containerAttrs = attrs['node-container']({propCount: properties.length, methodCount: methods.length, label: cfg.label});
-    const {width} = containerAttrs;
+    const {width, height} = containerAttrs;
     const propFields = properties.reduce((acc, {predicate, object, type}, i)=> acc.concat(E.Property({
       id: `property_${id}-${predicate}-${type}`,
       attrs: attrs.property({predicate, type, i}),
@@ -62,12 +62,21 @@ const NodeImplementation = {
     ), []);
 
     const propertyContainerAttrs = attrs['property-container'](properties.length, methods.length);
+    const expandIconAttrs = {
+      x: width + 3,
+      y: 5,
+      img: '/images/expand.png',
+      width: 10,
+      height: 10
+    };
 
     group.set('methods', methodFields);
     // FIXME: Separate group for logical pieces --> can have multiple groups, yes
     return E.create(group, [
       E.Node({id: `node_${id}`, attrs: containerAttrs, name: 'node-container'}),
       E.Text({id: `node_${id}-title`, attrs: attrs['node-title'](width, cfg.label), name: 'node-title'}),
+      E.Rect({id: `node_${id}-expand-icon-container`, attrs: {x: width, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'expand-icon-container'}),
+      E.Image({id: `node_${id}-expand-icon`, changeIcon() {console.log(this)}, name: 'expand-icon', attrs: expandIconAttrs}),
       E.Rect({id: `node_${id}-prop-container`, attrs: propertyContainerAttrs, name: 'property-container'}),
       ...propFields,
       ...methodFields
