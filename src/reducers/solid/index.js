@@ -15,10 +15,13 @@ const setFiles = (state, {files}) => {
   return state.set('files', oldFiles.mergeDeep(fromJS(files)));
 }
 
+const fileDeleted = (state, {filePath}) => state.deleteIn(['files', ...filePath]);
+
 const handlers = {
   [Types.R_SET_SOLID_SESSION]: setSolidSession,
   [Types.R_SOLID_LOGGED_OUT]: solidLogOut,
-  [Types.R_FILES_LOADED]: setFiles
+  [Types.R_FILES_LOADED]: setFiles,
+  [Types.R_FILE_DELETED]: fileDeleted
 };
 
 export default (state = initialState, action) => {

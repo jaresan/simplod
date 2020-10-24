@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Actions from 'src/actions/solid';
 import {message, Popconfirm, Button, Input, Tree} from 'antd';
+import {CloseOutlined} from '@ant-design/icons';
 import {curry} from 'ramda';
 import path from 'path';
 import {
@@ -60,8 +61,8 @@ class ControlPanel extends Component {
     })
   };
 
-  onDeleteView = uri => {
-    this.props.deleteView(uri);
+  onDeleteFile = uri => {
+    this.props.deleteFile(uri);
   };
 
   getNewViewInput = () => {
@@ -109,7 +110,7 @@ class ControlPanel extends Component {
               <Button onClick={() => this.onLoadView(v)}>Load</Button>
               <Popconfirm
                 title="Are you sure you want to delete this view?"
-                onConfirm={() => this.onDeleteView(v)}
+                onConfirm={() => this.onDeleteFile(v)}
                 okText="Delete"
                 cancelText="Cancel"
               >
@@ -238,14 +239,24 @@ class ControlPanel extends Component {
     }
 
     return (
-      <Popconfirm
-        title="Are you sure you want to apply this view?"
-        onConfirm={() => this.onLoadView(key)}
-        okText="Apply"
-        cancelText="Cancel"
-      >
-        <span>{title}</span>
-      </Popconfirm>
+      <span>
+        <Popconfirm
+          title="Are you sure you want to apply this view?"
+          onConfirm={() => this.onLoadView(key)}
+          okText="Apply"
+          cancelText="Cancel"
+        >
+          {title}
+        </Popconfirm>
+        <Popconfirm
+          title="Are you sure you want to delete this view?"
+          onConfirm={() => this.onDeleteFile(key)}
+          okText="Delete"
+          cancelText="Cancel"
+        >
+          <CloseOutlined/>
+        </Popconfirm>
+      </span>
     );
   }
 
@@ -350,7 +361,7 @@ const mapDispatchToProps = {
   saveFolderUri: Actions.Creators.s_saveFolderUri,
   setFolderUri: Actions.Creators.r_setFolderUri,
   toggleFolderUriChanging: Actions.Creators.r_toggleFolderUriChanging,
-  deleteView: Actions.Creators.s_deleteView,
+  deleteFile: Actions.Creators.s_deleteFile,
   loadFiles: Actions.Creators.s_loadFiles,
   saveOwnView: Actions.Creators.s_saveOwnView
 };

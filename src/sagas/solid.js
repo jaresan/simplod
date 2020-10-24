@@ -102,6 +102,29 @@ function* loadOwnView({uri}) {
   }
 }
 
+function* deleteFile({uri}) {
+  const loading = message.loading('Deleting view...');
+  try {
+    const {webId} = yield auth.currentSession();
+    const {origin} = new URL(webId);
+    uri = `${origin}/${uri.replace(origin, '').replace(/^\//, '')}`; // Enforce domain if relative URL provided
+
+    const res = yield call(auth.fetch, uri, { method: 'DELETE'});
+
+    if (res.status < 200 || res.status >= 300) {
+      message.error('An error occured while trying to delete the view.')
+    } else {
+      message.success('View deleted');
+      const filePath = ['/'].concat(uri.replace(origin, '').split('/')).filter(identity);
+      yield put(SolidActions.Creators.r_fileDeleted(filePath));
+    }
+  } catch (e) {
+    message.error('An error occured while trying to delete the view.')
+  } finally {
+    loading();
+  }
+}
+
 function* loadExternalView({uri}) {
   try {
     const res = yield call(auth.fetch, uri);
@@ -124,20 +147,6 @@ function* loadExternalView({uri}) {
     }
   } catch (e) {
     message.error('An error occured while trying to load the view.')
-  }
-}
-
-function* onDeleteView({uri: viewUri}) {
-  try {
-    const res = yield call(auth.fetch, viewUri, { method: 'DELETE'});
-
-    if (res.status >= 200 && res.status < 300) {
-      yield put(SolidActions.Creators.r_viewDeleted(viewUri));
-    } else {
-      message.error('An error occured while trying to delete the view.')
-    }
-  } catch (e) {
-    message.error('An error occured while trying to delete the view.')
   }
 }
 
@@ -285,7 +294,7 @@ export default function*() {
     takeEvery(SolidActions.Types.S_ON_SOLID_LOGOUT, onLogout),
     takeEvery(SolidActions.Types.S_ON_SOLID_START, onStart),
     // takeEvery(SolidActions.Types.S_SAVE_FOLDER_URI, onSaveFolderUri),
-    takeEvery(SolidActions.Types.S_DELETE_VIEW, onDeleteView),
+    takeEvery(SolidActions.Types.S_DELETE_FILE, deleteFile),
     takeEvery(SolidActions.Types.S_LOAD_FILES, loadFiles),
     takeEvery(SolidActions.Types.S_SAVE_OWN_VIEW, saveOwnView)
   ]);
