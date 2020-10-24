@@ -16,7 +16,7 @@ export const getPrefixes = appState => appState.yasgui.get('prefixes').toJS();
 
 export const getSelectedProperties = appState => appState.model.getIn(['entities', entityTypes.property]).filter(e => e.get('selected')).toJS();
 
-export const getSession = appState => appState.solid.get('session');
+export const getSession = appState => appState.solid.get('session').toJS();
 
 export const getDirty = appState => appState.model.get('dirty');
 
@@ -34,7 +34,8 @@ export const getFolderUri = (appState, original) => {
 
 export const getFolderUriChanging = appState => appState.solid.get('folderUriChanging');
 
-export const getViews = appState => appState.solid.get('views');
+export const getViews = appState => appState.solid.get('views') || [];
+export const getFiles = appState => appState.solid.get('files').toJS();
 
 export const getQuery = appState => appState.yasgui.get('query');
 export const getEndpoint = appState => appState.yasgui.get('endpoint');

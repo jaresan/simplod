@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Actions from 'src/actions/solid';
-import {message, Popconfirm, Button, Input} from 'antd';
+import {message, Popconfirm, Button, Input, Tree} from 'antd';
+import {curry} from 'ramda';
+import path from 'path';
 import {
   getViewSelection,
   getSession,
@@ -9,7 +11,8 @@ import {
   getFolderUri,
   getFolderUriChanging,
   getViews,
-  getQuery, getEndpoint
+  getQuery, getEndpoint,
+  getFiles
 } from '../selectors';
 
 class ControlPanel extends Component {
@@ -17,6 +20,8 @@ class ControlPanel extends Component {
     creatingView: false,
     newViewName: '',
   };
+
+  fileFetchMap = {};
 
   componentDidMount = async () => {
     this.props.onSolidStart();
@@ -136,9 +141,7 @@ class ControlPanel extends Component {
       uri = prompt('Please specify the URI to load.');
     }
 
-    if (uri) {
-      this.props.onLoadView(uri);
-    }
+    this.props.onLoadView(uri);
   };
 
   saveFolderUri = () => {
@@ -205,12 +208,89 @@ class ControlPanel extends Component {
     </>
   );
 
+  renderTreeNode = ({title, isLeaf, key}) => {
+    if (!isLeaf) {
+      return <span>{title}</span>;
+    }
+
+    return (
+      <Popconfirm
+        title="Are you sure you want to apply this view?"
+        onConfirm={() => this.onLoadView(key)}
+        okText="Apply"
+        cancelText="Cancel"
+      >
+        <span>{title}</span>
+      </Popconfirm>
+    );
+  }
+
+  loadTreeNodeData = ({ key, children }) => {
+    return new Promise(resolve => {
+      if (children) {
+        console.log({key, children});
+        resolve();
+        return;
+      }
+
+      this.props.loadFiles(key);
+
+      this.fileFetchMap[key] = {
+        resolve,
+        timeout: setTimeout(() => {
+          message.error('There was a problem fetching files from the folder.');
+          resolve();
+        }, 10000)
+      }
+    });
+  };
+
+  getFileSubtree = curry((curr, [title, content]) => {
+    const key = path.join(curr, title);
+    const {timeout, resolve} = (this.fileFetchMap[key] || {});
+    if (resolve) {
+      resolve();
+      clearTimeout(timeout);
+      delete this.fileFetchMap[key];
+    }
+
+    const isLeaf = content === null;
+    const {__loaded, ...rest} = (content || {});
+    return {
+      title,
+      key,
+      children: !isLeaf && __loaded ? Object.entries(rest).map(this.getFileSubtree(key)) : null,
+      isLeaf
+    };
+  });
+
+  getFileTreeData() {
+    const {files} = this.props;
+    return Object.entries(files).map(this.getFileSubtree(''));
+  }
+
+  getFolders() {
+    if (!this.props.files) return;
+
+    const treeData = this.getFileTreeData();
+    return (
+      <Tree.DirectoryTree
+        titleRender={this.renderTreeNode}
+        loadData={this.loadTreeNodeData}
+        defaultExpandedKeys={['/']}
+        onSelect={this.onSelect}
+        treeData={treeData}
+      />
+    )
+  }
+
   render() {
     const {query} = this.props;
     return (
       <div className="login-container">
         { this.getLoginData() }
         { this.getControlPanel() }
+        { this.getFolders() }
         <Button onClick={() => {
           window.navigator.clipboard.writeText(`${this.props.endpoint}?query=${encodeURIComponent(query)}`);
           message.success('Query URL copied to clipboard');
@@ -228,7 +308,8 @@ const mapStateToProps = appState => ({
   folderUriChanging: getFolderUriChanging(appState),
   views: getViews(appState),
   query: getQuery(appState),
-  endpoint: getEndpoint(appState)
+  endpoint: getEndpoint(appState),
+  files: getFiles(appState)
 });
 
 const mapDispatchToProps = {
@@ -241,6 +322,7 @@ const mapDispatchToProps = {
   setFolderUri: Actions.Creators.r_setFolderUri,
   toggleFolderUriChanging: Actions.Creators.r_toggleFolderUriChanging,
   deleteView: Actions.Creators.s_deleteView,
+  loadFiles: Actions.Creators.s_loadFiles
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ControlPanel);

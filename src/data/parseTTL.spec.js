@@ -3,18 +3,21 @@ import chai from 'chai';
 import fs from 'fs';
 import path from 'path';
 
+import govExampleResult from './testData/data.gov.cz.sparql.results.json';
+import biboResult from './testData/bibo.result';
+
 chai.should();
 
 describe('parseTTL', () => {
   it('should parse bibo file', async () => {
-    const rdf = fs.readFileSync(path.join(__dirname, './tests/bibo.ttl'), 'utf-8');
+    const rdf = fs.readFileSync(path.join(__dirname, './testData/bibo.ttl'), 'utf-8');
     const result = await parseTTL(rdf);
-    result.should.eql(require(path.join(__dirname, './tests/bibo.result.js')));
+    result.should.eql(biboResult);
   });
 
   it('should parse data gov file', async () => {
-    const rdf = fs.readFileSync(path.join(__dirname, './tests/data.gov.cz.sparql.ttl'), 'utf-8');
+    const rdf = fs.readFileSync(path.join(__dirname, './testData/data.gov.cz.sparql.ttl'), 'utf-8');
     const result = await parseTTL(rdf);
-    result.should.eql(require(path.join(__dirname, './tests/data.gov.cz.sparql.results.json')));
+    result.should.eql(govExampleResult);
   });
 });
