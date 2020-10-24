@@ -73,7 +73,7 @@ class GroupController {
     this.state.selected = Object.values(this.childrenWrappers).some(w => w.state.selected) || this.getEdges().some(e => e.state.selected);
     const shouldHighlight = this.state.selected || this.state.hover;
 
-    const nodesAffected = ['node-container', 'property-container', 'expand-icon-container'];
+    const nodesAffected = ['node-container', 'property-container', 'select-all-container', 'expand-icon-container'];
     const updateStyle = shouldHighlight ? this.applyStyle.bind(this) : this.cancelStyle.bind(this);
     nodesAffected.forEach(name => updateStyle(this.children[name], ['titleOutline']));
     if (shouldHighlight) {
@@ -111,12 +111,19 @@ class GroupController {
     }
   }
 
+  selectAllProperties() {
+    Object.values(this.propertyWrappers).forEach(p => p.onToggleSelect(true));
+    this.toggleProperties(true);
+  }
+
   onClick(target) {
     const name = target.get('name');
 
     if (['node-container', 'expand-icon-container', 'node-title', 'expand-icon'].includes(name)) {
       this.toggleProperties();
       this.swapExpandIcon()
+    } else if (name.match(/select-all/)) {
+      this.selectAllProperties();
     } else {
       propagate(target, 'onClick');
     }
