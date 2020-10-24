@@ -4,9 +4,9 @@ import Group from './wrappers/Group';
 const NODE_TYPE = 'graphNode';
 
 const PROP_LINE_HEIGHT = 12;
-const attrs = {
+const getAttrs = ctx => ({
   'node-container': ({propCount, methodCount, label}) => ({
-    width: label.length * 8,
+    width: ctx.measureText(label).width + 8,
     height: 20,
     stroke: 'black', // Apply the color to the stroke. For filling, use fill: cfg.color instead
     fill: 'steelblue',
@@ -26,23 +26,27 @@ const attrs = {
     textAlign: 'left',
     textBaseline: 'top',
     text: `${predicate}: ${type}`,
-    fill: '#000',
+    fill: '#000'
   }),
-  'property-container': (propCount, methodCount) => ({
+  'property-container': propArr => ({
     y: PROP_LINE_HEIGHT * 2 - 4,
-    width: 300,
-    height: (propCount + methodCount) * PROP_LINE_HEIGHT + 6,
+    width: propArr.reduce((acc, {attrs: {text}}) => Math.max(acc, ctx.measureText(text).width) + 6, 0),
+    height: propArr.length * PROP_LINE_HEIGHT + 6,
     stroke: 'black',
     fill: 'steelblue',
     opacity: 1
   })
-};
+});
 
 const getSuffix = iri => iri.match(/([^/#:]+)$/)[1];
 
 const NodeImplementation = {
   draw(cfg, group) {
     const {data: {properties, methods}, id} = cfg;
+    const ctx = group.get('canvas').get('context');
+    ctx.save();
+    ctx.font = '12px sans-serif';
+    const attrs = getAttrs(ctx);
     const containerAttrs = attrs['node-container']({propCount: properties.length, methodCount: methods.length, label: cfg.label});
     const {width, height} = containerAttrs;
     const propFields = properties.reduce((acc, {predicate, object, type}, i)=> acc.concat(E.Property({
@@ -61,7 +65,7 @@ const NodeImplementation = {
       })
     ), []);
 
-    const propertyContainerAttrs = attrs['property-container'](properties.length, methods.length);
+    const propertyContainerAttrs = attrs['property-container'](propFields.concat(methodFields));
     const expandIconAttrs = {
       x: width + 3,
       y: 5,
@@ -80,7 +84,7 @@ const NodeImplementation = {
 
     group.set('methods', methodFields);
     // FIXME: Separate group for logical pieces --> can have multiple groups, yes
-    return E.create(group, [
+    const result = E.create(group, [
       E.Node({id: `node_${id}`, attrs: containerAttrs, name: 'node-container'}),
       E.Text({id: `node_${id}-title`, attrs: attrs['node-title'](width, cfg.label), name: 'node-title'}),
       E.Rect({id: `node_${id}-select-all-container`, attrs: {x: -16, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'select-all-container'}),
@@ -91,6 +95,9 @@ const NodeImplementation = {
       ...propFields,
       ...methodFields
     ])[0];
+
+    ctx.restore();
+    return result;
   },
 
   afterDraw(cfg, group) {

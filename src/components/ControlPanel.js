@@ -65,37 +65,6 @@ class ControlPanel extends Component {
     this.props.deleteFile(uri);
   };
 
-  getNewViewInput = () => {
-    if (this.state.creatingView) {
-      return (
-        <li>
-          <span>
-            <Input
-              onChange={e =>
-                this.setState({
-                  newViewName: e.target.value
-                })
-              }
-            />
-            <Button onClick={this.onSaveNewView}>Save</Button>
-          </span>
-        </li>
-      )
-    } else if (this.props.isDirty) {
-      return (
-        <li>
-          <Button
-            onClick={() => this.setState({
-              creatingView: true,
-            })}
-          >
-            New view
-          </Button>
-        </li>
-      )
-    }
-  };
-
   onSaveView = (uri) => {
     if (!this.props.session) {
       return this.downloadView();
@@ -278,15 +247,18 @@ class ControlPanel extends Component {
 
     const treeData = this.getFileTreeData();
     return (
-      <Tree.DirectoryTree
-        showLine={{showLeafIcon: false}}
-        selectable={false}
-        titleRender={this.renderTreeNode}
-        loadData={this.loadTreeNodeData}
-        defaultExpandedKeys={['/']}
-        onSelect={this.onSelect}
-        treeData={treeData}
-      />
+      <>
+        <h3>Your files:</h3>
+        <Tree.DirectoryTree
+          showLine={{showLeafIcon: false}}
+          selectable={false}
+          titleRender={this.renderTreeNode}
+          loadData={this.loadTreeNodeData}
+          defaultExpandedKeys={['/']}
+          onSelect={this.onSelect}
+          treeData={treeData}
+        />
+      </>
     )
   }
 
