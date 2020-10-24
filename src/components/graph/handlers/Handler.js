@@ -7,6 +7,7 @@ import store from 'src/store';
 import Actions from 'src/actions';
 
 export class Handler {
+  static lastState = {};
   static recipients = {};
   static subscribed = false;
   static dispatch = action => store.dispatch(action);
@@ -28,9 +29,12 @@ export class Handler {
    * Subscription method to redux store responding to changes on the store;
    */
   static onStateChange(state) {
+    if (state === this.lastState) return;
+
+    this.lastState = state;
     Object.values(this.recipients)
       .forEach(recipient => {
-        const subState = state.model.getIn(['entities', recipient.handler.entityType, recipient.id]);
+        const subState = state.getIn(['entities', recipient.handler.entityType, recipient.id]);
         if (subState && subState !== recipient.lastState) {
           // FIXME: Map to relevant properties for the wrapper instead of sending subState.toJS() as a whole
           // define selectors and mapping between redux state -> UI state in Wrappers themselves,
@@ -38,9 +42,9 @@ export class Handler {
           recipient.onStateChanged(subState.toJS());
           recipient.lastState = subState;
 
-          this.dispatch(Actions.Interactions.Creators.s_dataChanged());
         }
       });
+    this.dispatch(Actions.Interactions.Creators.s_dataChanged());
   };
 
   static clear() {
@@ -48,4 +52,4 @@ export class Handler {
   }
 }
 
-store.subscribe(() => Handler.onStateChange(store.getState()));
+store.subscribe(() => Handler.onStateChange(store.getState().model));
