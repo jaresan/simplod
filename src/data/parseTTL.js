@@ -1,5 +1,5 @@
 import {Parser} from 'n3';
-import { assocPath, invertObj, keys } from 'ramda';
+import { invertObj, uniq } from 'ramda';
 import possiblePrefixes from '../constants/possiblePrefixes';
 
 export const parseTTL = ttlString => new Promise((res, err) => {
@@ -14,16 +14,6 @@ export const parseTTL = ttlString => new Promise((res, err) => {
 });
 
 const parsePrefix = (prefixes, iri) => {
-  try {
-    const url = new URL(iri);
-    if (!url.host) {
-      return iri;
-    }
-  } catch (e) {
-    // Bad URL
-    return iri;
-  }
-
   const suffix = iri.replace(/.*(\/|#)/, '');
   const prefixIri = iri.replace(/(\/|#)[^/#]*$/, '$1');
   const alias = prefixes[prefixIri] || 'ns';
@@ -52,18 +42,18 @@ const parseQuads = (quads, prefixes) => {
   const usedPrefixes = {};
   const usedAliases = {};
   let prefix = iri => {
-    // TODO: Very slow implementation
-    for (let key of keys(prefixes)) {
-      if (iri && iri.includes(key)) {
-        return `${prefixes[key]}:${iri.replace(key, '')}`;
+    if (iri.match(/\/instance$/)) return iri;
+    try {
+      const url = new URL(iri);
+      if (!url.host) {
+        return iri;
       }
+    } catch (e) {
+      // Bad URL
+      return iri;
     }
 
     const {alias, prefixIri, suffix} = parsePrefix(prefixes, iri);
-
-    if (!alias) {
-      return iri;
-    }
 
     let i = 0;
     let newAliasRoot = alias;
@@ -84,22 +74,21 @@ const parseQuads = (quads, prefixes) => {
 
   const edgePredicates = [predicateSpecIRI, hasWeightIRI, objectSpecIRI, subjectSpecIRI];
   const isEdge = quad => edgePredicates.includes(quad.predicate.id);
+
+  const classMapping = {
+    // {
+    //   [blankNodeId]: className
+    // }
+  };
   quads.forEach(quad => {
     quad.object.id = prefix(quad.object.id);
     quad.subject.id = prefix(quad.subject.id);
     quad.predicate.id = prefix(quad.predicate.id);
-  });
-
-  // {
-  //   [blankNodeId]: className
-  // }
-  const classMapping = quads.reduce((acc, quad) => {
     if (quad.predicate.id === typeIRI) {
       // Empty node --> className mapping
-      acc[quad.subject.value] = quad.object.id;
+      classMapping[quad.subject.id] = quad.object.id;
     }
-    return acc;
-  }, { });
+  });
 
 
   const predicateKeys = {
@@ -109,28 +98,25 @@ const parseQuads = (quads, prefixes) => {
     [hasWeightIRI]: 'weight'
   };
 
-  const edges = Object.values(
+  const edges = uniq(Object.values(
     quads.filter(isEdge).reduce((acc, quad) => {
-      let predicateId = '';
-      let key = '';
-      let value = '';
+      const predicateId = quad.subject.id;
+      const key = predicateKeys[quad.predicate.id];
+      const value = classMapping[quad.object.id] || quad.object.id;
 
-      predicateId = quad.subject.id;
-      key = predicateKeys[quad.predicate.id];
-      value = classMapping[quad.object.value] || quad.object.value;
-
-      acc = assocPath([predicateId, key], value, acc);
+      acc[predicateId] = acc[predicateId] || {};
+      Object.assign(acc[predicateId], {[key]: value});
 
       return acc;
     }, { })
-  );
+  ));
 
   const hasOutgoingEdges = edges.reduce((acc, {subject}) => Object.assign(acc, {[subject]: true}), {});
 
   // Populated classes with existing outgoing relationships (no outgoing relationships --> data property)
   const data = edges
     .filter(({subject}) => hasOutgoingEdges[subject])
-    .reduce((acc, {predicate, object, weight, subject}) => {
+    .reduce((acc, {predicate, object, subject}) => {
       if (!acc[subject]) {
         acc[subject] = {
           properties: [],
@@ -142,7 +128,7 @@ const parseQuads = (quads, prefixes) => {
       if (!hasOutgoingEdges[object]) {
         acc[subject].properties.push({predicate, type: object});
       } else {
-        acc[subject].methods.push({predicate, object, weight});
+        acc[subject].methods.push({predicate, object});
       }
 
       return acc;

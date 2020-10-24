@@ -79,6 +79,7 @@ class GroupController {
     } else {
       this.applyStyle(this.children[0], ['titleOutline'])
       this.applyStyle(this.children[2], ['titleOutline'])
+      this.group.toFront();
     }
   }
 

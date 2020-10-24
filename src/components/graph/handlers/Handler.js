@@ -31,6 +31,7 @@ export class Handler {
   static onStateChange(state) {
     if (state === this.lastState) return;
 
+    let dataChanged = false;
     this.lastState = state;
     Object.values(this.recipients)
       .forEach(recipient => {
@@ -41,10 +42,12 @@ export class Handler {
           // e.g. stateToStyle = {selected: {selected: true}} and then react to the child keys
           recipient.onStateChanged(subState.toJS());
           recipient.lastState = subState;
-
+          dataChanged = true;
         }
       });
-    this.dispatch(Actions.Interactions.Creators.s_dataChanged());
+    if (dataChanged) {
+      this.dispatch(Actions.Interactions.Creators.s_dataChanged());
+    }
   };
 
   static clear() {

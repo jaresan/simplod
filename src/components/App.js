@@ -50,7 +50,7 @@ class App extends Component {
       .then(async ttl => {
         const json = await parseTTL(ttl);
         const schemaData = keys(json.data).reduce((acc, key) => {
-          const {properties, methods} = map(uniq, json.data[key]);
+          const {properties, methods} = json.data[key];
           return Object.assign(acc, {
             [key]: {
               properties,
