@@ -30,8 +30,8 @@ class App extends Component {
     if (process.env.NODE_ENV === 'development') {
       this.schemaURL = this.courtExampleURL;
       // this.schemaURL = this.applicantsURL;
-      // this.schemaURL = this.govURL;
-      // this.endpointURL = "https://data.gov.cz/sparql";
+      this.schemaURL = this.govURL;
+      this.endpointURL = "https://data.gov.cz/sparql";
     }
   }
 

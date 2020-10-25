@@ -2,7 +2,7 @@ import { fromJS } from 'immutable';
 import Actions from 'src/actions/solid';
 
 const initialState = new fromJS({
-  session: {},
+  session: null,
   files: {}
 });
 

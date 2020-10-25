@@ -243,7 +243,7 @@ class ControlPanel extends Component {
   }
 
   getFolders() {
-    if (!this.props.files) return;
+    if (!this.props.files || !this.props.session) return;
 
     const treeData = this.getFileTreeData();
     return (

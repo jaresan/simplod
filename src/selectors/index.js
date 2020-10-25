@@ -16,7 +16,10 @@ export const getPrefixes = appState => appState.yasgui.get('prefixes').toJS();
 
 export const getSelectedProperties = appState => appState.model.getIn(['entities', entityTypes.property]).filter(e => e.get('selected')).toJS();
 
-export const getSession = appState => appState.solid.get('session').toJS();
+export const getSession = appState => {
+  const session = appState.solid.get('session')
+  return session ? session.toJS() : null;
+};
 
 export const getDirty = appState => appState.model.get('dirty');
 
