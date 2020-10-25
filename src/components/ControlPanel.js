@@ -7,7 +7,7 @@ import {curry} from 'ramda';
 import path from 'path';
 import {
   getViewSelection,
-  getSession,
+  getUser,
   getDirty,
   getFolderUri,
   getFolderUriChanging,
@@ -66,7 +66,7 @@ class ControlPanel extends Component {
   };
 
   onSaveView = (uri) => {
-    if (!this.props.session) {
+    if (!this.props.user) {
       return this.downloadView();
     }
 
@@ -93,10 +93,10 @@ class ControlPanel extends Component {
   };
 
   getLoginData = () => {
-    if (this.props.session) {
+    if (this.props.user) {
       return (
         <>
-          <span>Logged in as: {this.props.session.webId}</span>
+          <span>Logged in as: {this.props.user}</span>
           <br/>
           <Button type="primary" onClick={this.onLogout} title="Logout">Logout</Button>
         </>
@@ -119,7 +119,7 @@ class ControlPanel extends Component {
         disabled={!this.props.isDirty}
       >
         {
-          this.props.session ? "Save view at URI" : "Download view"
+          this.props.user ? "Save view at URI" : "Download view"
         }
       </Button>
       &nbsp;
@@ -243,7 +243,7 @@ class ControlPanel extends Component {
   }
 
   getFolders() {
-    if (!this.props.files || !this.props.session) return;
+    if (!this.props.files || !this.props.user) return;
 
     const treeData = this.getFileTreeData();
     return (
@@ -278,7 +278,7 @@ class ControlPanel extends Component {
 }
 
 const mapStateToProps = appState => ({
-  session: getSession(appState),
+  user: getUser(appState),
   isDirty: getDirty(appState),
   folderUri: getFolderUri(appState, true),
   view: getViewSelection(appState),
