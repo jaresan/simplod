@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Actions from 'src/actions/solid';
-import { message, Popconfirm, Button, Input, Tree, Popover, Tooltip } from 'antd';
+import { message, Popconfirm, Button, Input, Tree, Tooltip } from 'antd';
 import {CloseOutlined, PlusOutlined} from '@ant-design/icons';
 import {curry} from 'ramda';
 import path from 'path';
@@ -11,8 +11,8 @@ import {
   getDirty,
   getFolderUri,
   getFolderUriChanging,
-  getQuery, getEndpoint,
-  getFiles
+  getEndpoint,
+  getFiles, getSimpleQuery
 } from '../selectors';
 
 const newViewSuffix = '__newView';
@@ -263,14 +263,13 @@ class ControlPanel extends Component {
   }
 
   render() {
-    const {query} = this.props;
     return (
       <div className="login-container">
         { this.getLoginData() }
         { this.getControlPanel() }
         { this.getFolders() }
         <Button onClick={() => {
-          window.navigator.clipboard.writeText(`${this.props.endpoint}?query=${encodeURIComponent(query)}`);
+          window.navigator.clipboard.writeText(this.props.simpleQuery);
           message.success('Query URL copied to clipboard');
         }}>Copy request URL to clipboard</Button>
       </div>
@@ -284,9 +283,9 @@ const mapStateToProps = appState => ({
   folderUri: getFolderUri(appState, true),
   view: getViewSelection(appState),
   folderUriChanging: getFolderUriChanging(appState),
-  query: getQuery(appState),
   endpoint: getEndpoint(appState),
-  files: getFiles(appState)
+  files: getFiles(appState),
+  simpleQuery: getSimpleQuery(appState)
 });
 
 const mapDispatchToProps = {

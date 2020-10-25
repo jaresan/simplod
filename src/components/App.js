@@ -5,7 +5,7 @@ import ControlPanel from './ControlPanel';
 import {connect} from 'react-redux';
 import {parseTTL} from '../data/parseTTL';
 import {AntVExample} from './AntVExample';
-import {invertObj, keys, map, uniq} from 'ramda';
+import {invertObj, keys} from 'ramda';
 import {Handler} from './graph/handlers/Handler';
 import Actions from '../actions';
 import {Radio, Button} from 'antd';

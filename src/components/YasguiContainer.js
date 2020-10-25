@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { getQuery, getEndpoint } from 'src/selectors/index';
 import styled from '@emotion/styled';
 import YASGUI from '@triply/yasgui';
+import Actions from 'src/actions/yasgui';
 import "@triply/yasgui/build/yasgui.min.css";
 
 
@@ -21,8 +22,10 @@ class YasguiContainer extends Component {
 	}
 
 	componentDidUpdate(prevProps, prevState, snapshot) {
-		this.yasgui.getTab().setQuery(this.props.query);
-		this.yasgui.getTab().setEndpoint(this.props.endpoint);
+		const tab = this.yasgui.getTab();
+		tab.setQuery(this.props.query);
+		tab.setEndpoint(this.props.endpoint);
+		this.props.setSimpleQuery(tab.yasr.config.getPlainQueryLinkToEndpoint());
 	}
 
 	componentDidMount() {
@@ -53,6 +56,8 @@ const mapStateToProps = appState => ({
 	endpoint: getEndpoint(appState)
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+	setSimpleQuery: Actions.Creators.r_setSimpleQuery
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(YasguiContainer);

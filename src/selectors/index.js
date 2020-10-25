@@ -41,3 +41,4 @@ export const getFiles = appState => appState.solid.get('files').toJS();
 
 export const getQuery = appState => appState.yasgui.get('query');
 export const getEndpoint = appState => appState.yasgui.get('endpoint');
+export const getSimpleQuery = appState => appState.yasgui.get('simpleQuery');
