@@ -101,6 +101,16 @@ const NodeImplementation = {
   },
 
   afterDraw(cfg, group) {
+    group.getChildren().forEach(node => {
+      const wrapper = node.get('wrapper');
+      if (wrapper) {
+        wrapper.setNode(node)
+
+        const containerNode = group.get('item');
+        node.set('containerNode', containerNode);
+        wrapper.setContainerNode(containerNode);
+      }
+    });
     const wrapper = new Group(group);
     group.set('wrapper', wrapper);
     wrapper.toggleProperties(false);

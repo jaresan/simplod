@@ -14,7 +14,7 @@ import './App.styles';
 
 class App extends Component {
   state = {
-    schemaData: null,
+    loaded: false,
     horizontalLayout: false
   };
 
@@ -27,10 +27,17 @@ class App extends Component {
     this.courtExampleURL = 'https://sparql-proxy-api.jaresantonin.now.sh/spo-court.ttl';
     this.applicantsURL = 'https://sparql-proxy-api.jaresantonin.now.sh/spo-job-applicants.ttl';
     this.govURL = "https://sparql-proxy-api.jaresantonin.now.sh/data.gov.cz.ttl";
+    this.beefURL = '/samples/http---linked.opendata.cz-sparql.ttl'
+    this.endpointURL = 'http://linked.opendata.cz/sparql'
+    this.beefURL = '/samples/http---data.open.ac.uk-query.ttl';
+    this.endpointURL = 'http://data.open.ac.uk/query';
+    this.beefURL = '/samples/http---nl.dbpedia.org-sparql.ttl';
+    this.endpointURL = 'http://nl.dbpedia.org/sparql';
     if (process.env.NODE_ENV === 'development') {
       this.schemaURL = this.courtExampleURL;
       // this.schemaURL = this.applicantsURL;
       this.schemaURL = this.govURL;
+      // this.schemaURL = this.beefURL;
       this.endpointURL = "https://data.gov.cz/sparql";
     }
   }
@@ -49,7 +56,7 @@ class App extends Component {
       .then(res => res.text())
       .then(async ttl => {
         const json = await parseTTL(ttl);
-        const schemaData = keys(json.data).reduce((acc, key) => {
+        this.schemaData = keys(json.data).reduce((acc, key) => {
           const {properties, methods} = json.data[key];
           return Object.assign(acc, {
             [key]: {
@@ -59,10 +66,7 @@ class App extends Component {
           })
         }, {});
 
-        this.setState({
-          schemaData
-        });
-
+        this.setState({loaded: true});
         this.props.setPrefixes(invertObj(json.__prefixes__));
       });
   };
@@ -87,10 +91,10 @@ class App extends Component {
         </Radio.Group>
         <div style={getContainerStyle(horizontalLayout)}>
           {
-            this.state.schemaData && <AntVExample
+            this.state.loaded && <AntVExample
               width={window.innerWidth * (horizontalLayout ? 0.5 : 1)}
               height={window.innerHeight * (horizontalLayout ? 0.5 : 1)}
-              data={this.state.schemaData}
+              data={this.schemaData}
             />
           }
           <PropertyList/>

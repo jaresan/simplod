@@ -19,14 +19,20 @@ export class AntVExample extends React.Component {
 
   loadData() {
     // FIXME: Add graph handling to reducers and sagas --> graph instance should be available in the state
+    console.time('loadData');
     const {data, width, height} = this.props;
 
     if (this.graph) {
       this.graph.destroy();
     }
 
+    console.time('getNodes')
     const nodes = getNodes(data);
+    console.timeEnd('getNodes')
+    console.time('getEdges')
     const edges = getEdges(data);
+    console.timeEnd('getEdges')
+    console.time('graphConstructor')
     const graph = new G6.Graph({
       container: this.mountNode,
       width, height,
@@ -44,17 +50,25 @@ export class AntVExample extends React.Component {
         ]
       },
       layout: {
-        type: 'circular',
+        type: 'force',
         cols: 3,
         preventOverlap: true,
+        nodeSpacing: 50,
+        minNodeSpacing: 50,
         workerEnabled: true
       },
       // plugins: [minimap]
     });
+    console.timeEnd('graphConstructor')
 
+    console.time('graphConstructor2')
     this.graph = new Graph(graph);
+    console.timeEnd('graphConstructor2')
 
+    console.time('graph.loadData')
     this.graph.loadData({nodes, edges});
+    console.timeEnd('graph.loadData')
+    console.timeEnd('loadData');
   }
 
   render() {

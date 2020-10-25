@@ -1,5 +1,5 @@
 import {Parser} from 'n3';
-import { invertObj, uniq } from 'ramda';
+import { invertObj } from 'ramda';
 import possiblePrefixes from '../constants/possiblePrefixes';
 
 export const parseTTL = ttlString => new Promise((res, err) => {
@@ -98,7 +98,7 @@ const parseQuads = (quads, prefixes) => {
     [hasWeightIRI]: 'weight'
   };
 
-  const edges = uniq(Object.values(
+  let edges = Object.values(
     quads.filter(isEdge).reduce((acc, quad) => {
       const predicateId = quad.subject.id;
       const key = predicateKeys[quad.predicate.id];
@@ -109,7 +109,14 @@ const parseQuads = (quads, prefixes) => {
 
       return acc;
     }, { })
-  ));
+  );
+
+  const existingEdges = {};
+  edges = edges.filter(({subject, predicate, object}) => {
+    const exists = existingEdges[`${subject}${predicate}${object}`];
+    existingEdges[`${subject}${predicate}${object}`] = true;
+    return !exists;
+  });
 
   const hasOutgoingEdges = edges.reduce((acc, {subject}) => Object.assign(acc, {[subject]: true}), {});
 

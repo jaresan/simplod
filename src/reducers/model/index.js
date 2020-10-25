@@ -1,6 +1,6 @@
 import {fromJS, Map} from 'immutable';
 import Actions from 'src/actions/model';
-import {isNil} from 'ramda';
+import { isNil, mergeRight, map } from 'ramda';
 import entityTypes from 'src/constants/entityTypes';
 
 const initialState = new fromJS({
@@ -19,7 +19,10 @@ const toggleSelect = (state, {entityType, id, selected}) => state.updateIn(['ent
 
 const deselectAll = state => state.update('entities', entities => entities.map(subgroup => subgroup.map(entity => entity.set('selected', false))));
 
-const registerResource = (state, {entityType, id, data}) => state.updateIn(['entities', entityType, id], old => (old || new Map(defaultEntityProps)).merge(fromJS(data)));
+const registerResources = (state, {entityType, resources}) => {
+  const withDefaultProps = map(mergeRight(defaultEntityProps), resources)
+  return state.setIn(['entities', entityType], fromJS(withDefaultProps));
+}
 
 const toggleOptional = (state, {id, optional}) => state.setIn(['entities', entityTypes.property, id, 'optional'], optional);
 const toggleAsVariable = (state, {id, asVariable}) => state.setIn(['entities', entityTypes.property, id, 'asVariable'], asVariable);
@@ -36,7 +39,7 @@ const loadView = (state, {json}) =>
 const handlers = {
   [Actions.Types.R_TOGGLE_SELECT]: toggleSelect,
   [Actions.Types.R_DESELECT_ALL]: deselectAll,
-  [Actions.Types.R_REGISTER_RESOURCE]: registerResource,
+  [Actions.Types.R_REGISTER_RESOURCES]: registerResources,
   [Actions.Types.R_TOGGLE_PROPERTY_OPTIONAL]: toggleOptional,
   [Actions.Types.R_TOGGLE_PROPERTY_AS_VARIABLE]: toggleAsVariable,
   [Actions.Types.R_SAVE_PROPERTY_NAME]: savePropertyName,

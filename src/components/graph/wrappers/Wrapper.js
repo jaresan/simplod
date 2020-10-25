@@ -24,7 +24,7 @@ export class Wrapper {
   setNode(node) {
     this.node = node;
     this.resetStyle();
-    this.handler.registerResource(node.get('data'), this.id);
+    this.handler.preregisterResource(node.get('data'), this.id);
     this.handler.subscribeToChanges(this.id, this);
   };
 

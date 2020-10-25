@@ -12,13 +12,18 @@ export class Handler {
   static subscribed = false;
   static dispatch = action => store.dispatch(action);
   static entityType = 'unknown';
+  static resources = {};
 
   static subscribeToChanges = (id, recipient) => {
     this.recipients[id] = recipient;
   };
 
-  static registerResource(data, id) {
-    this.dispatch(Actions.Model.Creators.r_registerResource(this.entityType, data, id));
+  static preregisterResource(data, id) {
+    this.resources[id] = data;
+  }
+
+  static commitResources() {
+    this.dispatch(Actions.Model.Creators.r_registerResources(this.entityType, this.resources));
   }
 
   static onToggleSelect(id, selected) {

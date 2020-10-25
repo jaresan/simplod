@@ -1,5 +1,6 @@
 import {curry} from 'ramda';
 import {Canvas as CanvasWrapper} from './wrappers';
+import {Property, Node, Edge} from './handlers';
 
 const getWrapper = n => {
   if (!n) return;
@@ -17,25 +18,6 @@ const handle = curry((methodName, e) => {
   }
 });
 
-const connectWrappers = (node, containerNode) => {
-  const wrapper = (
-    node.get('wrapper')
-    || (node.getModel && node.getModel().wrapper)
-  );
-
-  if (wrapper) {
-    wrapper.setNode(node)
-
-    if (containerNode) {
-      node.set('containerNode', containerNode);
-      wrapper.setContainerNode(containerNode);
-    }
-  }
-
-  const children = (node.get('group') && node.get('group').get('children')) || [];
-  children.forEach(ch => connectWrappers(ch, node));
-};
-
 export class Graph {
   behaviours = {
     click: 'onClick',
@@ -49,17 +31,25 @@ export class Graph {
   }
 
   loadData(data) {
+    console.time('this.graph.clear();')
     this.graph.clear();
+    console.timeEnd('this.graph.clear();')
 
+    console.time('this.deregisterBehaviours();')
     this.deregisterBehaviours();
-    this.registerBehaviours();
-    this.graph.data(data);
-    this.render();
-    this.registerNodeWrappers();
-  }
+    console.timeEnd('this.deregisterBehaviours();')
 
-  registerNodeWrappers() {
-    this.graph.getNodes().forEach(connectWrappers);
+    console.time('this.registerBehaviours();')
+    this.registerBehaviours();
+    console.timeEnd('this.registerBehaviours();')
+
+    console.time('this.graph.data(data);')
+    this.graph.data(data);
+    console.timeEnd('this.graph.data(data);')
+
+    console.time('this.render();')
+    this.render();
+    console.timeEnd('this.render();')
   }
 
   registerBehaviours() {
@@ -72,6 +62,9 @@ export class Graph {
 
   render() {
     this.graph.render();
+    Property.commitResources();
+    Node.commitResources();
+    Edge.commitResources();
   }
 
   destroy() {
