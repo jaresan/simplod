@@ -30,7 +30,7 @@ const getAttrs = ctx => ({
   }),
   'property-container': propArr => ({
     y: PROP_LINE_HEIGHT * 2 - 4,
-    width: propArr.reduce((acc, {attrs: {text}}) => Math.max(acc, ctx.measureText(text).width) + 6, 0),
+    width: propArr.reduce((acc, {attrs: {text}}) => Math.max(acc, ctx.measureText(text).width  + 8), 0),
     height: propArr.length * PROP_LINE_HEIGHT + 6,
     stroke: 'black',
     fill: 'steelblue',
