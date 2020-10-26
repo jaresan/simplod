@@ -236,7 +236,7 @@ function* onStart() {
 function* onLogin() {
   let session = yield auth.currentSession();
   if (!session) {
-    const popupUri = '/dist-popup/popup.html';
+    const popupUri = 'dist-popup/popup.html';
     session = yield call(auth.popupLogin, { popupUri });
   }
   yield put(SolidActions.Creators.r_setSolidSession(session));
