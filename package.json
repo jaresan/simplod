@@ -27,6 +27,7 @@
     "emotion": "^10.0.27",
     "immutable": "^3.8.2",
     "keymirror": "^0.1.1",
+    "lodash": "^4.17.20",
     "n3": "^1.0.0-beta.1",
     "node-fetch": "^2.6.0",
     "prop-types": "^15.6.2",

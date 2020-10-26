@@ -1,5 +1,6 @@
 import { invoker, memoizeWith, pick, assocPath, path, identity, map, filter } from 'ramda';
 import {Property, Method} from './index';
+import { Handler } from '../handlers/Handler';
 
 const getWrapper = memoizeWith(t => t.get('id'), target => target.get('wrapper'));
 function propagate(target, key) {
@@ -15,6 +16,7 @@ const styles = {
 }
 
 class GroupController {
+  handler = Handler;
   state = {
     selected: false,
     hover: false
@@ -112,7 +114,9 @@ class GroupController {
   }
 
   selectAllProperties() {
+    this.handler.startSelectBatch();
     Object.values(this.propertyWrappers).forEach(p => p.onToggleSelect(true));
+    this.handler.stopSelectBatch();
     this.toggleProperties(true);
   }
 

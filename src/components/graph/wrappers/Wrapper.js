@@ -50,17 +50,17 @@ export class Wrapper {
 
   onHover() {
     this.setState({hover: true});
-  };
+  }
 
   onBlur() {
     this.setState({hover: false});
-  };
+  }
 
   setState(state) {
     Object.assign(this.state, state);
     this.callOnParent('stateChanged', {target: this, state, lastState: this.lastState});
     this.updateStyles();
-  };
+  }
 
   resetStyle() {
     this.getNode().attr(this.defaultStyle);
@@ -73,15 +73,15 @@ export class Wrapper {
   updateStyles = () => {
     const style = Object.entries(this.state).reduce((acc, [key, value]) => Object.assign(acc, value ? this.styles[key] : {}), {...this.defaultStyle});
     this.updateTargetStyle(style);
-  };
+  }
 
   onClick() {
     this.onToggleSelect(!this.state.selected);
-  };
+  }
 
   onToggleSelect(selected) {
     this.state.selected = typeof selected === 'undefined' ? !this.state.selected : selected;
-    this.handler.onToggleSelect(this.id, selected);
+    this.handler.onToggleSelect(this.id, this.state.selected);
   }
 
   callOnParent(methodName, ...args) {

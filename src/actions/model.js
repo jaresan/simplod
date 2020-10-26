@@ -1,7 +1,7 @@
 import { createActions } from 'reduxsauce'
 
 export default createActions({
-  r_toggleSelect: {entityType: null, id: null, selected: null},
+  r_toggleSelect: ['items'],
   r_deselectAll: null,
   r_registerResources: ['entityType', 'resources'],
   r_togglePropertyOptional: ['id', 'optional'],

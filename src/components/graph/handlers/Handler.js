@@ -5,6 +5,8 @@
  */
 import store from 'src/store';
 import Actions from 'src/actions';
+import {debounce} from 'lodash';
+import entityTypes from 'src/constants/entityTypes';
 
 export class Handler {
   static lastState = {};
@@ -13,6 +15,11 @@ export class Handler {
   static dispatch = action => store.dispatch(action);
   static entityType = 'unknown';
   static resources = {};
+  static toSelect = Object.keys(entityTypes).reduce((acc, type) => ({[type]: {}, ...acc}), {});
+
+  static clearSelection() {
+    this.toSelect = Object.keys(entityTypes).reduce((acc, type) => ({[type]: {}, ...acc}), {});
+  }
 
   static subscribeToChanges = (id, recipient) => {
     this.recipients[id] = recipient;
@@ -27,7 +34,28 @@ export class Handler {
   }
 
   static onToggleSelect(id, selected) {
-    this.dispatch(Actions.Model.Creators.r_toggleSelect({entityType: this.entityType, id, selected}));
+    this.toSelect[this.entityType][id] = {selected};
+
+    if (this.batchingSelect) {
+      this.commitSelectsDebounced();
+    } else {
+      this.commitSelects();
+    }
+  }
+
+  static commitSelects = () => {
+    this.dispatch(Actions.Model.Creators.r_toggleSelect(this.toSelect));
+    this.clearSelection();
+  };
+
+  static commitSelectsDebounced = debounce(this.commitSelects, 250, {leading: true});
+
+  static startSelectBatch() {
+    this.batchingSelect = true;
+  }
+
+  static stopSelectBatch() {
+    this.batchingSelect = false;
   }
 
   /**

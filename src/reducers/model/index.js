@@ -15,12 +15,12 @@ const defaultEntityProps = {
   asVariable: true
 };
 
-const toggleSelect = (state, {entityType, id, selected}) => state.updateIn(['entities', entityType, id, 'selected'], current => isNil(selected) ? !current : selected);
+const toggleSelect = (state, {items}) => state.mergeDeepIn(['entities'], items);
 
 const deselectAll = state => state.update('entities', entities => entities.map(subgroup => subgroup.map(entity => entity.set('selected', false))));
 
 const registerResources = (state, {entityType, resources}) => {
-  const withDefaultProps = map(mergeRight(defaultEntityProps), resources)
+  const withDefaultProps = map(mergeRight(defaultEntityProps), resources);
   return state.setIn(['entities', entityType], fromJS(withDefaultProps));
 }
 
