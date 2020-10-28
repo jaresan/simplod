@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Actions from 'src/actions/solid';
-import { message, Popconfirm, Button, Input, Tree, Tooltip } from 'antd';
-import {CloseOutlined, PlusOutlined} from '@ant-design/icons';
-import {curry} from 'ramda';
-import path from 'path';
+import { message, Button } from 'antd';
 import {
   getViewSelection,
   getUser,
@@ -14,8 +11,7 @@ import {
   getEndpoint,
   getFiles, getSimpleQuery
 } from '../selectors';
-
-const newViewSuffix = '__newView';
+import FileList from './fileList/FileList';
 
 class ControlPanel extends Component {
   state = {
@@ -61,10 +57,6 @@ class ControlPanel extends Component {
     })
   };
 
-  onDeleteFile = uri => {
-    this.props.deleteFile(uri);
-  };
-
   onSaveView = (uri) => {
     if (!this.props.user) {
       return this.downloadView();
@@ -78,10 +70,6 @@ class ControlPanel extends Component {
     if (uri) {
       this.props.onSave(uri);
     }
-  };
-
-  onLoadView = (uri) => {
-    this.props.loadOwnView(uri);
   };
 
   saveFolderUri = () => {
@@ -131,143 +119,21 @@ class ControlPanel extends Component {
     this.props.saveOwnView(key);
   };
 
-  renderTreeNode = ({title, isLeaf, key, isNewViewInput, isPlusIcon}) => {
-    key = key.replace(newViewSuffix, '');
-    if (isNewViewInput) {
-      const ref = React.createRef();
-      const onSave = () => {
-        this.saveNewView(path.join(key, ref.current.input.value));
-        ref.current.setValue('');
-        this.setState({folderWithNewView: ''});
-      }
-      return <>
-        <Input
-          autoFocus
-          ref={ref}
-          style={{width: 128}}
-          name="View name"
-          autoComplete="off"
-          type="text"
-          onPressEnter={onSave}
-          placeholder="New view name"
-        />
-        <Button onClick={onSave}>Save</Button>
-      </>
-    }
-
-    if (isPlusIcon) {
-      if (!this.props.isDirty) {
-        return <Tooltip
-          title="No properties selected, newly created file would be empty"
-        >
-          <PlusOutlined disabled style={{color: 'grey'}}/>
-        </Tooltip>
-      } else {
-        return <PlusOutlined disabled onClick={() => {this.setState({folderWithNewView: key})}} style={{color: 'blue'}}/>;
-      }
-    }
-
-    if (!isLeaf) {
-      return <span>{title}</span>;
-    }
-
-    return (
-      <span>
-        <Popconfirm
-          title="Are you sure you want to apply this view?"
-          onConfirm={() => this.onLoadView(key)}
-          okText="Apply"
-          cancelText="Cancel"
-        >
-          {title}
-        </Popconfirm>
-        <Popconfirm
-          title="Are you sure you want to delete this view?"
-          onConfirm={() => this.onDeleteFile(key)}
-          okText="Delete"
-          cancelText="Cancel"
-        >
-          <CloseOutlined/>
-        </Popconfirm>
-      </span>
-    );
-  }
-
-  loadTreeNodeData = ({ key, children }) => {
-    return new Promise(resolve => {
-      if (children) {
-        resolve();
-        return;
-      }
-
-      this.props.loadFiles(key);
-
-      this.fileFetchMap[key] = {
-        resolve,
-        timeout: setTimeout(() => {
-          message.error('There was a problem fetching files from the folder.');
-          resolve();
-        }, 10000)
-      }
-    });
-  };
-
-  getFileSubtree = curry((curr, [title, content]) => {
-    const key = path.join(curr, title);
-    const {timeout, resolve} = (this.fileFetchMap[key] || {});
-    if (resolve) {
-      resolve();
-      clearTimeout(timeout);
-      delete this.fileFetchMap[key];
-    }
-
-    const isLeaf = content === null;
-    const {__loaded, ...rest} = (content || {});
-    const folderInitialized = !isLeaf && __loaded;
-    const children = folderInitialized ? Object.entries(rest).map(this.getFileSubtree(key)) : null;
-    if (folderInitialized) {
-      const isNewViewInput = key === this.state.folderWithNewView && this.props.isDirty;
-      children.push({isPlusIcon: !isNewViewInput, isNewViewInput, key: `${key}${newViewSuffix}`, isLeaf: true});
-    }
-    return {
-      title,
-      key,
-      children,
-      isLeaf
-    };
-  });
-
-  getFileTreeData() {
-    const {files} = this.props;
-    return Object.entries(files).map(this.getFileSubtree(''));
-  }
-
-  getFolders() {
-    if (!this.props.files || !this.props.user) return;
-
-    const treeData = this.getFileTreeData();
-    return (
-      <>
-        <h3>Your files:</h3>
-        <Tree.DirectoryTree
-          showLine={{showLeafIcon: false}}
-          selectable={false}
-          titleRender={this.renderTreeNode}
-          loadData={this.loadTreeNodeData}
-          defaultExpandedKeys={['/']}
-          onSelect={this.onSelect}
-          treeData={treeData}
-        />
-      </>
-    )
-  }
-
   render() {
+    const {isDirty, user, files, loadOwnView, deleteFile, loadFiles, saveOwnView} = this.props;
     return (
       <div className="login-container">
         { this.getLoginData() }
         { this.getControlPanel() }
-        { this.getFolders() }
+        <FileList
+          canSave={isDirty}
+          user={user}
+          files={files}
+          loadOwnView={loadOwnView}
+          deleteFile={deleteFile}
+          loadFiles={loadFiles}
+          saveOwnView={saveOwnView}
+        />
         <Button onClick={() => {
           window.navigator.clipboard.writeText(this.props.simpleQuery);
           message.success('Query URL copied to clipboard');
