@@ -29,7 +29,7 @@
     "keymirror": "^0.1.1",
     "lodash": "^4.17.20",
     "n3": "^1.0.0-beta.1",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "prop-types": "^15.6.2",
     "ramda": "^0.27.0",
     "rdflib": "^0.20.1",
