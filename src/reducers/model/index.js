@@ -1,7 +1,7 @@
-import {fromJS, Map} from 'immutable';
+import {fromJS} from 'immutable';
 import Actions from 'src/actions/model';
-import { isNil, mergeRight, map } from 'ramda';
-import entityTypes from 'src/constants/entityTypes';
+import { mergeRight, map } from 'ramda';
+import { entityTypes } from 'src/constants/entityTypes';
 
 const initialState = new fromJS({
   entities: {
@@ -12,7 +12,9 @@ const initialState = new fromJS({
 
 // TODO: Add possible entity props description
 const defaultEntityProps = {
-  asVariable: true
+  [entityTypes.property]: {
+    asVariable: true
+  }
 };
 
 const toggleSelect = (state, {items}) => state.mergeDeepIn(['entities'], items);
@@ -20,7 +22,7 @@ const toggleSelect = (state, {items}) => state.mergeDeepIn(['entities'], items);
 const deselectAll = state => state.update('entities', entities => entities.map(subgroup => subgroup.map(entity => entity.set('selected', false))));
 
 const registerResources = (state, {entityType, resources}) => {
-  const withDefaultProps = map(mergeRight(defaultEntityProps), resources);
+  const withDefaultProps = map(mergeRight(defaultEntityProps[entityType] || {}), resources);
   return state.setIn(['entities', entityType], fromJS(withDefaultProps));
 }
 

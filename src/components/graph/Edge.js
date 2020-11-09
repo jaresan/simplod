@@ -1,6 +1,6 @@
 import G6 from '@antv/g6';
 import {flatten, values} from 'ramda';
-import entityTypes from '../../constants/entityTypes';
+import { entityTypes } from '../../constants/entityTypes';
 import {Edge as EdgeWrapper} from './wrappers';
 const EDGE_TYPE = 'graphEdge';
 

@@ -6,7 +6,7 @@
 import store from 'src/store';
 import Actions from 'src/actions';
 import {debounce} from 'lodash';
-import entityTypes from 'src/constants/entityTypes';
+import { entityTypes } from 'src/constants/entityTypes';
 
 export class Handler {
   static lastState = {};

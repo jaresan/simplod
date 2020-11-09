@@ -85,7 +85,7 @@ const NodeImplementation = {
     group.set('methods', methodFields);
     // FIXME: Separate group for logical pieces --> can have multiple groups, yes
     const result = E.create(group, [
-      E.Node({id: `node_${id}`, attrs: containerAttrs, name: 'node-container'}),
+      E.Node({id, attrs: containerAttrs, name: 'node-container'}),
       E.Text({id: `node_${id}-title`, attrs: attrs['node-title'](width, cfg.label), name: 'node-title'}),
       E.Rect({id: `node_${id}-select-all-container`, attrs: {x: -16, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'select-all-container'}),
       E.Image({id: `node_${id}-select-all-icon`, name: 'select-all-icon', attrs: selectAllIconAttrs}),
