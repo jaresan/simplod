@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getSelectedProperties } from '../selectors';
+import { getSelectedProperties } from '../../selectors';
 import {map} from 'ramda';
 import Actions from 'src/actions/model';
 import {Checkbox, Input} from 'antd';

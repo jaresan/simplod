@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import YasguiContainer from './YasguiContainer';
-import PropertyList from './PropertyList';
+import PropertyList from './entityList/PropertyList';
 import ControlPanel from './ControlPanel';
 import {connect} from 'react-redux';
 import {parseTTL} from '../data/parseTTL';
@@ -18,8 +18,8 @@ class App extends Component {
     horizontalLayout: false
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     const params = new URLSearchParams(window.location.search);
     this.schemaURL = params.get('schemaURL');
     this.endpointURL = params.get('endpointURL') || 'http://dbpedia.org/sparql';
