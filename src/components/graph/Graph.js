@@ -8,6 +8,7 @@ const getWrapper = n => {
 }
 
 const handle = curry((methodName, e) => {
+  e.stopPropagation();
   const wrapper = getWrapper(e.target) || (e.item && e.item.get('wrapper')); // Group wrapper for nodes or Edge wrapper
 
   // Default to CanvasWrapper if there's no handler which could resolve the function call
@@ -53,6 +54,7 @@ export class Graph {
   }
 
   registerBehaviours() {
+    console.log('register');
     Object.entries(this.behaviours).forEach(([key, targetMethod]) => this.graph.on(key, handle(targetMethod)));
   }
 

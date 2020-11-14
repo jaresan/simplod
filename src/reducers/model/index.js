@@ -17,7 +17,7 @@ const defaultEntityProps = {
   }
 };
 
-const toggleSelect = (state, {items}) => state.mergeDeepIn(['entities'], items);
+const updateEntities = (state, {items}) => state.mergeDeepIn(['entities'], items);
 
 const deselectAll = state => state.update('entities', entities => entities.map(subgroup => subgroup.map(entity => entity.set('selected', false))));
 
@@ -39,7 +39,7 @@ const loadView = (state, {json}) =>
   state);
 
 const handlers = {
-  [Actions.Types.R_TOGGLE_SELECT]: toggleSelect,
+  [Actions.Types.R_UPDATE_ENTITIES]: updateEntities,
   [Actions.Types.R_DESELECT_ALL]: deselectAll,
   [Actions.Types.R_REGISTER_RESOURCES]: registerResources,
   [Actions.Types.R_TOGGLE_PROPERTY_OPTIONAL]: toggleOptional,
@@ -55,10 +55,12 @@ export default (state = initialState, action) => {
     newState = handlers[action.type](state, action);
   }
 
-  const dirty = newState
-    .get('entities')
-    .some(x => x.reduce((acc, e) => e.get('selected') || acc, false));
-  newState = newState.set('dirty', dirty);
+  // const dirty = newState
+  //   .get('entities')
+  //   .some(x => x.reduce((acc, e) => e.get('selected') || acc, false));
+  // newState = newState.set('dirty', dirty);
 
   return newState;
 };
+
+window.states = [];

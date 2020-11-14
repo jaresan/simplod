@@ -44,7 +44,7 @@ export class Handler {
   }
 
   static commitSelects = () => {
-    this.dispatch(Actions.Model.Creators.r_toggleSelect(this.toSelect));
+    this.dispatch(Actions.Model.Creators.r_updateEntities(this.toSelect));
     this.clearSelection();
   };
 

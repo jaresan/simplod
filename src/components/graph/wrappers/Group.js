@@ -95,10 +95,10 @@ class GroupController {
     this.group.toFront();
     // FIXME: Leave selected properties expanded --> have to change the container size
     this.showProperties = typeof show === 'undefined' ? !this.showProperties : show;
-    const method = this.showProperties ? invoker(0, 'show') : invoker(0, 'hide');
+    const method = this.showProperties ? 'show' : 'hide';
 
     const isProperty = p => p.get('name').match(/^property/);
-    this.group.getChildren().filter(isProperty).forEach(method)
+    this.group.getChildren().filter(isProperty).forEach(p => p[method]())
   }
 
   swapExpandIcon() {

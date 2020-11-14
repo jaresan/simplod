@@ -11,6 +11,7 @@ import Actions from '../actions';
 import {Radio, Button} from 'antd';
 import {getContainerStyle, getMenuStyle} from './App.styled';
 import './App.styles';
+import { EntityList } from './entityList/EntityList';
 
 class App extends Component {
   state = {
@@ -36,7 +37,7 @@ class App extends Component {
     if (process.env.NODE_ENV === 'development') {
       this.schemaURL = this.courtExampleURL;
       // this.schemaURL = this.applicantsURL;
-      this.schemaURL = this.govURL;
+      // this.schemaURL = this.govURL;
       // this.schemaURL = this.beefURL;
       this.endpointURL = "https://data.gov.cz/sparql";
     }
@@ -98,6 +99,7 @@ class App extends Component {
             />
           }
           <PropertyList/>
+          {/*<EntityList />*/}
           <div style={getMenuStyle(horizontalLayout)}>
             <ControlPanel/>
             <YasguiContainer/>
