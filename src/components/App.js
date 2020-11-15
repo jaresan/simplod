@@ -12,11 +12,23 @@ import {Radio, Button} from 'antd';
 import {getContainerStyle, getMenuStyle} from './App.styled';
 import './App.styles';
 import { EntityList } from './entityList/EntityList';
+import styled from '@emotion/styled';
+import { Edge, Node, Property } from './graph/handlers';
+
+const EntityListContainer = styled.div`
+  border: solid 1px black;
+  overflow: auto;
+  width: 512px;
+  height: 512px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
 class App extends Component {
   state = {
     loaded: false,
-    horizontalLayout: false
+    horizontalLayout: true
   };
 
   constructor(props) {
@@ -37,7 +49,7 @@ class App extends Component {
     if (process.env.NODE_ENV === 'development') {
       this.schemaURL = this.courtExampleURL;
       // this.schemaURL = this.applicantsURL;
-      // this.schemaURL = this.govURL;
+      this.schemaURL = this.govURL;
       // this.schemaURL = this.beefURL;
       this.endpointURL = "https://data.gov.cz/sparql";
     }
@@ -52,6 +64,9 @@ class App extends Component {
   fetchData = url => {
     // FIXME: Move Handler clearing somewhere else (ideally to saga which pings graph which pings handler)
     Handler.clear();
+    Property.clear();
+    Node.clear();
+    Edge.clear();
     this.props.clearData();
     fetch(url)
       .then(res => res.text())
@@ -69,6 +84,7 @@ class App extends Component {
 
         this.setState({loaded: true});
         this.props.setPrefixes(invertObj(json.__prefixes__));
+        this.props.onDataLoaded();
       });
   };
 
@@ -82,6 +98,7 @@ class App extends Component {
       <div className="App">
         <input type="text" ref={e => this.dataSchemaInput = e} placeholder="Data schema URL"/>
         <Button onClick={() => this.fetchData(this.dataSchemaInput.value)}>Reload schema URL</Button>
+        <Button onClick={() => this.fetchData(this.applicantsURL)}>Single</Button>
         <Button onClick={() => this.fetchData(this.courtExampleURL)}>Court example</Button>
         <Button onClick={() => this.fetchData(this.govURL)}>Gov example</Button>
         <br/>
@@ -98,10 +115,12 @@ class App extends Component {
               data={this.schemaData}
             />
           }
-          <PropertyList/>
-          {/*<EntityList />*/}
+          {/*<PropertyList/>*/}
           <div style={getMenuStyle(horizontalLayout)}>
-            <ControlPanel/>
+            <EntityListContainer>
+              <EntityList />
+            </EntityListContainer>
+            {/*<ControlPanel/>*/}
             <YasguiContainer/>
           </div>
         </div>
@@ -113,7 +132,8 @@ class App extends Component {
 const mapDispatchToProps = {
   setPrefixes: Actions.Yasgui.Creators.r_setPrefixes,
   clearData: Actions.Model.Creators.r_clearData,
-  setEndpoint: Actions.Yasgui.Creators.r_setEndpoint
+  setEndpoint: Actions.Yasgui.Creators.r_setEndpoint,
+  onDataLoaded: Actions.Model.Creators.r_dataLoaded
 };
 
 export default connect(null, mapDispatchToProps)(App);

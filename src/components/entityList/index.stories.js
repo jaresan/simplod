@@ -2,7 +2,7 @@ import React from 'react';
 import {EntityList} from './EntityList';
 import {EntityEntry} from './EntityEntry';
 import {PropertyEntry} from './PropertyEntry';
-import { getRandomEntityId, getRandomProperty, withProvider } from 'src/@@stories';
+import { getRandomEntityId, getRandomPropertyId, withProvider } from 'src/@@stories';
 
 export default {
   title: 'Entity list',
@@ -18,5 +18,5 @@ export const Entity = () => (
 );
 
 export const Property = () => (
-  <PropertyEntry property={getRandomProperty()} />
+  <PropertyEntry id={getRandomPropertyId()} />
 );

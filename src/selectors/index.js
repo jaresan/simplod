@@ -13,10 +13,9 @@ export const getSelectedData = appState =>
   appState.model.getIn(['entities', entityTypes.class]).filter(e => e.get('selected')).toJS();
 
 export const getProperty = (appState, id) => appState.model.getIn(['entities', entityTypes.property, id]);
-export const getEntities = appState => appState.model.getIn(['entities', entityTypes.class]).toJS();
+export const getEntities = appState => appState.model.getIn(['entities', entityTypes.class]);
 export const getEntityById = (appState, id) => appState.model.getIn(['entities', entityTypes.class, id]);
 export const getPropertyIdsByEntityId = (appState, id) => appState.model.getIn(['entities', entityTypes.class, id, 'propertyIds'])
-export const getPropertiesForEntity = (appState, id) => appState.model.getIn(['entities', entityTypes.property]).filter(p => p.get('source') === id);
 
 export const getPrefixes = appState => appState.yasgui.get('prefixes').toJS();
 

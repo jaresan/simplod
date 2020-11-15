@@ -17,6 +17,12 @@ export class Handler {
   static resources = {};
   static toSelect = Object.keys(entityTypes).reduce((acc, type) => ({[type]: {}, ...acc}), {});
 
+  static clear() {
+    this.lastState = {};
+    this.recipients = {};
+    this.resources = {};
+  }
+
   static clearSelection() {
     this.toSelect = Object.keys(entityTypes).reduce((acc, type) => ({[type]: {}, ...acc}), {});
   }
@@ -82,10 +88,6 @@ export class Handler {
       this.dispatch(Actions.Interactions.Creators.s_dataChanged());
     }
   };
-
-  static clear() {
-    this.recipients = {};
-  }
 }
 
 store.subscribe(() => Handler.onStateChange(store.getState().model));

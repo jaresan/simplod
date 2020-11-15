@@ -57,6 +57,7 @@ export class Wrapper {
   }
 
   setState(state) {
+    Object.assign(this.lastState, this.state);
     Object.assign(this.state, state);
     this.callOnParent('stateChanged', {target: this, state, lastState: this.lastState});
     this.updateStyles();
