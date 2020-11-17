@@ -1,6 +1,7 @@
 import {Wrapper} from './Wrapper';
 import {Property as PropertyHandler} from '../handlers';
 
+// FIXME: Add this to graph/node
 const defaultStyle = {
   opacity: 1,
   lineWidth: 1,
@@ -11,7 +12,7 @@ const defaultStyle = {
   fontFamily: "sans-serif",
   textAlign: "left",
   textBaseline: "top",
-  fill: "#000",
+  fill: '#333',
   stroke: 'transparent',
   font: "normal normal normal 12px sans-serif"
 };

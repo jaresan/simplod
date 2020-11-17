@@ -24,6 +24,7 @@ class YasguiContainer extends Component {
 	componentDidUpdate(prevProps, prevState, snapshot) {
 		const tab = this.yasgui.getTab();
 		tab.setQuery(this.props.query);
+		setTimeout(() => tab.yasqe.autoformat(), 1);
 		tab.setEndpoint(this.props.endpoint);
 		this.props.setSimpleQuery(tab.yasr.config.getPlainQueryLinkToEndpoint());
 	}

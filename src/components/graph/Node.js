@@ -4,12 +4,14 @@ import Group from './wrappers/Group';
 const NODE_TYPE = 'graphNode';
 
 const PROP_LINE_HEIGHT = 12;
+const blue = '#49b2e7';
+const textColor = 'black';
 const getAttrs = ctx => ({
   'node-container': ({propCount, methodCount, label}) => ({
     width: ctx.measureText(label).width + 8,
     height: 20,
-    stroke: 'black', // Apply the color to the stroke. For filling, use fill: cfg.color instead
-    fill: 'steelblue',
+    stroke: textColor, // Apply the color to the stroke. For filling, use fill: cfg.color instead
+    fill: blue,
     opacity: 1
   }),
   'node-title': (width, text) => ({
@@ -18,7 +20,7 @@ const getAttrs = ctx => ({
     textAlign: 'center',
     textBaseline: 'top',
     text,
-    fill: '#fff',
+    fill: textColor,
   }),
   property: ({predicate, type, i}) => ({
     x: 4, // center
@@ -26,14 +28,15 @@ const getAttrs = ctx => ({
     textAlign: 'left',
     textBaseline: 'top',
     text: `${predicate}: ${type}`,
-    fill: '#000'
+    fill: textColor,
+    stroke: textColor,
   }),
   'property-container': propArr => ({
     y: PROP_LINE_HEIGHT * 2 - 4,
     width: propArr.reduce((acc, {attrs: {text}}) => Math.max(acc, ctx.measureText(text).width  + 8), 0),
     height: propArr.length * PROP_LINE_HEIGHT + 6,
     stroke: 'black',
-    fill: 'steelblue',
+    fill: blue,
     opacity: 1
   })
 });
