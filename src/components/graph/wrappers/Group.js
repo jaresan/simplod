@@ -123,14 +123,16 @@ class GroupController {
 
     this.getEdges().forEach(e => e[method]());
     this.group[method]();
+    this.handler.toggleEntityHidden(this.entityId, this.state.hidden);
+    this.updateHiddenIcon()
   }
 
-  swapHiddenIcon() {
+  updateHiddenIcon() {
     const icon = this.children['hide-icon'];
     const eyeIconPath = 'images/eye.png';
     const eyeInvisibleIconPath = 'images/eye-invisible.png';
 
-    if (icon.attrs.img.src.match(eyeIconPath)) {
+    if (this.state.hidden) {
       icon.attrs.img.src = eyeInvisibleIconPath;
     } else {
       icon.attrs.img.src = eyeIconPath;
@@ -154,7 +156,6 @@ class GroupController {
       this.selectAllProperties();
     } else if (name.includes('hide')) {
       this.toggleHidden();
-      this.swapHiddenIcon();
     } else {
       propagate(target, 'onClick');
     }
@@ -164,6 +165,9 @@ class GroupController {
   stateChanged({target, state, lastState}) {
     if (state.selected !== lastState.selected) {
       this.updateHighlight(state.selected);
+    }
+    if (state.hidden !== lastState.hidden) {
+      this.toggleHidden(state.hidden);
     }
   }
 }

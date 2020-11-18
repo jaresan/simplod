@@ -64,6 +64,10 @@ export class Handler {
     this.batchingSelect = false;
   }
 
+  static toggleEntityHidden(id, hidden) {
+    this.dispatch(Actions.Model.Creators.r_toggleEntityHidden(id, hidden))
+  }
+
   /**
    * Subscription method to redux store responding to changes on the store;
    */
