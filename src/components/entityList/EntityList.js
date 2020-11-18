@@ -43,7 +43,6 @@ class EntityListComponent extends React.Component {
 	}
 
 	render() {
-		console.log('render');
 		const {searchText} = this.props;
 		const filtered = this.sortedIds.filter(idMatches(searchText));
 

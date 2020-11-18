@@ -3,9 +3,11 @@ import {List, Card, Space} from 'antd';
 import {connect} from 'react-redux';
 import {PropertyEntry} from './PropertyEntry';
 import {PrefixedText} from './PrefixedText';
-import {RightOutlined, DownOutlined} from '@ant-design/icons';
+import {RightOutlined, DownOutlined, EyeInvisibleOutlined, EyeOutlined} from '@ant-design/icons';
 import styled from '@emotion/styled';
-import { getPropertyIdsByEntityId } from '../../selectors';
+import { getEntityById } from '../../selectors';
+import Actions from 'src/actions/model';
+import * as Controls from './Controls';
 
 const ExpandIconContainer = styled.div`
   display: inline-block;
@@ -37,7 +39,8 @@ class EntityEntryComponent extends React.Component {
   getToggleIcon = () => this.state.expanded ? <DownOutlined /> : <RightOutlined />
 
   render() {
-    const {id, propertyIds} = this.props;
+    const {id, entity, toggleHidden} = this.props;
+    const {propertyIds, hidden} = entity.toJS();
 
     return (
       <Container
@@ -50,7 +53,7 @@ class EntityEntryComponent extends React.Component {
         </ExpandIconContainer>}
         size="small"
         bodyStyle={{paddingTop: 0, paddingBottom: 0}}
-        // extra={<Checkbox onChange={this.toggleExpanded}/>}
+        extra={<Controls.Toggle flag={!hidden} onClick={() => toggleHidden(id, !hidden)} OnIcon={EyeOutlined} OffIcon={EyeInvisibleOutlined} />}
       >
         {this.state.expanded && <List
           dataSource={propertyIds}
@@ -63,7 +66,11 @@ class EntityEntryComponent extends React.Component {
 
 
 const mapStateToProps = (appState, {id}) => ({
-  propertyIds: getPropertyIdsByEntityId(appState, id)
+  entity: getEntityById(appState, id)
 });
 
-export const EntityEntry = connect(mapStateToProps, null)(EntityEntryComponent);
+const mapDispatchToProps = {
+  toggleHidden: Actions.Creators.r_toggleEntityHidden
+};
+
+export const EntityEntry = connect(mapStateToProps, mapDispatchToProps)(EntityEntryComponent);

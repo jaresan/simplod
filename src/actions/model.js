@@ -7,6 +7,7 @@ export default createActions({
   r_togglePropertySelected: ['id', 'selected'],
   r_togglePropertyOptional: ['id', 'optional'],
   r_togglePropertyAsVariable: ['id', 'asVariable'],
+  r_toggleEntityHidden: ['id', 'hidden'],
   r_savePropertyName: ['id', 'name'],
   r_clearData: null,
   r_viewLoaded: ['json'],

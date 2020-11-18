@@ -42,6 +42,7 @@ const toggleOptional = (state, {id, optional}) => state.setIn(['entities', entit
 const toggleAsVariable = (state, {id, asVariable}) => state.setIn(['entities', entityTypes.property, id, 'asVariable'], asVariable);
 const toggleSelected = (state, {id, selected}) => state.setIn(['entities', entityTypes.property, id, 'selected'], selected);
 const savePropertyName = (state, {id, name}) => state.setIn(['entities', entityTypes.property, id, 'name'], name);
+const toggleEntityHidden = (state, {id, hidden}) => state.setIn(['entities', entityTypes.class, id, 'hidden'], hidden);
 const clearData = () => initialState;
 
 const loadView = (state, {json}) =>
@@ -59,6 +60,7 @@ const handlers = {
   [Actions.Types.R_TOGGLE_PROPERTY_OPTIONAL]: toggleOptional,
   [Actions.Types.R_TOGGLE_PROPERTY_AS_VARIABLE]: toggleAsVariable,
   [Actions.Types.R_SAVE_PROPERTY_NAME]: savePropertyName,
+  [Actions.Types.R_TOGGLE_ENTITY_HIDDEN]: toggleEntityHidden,
   [Actions.Types.R_CLEAR_DATA]: clearData,
   [Actions.Types.R_VIEW_LOADED]: loadView,
   [Actions.Types.R_DATA_LOADED]: connectProperties,
