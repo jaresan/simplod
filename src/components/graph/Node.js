@@ -85,13 +85,24 @@ const NodeImplementation = {
       height: 16
     };
 
+    const hideIconAttrs = {
+      x: -32,
+      y: 2,
+      img: 'images/eye.png',
+      width: 16,
+      height: 16
+    };
+
     group.set('methods', methodFields);
     // FIXME: Separate group for logical pieces --> can have multiple groups, yes
+    group.entityId = id;
     const result = E.create(group, [
       E.Node({id, attrs: containerAttrs, name: 'node-container'}),
       E.Text({id: `node_${id}-title`, attrs: attrs['node-title'](width, cfg.label), name: 'node-title'}),
       E.Rect({id: `node_${id}-select-all-container`, attrs: {x: -16, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'select-all-container'}),
       E.Image({id: `node_${id}-select-all-icon`, name: 'select-all-icon', attrs: selectAllIconAttrs}),
+      E.Rect({id: `node_${id}-hide-icon-container`, attrs: {x: hideIconAttrs.x, width: hideIconAttrs.width, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'hide-icon-container'}),
+      E.Image({id: `node_${id}-hide-icon`, name: 'hide-icon', attrs: hideIconAttrs}),
       E.Rect({id: `node_${id}-expand-icon-container`, attrs: {x: width, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'expand-icon-container'}),
       E.Image({id: `node_${id}-expand-icon`, name: 'expand-icon', attrs: expandIconAttrs}),
       E.Rect({id: `node_${id}-prop-container`, attrs: propertyContainerAttrs, name: 'property-container'}),
@@ -114,7 +125,7 @@ const NodeImplementation = {
         wrapper.setContainerNode(containerNode);
       }
     });
-    const wrapper = new Group(group);
+    const wrapper = new Group(group.entityId, group);
     group.set('wrapper', wrapper);
     wrapper.toggleProperties(false);
   }

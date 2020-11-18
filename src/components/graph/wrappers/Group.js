@@ -19,11 +19,13 @@ class GroupController {
   handler = Handler;
   state = {
     selected: false,
-    hover: false
+    hover: false,
+    hidden: false
   };
 
-  constructor(group) {
+  constructor(entityId, group) {
     this.group = group;
+    this.entityId = entityId;
     this.children = group.getChildren().reduce((acc, ch) => Object.assign(acc, {[ch.get('name')]: ch}), {});
     this.childrenWrappers = filter(identity, map(ch => ch.get('wrapper'), this.children));
     this.propertyWrappers = filter(w => (w instanceof Property) || (w instanceof Method), this.childrenWrappers);
@@ -75,7 +77,7 @@ class GroupController {
     this.state.selected = Object.values(this.childrenWrappers).some(w => w.state.selected) || this.getEdges().some(e => e.state.selected);
     const shouldHighlight = this.state.selected || this.state.hover;
 
-    const nodesAffected = ['node-container', 'property-container', 'select-all-container', 'expand-icon-container'];
+    const nodesAffected = ['node-container', 'property-container', 'select-all-container', 'expand-icon-container', 'hide-icon-container'];
     const updateStyle = shouldHighlight ? this.applyStyle.bind(this) : this.cancelStyle.bind(this);
     nodesAffected.forEach(name => updateStyle(this.children[name], ['titleOutline']));
     if (shouldHighlight) {
@@ -101,6 +103,8 @@ class GroupController {
     this.group.getChildren().filter(isProperty).forEach(p => p[method]())
   }
 
+
+  // TODO: Take dynamically from the object (save the paths to the attrs)
   swapExpandIcon() {
     const icon = this.children['expand-icon'];
     const collapseIconPath = 'images/collapse.png';
@@ -110,6 +114,26 @@ class GroupController {
       icon.attrs.img.src = expandIconPath;
     } else {
       icon.attrs.img.src = collapseIconPath;
+    }
+  }
+
+  toggleHidden(show) {
+    this.state.hidden = typeof show === 'undefined' ? !this.state.hidden : show;
+    const method = this.state.hidden ? 'hide' : 'show';
+
+    this.getEdges().forEach(e => e[method]());
+    this.group[method]();
+  }
+
+  swapHiddenIcon() {
+    const icon = this.children['hide-icon'];
+    const eyeIconPath = 'images/eye.png';
+    const eyeInvisibleIconPath = 'images/eye-invisible.png';
+
+    if (icon.attrs.img.src.match(eyeIconPath)) {
+      icon.attrs.img.src = eyeInvisibleIconPath;
+    } else {
+      icon.attrs.img.src = eyeIconPath;
     }
   }
 
@@ -126,8 +150,11 @@ class GroupController {
     if (['node-container', 'expand-icon-container', 'node-title', 'expand-icon'].includes(name)) {
       this.toggleProperties();
       this.swapExpandIcon()
-    } else if (name.match(/select-all/)) {
+    } else if (name.includes('select-all')) {
       this.selectAllProperties();
+    } else if (name.includes('hide')) {
+      this.toggleHidden();
+      this.swapHiddenIcon();
     } else {
       propagate(target, 'onClick');
     }

@@ -97,4 +97,12 @@ export class Edge extends Wrapper {
     this.onToggleSelect();
     this.togglePropertiesSelected(this.state.selected);
   };
+
+  hide() {
+    this.edge.hide();
+  }
+
+  show() {
+    this.edge.show();
+  }
 }
