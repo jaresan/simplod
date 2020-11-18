@@ -123,7 +123,7 @@ export const parseSPARQLQuery = (selectedProperties, prefixes) => {
   return `${prefixRows}
     SELECT DISTINCT * WHERE {
     ${typeRows}
-    
+
     ${propertyRows}
     }
     LIMIT 100

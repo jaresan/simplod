@@ -11,6 +11,33 @@ import rdf from 'rdflib';
 // FIXME: Move all predicate etc specifiers to constants
 // TODO: Split to multiple different files in a 'solid' directory
 
+function* login() {
+  const popupUri = 'dist-popup/popup.html';
+  const session = yield call(auth.popupLogin, { popupUri });
+  yield put(SolidActions.Creators.r_setSolidSession(session));
+
+  yield loadFiles({url: new URL(session.webId).origin});
+  return session;
+}
+
+function* getSession() {
+  const session = yield auth.currentSession();
+  const expiration = path(['idClaims', 'exp'], session) * 1000;
+  return {
+    session,
+    valid: expiration > Date.now()
+  };
+}
+
+function* getSessionOrLogin() {
+  const {session, valid} = yield getSession();
+  if (!valid) {
+    return login();
+  } else {
+    return session;
+  }
+}
+
 function* onViewSave({uri}) {
   const view = yield select(getViewSelection);
 
@@ -22,8 +49,8 @@ function* onViewSave({uri}) {
       body: JSON.stringify(view)
     });
 
-    const session = yield auth.currentSession();
-    const { webId } = session || {};
+    const session = yield getSessionOrLogin();
+    const { webId } = session;
 
     const logStatus = webId ? `You are logged in as ${webId}.` : 'You are not logged in.';
     if (res.status === 401) {
@@ -45,7 +72,7 @@ function* saveOwnView({uri}) {
   const view = yield select(getViewSelection);
 
   // FIXME: Extract url sanitization
-  const {webId} = yield auth.currentSession();
+  const {webId} = yield getSessionOrLogin();
   const {origin} = new URL(webId);
 
   uri = `${origin}/${uri.replace(origin, '').replace(/^\//, '')}`; // Enforce domain if relative URL provided
@@ -82,7 +109,7 @@ function* saveOwnView({uri}) {
 }
 
 function* loadOwnView({uri}) {
-  const {webId} = yield auth.currentSession();
+  const {webId} = yield getSessionOrLogin();
   const {origin} = new URL(webId);
 
   const loading = message.loading('Loading view...');
@@ -107,7 +134,7 @@ function* loadOwnView({uri}) {
 function* deleteFile({uri}) {
   const loading = message.loading('Deleting view...');
   try {
-    const {webId} = yield auth.currentSession();
+    const {webId} = yield getSessionOrLogin();
     const {origin} = new URL(webId);
     uri = `${origin}/${uri.replace(origin, '').replace(/^\//, '')}`; // Enforce domain if relative URL provided
 
@@ -130,7 +157,7 @@ function* deleteFile({uri}) {
 function* loadExternalView({uri}) {
   try {
     const res = yield call(auth.fetch, uri);
-    const session = yield auth.currentSession();
+    const session = yield getSessionOrLogin();
     const { webId } = session || {};
 
     const logStatus = webId ? `You are logged in as ${webId}.` : 'You are not logged in.';
@@ -225,23 +252,12 @@ function* tryCreateFolder(folderUri) {
 // }
 
 function* onStart() {
-  const session = yield auth.currentSession();
+  const {session, valid} = yield getSession();
 
-  // Automatically log in the user if they have their session saved
-  if (session) {
-    yield onLogin();
+  // Automatically log in the user if they had a previous session saved
+  if (valid) {
+    yield loadFiles({url: new URL(session.webId).origin});
   }
-}
-
-function* onLogin() {
-  let session = yield auth.currentSession();
-  if (!session) {
-    const popupUri = 'dist-popup/popup.html';
-    session = yield call(auth.popupLogin, { popupUri });
-  }
-  yield put(SolidActions.Creators.r_setSolidSession(session));
-
-  yield loadFiles({url: new URL(session.webId).origin});
 }
 
 function* onLogout() {
@@ -250,7 +266,7 @@ function* onLogout() {
 }
 
 function* loadFiles({url}) {
-  const {webId} = yield auth.currentSession();
+  const {webId} = yield getSessionOrLogin();
   const {origin} = new URL(webId);
 
   url = `${origin}/${url.replace(origin, '').replace(/^\//, '')}`; // Enforce domain if relative URL provided
@@ -293,7 +309,7 @@ export default function*() {
   yield all([
     takeEvery(SolidActions.Types.S_ON_VIEW_SAVE, onViewSave),
     takeEvery(SolidActions.Types.S_LOAD_OWN_VIEW, loadOwnView),
-    takeEvery(SolidActions.Types.S_ON_SOLID_LOGIN, onLogin),
+    takeEvery(SolidActions.Types.S_ON_SOLID_LOGIN, login),
     takeEvery(SolidActions.Types.S_ON_SOLID_LOGOUT, onLogout),
     takeEvery(SolidActions.Types.S_ON_SOLID_START, onStart),
     // takeEvery(SolidActions.Types.S_SAVE_FOLDER_URI, onSaveFolderUri),

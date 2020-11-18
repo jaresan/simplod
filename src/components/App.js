@@ -120,7 +120,7 @@ class App extends Component {
             <EntityListContainer>
               <EntityList />
             </EntityListContainer>
-            {/*<ControlPanel/>*/}
+            <ControlPanel/>
             <YasguiContainer/>
           </div>
         </div>
