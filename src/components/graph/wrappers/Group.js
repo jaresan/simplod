@@ -117,12 +117,14 @@ class GroupController {
     }
   }
 
+  isVisible = () => this.group.get('visible');
+
   toggleHidden(show) {
     this.state.hidden = typeof show === 'undefined' ? !this.state.hidden : show;
     const method = this.state.hidden ? 'hide' : 'show';
 
-    this.getEdges().forEach(e => e[method]());
     this.group[method]();
+    this.getEdges().forEach(e => e[method]());
     this.handler.toggleEntityHidden(this.entityId, this.state.hidden);
     this.updateHiddenIcon()
   }

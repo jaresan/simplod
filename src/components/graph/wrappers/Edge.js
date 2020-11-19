@@ -103,6 +103,8 @@ export class Edge extends Wrapper {
   }
 
   show() {
-    this.edge.show();
+    if (this.sourceGroup.isVisible() && this.targetGroup.isVisible()) {
+      this.edge.show();
+    }
   }
 }
