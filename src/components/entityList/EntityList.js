@@ -27,24 +27,15 @@ const renderEntity = id => (
 
 const idMatches = text => id => id.toLowerCase().includes(text.toLowerCase());
 
-
 class EntityListComponent extends React.Component {
-	constructor(props) {
-		super(props);
-		this.updateSortedIds(props.entities.toJS());
-	}
-	componentDidUpdate(prevProps, prevState, snapshot) {
-		this.updateSortedIds(this.props.entities.toJS());
-	}
-
-	updateSortedIds(entities) {
-		const suffix2Id = Object.entries(entities).reduce((acc, [k, entity]) => Object.assign(acc, {[k.split(':')[1].toLowerCase()]: k}), {});
-		this.sortedIds = Object.keys(suffix2Id).sort().map(k => suffix2Id[k]);
+	getSortedIds() {
+		const entities = this.props.entities.toJS();
+		return Object.keys(entities).sort();
 	}
 
 	render() {
 		const {searchText} = this.props;
-		const filtered = this.sortedIds.filter(idMatches(searchText));
+		const filtered = this.getSortedIds().filter(idMatches(searchText));
 
 		return (
 			<>

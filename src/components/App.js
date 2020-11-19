@@ -48,7 +48,7 @@ class App extends Component {
     this.endpointURL = 'http://nl.dbpedia.org/sparql';
     if (process.env.NODE_ENV === 'development') {
       this.schemaURL = this.courtExampleURL;
-      // this.schemaURL = this.applicantsURL;
+      this.schemaURL = this.applicantsURL;
       this.schemaURL = this.govURL;
       // this.schemaURL = this.beefURL;
       this.endpointURL = "https://data.gov.cz/sparql";
