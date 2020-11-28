@@ -13,7 +13,11 @@ const initialState = fromJS({
 // TODO: Add possible entity props description
 const defaultEntityProps = {
   [entityTypes.property]: {
-    asVariable: true
+    asVariable: true,
+    selected: false
+  },
+  [entityTypes.class]: {
+    selected: false
   }
 };
 
@@ -31,7 +35,12 @@ const connectProperties = state => {
   return state.updateIn(['entities', entityTypes.class], classes => classes.map((c, id) => c.set('propertyIds', propsById[id])));
 }
 
-const deselectAll = state => state.update('entities', entities => entities.map(subgroup => subgroup.map(entity => entity.set('selected', false))));
+const deselectAll = state => state.update('entities', entities => {
+  return Object.keys(entityTypes).reduce((acc, type) => {
+    const ids = acc.get(type).keySeq();
+    return ids.reduce((acc2, id) => acc2.setIn([type, id, 'selected'], false), acc)
+  }, entities);
+});
 
 const registerResources = (state, {entityType, resources}) => {
   const withDefaultProps = map(mergeRight(defaultEntityProps[entityType] || {}), resources);
@@ -79,5 +88,3 @@ export default (state = initialState, action) => {
 
   return newState;
 };
-
-window.initialState = initialState;
