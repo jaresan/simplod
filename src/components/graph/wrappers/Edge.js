@@ -82,9 +82,11 @@ export class Edge extends Wrapper {
   }
 
   setState(state) {
-    super.setState(state);
-    if (this.lastState.selected !== state.selected) {
+    const {selected} = this.state;
+    Object.assign(this.state, state);
+    if (selected !== state.selected) {
       this.updateNodeHighlights();
+      this.updateStyles();
     }
   };
 
