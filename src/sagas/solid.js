@@ -16,8 +16,12 @@ function* login() {
   const session = yield call(auth.popupLogin, { popupUri });
   yield put(SolidActions.Creators.r_setSolidSession(session));
 
-  yield loadFiles({url: new URL(session.webId).origin});
   return session;
+}
+
+function* onLogin() {
+  const session = yield login();
+  yield loadFiles({url: new URL(session.webId).origin});
 }
 
 function* getSession() {
@@ -254,9 +258,11 @@ function* tryCreateFolder(folderUri) {
 function* onStart() {
   const {session, valid} = yield getSession();
 
-  // Automatically log in the user if they had a previous session saved
   if (valid) {
     yield loadFiles({url: new URL(session.webId).origin});
+    yield put(SolidActions.Creators.r_setSolidSession(session));
+  } else {
+    yield auth.logout();
   }
 }
 
@@ -309,7 +315,7 @@ export default function*() {
   yield all([
     takeEvery(SolidActions.Types.S_ON_VIEW_SAVE, onViewSave),
     takeEvery(SolidActions.Types.S_LOAD_OWN_VIEW, loadOwnView),
-    takeEvery(SolidActions.Types.S_ON_SOLID_LOGIN, login),
+    takeEvery(SolidActions.Types.S_ON_SOLID_LOGIN, onLogin),
     takeEvery(SolidActions.Types.S_ON_SOLID_LOGOUT, onLogout),
     takeEvery(SolidActions.Types.S_ON_SOLID_START, onStart),
     // takeEvery(SolidActions.Types.S_SAVE_FOLDER_URI, onSaveFolderUri),
