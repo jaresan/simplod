@@ -1,6 +1,6 @@
 import {fromJS} from 'immutable';
 import Actions from 'src/actions/model';
-import { mergeRight, map } from 'ramda';
+import { mergeRight, map, curry } from 'ramda';
 import { entityTypes } from 'src/constants/entityTypes';
 
 const initialState = fromJS({
@@ -14,7 +14,8 @@ const initialState = fromJS({
 const defaultEntityProps = {
   [entityTypes.property]: {
     asVariable: true,
-    selected: false
+    selected: false,
+    position: 0 // Position in the csv / variable in the select query
   },
   [entityTypes.class]: {
     selected: false
@@ -47,11 +48,15 @@ const registerResources = (state, {entityType, resources}) => {
   return state.setIn(['entities', entityType], fromJS(withDefaultProps));
 }
 
-const toggleOptional = (state, {id, optional}) => state.setIn(['entities', entityTypes.property, id, 'optional'], optional);
-const toggleAsVariable = (state, {id, asVariable}) => state.setIn(['entities', entityTypes.property, id, 'asVariable'], asVariable);
-const toggleSelected = (state, {id, selected}) => state.setIn(['entities', entityTypes.property, id, 'selected'], selected);
-const savePropertyName = (state, {id, name}) => state.setIn(['entities', entityTypes.property, id, 'name'], name);
-const toggleEntityHidden = (state, {id, hidden}) => state.setIn(['entities', entityTypes.class, id, 'hidden'], hidden);
+const updatePropertyPositions = (state, {propertyIds}) => {
+  const updatePosition = updateProperty('position');
+
+  return propertyIds.reduce((acc, id, position) => updatePosition(acc, {id, position}), state);
+};
+
+const update = curry((type, key, state, {id, [key]: value}) => state.setIn(['entities', type, id, key], value));
+const updateProperty = update(entityTypes.property);
+const updateEntity = update(entityTypes.class);
 const clearData = () => initialState;
 
 const loadView = (state, {json}) =>
@@ -65,11 +70,12 @@ const handlers = {
   [Actions.Types.R_UPDATE_ENTITIES]: updateEntities,
   [Actions.Types.R_DESELECT_ALL]: deselectAll,
   [Actions.Types.R_REGISTER_RESOURCES]: registerResources,
-  [Actions.Types.R_TOGGLE_PROPERTY_SELECTED]: toggleSelected,
-  [Actions.Types.R_TOGGLE_PROPERTY_OPTIONAL]: toggleOptional,
-  [Actions.Types.R_TOGGLE_PROPERTY_AS_VARIABLE]: toggleAsVariable,
-  [Actions.Types.R_SAVE_PROPERTY_NAME]: savePropertyName,
-  [Actions.Types.R_TOGGLE_ENTITY_HIDDEN]: toggleEntityHidden,
+  [Actions.Types.R_TOGGLE_PROPERTY_SELECTED]: updateProperty('selected'),
+  [Actions.Types.R_TOGGLE_PROPERTY_OPTIONAL]: updateProperty('optional'),
+  [Actions.Types.R_TOGGLE_PROPERTY_AS_VARIABLE]: updateProperty('asVariable'),
+  [Actions.Types.R_SAVE_PROPERTY_NAME]: updateProperty('name'),
+  [Actions.Types.R_UPDATE_PROPERTY_POSITIONS]: updatePropertyPositions,
+  [Actions.Types.R_TOGGLE_ENTITY_HIDDEN]: updateEntity('hidden'),
   [Actions.Types.R_CLEAR_DATA]: clearData,
   [Actions.Types.R_VIEW_LOADED]: loadView,
   [Actions.Types.R_DATA_LOADED]: connectProperties,

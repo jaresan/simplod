@@ -11,6 +11,7 @@ export default createActions({
   r_savePropertyName: ['id', 'name'],
   r_clearData: null,
   r_viewLoaded: ['json'],
-  r_dataLoaded: null
+  r_dataLoaded: null,
+  r_updatePropertyPositions: ['propertyIds']
 }, {prefix: 'Model.'});
 

@@ -2,15 +2,11 @@ import React, { Component } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { DragOutlined } from '@ant-design/icons';
 import { Tag } from 'antd';
+import { prop } from 'ramda';
 import { connect } from 'react-redux';
 import { getProperties } from 'src/selectors';
-
-// fake data generator
-const getItems = count =>
-  Array.from({ length: count }, (v, k) => k).map(k => ({
-    id: `item-${k}`,
-    content: `item ${k}`,
-  }));
+import ModelActions from 'src/actions/model';
+import InteractionActions from 'src/actions/interactions';
 
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
@@ -21,23 +17,23 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
+const getItems = properties => properties.filter(p => p.get('selected')).sort((p1, p2) => p1.get('position') < p2.get('position') ? -1 : 1).map((p, id) => ({
+  id,
+  content: `${p.get('name')}`,
+})).valueSeq().toJS();
+
 class ColumnListComponent extends Component {
   constructor(props) {
     super(props);
-    const items = this.getItems(props.properties);
+    const items = getItems(props.properties);
 
     this.state = {items};
     this.onDragEnd = this.onDragEnd.bind(this);
   }
 
-  getItems = properties => properties.filter(p => p.get('selected')).map((p, id) => ({
-      id,
-      content: `${p.get('name')}`,
-    })).valueSeq().toJS();
-
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.properties !== this.props.properties) {
-      this.setState({items: this.getItems(this.props.properties)});
+      this.setState({items: getItems(this.props.properties)});
     }
   }
 
@@ -47,17 +43,14 @@ class ColumnListComponent extends Component {
       return;
     }
 
-    // FIXME: Dispatch action to reorder in reducer
-    // FIXME: Change sparql select from * to selected variables
     const items = reorder(
       this.state.items,
       result.source.index,
       result.destination.index
     );
 
-    this.setState({
-      items,
-    });
+    this.props.updatePropertyPositions(items.map(prop('id')));
+    this.props.dataChanged();
   }
 
   // Normally you would want to split things out into separate components.
@@ -105,4 +98,9 @@ const mapStateToProps = appState => ({
   properties: getProperties(appState)
 });
 
-export const ColumnList = connect(mapStateToProps, null)(ColumnListComponent);
+const mapDispatchToProps = {
+  updatePropertyPositions: ModelActions.Creators.r_updatePropertyPositions,
+  dataChanged: InteractionActions.Creators.s_dataChanged
+};
+
+export const ColumnList = connect(mapStateToProps, mapDispatchToProps)(ColumnListComponent);
