@@ -14,6 +14,11 @@ import './App.styles';
 import { EntityList } from './entityList/EntityList';
 import styled from '@emotion/styled';
 import { Edge, Node, Property } from './graph/handlers';
+import { Tabs } from 'antd';
+import {ColumnList} from './ColumnList';
+
+
+const { TabPane } = Tabs;
 
 const EntityListContainer = styled.div`
   border: solid 1px black;
@@ -117,10 +122,20 @@ class App extends Component {
           }
           {/*<PropertyList/>*/}
           <div style={getMenuStyle(horizontalLayout)}>
-            <EntityListContainer>
-              <EntityList />
-            </EntityListContainer>
             <ControlPanel/>
+            <Tabs>
+              <TabPane tab="Properties" key="1">
+                <EntityListContainer>
+                  <EntityList />
+                </EntityListContainer>
+              </TabPane>
+              <TabPane tab="Result" key="2">
+                <ColumnList />
+                <EntityListContainer>
+                  <EntityList onlySelected />
+                </EntityListContainer>
+              </TabPane>
+            </Tabs>
             <YasguiContainer/>
           </div>
         </div>

@@ -12,6 +12,7 @@ export const getViewSelection = appState => {
 export const getSelectedData = appState =>
   appState.model.getIn(['entities', entityTypes.class]).filter(e => e.get('selected')).toJS();
 
+export const getProperties = (appState) => appState.model.getIn(['entities', entityTypes.property]);
 export const getProperty = (appState, id) => appState.model.getIn(['entities', entityTypes.property, id]);
 export const getEntities = appState => appState.model.getIn(['entities', entityTypes.class]);
 export const getEntityById = (appState, id) => appState.model.getIn(['entities', entityTypes.class, id]);

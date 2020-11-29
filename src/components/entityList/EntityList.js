@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getEntities } from 'src/selectors';
+import { getEntities, getProperties } from 'src/selectors';
 import {EntityEntry} from './EntityEntry';
 import { List, Empty } from 'antd';
 import { withSearch } from '../withSearch';
@@ -29,8 +29,11 @@ const idMatches = text => id => id.toLowerCase().includes(text.toLowerCase());
 
 class EntityListComponent extends React.Component {
 	getSortedIds() {
-		const entities = this.props.entities.toJS();
-		return Object.keys(entities).sort();
+		let entities = this.props.entities;
+		if (this.props.onlySelected) {
+			entities = entities.filter(e => e.get('propertyIds').some(pId => this.props.properties.getIn([pId, 'selected'])));
+		}
+		return Object.keys(entities.toJS()).sort();
 	}
 
 	render() {
@@ -46,7 +49,8 @@ class EntityListComponent extends React.Component {
 }
 
 const mapStateToProps = appState => ({
-	entities: getEntities(appState)
+	entities: getEntities(appState),
+	properties: getProperties(appState)
 });
 
 export const EntityList = connect(mapStateToProps, null)(withSearch(EntityListComponent));
