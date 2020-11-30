@@ -22,6 +22,7 @@ export const getPropertyIdsByEntityId = (appState, id) => appState.model.getIn([
 export const getPrefixes = appState => appState.yasgui.get('prefixes').toJS();
 
 export const getSelectedProperties = appState => appState.model.getIn(['entities', entityTypes.property]).filter(e => e.get('selected')).toJS();
+export const getSelectedEntities = appState => appState.model.getIn(['entities', entityTypes.class]).filter(e => e.get('selected')).toJS();
 
 export const getSession = appState => appState.solid.get('session').toJS();
 export const getUser = appState => appState.solid.getIn(['session', 'webId']);

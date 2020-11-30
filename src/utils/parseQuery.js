@@ -1,4 +1,4 @@
-import { groupBy, invertObj, flatten, prop, path, partition } from 'ramda';
+import { groupBy, invertObj, path, prop, map, partition } from 'ramda';
 import possiblePrefixes from 'src/constants/possiblePrefixes';
 
 const snakeToCamel = (str) => str.replace(
@@ -41,7 +41,6 @@ const getProperties = (prefixToIRI, typeToVarName, propertiesBySource) => {
   };
 
   const properties = Object.entries(propertiesBySource).reduce((acc, [source, properties]) => {
-    console.log(properties);
     const [optional, required] = partition(prop('optional'), properties.map(getProperty));
     return Object.assign(acc, {
       [source]: {optional, required}
@@ -67,9 +66,10 @@ const getPrefixed = (prefixToIRI, iri) => {
   return {usedPrefixes, prefixed};
 };
 
-export const parseSPARQLQuery = (selectedProperties, prefixes, selectionOrder) => {
+export const parseSPARQLQuery = ({selectedProperties, selectedEntities, prefixes, selectionOrder}) => {
   const propertyValues = Object.values(selectedProperties);
-  const groupedBySource = groupBy(prop('source'), propertyValues);
+  const entitiesToProperties = map(() => [], selectedEntities);
+  const groupedBySource = Object.assign(entitiesToProperties, groupBy(prop('source'), propertyValues));
   const prefixToIRI = Object.assign(prefixes, invertObj(possiblePrefixes));
   const usedPrefixes = {};
   const types = Object.keys(groupedBySource).map(t => {
@@ -85,9 +85,10 @@ export const parseSPARQLQuery = (selectedProperties, prefixes, selectionOrder) =
   const getPropertyRow = ({predicate, varName}, i, arr) => `${predicate} ${varName}${i === arr.length - 1 ? '.' : ';'}`
 
   const rows = Object.entries(properties).map(([source, {required, optional}]) => {
-    let res = `?${entityVarNames[source]} a ${source}.`;
+    const entityVar = path([source, 'name'], selectedEntities) || entityVarNames[source];
+    let res = `?${entityVar} a ${source}.`;
     if (required.length) {
-      res = `?${entityVarNames[source]} a ${source};${required.map(getPropertyRow).join('\n')}`;
+      res = `?${entityVar} a ${source};${required.map(getPropertyRow).join('\n')}`;
     }
     if (optional.length) {
       res += `\n\tOPTIONAL { ?${entityVarNames[source]} ${optional.map(getPropertyRow).join('\n')} }`;
@@ -97,13 +98,15 @@ export const parseSPARQLQuery = (selectedProperties, prefixes, selectionOrder) =
 
   const prefixRows = Object.entries(usedPrefixes).map(([name, iri]) => `PREFIX ${name}: <${iri}>`).join('\n');
 
-  const sortedProperties = flatten(Object.values(properties)
-    .map(({optional, required}) => optional.concat(required)))
-    .sort((p1, p2) => p1.position < p2.position ? -1 : 1);
-  const varNames = sortedProperties.filter(prop('asVariable')).map(prop('varName')).join(' ') || '*';
+  const selected = Object.assign({}, selectedProperties, selectedEntities);
+  const selectVariables = Object.entries(selected)
+    .filter(([id, {asVariable}]) => asVariable)
+    .sort(([id], [id2]) => selectionOrder.indexOf(id) < selectionOrder.indexOf(id2) ? -1 : 1)
+    .map(([id, {name}]) => `?${name}`)
+    .join(' ') || '*';
 
   return `${prefixRows}
-    SELECT DISTINCT ${varNames} WHERE {
+    SELECT DISTINCT ${selectVariables} WHERE {
     ${rows.join('\n')}
     }
     LIMIT 100
