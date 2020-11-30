@@ -53,9 +53,17 @@ class ColumnListComponent extends Component {
     this.props.dataChanged();
   }
 
-  // Normally you would want to split things out into separate components.
-  // But in this example everything is just done in one place for simplicity
+  getEmptyMessage = () => {
+    return <h3>
+      You can reorder the result set columns here after selecting some properties.
+    </h3>
+  };
+
   render() {
+    if (!this.state.items.length) {
+      return this.getEmptyMessage();
+    }
+
     return (
       <div>
         Result column order:

@@ -124,12 +124,12 @@ class App extends Component {
           <div style={getMenuStyle(horizontalLayout)}>
             <ControlPanel/>
             <Tabs>
-              <TabPane tab="Properties" key="1">
+              <TabPane tab="Available" key="1">
                 <EntityListContainer>
                   <EntityList />
                 </EntityListContainer>
               </TabPane>
-              <TabPane tab="Result" key="2">
+              <TabPane tab="Selected" key="2">
                 <ColumnList />
                 <EntityListContainer>
                   <EntityList onlySelected />
