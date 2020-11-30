@@ -1,9 +1,15 @@
 import React from 'react';
-import { Checkbox, Input, Space, List} from 'antd';
+import { Checkbox, Input, Space, List, Tooltip } from 'antd';
 import { PrefixedText } from './PrefixedText';
 import styled from '@emotion/styled';
 import * as Controls from './Controls';
-import {EyeInvisibleOutlined, EyeOutlined, QuestionCircleOutlined, QuestionCircleFilled} from '@ant-design/icons';
+import {
+  EyeInvisibleOutlined,
+  EyeOutlined,
+  QuestionCircleOutlined,
+  QuestionCircleFilled,
+  TagOutlined, LinkOutlined
+} from '@ant-design/icons';
 import {getProperty} from '../../selectors';
 import Actions from 'src/actions/model';
 import { connect } from 'react-redux';
@@ -34,8 +40,16 @@ const DisableOverlay = styled.div`
   bottom: 0;
 `;
 
+const getIcon = dataProperty => {
+  const TypeIcon = dataProperty ? TagOutlined : LinkOutlined;
+  const title = dataProperty ? 'Data property' : 'Object property';
+
+  return <Tooltip title={title}><TypeIcon/></Tooltip>;
+}
+
 const PropertyEntryComponent = ({property, id, onSelect, onSetAsVariable, onSetName, onSetOptional}) => {
-  const {predicate, asVariable, varName, optional, selected} = property.toJS();
+  const {predicate, asVariable, varName, optional, selected, dataProperty} = property.toJS();
+
   return (
     <RowContainer>
       <Checkbox
@@ -45,6 +59,7 @@ const PropertyEntryComponent = ({property, id, onSelect, onSetAsVariable, onSetN
       />
       <DataContainer>
         <Space>
+          {getIcon(dataProperty)}
           <PrefixedText title={predicate}/>
           -->
           <StyledInput

@@ -15,9 +15,7 @@ const initialState = fromJS({
 const defaultEntityProps = {
   [entityTypes.property]: {
     asVariable: true,
-    selected: false,
-    name: '',
-    position: 0 // Position in the csv / variable in the select query
+    selected: false
   },
   [entityTypes.class]: {
     selected: false,

@@ -56,7 +56,7 @@ const NodeImplementation = {
       id: `property_${id}-${predicate}-${type}`,
       attrs: attrs.property({predicate, type, i}),
       name: `property#${i}`,
-      data: {target: type, source: id, predicate, varName: getSuffix(predicate)}
+      data: {target: type, source: id, predicate, varName: getSuffix(predicate), dataProperty: true}
     })), []);
 
     const methodFields = methods.reduce((acc, {predicate, object, weight}, i) => acc.concat(
