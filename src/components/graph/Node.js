@@ -88,7 +88,7 @@ const NodeImplementation = {
     const hideIconAttrs = {
       x: -32,
       y: 2,
-      img: 'images/eye.png',
+      img: 'images/eye-invisible.png',
       width: 16,
       height: 16
     };

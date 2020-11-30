@@ -126,19 +126,6 @@ class GroupController {
     this.group[method]();
     this.getEdges().forEach(e => e[method]());
     this.handler.toggleEntityHidden(this.entityId, this.state.hidden);
-    this.updateHiddenIcon()
-  }
-
-  updateHiddenIcon() {
-    const icon = this.children['hide-icon'];
-    const eyeIconPath = 'images/eye.png';
-    const eyeInvisibleIconPath = 'images/eye-invisible.png';
-
-    if (this.state.hidden) {
-      icon.attrs.img.src = eyeInvisibleIconPath;
-    } else {
-      icon.attrs.img.src = eyeIconPath;
-    }
   }
 
   selectAllProperties() {

@@ -25,7 +25,7 @@ export default {
 	"http://www.w3.org/ns/org#": "org",
 	"http://www.ontotext.com/": "onto",
 	"http://www.w3.org/ns/prov#": "prov",
-	"http://purl.org/dc/terms/": "dcterm",
+	"http://purl.org/dc/terms/": "dcterms",
 	"http://dbpedia.org/resource/": "laabs",
 	"http://search.yahoo.com/searchmonkey/commerce/": "commerce",
 	"http://rdfs.org/ns/void#": "void",
