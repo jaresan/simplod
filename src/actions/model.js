@@ -15,6 +15,7 @@ export default createActions({
   r_viewLoaded: ['json'],
   r_dataLoaded: null,
   r_updateSelectionOrder: ['selectionIds'],
-  r_updateLimit: ['limit']
+  r_updateLimit: ['limit'],
+  r_loadState: ['json']
 }, {prefix: 'Model.'});
 

@@ -102,15 +102,20 @@ class App extends Component {
 
 
   render() {
+    const {saveData, loadData} = this.props;
     const {horizontalLayout} = this.state;
 
     return (
       <div className="App">
-        <input type="text" ref={e => this.dataSchemaInput = e} placeholder="Data schema URL"/>
-        <Button onClick={() => this.fetchData(this.dataSchemaInput.value)}>Reload schema URL</Button>
-        <Button onClick={() => this.fetchData(this.applicantsURL)}>Single</Button>
-        <Button onClick={() => this.fetchData(this.courtExampleURL)}>Court example</Button>
-        <Button onClick={() => this.fetchData(this.govURL)}>Gov example</Button>
+        <Space>
+          <input type="text" ref={e => this.dataSchemaInput = e} placeholder="Data schema URL"/>
+          <Button onClick={() => this.fetchData(this.dataSchemaInput.value)}>Reload schema URL</Button>
+          <Button onClick={() => this.fetchData(this.applicantsURL)}>Single</Button>
+          <Button onClick={() => this.fetchData(this.courtExampleURL)}>Court example</Button>
+          <Button onClick={() => this.fetchData(this.govURL)}>Gov example</Button>
+          <Button onClick={saveData}>Save local</Button>
+          <Button onClick={loadData}>Load local</Button>
+        </Space>
         <br/>
         <Radio.Group onChange={this.toggleLayout} value={this.state.horizontalLayout}>
           View:
@@ -158,7 +163,9 @@ const mapDispatchToProps = {
   setEndpoint: Actions.Yasgui.Creators.r_setEndpoint,
   onDataLoaded: Actions.Model.Creators.r_dataLoaded,
   updateLimit: Actions.Model.Creators.r_updateLimit,
-  dataChanged: Actions.Interactions.Creators.s_dataChanged
+  dataChanged: Actions.Interactions.Creators.s_dataChanged,
+  saveData: Actions.Interactions.Creators.s_saveData,
+  loadData: Actions.Interactions.Creators.s_loadData,
 };
 
 export default connect(null, mapDispatchToProps)(App);

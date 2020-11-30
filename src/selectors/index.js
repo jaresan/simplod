@@ -1,5 +1,7 @@
 import {entityTypes} from 'src/constants/entityTypes';
 
+export const getModel = state => state.model;
+
 export const getViewSelection = appState => {
   const {entities} = appState.model.toJS();
 

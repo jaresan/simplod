@@ -57,8 +57,9 @@ export class Wrapper {
   }
 
   setState(state) {
+    const lastState = Object.assign({}, this.state);
     Object.assign(this.state, state);
-    this.callOnParent('stateChanged', {target: this, state});
+    this.callOnParent('stateChanged', {target: this, state, lastState});
     this.updateStyles();
   }
 

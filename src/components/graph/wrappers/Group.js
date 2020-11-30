@@ -151,11 +151,11 @@ class GroupController {
     this.group.toFront();
   }
 
-  stateChanged({target, state}) {
-    if (!!state.selected !== !!this.state.selected) {
+  stateChanged({target, state, lastState}) {
+    if (!!state.selected !== !!lastState.selected) {
       this.updateHighlight(state.selected);
     }
-    if (!!state.hidden !== !!this.state.hidden) {
+    if (!!state.hidden !== !!lastState.hidden) {
       this.toggleHidden(state.hidden);
     }
   }

@@ -43,7 +43,7 @@ const deselectAll = state => state.update('entities', entities => {
     const ids = acc.get(type).keySeq();
     return ids.reduce((acc2, id) => acc2.setIn([type, id, 'selected'], false), acc)
   }, entities);
-});
+}).set('selectionOrder', fromJS([]));
 
 const registerResources = (state, {entityType, resources}) => {
   const withDefaultProps = map(mergeRight(defaultEntityProps[entityType] || {}), resources);
@@ -98,7 +98,8 @@ const handlers = {
   [Actions.Types.R_CLEAR_DATA]: clearData,
   [Actions.Types.R_VIEW_LOADED]: loadView,
   [Actions.Types.R_DATA_LOADED]: connectProperties,
-  [Actions.Types.R_UPDATE_LIMIT]: updateLimit
+  [Actions.Types.R_UPDATE_LIMIT]: updateLimit,
+  [Actions.Types.R_LOAD_STATE]: (state, {json}) => fromJS(json)
 };
 
 export default (state = initialState, action) => {

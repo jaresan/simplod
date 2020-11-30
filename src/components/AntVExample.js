@@ -14,7 +14,9 @@ export class AntVExample extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    this.loadData();
+    if (prevProps.data !== this.props.data) {
+      this.loadData();
+    }
   }
 
   loadData() {
