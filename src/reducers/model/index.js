@@ -72,7 +72,7 @@ const updateSelected = (state, {id, selected}) => {
 };
 const updatePropertySelected = (state, {id, selected}) => updateSelected(updateProperty('selected', state, {id, selected}), {id, selected});
 const updateEntitySelected = (state, {id, selected}) => updateSelected(updateEntity('selected', state, {id, selected}), {id, selected});
-const updateSelectionOrder = (state, {selectionIds}) => state.set('selectionOrder', selectionIds);
+const updateSelectionOrder = (state, {selectionIds}) => state.set('selectionOrder', fromJS(selectionIds));
 const clearData = () => initialState;
 
 const loadView = (state, {json}) =>
@@ -89,12 +89,12 @@ const handlers = {
   [Actions.Types.R_TOGGLE_PROPERTY_SELECTED]: updatePropertySelected,
   [Actions.Types.R_TOGGLE_PROPERTY_OPTIONAL]: updateProperty('optional'),
   [Actions.Types.R_TOGGLE_PROPERTY_AS_VARIABLE]: updateProperty('asVariable'),
-  [Actions.Types.R_SAVE_PROPERTY_NAME]: updateProperty('name'),
+  [Actions.Types.R_SAVE_PROPERTY_NAME]: updateProperty('varName'),
   [Actions.Types.R_UPDATE_PROPERTY_POSITIONS]: updatePropertyPositions,
   [Actions.Types.R_TOGGLE_ENTITY_HIDDEN]: updateEntity('hidden'),
   [Actions.Types.R_TOGGLE_ENTITY_SELECTED]: updateEntitySelected,
   [Actions.Types.R_TOGGLE_ENTITY_AS_VARIABLE]: updateEntity('asVariable'),
-  [Actions.Types.R_UPDATE_ENTITY_NAME]: updateEntity('name'),
+  [Actions.Types.R_UPDATE_ENTITY_NAME]: updateEntity('varName'),
   [Actions.Types.R_UPDATE_SELECTION_ORDER]: updateSelectionOrder,
   [Actions.Types.R_CLEAR_DATA]: clearData,
   [Actions.Types.R_VIEW_LOADED]: loadView,

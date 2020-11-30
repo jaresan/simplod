@@ -19,7 +19,7 @@ const reorder = (list, startIndex, endIndex) => {
 
 const getItems = (items, selectionOrder) => items.filter(p => p.get('selected')).map((p, id) => ({
   id,
-  content: `${p.get('name')}`,
+  content: `${p.get('varName')}`,
 })).sort(({id: id1}, {id: id2}) => selectionOrder.indexOf(id1) < selectionOrder.indexOf(id2) ? -1 : 1).valueSeq().toJS();
 
 class ColumnListComponent extends Component {

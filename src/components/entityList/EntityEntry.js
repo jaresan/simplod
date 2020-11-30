@@ -44,13 +44,13 @@ class EntityEntryComponent extends React.Component {
 
   getControls = () => {
     const {id, entity, toggleSelected, toggleHidden, updateName} = this.props;
-    const {selected, hidden, name} = entity.toJS();
+    const {selected, hidden, varName} = entity.toJS();
     return (
       <ControlsContainer>
         <Space>
           <Input
             type="text"
-            defaultValue={name}
+            defaultValue={varName}
             onBlur={e => updateName(id, e.target.value)}
             onPressEnter={e => updateName(id, e.target.value)}
           />

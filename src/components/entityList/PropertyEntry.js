@@ -35,7 +35,7 @@ const DisableOverlay = styled.div`
 `;
 
 const PropertyEntryComponent = ({property, id, onSelect, onSetAsVariable, onSetName, onSetOptional}) => {
-  const {predicate, asVariable, name, optional, selected} = property.toJS();
+  const {predicate, asVariable, varName, optional, selected} = property.toJS();
   return (
     <RowContainer>
       <Checkbox
@@ -50,7 +50,7 @@ const PropertyEntryComponent = ({property, id, onSelect, onSetAsVariable, onSetN
           <StyledInput
             type="text"
             disabled={!asVariable}
-            defaultValue={name}
+            defaultValue={varName}
             onBlur={e => onSetName(id, e.target.value)}
             onPressEnter={e => onSetName(id, e.target.value)}
           />

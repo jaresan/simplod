@@ -30,14 +30,16 @@ const getDefaultEntityVarNames = types => {
 
 const getProperties = (prefixToIRI, typeToVarName, propertiesBySource) => {
   const usedPrefixes = {};
-  const getProperty = ({asVariable, name, predicate, source, optional, target, position}) => {
-    const targetVarName = snakeToCamel(typeToVarName[target] || name); // Use existing queried entity if available to prevent cartesian products
-    const varName = asVariable ? `?${targetVarName}` : '[]';
+  const getProperty = ({asVariable, varName, predicate, source, optional, target, position}) => {
+    const targetVarName = snakeToCamel(typeToVarName[target] || varName); // Use existing queried entity if available to prevent cartesian products
 
     const {prefixed, usedPrefixes: newPrefixes} = getPrefixed(prefixToIRI, predicate);
     Object.assign(usedPrefixes, newPrefixes);
     predicate = prefixed;
-    return {predicate, varName, asVariable, position, optional, source};
+    return {
+      predicate, asVariable, position, optional, source,
+      varName: asVariable ? `?${targetVarName}` : '[]'
+    };
   };
 
   const properties = Object.entries(propertiesBySource).reduce((acc, [source, properties]) => {
@@ -85,7 +87,7 @@ export const parseSPARQLQuery = ({selectedProperties, selectedEntities, prefixes
   const getPropertyRow = ({predicate, varName}, i, arr) => `${predicate} ${varName}${i === arr.length - 1 ? '.' : ';'}`
 
   const rows = Object.entries(properties).map(([source, {required, optional}]) => {
-    const entityVar = path([source, 'name'], selectedEntities) || entityVarNames[source];
+    const entityVar = path([source, 'varName'], selectedEntities) || entityVarNames[source];
     let res = `?${entityVar} a ${source}.`;
     if (required.length) {
       res = `?${entityVar} a ${source};${required.map(getPropertyRow).join('\n')}`;
@@ -102,7 +104,7 @@ export const parseSPARQLQuery = ({selectedProperties, selectedEntities, prefixes
   const selectVariables = Object.entries(selected)
     .filter(([id, {asVariable}]) => asVariable)
     .sort(([id], [id2]) => selectionOrder.indexOf(id) < selectionOrder.indexOf(id2) ? -1 : 1)
-    .map(([id, {name}]) => `?${name}`)
+    .map(([id, {varName}]) => `?${varName}`)
     .join(' ') || '*';
 
   return `${prefixRows}
