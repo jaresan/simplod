@@ -1,5 +1,4 @@
-import { groupBy, invertObj, path, prop, map, partition } from 'ramda';
-import possiblePrefixes from 'src/constants/possiblePrefixes';
+import { groupBy, path, prop, map, partition, pipe, pick, flatten, values } from 'ramda';
 
 const snakeToCamel = (str) => str.replace(
   /([-]\w)/g,
@@ -29,63 +28,64 @@ const getDefaultEntityVarNames = types => {
 };
 
 const getProperties = (prefixToIRI, typeToVarName, propertiesBySource) => {
-  const usedPrefixes = {};
   const getProperty = ({asVariable, varName, predicate, source, optional, target, position}) => {
     const targetVarName = snakeToCamel(typeToVarName[target] || varName); // Use existing queried entity if available to prevent cartesian products
 
-    const {prefixed, usedPrefixes: newPrefixes} = getPrefixed(prefixToIRI, predicate);
-    Object.assign(usedPrefixes, newPrefixes);
-    predicate = prefixed;
     return {
       predicate, asVariable, position, optional, source,
       varName: asVariable ? `?${targetVarName}` : '[]'
     };
   };
 
-  const properties = Object.entries(propertiesBySource).reduce((acc, [source, properties]) => {
+  return Object.entries(propertiesBySource).reduce((acc, [source, properties]) => {
     const [optional, required] = partition(prop('optional'), properties.map(getProperty));
     return Object.assign(acc, {
       [source]: {optional, required}
     });
   }, {});
-
-  return {properties, usedPrefixes};
 };
 
-const getPrefixed = (prefixToIRI, iri) => {
+const getSelectVariables = (selectionOrder, selectedObjects) => selectionOrder
+  .filter(id => selectedObjects[id].asVariable)
+  .map(id => `?${selectedObjects[id].varName}`);
+
+const getSelectText = pipe(getSelectVariables, vars => vars.join(' ') || '*');
+
+const getPrefixDefinitions = usedPrefixes => Object.entries(usedPrefixes).map(([name, iri]) => `PREFIX ${name}: <${iri}>`).join('\n');
+
+const getPrefix = iri => {
   const prefixMatch = iri.match(/(^\w+):/);
-  const prefix = prefixMatch && prefixMatch[1];
-
-  const usedPrefixes = {};
-  let prefixed = '';
-  if (prefixToIRI[prefix]) {
-    usedPrefixes[prefix] = prefixToIRI[prefix];
-    prefixed = iri;
-  } else {
-    prefixed = `<${iri}>`;
-  }
-
-  return {usedPrefixes, prefixed};
+  return prefixMatch && prefixMatch[1];
 };
+
+const getPropertiesBySource = (selectedProperties, selectedEntities) => {
+  const entityToPropertiesInitial = map(() => [], selectedEntities);
+  const propertyArr = Object.values(selectedProperties);
+  return Object.assign(entityToPropertiesInitial, groupBy(prop('source'), propertyArr));
+}
+
+const getUsedPrefixes = (selectedProperties, selectedEntities) => {
+  const entityIRIs = Object.keys(selectedEntities);
+
+  const entityPrefixes = entityIRIs.reduce((acc, iri) => acc.add(getPrefix(iri)), new Set());
+  const propertyPrefixes = Object.values(selectedProperties).reduce((acc, {predicate, source, target}) =>
+    acc
+    .add(getPrefix(predicate))
+    .add(getPrefix(source))
+    .add(getPrefix(target)),
+  new Set());
+
+  return [...entityPrefixes.values(), ...propertyPrefixes.values()];
+}
 
 export const parseSPARQLQuery = ({selectedProperties, selectedEntities, prefixes, selectionOrder}) => {
-  const propertyValues = Object.values(selectedProperties);
-  const entitiesToProperties = map(() => [], selectedEntities);
-  const groupedBySource = Object.assign(entitiesToProperties, groupBy(prop('source'), propertyValues));
-  const prefixToIRI = Object.assign(prefixes, invertObj(possiblePrefixes));
-  const usedPrefixes = {};
-  const types = Object.keys(groupedBySource).map(t => {
-    const {prefixed, usedPrefixes: newPrefixes} = getPrefixed(prefixToIRI, t)
-    Object.assign(usedPrefixes, newPrefixes);
-    return prefixed;
-  });
+  const propertiesBySource = getPropertiesBySource(selectedProperties, selectedEntities);
 
-  const entityVarNames = getDefaultEntityVarNames(types);
+  const entityVarNames = getDefaultEntityVarNames(Object.keys(propertiesBySource));
 
-  const {usedPrefixes: propertyPrefixes, properties} = getProperties(prefixToIRI, entityVarNames, groupedBySource);
-  Object.assign(usedPrefixes, propertyPrefixes);
+  const properties = getProperties(prefixes, entityVarNames, propertiesBySource);
+
   const getPropertyRow = ({predicate, varName}, i, arr) => `${predicate} ${varName}${i === arr.length - 1 ? '.' : ';'}`
-
   const rows = Object.entries(properties).map(([source, {required, optional}]) => {
     const entityVar = path([source, 'varName'], selectedEntities) || entityVarNames[source];
     let res = `?${entityVar} a ${source}.`;
@@ -98,17 +98,12 @@ export const parseSPARQLQuery = ({selectedProperties, selectedEntities, prefixes
     return res;
   });
 
-  const prefixRows = Object.entries(usedPrefixes).map(([name, iri]) => `PREFIX ${name}: <${iri}>`).join('\n');
-
   const selected = Object.assign({}, selectedProperties, selectedEntities);
-  const selectVariables = Object.entries(selected)
-    .filter(([id, {asVariable}]) => asVariable)
-    .sort(([id], [id2]) => selectionOrder.indexOf(id) < selectionOrder.indexOf(id2) ? -1 : 1)
-    .map(([id, {varName}]) => `?${varName}`)
-    .join(' ') || '*';
 
-  return `${prefixRows}
-    SELECT DISTINCT ${selectVariables} WHERE {
+  const usedPrefixes = getUsedPrefixes(selectedProperties, selectedEntities);
+  const usedPrefixesToIRI = pick(usedPrefixes, prefixes);
+  return `${getPrefixDefinitions(usedPrefixesToIRI)}
+    SELECT DISTINCT ${getSelectText(selectionOrder, selected)} WHERE {
     ${rows.join('\n')}
     }
     LIMIT 100

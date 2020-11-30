@@ -12,7 +12,6 @@ export const getViewSelection = appState => {
 export const getSelectedData = appState =>
   appState.model.getIn(['entities', entityTypes.class]).filter(e => e.get('selected')).toJS();
 
-export const getSelectionOrder = appState => appState.model.get('selectionOrder');
 export const getProperties = (appState) => appState.model.getIn(['entities', entityTypes.property]);
 export const getProperty = (appState, id) => appState.model.getIn(['entities', entityTypes.property, id]);
 export const getEntities = appState => appState.model.getIn(['entities', entityTypes.class]);
@@ -23,6 +22,7 @@ export const getPrefixes = appState => appState.yasgui.get('prefixes').toJS();
 
 export const getSelectedProperties = appState => appState.model.getIn(['entities', entityTypes.property]).filter(e => e.get('selected')).toJS();
 export const getSelectedEntities = appState => appState.model.getIn(['entities', entityTypes.class]).filter(e => e.get('selected')).toJS();
+export const getSelectionOrder = appState => appState.model.get('selectionOrder').toJS();
 
 export const getSession = appState => appState.solid.get('session').toJS();
 export const getUser = appState => appState.solid.getIn(['session', 'webId']);
