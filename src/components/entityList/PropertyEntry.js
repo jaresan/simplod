@@ -54,8 +54,22 @@ const PropertyEntryComponent = ({property, id, onSelect, onSetAsVariable, onSetN
             onBlur={e => onSetName(id, e.target.value)}
             onPressEnter={e => onSetName(id, e.target.value)}
           />
-          <Controls.Toggle flag={asVariable} onClick={() => onSetAsVariable(id, !asVariable)} OnIcon={EyeOutlined} OffIcon={EyeInvisibleOutlined} />
-          <Controls.Toggle flag={optional} onClick={() => onSetOptional(id, !optional)} OnIcon={QuestionCircleFilled} OffIcon={QuestionCircleOutlined} />
+          <Controls.Toggle
+            flag={asVariable}
+            tooltipTextOn="Hide from result set"
+            tooltipTextOff="Show in result set"
+            onClick={() => onSetAsVariable(id, !asVariable)}
+            OnIcon={EyeOutlined}
+            OffIcon={EyeInvisibleOutlined}
+          />
+          <Controls.Toggle
+            flag={optional}
+            onClick={() => onSetOptional(id, !optional)}
+            tooltipTextOn="Mark as required"
+            tooltipTextOff="Mark as optional"
+            OnIcon={QuestionCircleFilled}
+            OffIcon={QuestionCircleOutlined}
+          />
         </Space>
         {/*{!selected && <DisableOverlay />}*/}
       </DataContainer>

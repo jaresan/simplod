@@ -53,7 +53,14 @@ class EntityEntryComponent extends React.Component {
         </ExpandIconContainer>}
         size="small"
         bodyStyle={{paddingTop: 0, paddingBottom: 0}}
-        extra={<Controls.Toggle flag={!hidden} onClick={() => toggleHidden(id, !hidden)} OnIcon={EyeOutlined} OffIcon={EyeInvisibleOutlined} />}
+        extra={<Controls.Toggle
+          flag={!hidden}
+          tooltipTextOn="Hide entity in the graph"
+          tooltipTextOff="Show entity in the graph"
+          onClick={() => toggleHidden(id, !hidden)}
+          OnIcon={EyeOutlined}
+          OffIcon={EyeInvisibleOutlined}
+        />}
       >
         {this.state.expanded && <List
           dataSource={propertyIds}

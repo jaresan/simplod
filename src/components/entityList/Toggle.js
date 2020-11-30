@@ -9,9 +9,10 @@ const IconContainer = styled.div`
   display: flex;
 `
 
-export const Toggle = ({flag, OnIcon, OffIcon, tooltip = '', ...props}) => {
+export const Toggle = ({flag, OnIcon, OffIcon, tooltipTextOn, tooltipTextOff, ...props}) => {
   const Icon = flag ? OnIcon : OffIcon;
-  const MaybeTooltip = tooltip ? props => <Tooltip title={tooltip} {...props} /> : React.Fragment;
+  const tooltipText = flag ? tooltipTextOn : tooltipTextOff;
+  const MaybeTooltip = tooltipText ? props => <Tooltip title={tooltipText} {...props} /> : React.Fragment;
 
   return <MaybeTooltip>
     <IconContainer {...props}>
