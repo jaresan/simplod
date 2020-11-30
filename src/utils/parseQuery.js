@@ -78,7 +78,7 @@ const getUsedPrefixes = (selectedProperties, selectedEntities) => {
   return [...entityPrefixes.values(), ...propertyPrefixes.values()];
 }
 
-export const parseSPARQLQuery = ({selectedProperties, selectedEntities, prefixes, selectionOrder}) => {
+export const parseSPARQLQuery = ({selectedProperties, selectedEntities, prefixes, selectionOrder, limit}) => {
   const propertiesBySource = getPropertiesBySource(selectedProperties, selectedEntities);
 
   const entityVarNames = getDefaultEntityVarNames(Object.keys(propertiesBySource));
@@ -106,6 +106,6 @@ export const parseSPARQLQuery = ({selectedProperties, selectedEntities, prefixes
     SELECT DISTINCT ${getSelectText(selectionOrder, selected)} WHERE {
     ${rows.join('\n')}
     }
-    LIMIT 100
+    ${limit ? `LIMIT ${limit}` : ''} 
   `;
 };

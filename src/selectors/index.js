@@ -22,7 +22,13 @@ export const getPrefixes = appState => appState.yasgui.get('prefixes').toJS();
 
 export const getSelectedProperties = appState => appState.model.getIn(['entities', entityTypes.property]).filter(e => e.get('selected')).toJS();
 export const getSelectedEntities = appState => appState.model.getIn(['entities', entityTypes.class]).filter(e => e.get('selected')).toJS();
-export const getSelectionOrder = appState => appState.model.get('selectionOrder').toJS();
+export const getInfo = appState => {
+  const model = appState.model;
+  return {
+    selectionOrder: model.get('selectionOrder').toJS(),
+    limit: model.get('limit')
+  }
+}
 
 export const getSession = appState => appState.solid.get('session').toJS();
 export const getUser = appState => appState.solid.getIn(['session', 'webId']);

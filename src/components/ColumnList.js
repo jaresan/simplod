@@ -4,7 +4,7 @@ import { DragOutlined } from '@ant-design/icons';
 import { Tag } from 'antd';
 import { prop } from 'ramda';
 import { connect } from 'react-redux';
-import { getProperties, getEntities, getSelectionOrder } from 'src/selectors';
+import { getProperties, getEntities, getInfo } from 'src/selectors';
 import ModelActions from 'src/actions/model';
 import InteractionActions from 'src/actions/interactions';
 
@@ -116,7 +116,7 @@ class ColumnListComponent extends Component {
 const mapStateToProps = appState => ({
   properties: getProperties(appState),
   entities: getEntities(appState),
-  selectionOrder: getSelectionOrder(appState)
+  selectionOrder: getInfo(appState).selectionOrder
 });
 
 const mapDispatchToProps = {

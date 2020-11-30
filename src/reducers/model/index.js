@@ -72,6 +72,7 @@ const updatePropertySelected = (state, {id, selected}) => updateSelected(updateP
 const updateEntitySelected = (state, {id, selected}) => updateSelected(updateEntity('selected', state, {id, selected}), {id, selected});
 const updateSelectionOrder = (state, {selectionIds}) => state.set('selectionOrder', fromJS(selectionIds));
 const clearData = () => initialState;
+const updateLimit = (state, {limit}) => state.set('limit', limit);
 
 const loadView = (state, {json}) =>
   Object.entries(json).reduce((newState, [entityType, entities]) =>
@@ -97,6 +98,7 @@ const handlers = {
   [Actions.Types.R_CLEAR_DATA]: clearData,
   [Actions.Types.R_VIEW_LOADED]: loadView,
   [Actions.Types.R_DATA_LOADED]: connectProperties,
+  [Actions.Types.R_UPDATE_LIMIT]: updateLimit
 };
 
 export default (state = initialState, action) => {

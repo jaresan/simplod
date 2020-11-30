@@ -8,7 +8,7 @@ import {AntVExample} from './AntVExample';
 import {invertObj, keys} from 'ramda';
 import {Handler} from './graph/handlers/Handler';
 import Actions from '../actions';
-import {Radio, Button} from 'antd';
+import { Radio, Button, InputNumber, Space } from 'antd';
 import {getContainerStyle, getMenuStyle} from './App.styled';
 import './App.styles';
 import { EntityList } from './entityList/EntityList';
@@ -95,6 +95,11 @@ class App extends Component {
 
   toggleLayout = ({target: {value: horizontalLayout}}) => this.setState({horizontalLayout})
 
+  updateLimit = limit => {
+    this.props.updateLimit(limit);
+    this.props.dataChanged();
+  };
+
 
   render() {
     const {horizontalLayout} = this.state;
@@ -130,10 +135,13 @@ class App extends Component {
                 </EntityListContainer>
               </TabPane>
               <TabPane tab="Selected" key="2">
-                <ColumnList />
-                <EntityListContainer>
-                  <EntityList onlySelected />
-                </EntityListContainer>
+                <Space direction="vertical">
+                  <ColumnList />
+                  <span>Maximum number of entries: <InputNumber onChange={this.updateLimit} /></span>
+                  <EntityListContainer>
+                    <EntityList onlySelected />
+                  </EntityListContainer>
+                </Space>
               </TabPane>
             </Tabs>
             <YasguiContainer/>
@@ -148,7 +156,9 @@ const mapDispatchToProps = {
   setPrefixes: Actions.Yasgui.Creators.r_setPrefixes,
   clearData: Actions.Model.Creators.r_clearData,
   setEndpoint: Actions.Yasgui.Creators.r_setEndpoint,
-  onDataLoaded: Actions.Model.Creators.r_dataLoaded
+  onDataLoaded: Actions.Model.Creators.r_dataLoaded,
+  updateLimit: Actions.Model.Creators.r_updateLimit,
+  dataChanged: Actions.Interactions.Creators.s_dataChanged
 };
 
 export default connect(null, mapDispatchToProps)(App);

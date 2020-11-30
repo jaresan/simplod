@@ -14,6 +14,7 @@ export default createActions({
   r_clearData: null,
   r_viewLoaded: ['json'],
   r_dataLoaded: null,
-  r_updateSelectionOrder: ['selectionIds']
+  r_updateSelectionOrder: ['selectionIds'],
+  r_updateLimit: ['limit']
 }, {prefix: 'Model.'});
 
