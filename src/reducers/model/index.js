@@ -7,7 +7,8 @@ const initialState = fromJS({
   entities: {
     ...Object.keys(entityTypes).reduce((acc, type) => Object.assign(acc, {[type]: {}}), {})
   },
-  dirty: false
+  dirty: false,
+  selectionOrder: []
 });
 
 // TODO: Add possible entity props description
@@ -54,9 +55,10 @@ const updatePropertyPositions = (state, {propertyIds}) => {
   return propertyIds.reduce((acc, id, position) => updatePosition(acc, {id, position}), state);
 };
 
-const update = curry((type, key, state, {id, [key]: value}) => state.setIn(['entities', type, id, key], value));
+const update = curry((type, key, state, {id, [key]: value}) => console.log({type, key, state, id, [key]: value}) || state.setIn(['entities', type, id, key], value));
 const updateProperty = update(entityTypes.property);
 const updateEntity = update(entityTypes.class);
+const updateSelectionOrder = (state, {selectionIds}) => state.set('selectionOrder', selectionIds);
 const clearData = () => initialState;
 
 const loadView = (state, {json}) =>
@@ -76,6 +78,10 @@ const handlers = {
   [Actions.Types.R_SAVE_PROPERTY_NAME]: updateProperty('name'),
   [Actions.Types.R_UPDATE_PROPERTY_POSITIONS]: updatePropertyPositions,
   [Actions.Types.R_TOGGLE_ENTITY_HIDDEN]: updateEntity('hidden'),
+  [Actions.Types.R_TOGGLE_ENTITY_SELECTED]: updateEntity('selected'),
+  [Actions.Types.R_TOGGLE_ENTITY_AS_VARIABLE]: updateEntity('asVariable'),
+  [Actions.Types.R_UPDATE_ENTITY_NAME]: updateEntity('name'),
+  [Actions.Types.R_UPDATE_SELECTION_ORDER]: updateSelectionOrder,
   [Actions.Types.R_CLEAR_DATA]: clearData,
   [Actions.Types.R_VIEW_LOADED]: loadView,
   [Actions.Types.R_DATA_LOADED]: connectProperties,

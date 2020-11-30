@@ -8,10 +8,12 @@ export default createActions({
   r_togglePropertyOptional: ['id', 'optional'],
   r_togglePropertyAsVariable: ['id', 'asVariable'],
   r_toggleEntityHidden: ['id', 'hidden'],
+  r_toggleEntitySelected: ['id', 'selected'],
+  r_updateEntityName: ['id', 'name'],
   r_savePropertyName: ['id', 'name'],
   r_clearData: null,
   r_viewLoaded: ['json'],
   r_dataLoaded: null,
-  r_updatePropertyPositions: ['propertyIds']
+  r_updateSelectionOrder: ['selectionIds']
 }, {prefix: 'Model.'});
 

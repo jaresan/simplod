@@ -97,7 +97,7 @@ const NodeImplementation = {
     // FIXME: Separate group for logical pieces --> can have multiple groups, yes
     group.entityId = id;
     const result = E.create(group, [
-      E.Node({id, attrs: containerAttrs, name: 'node-container'}),
+      E.Node({id, attrs: containerAttrs, name: 'node-container', data: {name: getSuffix(id)} }),
       E.Text({id: `node_${id}-title`, attrs: attrs['node-title'](width, cfg.label), name: 'node-title'}),
       E.Rect({id: `node_${id}-select-all-container`, attrs: {x: -16, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'select-all-container'}),
       E.Image({id: `node_${id}-select-all-icon`, name: 'select-all-icon', attrs: selectAllIconAttrs}),

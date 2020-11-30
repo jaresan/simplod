@@ -4,7 +4,7 @@ import { DragOutlined } from '@ant-design/icons';
 import { Tag } from 'antd';
 import { prop } from 'ramda';
 import { connect } from 'react-redux';
-import { getProperties } from 'src/selectors';
+import { getProperties, getEntities, getSelectionOrder } from 'src/selectors';
 import ModelActions from 'src/actions/model';
 import InteractionActions from 'src/actions/interactions';
 
@@ -17,23 +17,34 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
-const getItems = properties => properties.filter(p => p.get('selected')).sort((p1, p2) => p1.get('position') < p2.get('position') ? -1 : 1).map((p, id) => ({
+const getItems = (items, selectionOrder) => items.filter(p => p.get('selected')).map((p, id) => ({
   id,
   content: `${p.get('name')}`,
-})).valueSeq().toJS();
+})).sort(({id: id1}, {id: id2}) => selectionOrder.indexOf(id1) < selectionOrder.indexOf(id2) ? -1 : 1).valueSeq().toJS();
 
 class ColumnListComponent extends Component {
   constructor(props) {
     super(props);
-    const items = getItems(props.properties);
 
-    this.state = {items};
+    this.state = {items: []};
     this.onDragEnd = this.onDragEnd.bind(this);
   }
 
+  componentDidMount() {
+    this.updateItems();
+  }
+
+  updateItems() {
+    const {entities, properties, selectionOrder} = this.props;
+    const items = getItems(entities.merge(properties), selectionOrder);
+    this.setState({items });
+  }
+
+
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.properties !== this.props.properties) {
-      this.setState({items: getItems(this.props.properties)});
+    const {entities, properties, selectionOrder} = this.props;
+    if (prevProps.properties !== properties || prevProps.entities !== entities || prevProps.selectionOrder !== selectionOrder) {
+      this.updateItems();
     }
   }
 
@@ -49,7 +60,7 @@ class ColumnListComponent extends Component {
       result.destination.index
     );
 
-    this.props.updatePropertyPositions(items.map(prop('id')));
+    this.props.updateSelectionOrder(items.map(prop('id')));
     this.props.dataChanged();
   }
 
@@ -103,11 +114,13 @@ class ColumnListComponent extends Component {
 }
 
 const mapStateToProps = appState => ({
-  properties: getProperties(appState)
+  properties: getProperties(appState),
+  entities: getEntities(appState),
+  selectionOrder: getSelectionOrder(appState)
 });
 
 const mapDispatchToProps = {
-  updatePropertyPositions: ModelActions.Creators.r_updatePropertyPositions,
+  updateSelectionOrder: ModelActions.Creators.r_updateSelectionOrder,
   dataChanged: InteractionActions.Creators.s_dataChanged
 };
 

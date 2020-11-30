@@ -67,7 +67,7 @@ const getPrefixed = (prefixToIRI, iri) => {
   return {usedPrefixes, prefixed};
 };
 
-export const parseSPARQLQuery = (selectedProperties, prefixes) => {
+export const parseSPARQLQuery = (selectedProperties, prefixes, selectionOrder) => {
   const propertyValues = Object.values(selectedProperties);
   const groupedBySource = groupBy(prop('source'), propertyValues);
   const prefixToIRI = Object.assign(prefixes, invertObj(possiblePrefixes));

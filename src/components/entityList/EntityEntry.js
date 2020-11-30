@@ -1,5 +1,5 @@
 import React from 'react';
-import {List, Card, Space} from 'antd';
+import { List, Card, Space, Checkbox, Tooltip, Input } from 'antd';
 import {connect} from 'react-redux';
 import {PropertyEntry} from './PropertyEntry';
 import {PrefixedText} from './PrefixedText';
@@ -16,6 +16,10 @@ const ExpandIconContainer = styled.div`
 
 const Container = styled(Card)`
   width: 100%;
+`;
+
+const ControlsContainer = styled.div`
+  display: flex;
 `;
 
 const renderPropertyEntry = id => (
@@ -38,9 +42,41 @@ class EntityEntryComponent extends React.Component {
 
   getToggleIcon = () => this.state.expanded ? <DownOutlined /> : <RightOutlined />
 
+  getControls = () => {
+    const {id, entity, toggleSelected, toggleHidden, updateName} = this.props;
+    const {selected, hidden, name} = entity.toJS();
+    return (
+      <ControlsContainer>
+        <Space>
+          <Input
+            type="text"
+            defaultValue={name}
+            onBlur={e => updateName(id, e.target.value)}
+            onPressEnter={e => updateName(id, e.target.value)}
+          />
+          <Tooltip title={`${selected ? 'Hide' : 'Show'} entity in the result set`}>
+            <Checkbox
+              onChange={e => toggleSelected(id, e.target.checked)}
+              name="Select"
+              checked={selected}
+            />
+          </Tooltip>
+          <Controls.Toggle
+            flag={!hidden}
+            tooltipTextOn="Hide entity in the graph"
+            tooltipTextOff="Show entity in the graph"
+            onClick={() => toggleHidden(id, !hidden)}
+            OnIcon={EyeOutlined}
+            OffIcon={EyeInvisibleOutlined}
+          />
+        </Space>
+      </ControlsContainer>
+    );
+  }
+
   render() {
-    const {id, entity, toggleHidden} = this.props;
-    const {propertyIds, hidden} = entity.toJS();
+    const {id, entity} = this.props;
+    const {propertyIds} = entity.toJS();
 
     return (
       <Container
@@ -53,14 +89,7 @@ class EntityEntryComponent extends React.Component {
         </ExpandIconContainer>}
         size="small"
         bodyStyle={{paddingTop: 0, paddingBottom: 0}}
-        extra={<Controls.Toggle
-          flag={!hidden}
-          tooltipTextOn="Hide entity in the graph"
-          tooltipTextOff="Show entity in the graph"
-          onClick={() => toggleHidden(id, !hidden)}
-          OnIcon={EyeOutlined}
-          OffIcon={EyeInvisibleOutlined}
-        />}
+        extra={this.getControls()}
       >
         {this.state.expanded && <List
           dataSource={propertyIds}
@@ -77,7 +106,9 @@ const mapStateToProps = (appState, {id}) => ({
 });
 
 const mapDispatchToProps = {
-  toggleHidden: Actions.Creators.r_toggleEntityHidden
+  toggleHidden: Actions.Creators.r_toggleEntityHidden,
+  toggleSelected: Actions.Creators.r_toggleEntitySelected,
+  updateName: Actions.Creators.r_updateEntityName
 };
 
 export const EntityEntry = connect(mapStateToProps, mapDispatchToProps)(EntityEntryComponent);
