@@ -1,6 +1,7 @@
 import { invoker, memoizeWith, pick, assocPath, path, identity, map, filter } from 'ramda';
 import {Property, Method} from './index';
 import { Handler } from '../handlers/Handler';
+import { PROP_LINE_HEIGHT } from '../Node';
 
 const getWrapper = memoizeWith(t => t.get('id'), target => target.get('wrapper'));
 function propagate(target, key) {
@@ -29,6 +30,7 @@ class GroupController {
     this.children = group.getChildren().reduce((acc, ch) => Object.assign(acc, {[ch.get('name')]: ch}), {});
     this.childrenWrappers = filter(identity, map(ch => ch.get('wrapper'), this.children));
     this.propertyWrappers = filter(w => (w instanceof Property) || (w instanceof Method), this.childrenWrappers);
+    this.propertyContainer = this.children['property-container'];
     this.defaultChildAttrs = {};
     this.toggleProperties(false);
   }
@@ -91,16 +93,37 @@ class GroupController {
         p.onToggleSelect(selected);
       }
     })
+    this.toggleProperties(selected);
   }
 
   toggleProperties(show) {
     this.group.toFront();
-    // FIXME: Leave selected properties expanded --> have to change the container size
     this.showProperties = typeof show === 'undefined' ? !this.showProperties : show;
-    const method = this.showProperties ? 'show' : 'hide';
 
-    const isProperty = p => p.get('name').match(/^property/);
-    this.group.getChildren().filter(isProperty).forEach(p => p[method]())
+    this.updatePropertyContainer();
+  }
+
+  updatePropertyContainer() {
+    let i = 0;
+    let maxWidth = 0;
+    Object.values(this.propertyWrappers)
+      .forEach(wrapper => {
+        if (this.showProperties || wrapper.state.selected) {
+          wrapper.show();
+          wrapper.setIndex(i++);
+          maxWidth = Math.max(maxWidth, wrapper.node.attr('width'));
+        } else {
+          wrapper.hide();
+        }
+      });
+
+    if (i) {
+      this.propertyContainer.setAttr('height', i * PROP_LINE_HEIGHT + 6);
+      this.propertyContainer.setAttr('width', maxWidth);
+      this.propertyContainer.show();
+    } else {
+      this.propertyContainer.hide();
+    }
   }
 
 
@@ -154,6 +177,7 @@ class GroupController {
   stateChanged({target, state, lastState}) {
     if (!!state.selected !== !!lastState.selected) {
       this.updateHighlight(state.selected);
+      this.updatePropertyContainer();
     }
     if (!!state.hidden !== !!lastState.hidden) {
       this.toggleHidden(state.hidden);

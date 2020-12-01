@@ -1,5 +1,6 @@
 import {Wrapper} from './Wrapper';
 import {Property as PropertyHandler} from '../handlers';
+import { PROP_LINE_HEIGHT } from '../Node';
 
 const defaultStyle = {
   opacity: 1,
@@ -57,11 +58,26 @@ export class Method extends Wrapper {
     }
   }
 
-  onToggleSelect(...args) {
-    super.onToggleSelect(...args);
+  onToggleSelect(selected) {
+    this.state.selected = typeof selected === 'undefined' ? !this.state.selected : selected;
+    this.handler.onToggleSelect(this.id, this.state.selected);
+    const groupController = this.getGroupController();
+    groupController.updatePropertyContainer()
 
     this.findEdge();
     const similarProps = this.getSameTargetProperties();
     this.toggleSelectOutgoingEdge(similarProps.some(p => p.wrapper.state.selected));
+  }
+
+  setIndex = i => {
+    this.node.setAttr('y', PROP_LINE_HEIGHT * (i+1) + PROP_LINE_HEIGHT - 2);
+  };
+
+  show() {
+    this.node.show();
+  }
+
+  hide() {
+    this.node.hide();
   }
 }

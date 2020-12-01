@@ -16,6 +16,7 @@ function* dataChanged() {
 	yield put(Query.Creators.r_updateQuery(parseSPARQLQuery({selectedProperties, selectedEntities, prefixes: prefixToIRI, limit, selectionOrder})));
 }
 
+// FIXME: Save only the diff, otherwise too big
 function* saveData() {
 	const data = yield select(getModel);
 	localStorage.setItem('model', JSON.stringify(data.toJS()));

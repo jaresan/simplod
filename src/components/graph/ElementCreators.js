@@ -3,8 +3,8 @@ import {Property, Method, Node, Edge} from './wrappers';
 const create = (group, elements = []) => elements.map(el => group.addShape(el));
 
 const wrappers = {
-  property: Property,
-  method: Method,
+  dataProperty: Property,
+  objectProperty: Method,
   node: Node,
   edge: Edge
 };
@@ -34,8 +34,8 @@ const wrap = (type, isNode) => ({id, attrs, ...props}) => {
 
 const wrapped = {
   create,
-  property: wrap('property', true),
-  method: wrap('method', true),
+  dataproperty: wrap('dataProperty', true),
+  objectproperty: wrap('objectProperty', true),
   node: wrap('node', true),
   edge: wrap('edge')
 };

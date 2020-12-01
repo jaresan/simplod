@@ -46,7 +46,7 @@ const getProperties = (prefixToIRI, typeToVarName, propertiesBySource) => {
 };
 
 const getSelectVariables = (selectionOrder, selectedObjects) => selectionOrder
-  .filter(id => selectedObjects[id].asVariable)
+  .filter(id => path(id, 'asVariable', selectedObjects))
   .map(id => `?${selectedObjects[id].varName}`);
 
 const getSelectText = pipe(getSelectVariables, vars => vars.join(' ') || '*');

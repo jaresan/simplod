@@ -3,7 +3,7 @@ import E from './ElementCreators';
 import Group from './wrappers/Group';
 const NODE_TYPE = 'graphNode';
 
-const PROP_LINE_HEIGHT = 12;
+export const PROP_LINE_HEIGHT = 12;
 const blue = '#49b2e7';
 const textColor = 'black';
 const getAttrs = ctx => ({
@@ -22,18 +22,22 @@ const getAttrs = ctx => ({
     text,
     fill: textColor,
   }),
-  property: ({predicate, type, i}) => ({
-    x: 4, // center
-    y: PROP_LINE_HEIGHT * (i+1) + PROP_LINE_HEIGHT - 2,
-    textAlign: 'left',
-    textBaseline: 'top',
-    text: `${predicate}: ${type}`,
-    fill: textColor,
-    stroke: textColor,
-  }),
+  property: ({predicate, type, i, ctx}) => {
+    const text = `${predicate}: ${type}`;
+    return {
+      x: 4, // center
+      y: PROP_LINE_HEIGHT * (i+1) + PROP_LINE_HEIGHT - 2,
+      textAlign: 'left',
+      textBaseline: 'top',
+      width: Math.round(ctx.measureText(text).width + 8),
+      text,
+      fill: textColor,
+      stroke: textColor
+    }
+  },
   'property-container': propArr => ({
     y: PROP_LINE_HEIGHT * 2 - 4,
-    width: propArr.reduce((acc, {attrs: {text}}) => Math.max(acc, ctx.measureText(text).width  + 8), 0),
+    width: Math.max(...propArr.map(p => p.attrs.width)),
     height: propArr.length * PROP_LINE_HEIGHT + 6,
     stroke: 'black',
     fill: blue,
@@ -52,23 +56,23 @@ const NodeImplementation = {
     const attrs = getAttrs(ctx);
     const containerAttrs = attrs['node-container']({propCount: properties.length, methodCount: methods.length, label: cfg.label});
     const {width, height} = containerAttrs;
-    const propFields = properties.reduce((acc, {predicate, object, type}, i)=> acc.concat(E.Property({
+    const dataProperties = properties.reduce((acc, {predicate, object, type}, i)=> acc.concat(E.DataProperty({
       id: `property_${id}-${predicate}-${type}`,
-      attrs: attrs.property({predicate, type, i}),
+      attrs: attrs.property({predicate, type, i, ctx}),
       name: `property#${i}`,
       data: {target: type, source: id, predicate, varName: getSuffix(predicate), dataProperty: true}
     })), []);
 
-    const methodFields = methods.reduce((acc, {predicate, object, weight}, i) => acc.concat(
-      E.Method({
+    const objectProperties = methods.reduce((acc, {predicate, object, weight}, i) => acc.concat(
+      E.ObjectProperty({
         id: `property_${id}-${predicate}-${object}`,
-        attrs: attrs.property({predicate, type: object, i: i + properties.length}),
+        attrs: attrs.property({predicate, type: object, i: i + properties.length, ctx}),
         name: `property#${i + properties.length}`,
         data: {target: object, source: id, predicate, varName: getSuffix(predicate)}
       })
     ), []);
 
-    const propertyContainerAttrs = attrs['property-container'](propFields.concat(methodFields));
+    const propertyContainerAttrs = attrs['property-container'](dataProperties.concat(objectProperties));
     const expandIconAttrs = {
       x: width + 3,
       y: 5,
@@ -93,7 +97,7 @@ const NodeImplementation = {
       height: 16
     };
 
-    group.set('methods', methodFields);
+    group.set('methods', objectProperties);
     // FIXME: Separate group for logical pieces --> can have multiple groups, yes
     group.entityId = id;
     const result = E.create(group, [
@@ -106,8 +110,8 @@ const NodeImplementation = {
       E.Rect({id: `node_${id}-expand-icon-container`, attrs: {x: width, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'expand-icon-container'}),
       E.Image({id: `node_${id}-expand-icon`, name: 'expand-icon', attrs: expandIconAttrs}),
       E.Rect({id: `node_${id}-prop-container`, attrs: propertyContainerAttrs, name: 'property-container'}),
-      ...propFields,
-      ...methodFields
+      ...dataProperties,
+      ...objectProperties
     ])[0];
 
     ctx.restore();
