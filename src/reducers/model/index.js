@@ -20,11 +20,14 @@ const defaultEntityProps = {
   [entityTypes.class]: {
     selected: false,
     asVariable: true,
-    name: ''
+    name: '',
+    label: '', // From remote
+    description: '' // From remote
   }
 };
 
-const updateEntities = (state, {items}) => state.mergeDeepIn(['entities'], items);
+const updateEntities = (state, {items}) => state.mergeDeepIn(['entities', entityTypes.class], items);
+const toggleSelections = (state, {entityType, selection}) => state.mergeDeepIn(['entities', entityType], selection);
 
 const connectProperties = state => {
   const propsById = state.getIn(['entities', entityTypes.property])
@@ -99,7 +102,8 @@ const handlers = {
   [Actions.Types.R_VIEW_LOADED]: loadView,
   [Actions.Types.R_DATA_LOADED]: connectProperties,
   [Actions.Types.R_UPDATE_LIMIT]: updateLimit,
-  [Actions.Types.R_LOAD_STATE]: (state, {json}) => fromJS(json)
+  [Actions.Types.R_LOAD_STATE]: (state, {json}) => fromJS(json),
+  [Actions.Types.R_TOGGLE_SELECTIONS]: toggleSelections
 };
 
 export default (state = initialState, action) => {

@@ -1,6 +1,7 @@
 import {Parser} from 'n3';
 import { invertObj } from 'ramda';
 import possiblePrefixes from '../constants/possiblePrefixes';
+import { parsePrefix } from './parsePrefix';
 
 export const parseTTL = ttlString => new Promise((res, err) => {
   getQuads(ttlString)
@@ -12,18 +13,6 @@ export const parseTTL = ttlString => new Promise((res, err) => {
       });
     });
 });
-
-const parsePrefix = (prefixes, iri) => {
-  const suffix = iri.replace(/.*(\/|#)/, '');
-  const prefixIri = iri.replace(/(\/|#)[^/#]*$/, '$1');
-  const alias = prefixes[prefixIri] || 'ns';
-
-  return {
-    alias,
-    suffix,
-    prefixIri
-  }
-};
 
 const getQuads = ttlString => new Promise((res, err) => {
   const parser = new Parser();

@@ -46,6 +46,7 @@
     "ramda": "^0.27.0",
     "rdflib": "^0.20.1",
     "rdfstore": "^0.9.17",
+    "rdfxml-streaming-parser": "^1.4.0",
     "react": "^16.2.0",
     "react-beautiful-dnd": "^13.0.0",
     "react-dnd": "^11.1.3",

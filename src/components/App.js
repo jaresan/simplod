@@ -77,15 +77,10 @@ class App extends Component {
       .then(res => res.text())
       .then(async ttl => {
         const json = await parseTTL(ttl);
-        this.schemaData = keys(json.data).reduce((acc, key) => {
-          const {properties, methods} = json.data[key];
-          return Object.assign(acc, {
-            [key]: {
-              properties,
-              methods
-            }
-          })
-        }, {});
+        this.schemaData = keys(json.data).reduce((acc, key) =>
+          Object.assign(acc, {
+            [key]: json.data[key]
+          }), {});
 
         this.setState({loaded: true});
         this.props.setPrefixes(invertObj(json.__prefixes__));

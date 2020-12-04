@@ -2,6 +2,7 @@ import { createActions } from 'reduxsauce'
 
 export default createActions({
   r_updateEntities: ['items'],
+  r_toggleSelections: ['entityType', 'selection'],
   r_deselectAll: null,
   r_registerResources: ['entityType', 'resources'],
   r_togglePropertySelected: ['id', 'selected'],
