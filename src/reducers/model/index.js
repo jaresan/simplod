@@ -82,6 +82,7 @@ const clearData = () => initialState;
 const updateLimit = (state, {limit}) => state.set('limit', limit);
 const updateLanguage = (state, {language}) => state.set('language', language);
 const setLoadingHumanReadableData = (state, {loading}) => state.set('loadingHumanReadable', loading);
+const toggleHumanReadable = (state, {show}) => state.set('showHumanReadable', show);
 
 const loadView = (state, {json}) =>
   Object.entries(json).reduce((newState, [entityType, entities]) =>
@@ -111,7 +112,8 @@ const handlers = {
   [Actions.Types.R_LOAD_STATE]: (state, {json}) => fromJS(json),
   [Actions.Types.R_TOGGLE_SELECTIONS]: toggleSelections,
   [Actions.Types.R_SET_LANGUAGE]: updateLanguage,
-  [Actions.Types.R_SET_LOADING_HUMAN_READABLE_DATA]: setLoadingHumanReadableData
+  [Actions.Types.R_SET_LOADING_HUMAN_READABLE_DATA]: setLoadingHumanReadableData,
+  [Actions.Types.R_TOGGLE_HUMAN_READABLE]: toggleHumanReadable
 };
 
 export default (state = initialState, action) => {

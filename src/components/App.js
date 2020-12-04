@@ -8,7 +8,7 @@ import {AntVExample} from './AntVExample';
 import {invertObj, keys} from 'ramda';
 import {Handler} from './graph/handlers/Handler';
 import Actions from '../actions';
-import { Progress, Radio, Button, InputNumber, Space, Select } from 'antd';
+import { Progress, Radio, Button, InputNumber, Space, Select, Switch } from 'antd';
 import {getContainerStyle, getMenuStyle} from './App.styled';
 import './App.styles';
 import { EntityList } from './entityList/EntityList';
@@ -136,7 +136,8 @@ class App extends Component {
             <ControlPanel/>
             Downloading human readable data:
             <Progress percent={loadingHumanReadable} status={loadingHumanReadable < 100 && "active"} />
-            Select language: <Select onChange={this.props.changeLanguage} value={language}>{languageOptions}</Select>
+            <span>Show human readable names: <Switch style={{width: 32}} onChange={this.props.toggleHumanReadable} /></span>
+            <span>Select language: <Select onChange={this.props.changeLanguage} value={language}>{languageOptions}</Select></span>
             <Tabs>
               <TabPane tab="Available" key="1">
                 <EntityListContainer>
@@ -175,7 +176,8 @@ const mapDispatchToProps = {
   dataChanged: Actions.Interactions.Creators.s_dataChanged,
   saveData: Actions.Interactions.Creators.s_saveData,
   loadData: Actions.Interactions.Creators.s_loadData,
-  changeLanguage: Actions.Interactions.Creators.s_changeLanguage
+  changeLanguage: Actions.Interactions.Creators.s_changeLanguage,
+  toggleHumanReadable: Actions.Model.Creators.r_toggleHumanReadable
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

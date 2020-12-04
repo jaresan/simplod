@@ -19,6 +19,7 @@ export const getProperty = (appState, id) => appState.model.getIn(['entities', e
 export const getEntities = appState => appState.model.getIn(['entities', entityTypes.class]);
 export const getEntityById = (appState, id) => appState.model.getIn(['entities', entityTypes.class, id]);
 export const getPropertyIdsByEntityId = (appState, id) => appState.model.getIn(['entities', entityTypes.class, id, 'propertyIds'])
+export const getShowHumanReadable = appState => appState.model.get('showHumanReadable');
 
 export const getPrefixes = appState => appState.yasgui.get('prefixes').toJS();
 

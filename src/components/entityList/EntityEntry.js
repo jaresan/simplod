@@ -6,7 +6,7 @@ import {PropertyEntry} from './PropertyEntry';
 import {PrefixedText} from './PrefixedText';
 import {RightOutlined, DownOutlined, EyeInvisibleOutlined, EyeOutlined, InfoCircleOutlined} from '@ant-design/icons';
 import styled from '@emotion/styled';
-import { getEntityById } from '../../selectors';
+import { getEntityById, getShowHumanReadable } from '../../selectors';
 import Actions from 'src/actions/model';
 import * as Controls from './Controls';
 
@@ -84,8 +84,13 @@ class EntityEntryComponent extends React.Component {
   >{label}</Tooltip> : <PrefixedText title={this.props.id}/>;
 
   render() {
-    const {id, entity} = this.props;
+    const {id, entity, showHumanReadable} = this.props;
     const {propertyIds, info} = entity.toJS();
+
+    if (!showHumanReadable) {
+      info.label = '';
+      info.description = '';
+    }
 
     return (
       <Container
@@ -112,7 +117,8 @@ class EntityEntryComponent extends React.Component {
 
 
 const mapStateToProps = (appState, {id}) => ({
-  entity: getEntityById(appState, id)
+  entity: getEntityById(appState, id),
+  showHumanReadable: getShowHumanReadable(appState)
 });
 
 const mapDispatchToProps = {

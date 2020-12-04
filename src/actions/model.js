@@ -19,6 +19,7 @@ export default createActions({
   r_updateLimit: ['limit'],
   r_loadState: ['json'],
   r_setLanguage: ['language'],
-  r_setLoadingHumanReadableData: ['loading']
+  r_setLoadingHumanReadableData: ['loading'],
+  r_toggleHumanReadable: ['show']
 }, {prefix: 'Model.'});
 
