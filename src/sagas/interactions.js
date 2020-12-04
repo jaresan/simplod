@@ -6,7 +6,7 @@ import Model from 'src/actions/model';
 import { parseSPARQLQuery } from 'src/utils/parseQuery';
 import { invertObj, paths } from 'ramda';
 import possiblePrefixes from '../constants/possiblePrefixes';
-import {getHumanReadableData} from 'src/api';
+import {getHumanReadableDataPromises} from 'src/api';
 import store from 'src/store';
 
 function* dataChanged() {
@@ -32,7 +32,7 @@ function* getHumanData() {
 	// const data = yield call(getHumanReadableData, {urls, prefixToIri, iriToPrefix});
 
 	let resolved = 0;
-	const promises = getHumanReadableData({urls, prefixToIri, iriToPrefix})
+	const promises = getHumanReadableDataPromises({urls, prefixToIri, iriToPrefix})
 		.map((p, i, arr) => {
 			return p.then(data => {
 				const newEntities = {}
@@ -56,25 +56,6 @@ function* getHumanData() {
 
 	yield Promise.all(promises);
 	store.dispatch(Model.Creators.r_setLoadingHumanReadableData(100));
-	// yield put(Model.Creators.r_setLoadingHumanReadableData(false));
-	return;
-
-	// for (const id of Object.keys(data)) {
-	// 	if (jsEntities[id]) {
-	// 		jsEntities[id] = {
-	// 			...jsEntities[id],
-	// 			info: {byLanguage: (data[id] || {})}};
-	// 	}
-	// }
-	//
-	// const language = yield select(getLanguage);
-	// const newEntities = updateEntityLanguageInfo(jsEntities, language);
-	//
-	// yield put(Model.Creators.r_updateEntities(newEntities));
-	// yield put(Model.Creators.r_setLoadingHumanReadableData(false));
-
-	// TODO: Add progress feedback
-
 }
 
 const updateEntityLanguageInfo = (entities, language) => {

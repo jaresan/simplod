@@ -25,22 +25,24 @@ const renderEntity = id => (
 	</EntityRow>
 );
 
-const idMatches = text => id => id.toLowerCase().includes(text.toLowerCase());
 
-// FIXME: Add searchTerm to entities to search through
+const getSearchTerm = ([id, {info: {label, description}}]) => `${id} ${label} ${description}`.toLowerCase();
 
 class EntityListComponent extends React.Component {
-	getSortedIds() {
+	getIds() {
+		const {searchText} = this.props;
 		let entities = this.props.entities;
 		if (this.props.onlySelected) {
 			entities = entities.filter(e => e.get('propertyIds').some(pId => this.props.properties.getIn([pId, 'selected'])));
 		}
-		return Object.keys(entities.toJS()).sort();
+		const searchTerms = entities.map((val, id) => getSearchTerm([id, val.toJS()])).toJS();
+		return Object.keys(entities.toJS())
+			.sort()
+			.filter(id => searchTerms[id].includes(searchText.toLowerCase()));
 	}
 
 	render() {
-		const {searchText} = this.props;
-		const filtered = this.getSortedIds().filter(idMatches(searchText));
+		const filtered = this.getIds();
 
 		return (
 			<>

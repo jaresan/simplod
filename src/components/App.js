@@ -134,6 +134,7 @@ class App extends Component {
           {/*<PropertyList/>*/}
           <div style={getMenuStyle(horizontalLayout)}>
             <ControlPanel/>
+            Downloading human readable data:
             <Progress percent={loadingHumanReadable} status={loadingHumanReadable < 100 && "active"} />
             <Tabs>
               <TabPane tab="Available" key="1">
