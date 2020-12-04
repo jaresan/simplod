@@ -17,6 +17,7 @@ import { Edge, Node, Property } from './graph/handlers';
 import { Tabs } from 'antd';
 import {ColumnList} from './ColumnList';
 import { getLanguage, getLoadingHumanReadable } from '../selectors';
+import { languages } from '../constants/languages';
 
 
 const {Option} = Select;
@@ -32,7 +33,7 @@ const EntityListContainer = styled.div`
   align-items: center;
 `;
 
-const languageOptions = ['cs', 'de', 'en', 'fr', 'it', 'ja', 'ar', 'el', 'es'].sort().map(code => <Option value={code}>{code}</Option>);
+const languageOptions = languages.sort().map(code => <Option key={code} value={code}>{code}</Option>);
 
 class App extends Component {
   state = {
@@ -122,7 +123,6 @@ class App extends Component {
           <Radio.Button value={false}>Vertical</Radio.Button>
         </Radio.Group>
         <br/>
-        Select language: <Select onChange={this.props.changeLanguage} value={language}>{languageOptions}</Select>
         <div style={getContainerStyle(horizontalLayout)}>
           {
             this.state.loaded && <AntVExample
@@ -136,6 +136,7 @@ class App extends Component {
             <ControlPanel/>
             Downloading human readable data:
             <Progress percent={loadingHumanReadable} status={loadingHumanReadable < 100 && "active"} />
+            Select language: <Select onChange={this.props.changeLanguage} value={language}>{languageOptions}</Select>
             <Tabs>
               <TabPane tab="Available" key="1">
                 <EntityListContainer>
