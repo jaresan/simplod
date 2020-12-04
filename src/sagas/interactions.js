@@ -30,21 +30,27 @@ function* getHumanData() {
 		if (entities[id]) {
 			entities[id] = {
 				...entities[id],
-				...data[id]
+				info: (data[id] || {})
 			};
 		}
 	}
+
 	yield put(Model.Creators.r_updateEntities(entities));
 
 	// TODO: Add progress feedback
+	// FIXME: Create label/description early directly in the entity info based on the language
 
+}
+
+function* onDataLoaded() {
+	yield getHumanData();
+	yield put(Model.Creators.r_dataLoaded());
 }
 
 // FIXME: Save only the diff, otherwise too big
 function* saveData() {
 	const data = yield select(getModel);
 	localStorage.setItem('model', JSON.stringify(data.toJS()));
-	yield getHumanData();
 }
 
 function* loadData() {
@@ -55,6 +61,7 @@ export default function*() {
 	yield all([
 		takeEvery(Interactions.Types.S_DATA_CHANGED, dataChanged),
 		takeEvery(Interactions.Types.S_SAVE_DATA, saveData),
-		takeEvery(Interactions.Types.S_LOAD_DATA, loadData)
+		takeEvery(Interactions.Types.S_LOAD_DATA, loadData),
+		takeEvery(Interactions.Types.S_DATA_LOADED, onDataLoaded)
 	]);
 }

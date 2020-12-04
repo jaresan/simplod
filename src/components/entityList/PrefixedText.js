@@ -25,6 +25,14 @@ const PrefixedTextComponent = ({title, prefixes}) => {
   );
 };
 
+const Unwrapped = ({title, prefixes}) => {
+  const [prefix, suffix] = title.split(':');
+  const fullTitle = `${prefixes[prefix]}${suffix}`;
+
+  return <span>{fullTitle}</span>;
+}
+
 const mapStateToProps = appState => ({prefixes: getPrefixes(appState)})
 
 export const PrefixedText = connect(mapStateToProps, null)(PrefixedTextComponent);
+PrefixedText.Unwrapped = connect(mapStateToProps, null)(Unwrapped);

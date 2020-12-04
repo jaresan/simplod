@@ -27,6 +27,8 @@ const renderEntity = id => (
 
 const idMatches = text => id => id.toLowerCase().includes(text.toLowerCase());
 
+// FIXME: Add searchTerm to entities to search through
+
 class EntityListComponent extends React.Component {
 	getSortedIds() {
 		let entities = this.props.entities;

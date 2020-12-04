@@ -1,9 +1,10 @@
 import React from 'react';
+import {path, paths} from 'ramda';
 import { List, Card, Space, Checkbox, Tooltip, Input } from 'antd';
 import {connect} from 'react-redux';
 import {PropertyEntry} from './PropertyEntry';
 import {PrefixedText} from './PrefixedText';
-import {RightOutlined, DownOutlined, EyeInvisibleOutlined, EyeOutlined} from '@ant-design/icons';
+import {RightOutlined, DownOutlined, EyeInvisibleOutlined, EyeOutlined, InfoCircleOutlined} from '@ant-design/icons';
 import styled from '@emotion/styled';
 import { getEntityById } from '../../selectors';
 import Actions from 'src/actions/model';
@@ -16,6 +17,7 @@ const ExpandIconContainer = styled.div`
 
 const Container = styled(Card)`
   width: 100%;
+  cursor: pointer;
 `;
 
 const ControlsContainer = styled.div`
@@ -28,7 +30,9 @@ const renderPropertyEntry = id => (
   />
 );
 
-
+// FIXME: Move somewhere else and use across the app
+const languageOrder = ['cs', 'en', 'de', 'default'];
+const getField = (field, data) => paths(languageOrder.map(l => [l, field]), data).find(a => a);
 class EntityEntryComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -74,9 +78,17 @@ class EntityEntryComponent extends React.Component {
     );
   }
 
+  getInfoIcon = description => description && <Tooltip title={description}>
+    <InfoCircleOutlined />
+  </Tooltip>;
+
+  getTitle = label => label ? <Tooltip
+    title={<PrefixedText.Unwrapped title={this.props.id}/>}
+  >{label}</Tooltip> : <PrefixedText title={this.props.id}/>;
+
   render() {
     const {id, entity} = this.props;
-    const {propertyIds} = entity.toJS();
+    const {propertyIds, info} = entity.toJS();
 
     return (
       <Container
@@ -84,7 +96,8 @@ class EntityEntryComponent extends React.Component {
         title={<ExpandIconContainer onClick={this.toggleExpanded}>
           <Space>
             {this.getToggleIcon()}
-            <PrefixedText title={id}/>
+            {this.getTitle(getField('label', info))}
+            {this.getInfoIcon(getField('description', info))}
           </Space>
         </ExpandIconContainer>}
         size="small"

@@ -8,7 +8,7 @@ import {AntVExample} from './AntVExample';
 import {invertObj, keys} from 'ramda';
 import {Handler} from './graph/handlers/Handler';
 import Actions from '../actions';
-import { Radio, Button, InputNumber, Space } from 'antd';
+import { Progress, Radio, Button, InputNumber, Space } from 'antd';
 import {getContainerStyle, getMenuStyle} from './App.styled';
 import './App.styles';
 import { EntityList } from './entityList/EntityList';
@@ -156,7 +156,7 @@ const mapDispatchToProps = {
   setPrefixes: Actions.Yasgui.Creators.r_setPrefixes,
   clearData: Actions.Model.Creators.r_clearData,
   setEndpoint: Actions.Yasgui.Creators.r_setEndpoint,
-  onDataLoaded: Actions.Model.Creators.r_dataLoaded,
+  onDataLoaded: Actions.Interactions.Creators.s_dataLoaded,
   updateLimit: Actions.Model.Creators.r_updateLimit,
   dataChanged: Actions.Interactions.Creators.s_dataChanged,
   saveData: Actions.Interactions.Creators.s_saveData,
