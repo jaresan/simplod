@@ -133,11 +133,7 @@ class GroupController {
     const collapseIconPath = 'images/collapse.png';
     const expandIconPath = 'images/expand.png';
 
-    if (icon.attrs.img.src.match(collapseIconPath)) {
-      icon.attrs.img.src = expandIconPath;
-    } else {
-      icon.attrs.img.src = collapseIconPath;
-    }
+    icon.attrs.img.src = this.showProperties ? collapseIconPath : expandIconPath;
   }
 
   isVisible = () => this.group.get('visible');
