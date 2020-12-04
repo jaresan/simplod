@@ -86,8 +86,8 @@ function* changeLanguage({language}) {
 }
 
 function* onDataLoaded() {
-	yield getHumanData();
 	yield put(Model.Creators.r_dataLoaded());
+	yield getHumanData();
 }
 
 // FIXME: Save only the diff, otherwise too big
