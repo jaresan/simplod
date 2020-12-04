@@ -36,6 +36,8 @@ export const getSession = appState => appState.solid.get('session').toJS();
 export const getUser = appState => appState.solid.getIn(['session', 'webId']);
 
 export const getDirty = appState => appState.model.get('dirty');
+export const getLanguage = appState => appState.model.get('language');
+export const getLoadingHumanReadable = appState => appState.model.get('loadingHumanReadable');
 
 export const getFolderUri = (appState, original) => {
   if (original) {

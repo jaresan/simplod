@@ -30,9 +30,6 @@ const renderPropertyEntry = id => (
   />
 );
 
-// FIXME: Move somewhere else and use across the app
-const languageOrder = ['cs', 'en', 'de', 'default'];
-const getField = (field, data) => paths(languageOrder.map(l => [l, field]), data).find(a => a);
 class EntityEntryComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -96,8 +93,8 @@ class EntityEntryComponent extends React.Component {
         title={<ExpandIconContainer onClick={this.toggleExpanded}>
           <Space>
             {this.getToggleIcon()}
-            {this.getTitle(getField('label', info))}
-            {this.getInfoIcon(getField('description', info))}
+            {this.getTitle(info.label)}
+            {this.getInfoIcon(info.description)}
           </Space>
         </ExpandIconContainer>}
         size="small"

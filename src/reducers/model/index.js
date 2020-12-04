@@ -8,7 +8,9 @@ const initialState = fromJS({
     ...Object.keys(entityTypes).reduce((acc, type) => Object.assign(acc, {[type]: {}}), {})
   },
   dirty: false,
-  selectionOrder: []
+  selectionOrder: [],
+  language: navigator.language,
+  loadingHumanReadable: 0
 });
 
 // TODO: Add possible entity props description
@@ -21,8 +23,10 @@ const defaultEntityProps = {
     selected: false,
     asVariable: true,
     name: '',
-    label: '', // From remote
-    description: '' // From remote
+    info: {
+      label: '', // From remote
+      description: '' // From remote
+    }
   }
 };
 
@@ -76,6 +80,8 @@ const updateEntitySelected = (state, {id, selected}) => updateSelected(updateEnt
 const updateSelectionOrder = (state, {selectionIds}) => state.set('selectionOrder', fromJS(selectionIds));
 const clearData = () => initialState;
 const updateLimit = (state, {limit}) => state.set('limit', limit);
+const updateLanguage = (state, {language}) => state.set('language', language);
+const setLoadingHumanReadableData = (state, {loading}) => state.set('loadingHumanReadable', loading);
 
 const loadView = (state, {json}) =>
   Object.entries(json).reduce((newState, [entityType, entities]) =>
@@ -103,7 +109,9 @@ const handlers = {
   [Actions.Types.R_DATA_LOADED]: connectProperties,
   [Actions.Types.R_UPDATE_LIMIT]: updateLimit,
   [Actions.Types.R_LOAD_STATE]: (state, {json}) => fromJS(json),
-  [Actions.Types.R_TOGGLE_SELECTIONS]: toggleSelections
+  [Actions.Types.R_TOGGLE_SELECTIONS]: toggleSelections,
+  [Actions.Types.R_SET_LANGUAGE]: updateLanguage,
+  [Actions.Types.R_SET_LOADING_HUMAN_READABLE_DATA]: setLoadingHumanReadableData
 };
 
 export default (state = initialState, action) => {

@@ -22,10 +22,9 @@ const downloadHumanReadableData = ({urls, prefixToIri, iriToPrefix}) => fetch(`$
 //   }, {});
 // };
 
-export const getHumanReadableData = async ({urls, prefixToIri, iriToPrefix}) => {
-  const promises = urls.map(url =>
-    downloadHumanReadableData({urls: [url], prefixToIri, iriToPrefix})
-      .catch(() => ({}))
-  );
-  return (await Promise.all(promises)).reduce(merge, {});
+export const getHumanReadableData = ({urls, prefixToIri, iriToPrefix}) => {
+  const promises = urls.map(url => downloadHumanReadableData({urls: [url], prefixToIri, iriToPrefix}));
+
+  return promises;
+  // return (await Promise.all(promises)).reduce(merge, {});
 };

@@ -8,7 +8,7 @@ import {AntVExample} from './AntVExample';
 import {invertObj, keys} from 'ramda';
 import {Handler} from './graph/handlers/Handler';
 import Actions from '../actions';
-import { Progress, Radio, Button, InputNumber, Space } from 'antd';
+import { Progress, Radio, Button, InputNumber, Space, Select } from 'antd';
 import {getContainerStyle, getMenuStyle} from './App.styled';
 import './App.styles';
 import { EntityList } from './entityList/EntityList';
@@ -16,9 +16,11 @@ import styled from '@emotion/styled';
 import { Edge, Node, Property } from './graph/handlers';
 import { Tabs } from 'antd';
 import {ColumnList} from './ColumnList';
+import { getLanguage, getLoadingHumanReadable } from '../selectors';
 
 
-const { TabPane } = Tabs;
+const {Option} = Select;
+const {TabPane} = Tabs;
 
 const EntityListContainer = styled.div`
   border: solid 1px black;
@@ -29,6 +31,8 @@ const EntityListContainer = styled.div`
   flex-direction: column;
   align-items: center;
 `;
+
+const languageOptions = ['cs', 'de', 'en', 'fr', 'it', 'ja', 'ar', 'el', 'es'].sort().map(code => <Option value={code}>{code}</Option>);
 
 class App extends Component {
   state = {
@@ -97,7 +101,7 @@ class App extends Component {
 
 
   render() {
-    const {saveData, loadData} = this.props;
+    const {saveData, loadData, language, loadingHumanReadable} = this.props;
     const {horizontalLayout} = this.state;
 
     return (
@@ -117,6 +121,8 @@ class App extends Component {
           <Radio.Button value={true}>Horizontal</Radio.Button>
           <Radio.Button value={false}>Vertical</Radio.Button>
         </Radio.Group>
+        <br/>
+        Select language: <Select onChange={this.props.changeLanguage} value={language}>{languageOptions}</Select>
         <div style={getContainerStyle(horizontalLayout)}>
           {
             this.state.loaded && <AntVExample
@@ -128,6 +134,7 @@ class App extends Component {
           {/*<PropertyList/>*/}
           <div style={getMenuStyle(horizontalLayout)}>
             <ControlPanel/>
+            <Progress percent={loadingHumanReadable} status={loadingHumanReadable < 100 && "active"} />
             <Tabs>
               <TabPane tab="Available" key="1">
                 <EntityListContainer>
@@ -152,6 +159,11 @@ class App extends Component {
   }
 }
 
+const mapStateToProps = appState => ({
+  language: getLanguage(appState),
+  loadingHumanReadable: getLoadingHumanReadable(appState)
+});
+
 const mapDispatchToProps = {
   setPrefixes: Actions.Yasgui.Creators.r_setPrefixes,
   clearData: Actions.Model.Creators.r_clearData,
@@ -161,6 +173,7 @@ const mapDispatchToProps = {
   dataChanged: Actions.Interactions.Creators.s_dataChanged,
   saveData: Actions.Interactions.Creators.s_saveData,
   loadData: Actions.Interactions.Creators.s_loadData,
+  changeLanguage: Actions.Interactions.Creators.s_changeLanguage
 };
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
