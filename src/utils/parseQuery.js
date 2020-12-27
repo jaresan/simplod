@@ -27,9 +27,9 @@ const getDefaultEntityVarNames = types => {
   }, {});
 };
 
-const getProperties = (prefixToIRI, typeToVarName, propertiesBySource) => {
+const getProperties = (prefixToIRI, getEntityVariable, propertiesBySource) => {
   const getProperty = ({asVariable, varName, predicate, source, optional, target, position}) => {
-    const targetVarName = snakeToCamel(typeToVarName[target] || varName); // Use existing queried entity if available to prevent cartesian products
+    const targetVarName = snakeToCamel(getEntityVariable(target) || varName); // Use existing queried entity if available to prevent cartesian products
 
     return {
       predicate, asVariable, position, optional, source,
@@ -46,7 +46,7 @@ const getProperties = (prefixToIRI, typeToVarName, propertiesBySource) => {
 };
 
 const getSelectVariables = (selectionOrder, selectedObjects) => selectionOrder
-  .filter(id => path(id, 'asVariable', selectedObjects))
+  .filter(id => path([id, 'asVariable'], selectedObjects))
   .map(id => `?${selectedObjects[id].varName}`);
 
 const getSelectText = pipe(getSelectVariables, vars => vars.join(' ') || '*');
@@ -83,17 +83,19 @@ export const parseSPARQLQuery = ({selectedProperties, selectedEntities, prefixes
 
   const entityVarNames = getDefaultEntityVarNames(Object.keys(propertiesBySource));
 
-  const properties = getProperties(prefixes, entityVarNames, propertiesBySource);
+  const getEntityVariable = id => path([id, 'varName'], selectedEntities) || entityVarNames[id];
+
+  const properties = getProperties(prefixes, getEntityVariable, propertiesBySource);
 
   const getPropertyRow = ({predicate, varName}, i, arr) => `${predicate} ${varName}${i === arr.length - 1 ? '.' : ';'}`
   const rows = Object.entries(properties).map(([source, {required, optional}]) => {
-    const entityVar = path([source, 'varName'], selectedEntities) || entityVarNames[source];
+    const entityVar = getEntityVariable(source);
     let res = `?${entityVar} a ${source}.`;
     if (required.length) {
       res = `?${entityVar} a ${source};${required.map(getPropertyRow).join('\n')}`;
     }
     if (optional.length) {
-      res += `\n\tOPTIONAL { ?${entityVarNames[source]} ${optional.map(getPropertyRow).join('\n')} }`;
+      res += `\n\tOPTIONAL { ?${entityVar} ${optional.map(getPropertyRow).join('\n')} }`;
     }
     return res;
   });
