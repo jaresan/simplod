@@ -42,6 +42,7 @@ export const getLanguage = appState => appState.model.get('language');
 export const getLoadingHumanReadable = appState => appState.model.get('loadingHumanReadable');
 export const getLimit = appState => appState.model.get('limit');
 export const getLimitEnabled = appState => appState.model.get('limitEnabled');
+export const getAvatar = appState => appState.solid.get('avatar');
 
 export const getFolderUri = (appState, original) => {
   if (original) {

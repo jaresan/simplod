@@ -20,8 +20,8 @@ function* login() {
 }
 
 function* onLogin() {
-  const session = yield login();
-  yield loadFiles({url: new URL(session.webId).origin});
+  yield login();
+  yield onLoggedIn();
 }
 
 function* getSession() {
@@ -257,11 +257,27 @@ function* tryCreateFolder(folderUri) {
 //   yield put(SolidActions.Creators.r_toggleFolderUriChanging(false));
 // }
 
+function* updateAvatar(webId) {
+  const store = rdf.graph();
+  const ttl = yield auth.fetch(webId).then(data => data.text());
+  rdf.parse(ttl, store, webId);
+  const vCard = rdf.Namespace('http://www.w3.org/2006/vcard/ns#')
+  const hasPhoto = vCard('hasPhoto');
+  const avatar = path([0, 'object', 'value'], store.statementsMatching(null, hasPhoto, null));
+  yield put(SolidActions.set('avatar', avatar));
+}
+
+function* onLoggedIn() {
+  const {session: {webId}} = yield getSession();
+  yield loadFiles({url: new URL(webId).origin});
+  yield updateAvatar(webId);
+}
+
 function* onStart() {
   const {session, valid} = yield getSession();
 
   if (valid) {
-    yield loadFiles({url: new URL(session.webId).origin});
+    yield onLoggedIn();
     yield put(SolidActions.Creators.r_setSolidSession(session));
   } else {
     yield auth.logout();
@@ -286,7 +302,7 @@ function* loadFiles({url}) {
   const res = yield auth.fetch(url);
   const ttl = yield res.text();
 
-  const store = new rdf.graph();
+  const store = rdf.graph();
   rdf.parse(ttl, store, url);
   const LDP = rdf.Namespace('http://www.w3.org/ns/ldp#')
   const NS = rdf.Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#');

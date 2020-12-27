@@ -7,7 +7,8 @@ import {AntVExample} from './AntVExample';
 import {invertObj, keys} from 'ramda';
 import {Handler} from './graph/handlers/Handler';
 import Actions from '../actions';
-import { Progress, Radio, Button, InputNumber, Space, Select, Switch } from 'antd';
+import { Progress, Radio, Button, InputNumber, Space, Select, Switch, Layout, Menu, Avatar } from 'antd';
+import {UserOutlined} from '@ant-design/icons';
 import {getContainerStyle, getMenuStyle} from './App.styled';
 import './App.styles';
 import { EntityList } from './entityList/EntityList';
@@ -15,13 +16,14 @@ import styled from '@emotion/styled';
 import { Edge, Node, Property } from './graph/handlers';
 import { Tabs } from 'antd';
 import {ColumnList} from './ColumnList';
-import { getLanguage, getLoadingHumanReadable, getLimit, getLimitEnabled } from '../selectors';
+import { getLanguage, getLoadingHumanReadable, getLimit, getLimitEnabled, getAvatar } from '../selectors';
 import { languages } from '../constants/languages';
 import hotkeys from 'hotkeys-js';
 
 
 const {Option} = Select;
 const {TabPane} = Tabs;
+const {Header, Content, Footer} = Layout;
 
 const EntityListContainer = styled.div`
   border: solid 1px black;
@@ -116,61 +118,67 @@ class App extends Component {
 
 
   render() {
-    const {saveData, loadData, language, loadingHumanReadable, limitEnabled, limit} = this.props;
+    const {saveData, loadData, language, loadingHumanReadable, limitEnabled, limit, avatar} = this.props;
     const {horizontalLayout} = this.state;
 
     return (
-      <div className="App">
-        <Space>
-          <input type="text" ref={e => this.dataSchemaInput = e} placeholder="Data schema URL"/>
-          <Button onClick={() => this.fetchData(this.dataSchemaInput.value)}>Reload schema URL</Button>
-          <Button onClick={() => this.fetchData(this.applicantsURL)}>Single</Button>
-          <Button onClick={() => this.fetchData(this.courtExampleURL)}>Court example</Button>
-          <Button onClick={() => this.fetchData(this.govURL)}>Gov example</Button>
-          <Button onClick={saveData}>Save local</Button>
-          <Button onClick={loadData}>Load local</Button>
-        </Space>
-        <br/>
-        <Radio.Group onChange={this.toggleLayout} value={this.state.horizontalLayout}>
-          View:
-          <Radio.Button value={true}>Horizontal</Radio.Button>
-          <Radio.Button value={false}>Vertical</Radio.Button>
-        </Radio.Group>
-        <br/>
-        <div style={getContainerStyle(horizontalLayout)}>
-          {
-            this.state.loaded && <AntVExample
-              width={window.innerWidth * (horizontalLayout ? 0.5 : 1)}
-              height={window.innerHeight * (horizontalLayout ? 0.5 : 1)}
-              data={this.schemaData}
-            />
-          }
-          <div style={getMenuStyle(horizontalLayout)}>
-            <ControlPanel/>
-            Downloading human readable data:
-            <Progress percent={loadingHumanReadable} status={loadingHumanReadable < 100 && "active"} />
-            <span>Show labels: <Switch style={{width: 32}} onChange={this.props.toggleHumanReadable} /></span>
-            <span>Select language: <Select onChange={this.props.changeLanguage} value={language}>{languageOptions}</Select></span>
-            <Tabs>
-              <TabPane tab="Available" key="1">
-                <EntityListContainer>
-                  <EntityList />
-                </EntityListContainer>
-              </TabPane>
-              <TabPane tab="Selected" key="2">
-                <Space direction="vertical">
-                  <ColumnList />
-                  <span>Maximum number of results (limit): <InputNumber value={limit} onChange={this.updateLimit} />Use limit: <Switch checked={limitEnabled} onChange={this.toggleLimit}/></span>
+      <Layout>
+        <Header style={{background: '#EEE', border: 'solid 1px black'}}>
+          {avatar ? <Avatar src={avatar} /> : <Avatar icon={<UserOutlined />} />}
+        </Header>
+        <Content style={{padding: '0 50px', background: 'white'}}>
+          <Space>
+            <input type="text" ref={e => this.dataSchemaInput = e} placeholder="Data schema URL"/>
+            <Button onClick={() => this.fetchData(this.dataSchemaInput.value)}>Reload schema URL</Button>
+            <Button onClick={() => this.fetchData(this.applicantsURL)}>Single</Button>
+            <Button onClick={() => this.fetchData(this.courtExampleURL)}>Court example</Button>
+            <Button onClick={() => this.fetchData(this.govURL)}>Gov example</Button>
+            <Button onClick={saveData}>Save local</Button>
+            <Button onClick={loadData}>Load local</Button>
+          </Space>
+          <br/>
+          <Radio.Group onChange={this.toggleLayout} value={this.state.horizontalLayout}>
+            View:
+            <Radio.Button value={true}>Horizontal</Radio.Button>
+            <Radio.Button value={false}>Vertical</Radio.Button>
+          </Radio.Group>
+          <br/>
+          <div style={getContainerStyle(horizontalLayout)}>
+            {
+              this.state.loaded && <AntVExample
+                width={window.innerWidth * (horizontalLayout ? 0.5 : 1)}
+                height={window.innerHeight * (horizontalLayout ? 0.5 : 1)}
+                data={this.schemaData}
+              />
+            }
+            <div style={getMenuStyle(horizontalLayout)}>
+              <ControlPanel/>
+              Downloading human readable data:
+              <Progress percent={loadingHumanReadable} status={loadingHumanReadable < 100 && "active"} />
+              <span>Show labels: <Switch style={{width: 32}} onChange={this.props.toggleHumanReadable} /></span>
+              <span>Select language: <Select onChange={this.props.changeLanguage} value={language}>{languageOptions}</Select></span>
+              <Tabs>
+                <TabPane tab="Available" key="1">
                   <EntityListContainer>
-                    <EntityList onlySelected />
+                    <EntityList />
                   </EntityListContainer>
-                </Space>
-              </TabPane>
-            </Tabs>
-            <YasguiContainer/>
+                </TabPane>
+                <TabPane tab="Selected" key="2">
+                  <Space direction="vertical">
+                    <ColumnList />
+                    <span>Maximum number of results (limit): <InputNumber value={limit} onChange={this.updateLimit} />Use limit: <Switch checked={limitEnabled} onChange={this.toggleLimit}/></span>
+                    <EntityListContainer>
+                      <EntityList onlySelected />
+                    </EntityListContainer>
+                  </Space>
+                </TabPane>
+              </Tabs>
+              <YasguiContainer/>
+            </div>
           </div>
-        </div>
-      </div>
+        </Content>
+        <Footer style={{textAlign: 'center'}}>Simplified view for linked data ©2020 Created by Antonin Jares</Footer>
+      </Layout>
     );
   }
 }
@@ -179,7 +187,8 @@ const mapStateToProps = appState => ({
   language: getLanguage(appState),
   loadingHumanReadable: getLoadingHumanReadable(appState),
   limit: getLimit(appState),
-  limitEnabled: getLimitEnabled(appState)
+  limitEnabled: getLimitEnabled(appState),
+  avatar: getAvatar(appState)
 });
 
 const mapDispatchToProps = {
