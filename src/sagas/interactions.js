@@ -13,9 +13,9 @@ function* dataChanged() {
 	const prefixes = yield select(getPrefixes);
 	const selectedProperties = yield select(getSelectedProperties);
 	const selectedEntities = yield select(getSelectedEntities);
-	const {selectionOrder, limit} = yield select(getInfo);
+	const {selectionOrder, limit, limitEnabled} = yield select(getInfo);
 	const prefixToIRI = Object.assign(prefixes, invertObj(possiblePrefixes));
-	yield put(Query.Creators.r_updateQuery(parseSPARQLQuery({selectedProperties, selectedEntities, prefixes: prefixToIRI, limit, selectionOrder})));
+	yield put(Query.Creators.r_updateQuery(parseSPARQLQuery({selectedProperties, selectedEntities, prefixes: prefixToIRI, limit, limitEnabled, selectionOrder})));
 }
 
 const getField = (languageOrder, field, data) => paths(languageOrder.map(l => [l, field]), data).find(a => a);

@@ -29,7 +29,8 @@ export const getInfo = appState => {
   const model = appState.model;
   return {
     selectionOrder: model.get('selectionOrder').toJS(),
-    limit: model.get('limit')
+    limit: model.get('limit'),
+    limitEnabled: model.get('limitEnabled')
   }
 }
 
@@ -39,6 +40,8 @@ export const getUser = appState => appState.solid.getIn(['session', 'webId']);
 export const getDirty = appState => appState.model.get('dirty');
 export const getLanguage = appState => appState.model.get('language');
 export const getLoadingHumanReadable = appState => appState.model.get('loadingHumanReadable');
+export const getLimit = appState => appState.model.get('limit');
+export const getLimitEnabled = appState => appState.model.get('limitEnabled');
 
 export const getFolderUri = (appState, original) => {
   if (original) {

@@ -16,7 +16,7 @@ import styled from '@emotion/styled';
 import { Edge, Node, Property } from './graph/handlers';
 import { Tabs } from 'antd';
 import {ColumnList} from './ColumnList';
-import { getLanguage, getLoadingHumanReadable } from '../selectors';
+import { getLanguage, getLoadingHumanReadable, getLimit, getLimitEnabled } from '../selectors';
 import { languages } from '../constants/languages';
 
 
@@ -100,9 +100,14 @@ class App extends Component {
     this.props.dataChanged();
   };
 
+  toggleLimit = checked => {
+    this.props.toggleLimit(checked);
+    this.props.dataChanged();
+  };
+
 
   render() {
-    const {saveData, loadData, language, loadingHumanReadable} = this.props;
+    const {saveData, loadData, language, loadingHumanReadable, toggleLimit, limitEnabled, limit} = this.props;
     const {horizontalLayout} = this.state;
 
     return (
@@ -136,7 +141,7 @@ class App extends Component {
             <ControlPanel/>
             Downloading human readable data:
             <Progress percent={loadingHumanReadable} status={loadingHumanReadable < 100 && "active"} />
-            <span>Show human readable names: <Switch style={{width: 32}} onChange={this.props.toggleHumanReadable} /></span>
+            <span>Show labels: <Switch style={{width: 32}} onChange={this.props.toggleHumanReadable} /></span>
             <span>Select language: <Select onChange={this.props.changeLanguage} value={language}>{languageOptions}</Select></span>
             <Tabs>
               <TabPane tab="Available" key="1">
@@ -147,7 +152,7 @@ class App extends Component {
               <TabPane tab="Selected" key="2">
                 <Space direction="vertical">
                   <ColumnList />
-                  <span>Maximum number of entries: <InputNumber onChange={this.updateLimit} /></span>
+                  <span>Maximum number of results (limit): <InputNumber value={limit} onChange={this.updateLimit} />Use limit: <Switch checked={limitEnabled} onChange={this.toggleLimit}/></span>
                   <EntityListContainer>
                     <EntityList onlySelected />
                   </EntityListContainer>
@@ -164,7 +169,9 @@ class App extends Component {
 
 const mapStateToProps = appState => ({
   language: getLanguage(appState),
-  loadingHumanReadable: getLoadingHumanReadable(appState)
+  loadingHumanReadable: getLoadingHumanReadable(appState),
+  limit: getLimit(appState),
+  limitEnabled: getLimitEnabled(appState)
 });
 
 const mapDispatchToProps = {
@@ -173,6 +180,7 @@ const mapDispatchToProps = {
   setEndpoint: Actions.Yasgui.Creators.r_setEndpoint,
   onDataLoaded: Actions.Interactions.Creators.s_dataLoaded,
   updateLimit: Actions.Model.Creators.r_updateLimit,
+  toggleLimit: Actions.Model.Creators.r_toggleLimit,
   dataChanged: Actions.Interactions.Creators.s_dataChanged,
   saveData: Actions.Interactions.Creators.s_saveData,
   loadData: Actions.Interactions.Creators.s_loadData,

@@ -10,7 +10,9 @@ const initialState = fromJS({
   dirty: false,
   selectionOrder: [],
   language: navigator.language,
-  loadingHumanReadable: 0
+  loadingHumanReadable: 0,
+  limitEnabled: false,
+  limit: 100
 });
 
 // TODO: Add possible entity props description
@@ -113,7 +115,8 @@ const handlers = {
   [Actions.Types.R_TOGGLE_SELECTIONS]: toggleSelections,
   [Actions.Types.R_SET_LANGUAGE]: updateLanguage,
   [Actions.Types.R_SET_LOADING_HUMAN_READABLE_DATA]: setLoadingHumanReadableData,
-  [Actions.Types.R_TOGGLE_HUMAN_READABLE]: toggleHumanReadable
+  [Actions.Types.R_TOGGLE_HUMAN_READABLE]: toggleHumanReadable,
+  [Actions.Types.R_TOGGLE_LIMIT]: (state, {show}) => state.set('limitEnabled', show)
 };
 
 export default (state = initialState, action) => {

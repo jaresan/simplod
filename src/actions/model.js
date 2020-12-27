@@ -20,6 +20,7 @@ export default createActions({
   r_loadState: ['json'],
   r_setLanguage: ['language'],
   r_setLoadingHumanReadableData: ['loading'],
-  r_toggleHumanReadable: ['show']
+  r_toggleHumanReadable: ['show'],
+  r_toggleLimit: ['show']
 }, {prefix: 'Model.'});
 
