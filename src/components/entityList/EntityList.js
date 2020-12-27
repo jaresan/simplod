@@ -33,7 +33,7 @@ class EntityListComponent extends React.Component {
 		const {searchText} = this.props;
 		let entities = this.props.entities;
 		if (this.props.onlySelected) {
-			entities = entities.filter(e => e.get('propertyIds').some(pId => this.props.properties.getIn([pId, 'selected'])));
+			entities = entities.filter(e => e.get('selected') || e.get('propertyIds').some(pId => this.props.properties.getIn([pId, 'selected'])));
 		}
 		const searchTerms = entities.map((val, id) => getSearchTerm([id, val.toJS()])).toJS();
 		return Object.keys(entities.toJS())
@@ -46,7 +46,20 @@ class EntityListComponent extends React.Component {
 
 		return (
 			<>
-				{filtered.length ? filtered.map(renderEntity) : <NoDataContainer><Empty /></NoDataContainer>}
+				{
+					filtered.length ?
+						filtered.map(renderEntity)
+						:
+						<NoDataContainer>
+							<Empty
+								description={
+									<span>
+										No data selected, begin by selecting some properties in the "Available" tab.
+									</span>
+								}
+							/>
+						</NoDataContainer>
+				}
 			</>
 		);
 	}
