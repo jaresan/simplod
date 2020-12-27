@@ -46,7 +46,7 @@ const getProperties = (prefixToIRI, getEntityVariable, propertiesBySource) => {
 };
 
 const getSelectVariables = (selectionOrder, selectedObjects) => selectionOrder
-  .filter(id => path([id, 'asVariable'], selectedObjects))
+  .filter(id => path([id, 'asVariable'], selectedObjects) && !path([id, 'bound'], selectedObjects))
   .map(id => `?${selectedObjects[id].varName}`);
 
 const getSelectText = pipe(getSelectVariables, vars => vars.join(' ') || '*');

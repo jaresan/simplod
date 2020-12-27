@@ -10,12 +10,11 @@ import {
   QuestionCircleFilled,
   TagOutlined, LinkOutlined
 } from '@ant-design/icons';
-import {getProperty} from '../../selectors';
+import { getProperty, getSelectedEntities } from '../../selectors';
 import Actions from 'src/actions/model';
 import { connect } from 'react-redux';
 
 const StyledInput = styled(Input)`	
-	background: ${({disabled}) => disabled ? 'lightgrey' : 'default'};
 	width: 128px;	
 `;
 
@@ -47,8 +46,31 @@ const getIcon = dataProperty => {
   return <Tooltip title={title}><TypeIcon/></Tooltip>;
 }
 
-const PropertyEntryComponent = ({property, id, onSelect, onSetAsVariable, onSetName, onSetOptional}) => {
-  const {predicate, asVariable, varName, optional, selected, dataProperty} = property.toJS();
+const PropertyEntryComponent = ({selectedEntities, property, id, onSelect, onSetAsVariable, onSetName, onSetOptional}) => {
+  const {predicate, asVariable, varName, optional, selected, dataProperty, target, bound} = property.toJS();
+
+  let nameInput;
+  if (bound) {
+    nameInput = <Tooltip
+      title="This variable can't be renamed because it is bound to an already selected entity"
+    >
+      <div>
+        <StyledInput
+          type="text"
+          disabled
+          value={selectedEntities[target].varName}
+        />
+      </div>
+    </Tooltip>;
+  } else {
+    nameInput = <StyledInput
+      type="text"
+      disabled={!asVariable}
+      defaultValue={varName}
+      onBlur={e => onSetName(id, e.target.value)}
+      onPressEnter={e => onSetName(id, e.target.value)}
+    />;
+  }
 
   return (
     <RowContainer>
@@ -62,13 +84,7 @@ const PropertyEntryComponent = ({property, id, onSelect, onSetAsVariable, onSetN
           {getIcon(dataProperty)}
           <PrefixedText title={predicate}/>
           -->
-          <StyledInput
-            type="text"
-            disabled={!asVariable}
-            defaultValue={varName}
-            onBlur={e => onSetName(id, e.target.value)}
-            onPressEnter={e => onSetName(id, e.target.value)}
-          />
+          {nameInput}
           <Controls.Toggle
             flag={asVariable}
             tooltipTextOn="Hide from result set"
@@ -94,7 +110,8 @@ const PropertyEntryComponent = ({property, id, onSelect, onSetAsVariable, onSetN
 
 
 const mapStateToProps = (appState, {id}) => ({
-  property: getProperty(appState, id)
+  property: getProperty(appState, id),
+  selectedEntities: getSelectedEntities(appState)
 });
 
 const mapDispatchToProps = {

@@ -19,7 +19,8 @@ const initialState = fromJS({
 const defaultEntityProps = {
   [entityTypes.property]: {
     asVariable: true,
-    selected: false
+    selected: false,
+    bound: false
   },
   [entityTypes.class]: {
     selected: false,
@@ -31,6 +32,9 @@ const defaultEntityProps = {
     }
   }
 };
+
+const getProperty = (state, id, additionalPath = []) => state.getIn(['entities', entityTypes.property, id, ...additionalPath]);
+const getEntity = (state, id, additionalPath = []) => state.getIn(['entities', entityTypes.class, id, ...additionalPath]);
 
 const updateEntities = (state, {items}) => state.mergeDeepIn(['entities', entityTypes.class], items);
 const toggleSelections = (state, {entityType, selection}) => state.mergeDeepIn(['entities', entityType], selection);
@@ -78,7 +82,21 @@ const updateSelected = (state, {id, selected}) => {
   return state.set('selectionOrder', order.remove(order.indexOf(id)));
 };
 const updatePropertySelected = (state, {id, selected}) => updateSelected(updateProperty('selected', state, {id, selected}), {id, selected});
-const updateEntitySelected = (state, {id, selected}) => updateSelected(updateEntity('selected', state, {id, selected}), {id, selected});
+const updateEntitySelected = (state, {id, selected}) => {
+  state = updateSelected(updateEntity('selected', state, {id, selected}), {id, selected});
+  state = state.updateIn(['entities', entityTypes.property], properties =>
+    properties.map(property => {
+      const target = state.getIn(['entities', entityTypes.class, property.get('target')]);
+
+      if (target && target.get('selected')) {
+        return property.set('bound', true);
+      }
+
+      return property.set('bound', false);
+    })
+  )
+  return state;
+}
 const updateSelectionOrder = (state, {selectionIds}) => state.set('selectionOrder', fromJS(selectionIds));
 const clearData = () => initialState;
 const updateLimit = (state, {limit}) => state.set('limit', limit);

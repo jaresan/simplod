@@ -17,10 +17,13 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
-const getItems = (items, selectionOrder) => items.filter(p => p.get('selected')).map((p, id) => ({
-  id,
-  content: `${p.get('varName')}`,
-})).sort(({id: id1}, {id: id2}) => selectionOrder.indexOf(id1) < selectionOrder.indexOf(id2) ? -1 : 1).valueSeq().toJS();
+const getItems = (items, selectionOrder) => selectionOrder
+  .filter(id => items.getIn([id, 'selected']))
+  .filter(id => !items.getIn([id, 'bound']))
+  .map(id => ({
+    id,
+    content: `${items.getIn([id, 'varName'])}`
+  }));
 
 class ColumnListComponent extends Component {
   constructor(props) {
@@ -37,7 +40,7 @@ class ColumnListComponent extends Component {
   updateItems() {
     const {entities, properties, selectionOrder} = this.props;
     const items = getItems(entities.merge(properties), selectionOrder);
-    this.setState({items });
+    this.setState({items});
   }
 
 
