@@ -93,6 +93,7 @@ function* onDataLoaded() {
 // FIXME: Save only the diff, otherwise too big
 function* saveData() {
 	const data = yield select(getModel);
+	yield put(Model.set('lastSave', Date.now()));
 	localStorage.setItem('model', JSON.stringify(data.toJS()));
 }
 

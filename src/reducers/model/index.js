@@ -11,8 +11,10 @@ const initialState = fromJS({
   selectionOrder: [],
   language: navigator.language,
   loadingHumanReadable: 0,
+  showHumanReadable: false,
   limitEnabled: false,
-  limit: 100
+  limit: 100,
+  lastSave: 0
 });
 
 // TODO: Add possible entity props description
@@ -141,6 +143,9 @@ export default (state = initialState, action) => {
   let newState = state;
   if (typeof handlers[action.type] === 'function') {
     newState = handlers[action.type](state, action);
+  } else if (action.__customSetter) {
+    const {key, value} = action.payload;
+    newState = state.set(key, value);
   }
 
   const dirty = newState

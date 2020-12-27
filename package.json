@@ -37,6 +37,7 @@
     "d3": "^5.0.0",
     "dagre": "^0.8.2",
     "emotion": "^10.0.27",
+    "hotkeys-js": "^3.8.1",
     "immutable": "^3.8.2",
     "keymirror": "^0.1.1",
     "lodash": "^4.17.20",

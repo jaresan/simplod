@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import YasguiContainer from './YasguiContainer';
-import PropertyList from './entityList/PropertyList';
 import ControlPanel from './ControlPanel';
 import {connect} from 'react-redux';
 import {parseTTL} from '../data/parseTTL';
@@ -18,6 +17,7 @@ import { Tabs } from 'antd';
 import {ColumnList} from './ColumnList';
 import { getLanguage, getLoadingHumanReadable, getLimit, getLimitEnabled } from '../selectors';
 import { languages } from '../constants/languages';
+import hotkeys from 'hotkeys-js';
 
 
 const {Option} = Select;
@@ -65,9 +65,18 @@ class App extends Component {
     }
   }
 
+  setup() {
+    // TODO: Move setup logic to saga
+    hotkeys('command+s,ctrl+s', e => {
+      e.preventDefault()
+      this.props.saveData();
+    });
+  }
+
   componentDidMount() {
     this.fetchData(this.schemaURL);
     this.props.setEndpoint(this.endpointURL);
+    this.setup();
   }
 
   // FIXME: Move fetch to sagas
@@ -107,7 +116,7 @@ class App extends Component {
 
 
   render() {
-    const {saveData, loadData, language, loadingHumanReadable, toggleLimit, limitEnabled, limit} = this.props;
+    const {saveData, loadData, language, loadingHumanReadable, limitEnabled, limit} = this.props;
     const {horizontalLayout} = this.state;
 
     return (
@@ -136,7 +145,6 @@ class App extends Component {
               data={this.schemaData}
             />
           }
-          {/*<PropertyList/>*/}
           <div style={getMenuStyle(horizontalLayout)}>
             <ControlPanel/>
             Downloading human readable data:
@@ -179,13 +187,13 @@ const mapDispatchToProps = {
   clearData: Actions.Model.Creators.r_clearData,
   setEndpoint: Actions.Yasgui.Creators.r_setEndpoint,
   onDataLoaded: Actions.Interactions.Creators.s_dataLoaded,
-  updateLimit: Actions.Model.Creators.r_updateLimit,
-  toggleLimit: Actions.Model.Creators.r_toggleLimit,
+  updateLimit: Actions.Model.set('limit'),
+  toggleLimit: Actions.Model.set('limitEnabled'),
   dataChanged: Actions.Interactions.Creators.s_dataChanged,
   saveData: Actions.Interactions.Creators.s_saveData,
   loadData: Actions.Interactions.Creators.s_loadData,
   changeLanguage: Actions.Interactions.Creators.s_changeLanguage,
-  toggleHumanReadable: Actions.Model.Creators.r_toggleHumanReadable
+  toggleHumanReadable: Actions.Model.set('showHumanReadable')
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
