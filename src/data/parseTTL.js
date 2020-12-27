@@ -115,16 +115,22 @@ const parseQuads = (quads, prefixes) => {
     .reduce((acc, {predicate, object, subject}) => {
       if (!acc[subject]) {
         acc[subject] = {
-          properties: [],
-          methods: []
+          dataProperties: {},
+          objectProperties: {}
         };
       }
 
       // Data property
       if (!hasOutgoingEdges[object]) {
-        acc[subject].properties.push({predicate, type: object});
+        if (!acc[subject].dataProperties[predicate]) {
+          acc[subject].dataProperties[predicate] = [];
+        }
+        acc[subject].dataProperties[predicate].push(object);
       } else {
-        acc[subject].methods.push({predicate, object});
+        if (!acc[subject].objectProperties[predicate]) {
+          acc[subject].objectProperties[predicate] = [];
+        }
+        acc[subject].objectProperties[predicate].push(object);
       }
 
       return acc;

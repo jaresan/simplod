@@ -29,11 +29,12 @@ export class Method extends Wrapper {
   handler = PropertyHandler;
 
   getSameTargetProperties() {
+    const {target} = this.getNode().get('data');
     return this
       .getContainerNode()
       .getContainer()
-      .get('methods')
-      .filter(m => m.data.target === this.getNode().get('data').target)
+      .get('objectProperties')
+      .filter(m => m.data.target === target)
   }
 
   findEdge() {

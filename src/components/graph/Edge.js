@@ -1,6 +1,6 @@
 import G6 from '@antv/g6';
-import {flatten, values} from 'ramda';
-import { entityTypes } from '../../constants/entityTypes';
+import {flatten, values, concat} from 'ramda';
+import {entityTypes} from '../../constants/entityTypes';
 import {Edge as EdgeWrapper} from './wrappers';
 const EDGE_TYPE = 'graphEdge';
 
@@ -11,8 +11,10 @@ export const Edge = data => ({
 
 export const getEdges = data => {
   const existingEdges = {};
-  const res = Object.entries(data).map(([sourceId, {methods}]) =>
-    values(methods.reduce((acc, {object: targetId}) => {
+  const res = Object.entries(data).map(([sourceId, {objectProperties}]) => {
+    const targets = values(objectProperties).reduce(concat, []);
+
+    return values(targets.reduce((acc, targetId) => {
       // Prevent duplicates for the same source-target pair
       if (sourceId === targetId || existingEdges[sourceId] === targetId || existingEdges[targetId] === sourceId) {
         return acc;
@@ -29,7 +31,8 @@ export const getEdges = data => {
           }
         })
       })
-    }, {})));
+    }, {}));
+  });
 
   return flatten(res);
 }

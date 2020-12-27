@@ -1,4 +1,5 @@
 import G6 from '@antv/g6';
+import {flatten} from 'ramda';
 import E from './ElementCreators';
 import Group from './wrappers/Group';
 const NODE_TYPE = 'graphNode';
@@ -49,28 +50,31 @@ const getSuffix = iri => iri.match(/([^/#:]+)$/)[1];
 
 const NodeImplementation = {
   draw(cfg, group) {
-    const {data: {properties, methods}, id} = cfg;
+    const {data, id} = cfg;
     const ctx = group.get('canvas').get('context');
     ctx.save();
     ctx.font = '12px sans-serif';
     const attrs = getAttrs(ctx);
-    const containerAttrs = attrs['node-container']({propCount: properties.length, methodCount: methods.length, label: cfg.label});
+    const dataPropertyCount = Object.keys(data.dataProperties).length;
+    const objectPropertyCount = Object.keys(data.objectProperties).length;
+    const containerAttrs = attrs['node-container']({propCount: dataPropertyCount, methodCount: objectPropertyCount, label: cfg.label});
     const {width, height} = containerAttrs;
-    const dataProperties = properties.reduce((acc, {predicate, object, type}, i)=> acc.concat(E.DataProperty({
-      id: `property_${id}-${predicate}-${type}`,
-      attrs: attrs.property({predicate, type, i, ctx}),
+    const dataProperties = Object.entries(data.dataProperties).map(([predicate, objects], i)=> E.DataProperty({
+      id: `property_${id}-${predicate}-${objects[0]}`,
+      attrs: attrs.property({predicate, type: objects[0], i, ctx}),
       name: `property#${i}`,
-      data: {target: type, source: id, predicate, varName: getSuffix(predicate), dataProperty: true}
-    })), []);
+      data: {target: objects[0], source: id, predicate, varName: getSuffix(predicate), dataProperty: true}
+    }));
 
-    const objectProperties = methods.reduce((acc, {predicate, object, weight}, i) => acc.concat(
-      E.ObjectProperty({
-        id: `property_${id}-${predicate}-${object}`,
-        attrs: attrs.property({predicate, type: object, i: i + properties.length, ctx}),
-        name: `property#${i + properties.length}`,
-        data: {target: object, source: id, predicate, varName: getSuffix(predicate)}
-      })
-    ), []);
+    let i = 0;
+    const objectProperties = flatten(Object.entries(data.objectProperties).map(([predicate, objects]) =>
+      objects.map(target => E.ObjectProperty({
+        id: `property_${id}-${predicate}-${target}`,
+        attrs: attrs.property({predicate, type: target, i: i + dataPropertyCount, ctx}),
+        name: `property#${i++ + dataPropertyCount}`,
+        data: {target, source: id, predicate, varName: getSuffix(predicate)}
+      }))
+    ));
 
     const propertyContainerAttrs = attrs['property-container'](dataProperties.concat(objectProperties));
     const expandIconAttrs = {
@@ -97,7 +101,7 @@ const NodeImplementation = {
       height: 16
     };
 
-    group.set('methods', objectProperties);
+    group.set('objectProperties', objectProperties);
     // FIXME: Separate group for logical pieces --> can have multiple groups, yes
     group.entityId = id;
     const result = E.create(group, [
@@ -139,10 +143,10 @@ export const createNode = data => ({
   ...data,
   type: NODE_TYPE
 });
-export const getNodes = data => Object.entries(data).map(([id, {methods, properties}]) => createNode({
+export const getNodes = data => Object.entries(data).map(([id, {objectProperties, dataProperties}]) => createNode({
   id: id,
   label: id,
-  data: {properties, methods}
+  data: {objectProperties, dataProperties}
 }));
 
 G6.registerNode(NODE_TYPE, NodeImplementation, 'single-node');
