@@ -35,9 +35,20 @@ class EntityEntryComponent extends React.Component {
     super(props);
 
     this.state = {
-      expanded: false
+      expanded: false,
+      varName: props.entity.get('varName')
     };
   }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const varName = this.props.entity.get('varName');
+
+    if (varName !== prevState.varName && (prevState.varName === this.state.varName)) {
+      this.setState({varName});
+    }
+  }
+
+  onNameChange = e => this.setState({varName: e.target.value});
 
   toggleExpanded = () => this.setState(s => ({expanded: !s.expanded}));
 
@@ -45,15 +56,17 @@ class EntityEntryComponent extends React.Component {
 
   getControls = () => {
     const {id, entity, toggleSelected, toggleHidden, updateName} = this.props;
-    const {selected, hidden, varName} = entity.toJS();
+    const {selected, hidden} = entity.toJS();
+    const {varName} = this.state;
     return (
       <ControlsContainer>
         <Space>
           <Input
             type="text"
-            defaultValue={varName}
-            onBlur={e => updateName(id, e.target.value)}
-            onPressEnter={e => updateName(id, e.target.value)}
+            value={varName}
+            onChange={this.onNameChange}
+            onBlur={() => updateName(id, varName)}
+            onPressEnter={() => updateName(id, varName)}
           />
           <Tooltip title={`${selected ? 'Hide' : 'Show'} entity in the result set`}>
             <Checkbox

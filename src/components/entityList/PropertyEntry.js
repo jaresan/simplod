@@ -29,16 +29,6 @@ const DataContainer = styled.div`
   margin-left: 8px;
 `;
 
-const DisableOverlay = styled.div`
-  background: lightgrey;
-  opacity: 0.2;
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-`;
-
 const getIcon = dataProperty => {
   const TypeIcon = dataProperty ? TagOutlined : LinkOutlined;
   const title = dataProperty ? 'Data property' : 'Object property';
@@ -46,68 +36,91 @@ const getIcon = dataProperty => {
   return <Tooltip title={title}><TypeIcon/></Tooltip>;
 }
 
-const PropertyEntryComponent = ({selectedEntities, property, id, onSelect, onSetAsVariable, onSetName, onSetOptional}) => {
-  const {predicate, asVariable, varName, optional, selected, dataProperty, target, bound} = property.toJS();
+class PropertyEntryComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      varName: props.property.get('varName')
+    }
+  }
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const varName = this.props.property.get('varName');
 
-  let nameInput;
-  if (bound) {
-    nameInput = <Tooltip
-      title="This variable can't be renamed because it is bound to an already selected entity"
-    >
-      <div>
-        <StyledInput
-          type="text"
-          disabled
-          value={selectedEntities[target].varName}
-        />
-      </div>
-    </Tooltip>;
-  } else {
-    nameInput = <StyledInput
-      type="text"
-      disabled={!asVariable}
-      defaultValue={varName}
-      onBlur={e => onSetName(id, e.target.value)}
-      onPressEnter={e => onSetName(id, e.target.value)}
-    />;
+    if (varName !== prevState.varName && (prevState.varName === this.state.varName)) {
+      this.setState({varName});
+    }
   }
 
-  return (
-    <RowContainer>
-      <Checkbox
-        onChange={e => onSelect(id, e.target.checked)}
-        name="Select"
-        checked={selected}
-      />
-      <DataContainer>
-        <Space>
-          {getIcon(dataProperty)}
-          <PrefixedText title={predicate}/>
-          -->
-          {nameInput}
-          <Controls.Toggle
-            flag={asVariable}
-            tooltipTextOn="Hide from result set"
-            tooltipTextOff="Show in result set"
-            onClick={() => onSetAsVariable(id, !asVariable)}
-            OnIcon={EyeOutlined}
-            OffIcon={EyeInvisibleOutlined}
-          />
-          <Controls.Toggle
-            flag={optional}
-            onClick={() => onSetOptional(id, !optional)}
-            tooltipTextOn="Mark as required"
-            tooltipTextOff="Mark as optional"
-            OnIcon={QuestionCircleFilled}
-            OffIcon={QuestionCircleOutlined}
-          />
-        </Space>
-        {/*{!selected && <DisableOverlay />}*/}
-      </DataContainer>
-    </RowContainer>
-  );
-}
+  onNameChange = e => this.setState({varName: e.target.value});
 
+  render() {
+    const {selectedEntities, property, id, onSelect, onSetAsVariable, onSetName, onSetOptional} = this.props;
+
+    const {predicate, asVariable, optional, selected, dataProperty, target, bound} = property.toJS();
+    const {varName} = this.state;
+
+    let nameInput;
+    if (bound) {
+      nameInput = <Tooltip
+        title="This variable can't be renamed because it is bound to an already selected entity"
+      >
+        <div>
+          <StyledInput
+            type="text"
+            disabled
+            value={selectedEntities[target].varName}
+          />
+        </div>
+      </Tooltip>;
+    } else {
+      nameInput = <StyledInput
+        type="text"
+        disabled={!asVariable}
+        value={varName}
+        onChange={this.onNameChange}
+        onBlur={() => onSetName(id, varName)}
+        onPressEnter={() => onSetName(id, varName)}
+      />;
+    }
+
+    return (
+      <RowContainer>
+        <Checkbox
+          onChange={e => onSelect(id, e.target.checked)}
+          name="Select"
+          checked={selected}
+        />
+        <DataContainer>
+          <Space>
+            {getIcon(dataProperty)}
+            <PrefixedText title={predicate}/>
+            -->
+            {nameInput}
+            <Controls.Toggle
+              flag={asVariable}
+              tooltipTextOn="Hide from result set"
+              tooltipTextOff="Show in result set"
+              onClick={() => onSetAsVariable(id, !asVariable)}
+              OnIcon={EyeOutlined}
+              OffIcon={EyeInvisibleOutlined}
+            />
+            <Controls.Toggle
+              flag={optional}
+              onClick={() => onSetOptional(id, !optional)}
+              tooltipTextOn="Mark as required"
+              tooltipTextOff="Mark as optional"
+              OnIcon={QuestionCircleFilled}
+              OffIcon={QuestionCircleOutlined}
+            />
+            <span>
+            {target}
+          </span>
+          </Space>
+        </DataContainer>
+      </RowContainer>
+    );
+  }
+}
 
 const mapStateToProps = (appState, {id}) => ({
   property: getProperty(appState, id),
