@@ -28,7 +28,7 @@ const handlers = {
 export default (state = initialState, action) => {
   if (typeof handlers[action.type] === 'function') {
     return handlers[action.type](state, action);
-  } else if (action.__customSetter) {
+  } else if (action.__customSetterSolid) {
     const {key, value} = action.payload;
     state = state.set(key, value);
   }

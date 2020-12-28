@@ -124,7 +124,7 @@ class App extends Component {
     return (
       <Layout>
         <Header style={{background: '#EEE', border: 'solid 1px black'}}>
-          {avatar ? <Avatar src={avatar} /> : <Avatar icon={<UserOutlined />} />}
+          <Avatar size="large" src={avatar} icon={<UserOutlined />} />
         </Header>
         <Content style={{padding: '0 50px', background: 'white'}}>
           <Space>

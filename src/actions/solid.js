@@ -23,8 +23,8 @@ export default {
     s_saveOwnView: ['uri']
   }, {prefix: 'Solid.'}),
   set: curry((key, value) => ({
-    type: `r_set:${key}`,
-    __customSetter: true,
+    type: `Solid.set:${key}`,
+    __customSetterSolid: true,
     payload: {
       key, value
     }

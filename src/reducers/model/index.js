@@ -143,7 +143,7 @@ export default (state = initialState, action) => {
   let newState = state;
   if (typeof handlers[action.type] === 'function') {
     newState = handlers[action.type](state, action);
-  } else if (action.__customSetter) {
+  } else if (action.__customSetterModel) {
     const {key, value} = action.payload;
     newState = state.set(key, value);
   }

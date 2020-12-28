@@ -26,8 +26,8 @@ export default {
     r_toggleLimit: ['show']
   }, {prefix: 'Model.'}),
   set: curry((key, value) => ({
-    type: `r_set:${key}`,
-    __customSetter: true,
+    type: `Model.set:${key}`,
+    __customSetterModel: true,
     payload: {
       key, value
     }
