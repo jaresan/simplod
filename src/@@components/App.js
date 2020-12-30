@@ -15,7 +15,7 @@ import styled from '@emotion/styled';
 import { Edge, Node, Property } from './graph/handlers';
 import { Tabs } from 'antd';
 import {ColumnList} from './ColumnList';
-import { getLanguage, getLoadingHumanReadable, getLimit, getLimitEnabled, getAvatar } from '@@selectors';
+import { getLanguage, getLoadingHumanReadable, getLimit, getLimitEnabled, getAvatar, getLastSave } from '@@selectors';
 import { languages } from '@@constants/languages';
 import hotkeys from 'hotkeys-js';
 
@@ -119,7 +119,7 @@ class App extends Component {
 
 
   render() {
-    const {saveData, loadData, language, loadingHumanReadable, limitEnabled, limit, avatar} = this.props;
+    const {saveData, loadData, language, loadingHumanReadable, limitEnabled, limit, avatar, lastSave} = this.props;
     const {horizontalLayout} = this.state;
 
     return (
@@ -135,7 +135,7 @@ class App extends Component {
             <Button onClick={() => this.fetchData(this.courtExampleURL)}>Court example</Button>
             <Button onClick={() => this.fetchData(this.govURL)}>Gov example</Button>
             <Button onClick={saveData}>Save local</Button>
-            <Button onClick={loadData}>Load local</Button>
+            <Button onClick={loadData}>Load local {new Date(lastSave).toLocaleString()}</Button>
           </Space>
           <br/>
           <Radio.Group onChange={this.toggleLayout} value={this.state.horizontalLayout}>
@@ -189,7 +189,8 @@ const mapStateToProps = appState => ({
   loadingHumanReadable: getLoadingHumanReadable(appState),
   limit: getLimit(appState),
   limitEnabled: getLimitEnabled(appState),
-  avatar: getAvatar(appState)
+  avatar: getAvatar(appState),
+  lastSave: getLastSave(appState)
 });
 
 const mapDispatchToProps = {

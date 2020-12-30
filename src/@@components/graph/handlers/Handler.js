@@ -3,7 +3,7 @@
  * No UI logic is directly handled here, everything is delegated to the UI layer which
  * handles the changes by itself.
  */
-import store from '@@store';
+import {store} from '@@app-state';
 import Actions from '@@actions';
 import {debounce} from 'lodash';
 import { entityTypes } from '@@constants/entityTypes';

@@ -1,4 +1,6 @@
 import {entityTypes} from '@@constants/entityTypes';
+import { lastSave, labelsLoadingProgress } from '@@app-state/model/state';
+import { view } from 'ramda';
 
 export const getModel = state => state.model;
 
@@ -39,10 +41,11 @@ export const getUser = appState => appState.solid.getIn(['session', 'webId']);
 
 export const getDirty = appState => appState.model.get('dirty');
 export const getLanguage = appState => appState.model.get('language');
-export const getLoadingHumanReadable = appState => appState.model.get('loadingHumanReadable');
+export const getLoadingHumanReadable = view(labelsLoadingProgress);
 export const getLimit = appState => appState.model.get('limit');
 export const getLimitEnabled = appState => appState.model.get('limitEnabled');
 export const getAvatar = appState => appState.solid.get('avatar');
+export const getLastSave = view(lastSave);
 
 export const getFolderUri = (appState, original) => {
   if (original) {

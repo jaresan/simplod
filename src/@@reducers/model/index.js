@@ -1,6 +1,6 @@
 import {fromJS} from 'immutable';
 import Actions from '@@actions/model';
-import { mergeRight, map, curry } from 'ramda';
+import { mergeRight, map, curry, pick } from 'ramda';
 import { entityTypes } from '@@constants/entityTypes';
 
 const initialState = fromJS({
@@ -10,26 +10,11 @@ const initialState = fromJS({
   dirty: false,
   selectionOrder: [],
   language: navigator.language,
-  loadingHumanReadable: 0,
   showHumanReadable: false,
   limitEnabled: false,
   limit: 100,
   lastSave: 0
 });
-
-const initial = {
-  entities: {
-    ...Object.keys(entityTypes).reduce((acc, type) => Object.assign(acc, {[type]: {}}), {})
-  },
-  dirty: false,
-  selectionOrder: [],
-  language: navigator.language,
-  loadingHumanReadable: 0,
-  showHumanReadable: false,
-  limitEnabled: false,
-  limit: 100,
-  lastSave: 0
-};
 
 // TODO: Add possible entity props description
 const defaultEntityProps = {
@@ -117,7 +102,6 @@ const updateSelectionOrder = (state, {selectionIds}) => state.set('selectionOrde
 const clearData = () => initialState;
 const updateLimit = (state, {limit}) => state.set('limit', limit);
 const updateLanguage = (state, {language}) => state.set('language', language);
-const setLoadingHumanReadableData = (state, {loading}) => state.set('loadingHumanReadable', loading);
 const toggleHumanReadable = (state, {show}) => state.set('showHumanReadable', show);
 
 const loadView = (state, {json}) =>
@@ -145,10 +129,9 @@ const handlers = {
   [Actions.Types.R_VIEW_LOADED]: loadView,
   [Actions.Types.R_DATA_LOADED]: connectProperties,
   [Actions.Types.R_UPDATE_LIMIT]: updateLimit,
-  [Actions.Types.R_LOAD_STATE]: (state, {json}) => fromJS(json),
+  [Actions.Types.R_LOAD_STATE]: (state, {json}) => fromJS(Object.assign(json, pick(['lastSave'], state.toJS()))),
   [Actions.Types.R_TOGGLE_SELECTIONS]: toggleSelections,
   [Actions.Types.R_SET_LANGUAGE]: updateLanguage,
-  [Actions.Types.R_SET_LOADING_HUMAN_READABLE_DATA]: setLoadingHumanReadableData,
   [Actions.Types.R_TOGGLE_HUMAN_READABLE]: toggleHumanReadable,
   [Actions.Types.R_TOGGLE_LIMIT]: (state, {show}) => state.set('limitEnabled', show)
 };

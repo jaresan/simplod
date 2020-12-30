@@ -7,7 +7,8 @@ import { parseSPARQLQuery } from '@@utils/parseQuery';
 import { invertObj, paths } from 'ramda';
 import possiblePrefixes from '@@constants/possiblePrefixes';
 import {getHumanReadableDataPromises} from '@@api';
-import store from '@@store';
+import {store, dispatchSet} from '@@app-state';
+import { lastSave, labelsLoadingProgress } from '@@app-state/model/state';
 
 function* dataChanged() {
 	const prefixes = yield select(getPrefixes);
@@ -21,7 +22,7 @@ function* dataChanged() {
 const getField = (languageOrder, field, data) => paths(languageOrder.map(l => [l, field]), data).find(a => a);
 
 function* getHumanData() {
-	yield put(Model.Creators.r_setLoadingHumanReadableData(0));
+	yield dispatchSet(labelsLoadingProgress, 0);
 	const prefixes = yield select(getPrefixes);
 	const entities = yield select(getEntities);
 	const language = yield select(getLanguage);
@@ -50,12 +51,12 @@ function* getHumanData() {
 			.catch(() => {})
 			.finally(() => {
 				resolved++;
-				store.dispatch(Model.Creators.r_setLoadingHumanReadableData(Math.round(resolved / arr.length * 100)));
+				dispatchSet(labelsLoadingProgress, Math.round(resolved / arr.length * 100));
 			})
 		});
 
 	yield Promise.all(promises);
-	store.dispatch(Model.Creators.r_setLoadingHumanReadableData(100));
+	dispatchSet(labelsLoadingProgress, 100);
 }
 
 const updateEntityLanguageInfo = (entities, language) => {
@@ -93,7 +94,7 @@ function* onDataLoaded() {
 // FIXME: Save only the diff, otherwise too big
 function* saveData() {
 	const data = yield select(getModel);
-	yield put(Model.set('lastSave', Date.now()));
+	yield dispatchSet(lastSave, Date.now());
 	localStorage.setItem('model', JSON.stringify(data.toJS()));
 }
 
