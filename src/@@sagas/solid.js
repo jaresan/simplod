@@ -120,7 +120,6 @@ function* loadOwnView({uri}) {
   const loading = message.loading('Loading view...');
   const errMsg = 'There was an error loading the view. Please make sure it corresponds to the data schema.';
   uri = `${origin}/${uri.replace(origin, '').replace(/^\//, '')}`
-  console.log(uri);
   try {
     const res = yield call(auth.fetch, uri);
     if (res.status < 200 || res.status >= 300) {

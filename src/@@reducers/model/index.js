@@ -34,9 +34,6 @@ const defaultEntityProps = {
   }
 };
 
-const getProperty = (state, id, additionalPath = []) => state.getIn(['entities', entityTypes.property, id, ...additionalPath]);
-const getEntity = (state, id, additionalPath = []) => state.getIn(['entities', entityTypes.class, id, ...additionalPath]);
-
 const updateEntities = (state, {items}) => state.mergeDeepIn(['entities', entityTypes.class], items);
 const toggleSelections = (state, {entityType, selection}) => state.mergeDeepIn(['entities', entityType], selection);
 

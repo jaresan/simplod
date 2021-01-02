@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getEntities, getProperties } from '@@selectors';
+import { getClasses, getProperties } from '@@selectors';
 import {EntityEntry} from './EntityEntry';
 import { List, Empty } from 'antd';
 import { withSearch } from '../withSearch';
@@ -66,7 +66,7 @@ class EntityListComponent extends React.Component {
 }
 
 const mapStateToProps = appState => ({
-	entities: getEntities(appState),
+	entities: getClasses(appState),
 	properties: getProperties(appState)
 });
 
