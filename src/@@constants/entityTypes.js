@@ -1,7 +1,5 @@
-import keyMirror from 'keymirror';
-
-export const entityTypes = keyMirror({
-  property: null,
-  edge: null,
-  class: null
-});
+export const entityTypes = {
+  property: 'property',
+  edge: 'edge',
+  class: 'class'
+};

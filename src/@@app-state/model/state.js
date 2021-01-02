@@ -1,4 +1,4 @@
-import {compose, lensProp, curry, lens} from 'ramda';
+import {compose, lensProp, curry, lens, filter, view, pipe} from 'ramda';
 import {fromJS} from 'immutable';
 import { entityTypes } from '@@constants/entityTypes';
 
@@ -32,4 +32,11 @@ export const language = forKey('language');
 export const dirty = forKey('dirty');
 export const entities = forKey('entities');
 export const classes = compose(entities, lensForImmutable(entityTypes.class));
+export const properties = compose(entities, lensForImmutable(entityTypes.property));
 export const selectionOrder = forKey('selectionOrder');
+
+export const propertyById = id => compose(properties, lensForImmutable(id));
+export const classById = id => compose(classes, lensForImmutable(id));
+
+// FIXME: @immutable
+export const getSelectedClasses = pipe(view(classes), filter(e => e.get('selected')), res => res.toJS());

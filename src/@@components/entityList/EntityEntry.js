@@ -6,7 +6,7 @@ import {PropertyEntry} from './PropertyEntry';
 import {PrefixedText} from './PrefixedText';
 import {RightOutlined, DownOutlined, EyeInvisibleOutlined, EyeOutlined, InfoCircleOutlined} from '@ant-design/icons';
 import styled from '@emotion/styled';
-import { getEntityById, getShowHumanReadable } from '@@selectors';
+import { getClassById, getShowHumanReadable } from '@@selectors';
 import Actions from '@@actions/model';
 import * as Controls from './Controls';
 
@@ -130,7 +130,7 @@ class EntityEntryComponent extends React.Component {
 
 
 const mapStateToProps = (appState, {id}) => ({
-  entity: getEntityById(appState, id),
+  entity: getClassById(id, appState),
   showHumanReadable: getShowHumanReadable(appState)
 });
 

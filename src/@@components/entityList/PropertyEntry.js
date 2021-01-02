@@ -10,7 +10,7 @@ import {
   QuestionCircleFilled,
   TagOutlined, LinkOutlined
 } from '@ant-design/icons';
-import { getProperty, getSelectedEntities } from '@@selectors';
+import {getPropertyById, getSelectedClasses} from '@@selectors';
 import Actions from '@@actions/model';
 import { connect } from 'react-redux';
 
@@ -123,8 +123,8 @@ class PropertyEntryComponent extends React.Component {
 }
 
 const mapStateToProps = (appState, {id}) => ({
-  property: getProperty(appState, id),
-  selectedEntities: getSelectedEntities(appState)
+  property: getPropertyById(id, appState),
+  selectedEntities: getSelectedClasses(appState)
 });
 
 const mapDispatchToProps = {
