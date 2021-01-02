@@ -1,6 +1,6 @@
 import {fromJS} from 'immutable';
 import Actions from '@@actions/model';
-import { mergeRight, map, curry, pick } from 'ramda';
+import { curry } from 'ramda';
 import { entityTypes } from '@@constants/entityTypes';
 
 const initialState = fromJS({

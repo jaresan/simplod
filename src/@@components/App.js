@@ -6,7 +6,6 @@ import {parseTTL} from '@@data/parseTTL';
 import {AntVExample} from './AntVExample';
 import {invertObj, keys, set} from 'ramda';
 import {Handler} from './graph/handlers/Handler';
-import Actions from '@@actions';
 import { Progress, Radio, Button, InputNumber, Space, Select, Switch, Layout, Menu, Avatar } from 'antd';
 import {UserOutlined} from '@ant-design/icons';
 import {getContainerStyle, getMenuStyle} from './App.styled';

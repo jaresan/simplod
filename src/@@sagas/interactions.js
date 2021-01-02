@@ -1,4 +1,3 @@
-import Model from '@@actions/model';
 import { parseSPARQLQuery } from '@@utils/parseQuery';
 import { invertObj, mergeDeepRight, paths, pick, view, map } from 'ramda';
 import possiblePrefixes from '@@constants/possiblePrefixes';
