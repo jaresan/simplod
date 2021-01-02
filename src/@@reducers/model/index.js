@@ -72,10 +72,5 @@ export default (state = initialState, action) => {
     newState = state.set(key, value);
   }
 
-  const dirty = newState
-    .get('entities')
-    .some(x => x.reduce((acc, e) => e.get('selected') || acc, false));
-  newState = newState.set('dirty', dirty);
-
   return newState;
 };

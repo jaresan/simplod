@@ -5,6 +5,7 @@ import rootReducer from '@@reducers/index';
 import sagas from '@@sagas/index';
 import {set, curry, identity, equals, map, is, fromPairs, toPairs} from 'ramda';
 import {stream} from 'kefir';
+import {middleware as modelMiddleware} from '@@app-state/model/state';
 
 const fn = Symbol('function');
 
@@ -17,12 +18,16 @@ if (process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION__
 
 export const store = createStore(
 	(s, a) => {
+		let res;
 		switch (a.type) {
 			case fn:
-				return a.fn(s);
+				res = a.fn(s);
+				break;
 			default:
-				return rootReducer(s, a);
+				res = rootReducer(s, a);
+				break;
 		}
+		return modelMiddleware(res);
 	},
 	{
 		yasgui: require('./yasgui/state').initial,

@@ -48,6 +48,12 @@ const defaultEntityProps = {
   }
 };
 
+// FIXME: @immutable
+export const middleware = s => {
+  const isDirty = view(entities, s).some(x => x.some(e => e.get('selected')));
+  return set(dirty, isDirty, s);
+};
+
 const root = 'model';
 export const rootLens = lensProp(root);
 
