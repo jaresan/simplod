@@ -11,7 +11,8 @@ import {
   set,
   map,
   assoc,
-  mergeDeepRight
+  mergeDeepRight,
+  mergeRight
 } from 'ramda';
 import {fromJS} from 'immutable';
 import { entityTypes } from '@@constants/entityTypes';
@@ -30,12 +31,30 @@ export const initial = {
   lastSave: 0
 };
 
-export const root = lensProp('model');
+const defaultEntityProps = {
+  [entityTypes.property]: {
+    asVariable: true,
+    selected: false,
+    bound: false
+  },
+  [entityTypes.class]: {
+    selected: false,
+    asVariable: true,
+    name: '',
+    info: {
+      label: '', // From remote
+      description: '' // From remote
+    }
+  }
+};
+
+const root = 'model';
+export const rootLens = lensProp(root);
 
 // FIXME: @immutable Replace with normal lensprop once refactored
 const lensForImmutable = k => lens(s => s.get(k), curry((v, s) => s.set(k, fromJS(v))));
 
-const forKey = k => compose(root, lensForImmutable(k));
+const forKey = k => compose(rootLens, lensForImmutable(k));
 
 export const lastSave = forKey('lastSave');
 export const labelsLoadingProgress = forKey('labelsLoadingProgress');
@@ -61,7 +80,7 @@ export const classById = id => compose(classes, lensForImmutable(id));
 // FIXME: @immutable
 export const getSelectedClasses = pipe(view(classes), filter(e => e.get('selected')), res => res.toJS());
 export const getSelectedEntities = pipe(view(entities), e => e.toJS(), Object.entries, reduce((acc, [type, entities]) => Object.assign(acc, {[type]: filter(prop('selected'), entities)}), {}));
-export const clearData = set(root, fromJS(initial));
+export const clearData = set(rootLens, fromJS(initial));
 export const deselectAll = s => {
   const toDeselect = view(entities, s).toJS();
   const newEntities = map(map(assoc('selected', false)), toDeselect);
@@ -71,5 +90,33 @@ export const toggleSelections = curry((type, selection, s) => {
   const entityLens = entitiesByType[type];
   const oldEntities = view(entityLens, s).toJS();
   return set(entityLens, mergeDeepRight(oldEntities, selection), s);
+});
+export const updateClasses = curry((newClasses, s) => {
+  // performance issues with ramda
+  return {
+    ...s,
+    [root]: s[root].mergeDeepIn(['entities', entityTypes.class], fromJS(newClasses))
+  };
+  const oldClasses = view(classes, s);
+
+  return set(classes, oldClasses.merge(newClasses), s);
+});
+export const registerResources = curry((entityType, resources, s) => {
+  const withDefaultProps = map(mergeRight(defaultEntityProps[entityType] || {}), resources);
+  return {
+    ...s,
+    [root]: s[root].setIn(['entities', entityType], fromJS(withDefaultProps))
+  };
+});
+export const loadView = curry((json, s) => {
+  const substate = Object.entries(json).reduce((newState, [entityType, entities]) =>
+    Object.entries(entities).reduce((subState, [id, props]) =>
+        subState.updateIn(['entities', entityType], i => i.merge(fromJS({[id]: props}))),
+      newState),
+    s[root]);
+  return {
+    ...s,
+    [root]: substate
+  };
 });
 

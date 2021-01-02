@@ -16,31 +16,6 @@ const initialState = fromJS({
   lastSave: 0
 });
 
-// TODO: Add possible entity props description
-const defaultEntityProps = {
-  [entityTypes.property]: {
-    asVariable: true,
-    selected: false,
-    bound: false
-  },
-  [entityTypes.class]: {
-    selected: false,
-    asVariable: true,
-    name: '',
-    info: {
-      label: '', // From remote
-      description: '' // From remote
-    }
-  }
-};
-
-const updateEntities = (state, {items}) => state.mergeDeepIn(['entities', entityTypes.class], items);
-
-const registerResources = (state, {entityType, resources}) => {
-  const withDefaultProps = map(mergeRight(defaultEntityProps[entityType] || {}), resources);
-  return state.setIn(['entities', entityType], fromJS(withDefaultProps));
-}
-
 const updatePropertyPositions = (state, {propertyIds}) => {
   const updatePosition = updateProperty('position');
 
@@ -76,16 +51,7 @@ const updateEntitySelected = (state, {id, selected}) => {
   return state;
 }
 
-const loadView = (state, {json}) =>
-  Object.entries(json).reduce((newState, [entityType, entities]) =>
-    Object.entries(entities).reduce((subState, [id, props]) =>
-        subState.updateIn(['entities', entityType], i => i.merge(fromJS({[id]: props}))),
-      newState),
-  state);
-
 const handlers = {
-  [Actions.Types.R_UPDATE_ENTITIES]: updateEntities,
-  [Actions.Types.R_REGISTER_RESOURCES]: registerResources,
   [Actions.Types.R_TOGGLE_PROPERTY_SELECTED]: updatePropertySelected,
   [Actions.Types.R_TOGGLE_PROPERTY_OPTIONAL]: updateProperty('optional'),
   [Actions.Types.R_TOGGLE_PROPERTY_AS_VARIABLE]: updateProperty('asVariable'),
@@ -94,8 +60,7 @@ const handlers = {
   [Actions.Types.R_TOGGLE_ENTITY_HIDDEN]: updateEntity('hidden'),
   [Actions.Types.R_TOGGLE_ENTITY_SELECTED]: updateEntitySelected,
   [Actions.Types.R_TOGGLE_ENTITY_AS_VARIABLE]: updateEntity('asVariable'),
-  [Actions.Types.R_UPDATE_ENTITY_NAME]: updateEntity('varName'),
-  [Actions.Types.R_VIEW_LOADED]: loadView
+  [Actions.Types.R_UPDATE_ENTITY_NAME]: updateEntity('varName')
 };
 
 export default (state = initialState, action) => {

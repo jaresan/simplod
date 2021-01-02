@@ -3,7 +3,7 @@ import { parseSPARQLQuery } from '@@utils/parseQuery';
 import { invertObj, mergeDeepRight, paths, pick, view, map } from 'ramda';
 import possiblePrefixes from '@@constants/possiblePrefixes';
 import {getHumanReadableDataPromises} from '@@api';
-import {store, dispatchSet, getState} from '@@app-state';
+import {dispatch, dispatchSet, getState} from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import * as YasguiState from '@@app-state/yasgui/state';
 import { entityTypes } from '@@constants/entityTypes';
@@ -49,7 +49,7 @@ const getHumanData = () => {
 					}
 
 					// FIXME: Aggregate into one dispatch
-					store.dispatch(Model.Creators.r_updateEntities(updateEntityLanguageInfo(newClasses, language)));
+					dispatch(ModelState.updateClasses(updateEntityLanguageInfo(newClasses, language)));
 				}
 			})
 			.catch(() => {})
@@ -71,13 +71,10 @@ const updateEntityLanguageInfo = (entities, language) => {
 	const languageOrder = [language, 'en', 'de', 'default'];
 
 	return map(e => {
-		const info = e.info || {};
-		return mergeDeepRight(e, {
-			info: {
-				label: getField(languageOrder, 'label', info.byLanguage),
-				description: getField(languageOrder, 'description', info.byLanguage)
-			}
-		})
+		e.info = e.info || {};
+		e.info.label = getField(languageOrder, 'label', e.info.byLanguage);
+		e.info.description = getField(languageOrder, 'description', e.info.byLanguage);
+		return e;
 	}, entities);
 }
 
@@ -117,5 +114,5 @@ export const loadData = () => {
 	const state = getState().model;
 	const json = JSON.parse(localStorage.getItem('model'));
 	const newState = fromJS(Object.assign(json, pick(['lastSave'], state.toJS())));
-	dispatchSet(ModelState.root, newState);
+	dispatchSet(ModelState.rootLens, newState);
 }

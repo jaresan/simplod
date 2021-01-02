@@ -128,7 +128,7 @@ function* loadOwnView({uri}) {
     } else {
       const json = yield res.json();
       dispatch(ModelState.deselectAll);
-      yield put(ModelActions.Creators.r_viewLoaded(json));
+      dispatch(ModelState.loadView(json));
       message.success('View loaded');
     }
   } catch (e) {
@@ -173,7 +173,7 @@ function* loadExternalView({uri}) {
     if (res.status >= 200 && res.status < 300) {
       const json = yield res.json();
       dispatch(ModelState.deselectAll);
-      yield put(ModelActions.Creators.r_viewLoaded(json));
+      dispatch(ModelState.loadView(json));
     } else if (res.status === 401) {
       message.error(`
         The request returned 401 - unauthorized.

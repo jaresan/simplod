@@ -22,6 +22,7 @@ const downloadHumanReadableData = ({urls, prefixToIri, iriToPrefix}) => fetch(`$
 //   }, {});
 // };
 
+// FIXME: Don't rely on proxy
 export const getHumanReadableDataPromises = ({urls, prefixToIri, iriToPrefix}) => {
   return urls.map(url => downloadHumanReadableData({urls: [url], prefixToIri, iriToPrefix}));
   // return (await Promise.all(promises)).reduce(merge, {});

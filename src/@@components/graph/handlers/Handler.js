@@ -38,7 +38,7 @@ export class Handler {
   }
 
   static commitResources() {
-    this.dispatch(Actions.Model.Creators.r_registerResources(this.entityType, this.resources));
+    dispatch(ModelState.registerResources(this.entityType, this.resources));
   }
 
   static onToggleSelect(id, selected) {
