@@ -1,9 +1,10 @@
 import { takeEvery, select, call, put, all } from 'redux-saga/effects';
 import { getViewSelection } from '@@selectors';
+import {dispatchSet, dispatch, getState} from '@@app-state';
+import * as SolidState from '@@app-state/solid/state';
 import SolidActions from '@@actions/solid';
 import ModelActions from '@@actions/model';
-import nPath from 'path';
-import {pipe, path, assocPath, identity, replace} from 'ramda';
+import {pipe, path, assocPath, identity, replace, view, mergeDeepRight} from 'ramda';
 import {message} from 'antd';
 import auth from 'solid-auth-client';
 import rdf from 'rdflib';
@@ -14,7 +15,7 @@ import rdf from 'rdflib';
 function* login() {
   const popupUri = 'dist-popup/popup.html';
   const session = yield call(auth.popupLogin, { popupUri });
-  yield put(SolidActions.Creators.r_setSolidSession(session));
+  dispatchSet(SolidState.session, session);
 
   return session;
 }
@@ -151,9 +152,10 @@ function* deleteFile({uri}) {
     } else {
       message.success('View deleted');
       const filePath = ['/'].concat(uri.replace(origin, '').split('/')).filter(identity);
-      yield put(SolidActions.Creators.r_fileDeleted(filePath));
+      dispatch(SolidState.deleteFile(filePath));
     }
   } catch (e) {
+    console.error(e);
     message.error('An error occured while trying to delete the view.')
   } finally {
     loading();
@@ -264,7 +266,7 @@ function* updateAvatar(webId) {
   const vCard = rdf.Namespace('http://www.w3.org/2006/vcard/ns#')
   const hasPhoto = vCard('hasPhoto');
   const avatar = path([0, 'object', 'value'], store.statementsMatching(null, hasPhoto, null));
-  yield put(SolidActions.set('avatar', avatar));
+  dispatchSet(SolidState.avatar, avatar);
 }
 
 function* onLoggedIn() {
@@ -278,7 +280,7 @@ function* onStart() {
 
   if (valid) {
     yield onLoggedIn();
-    yield put(SolidActions.Creators.r_setSolidSession(session));
+    dispatchSet(SolidState.session, session);
   } else {
     yield auth.logout();
   }
@@ -286,7 +288,7 @@ function* onStart() {
 
 function* onLogout() {
   yield call(auth.logout);
-  yield put(SolidActions.Creators.r_solidLoggedOut());
+  dispatch(SolidState.logOut())
 }
 
 function* loadFiles({url}) {
@@ -326,7 +328,10 @@ function* loadFiles({url}) {
   .filter(name => !folders[name] && isTypeValid(name))
     .reduce((acc, name) => Object.assign(acc, {[name]: null}), {});
 
-  yield put(SolidActions.Creators.r_filesLoaded(assocPath(filePath, {...folders, ...files, __loaded: true}, {})));
+  const state = getState();
+  const oldFiles = view(SolidState.files, state);
+  const newFiles = assocPath(filePath, {...folders, ...files, __loaded: true}, {});
+  dispatchSet(SolidState.files, mergeDeepRight(oldFiles, newFiles));
 }
 
 export default function*() {

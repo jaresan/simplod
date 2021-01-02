@@ -1,21 +1,25 @@
-import {compose, lensProp, curry, lens, mapObjIndexed} from 'ramda';
-import {fromJS} from 'immutable';
+import {compose, lensProp, dissocPath, set} from 'ramda';
 
 export const initial = {
   session: {},
   files: {},
-  avatar: ''
+  avatar: '',
+  folderUriChanging: false,
+  folderUri: ''
 };
 
-const solid = lensProp('solid');
+const root = 'solid';
+const rootLens = lensProp(root);
 
-// FIXME: Replace with normal lensprop once refactored
-const lensForImmutable = k => lens(s => s.get(k), curry((v, s) => s.set(k, fromJS(v))));
-
-const forKey = k => compose(solid, lensForImmutable(k));
+const forKey = k => compose(rootLens, lensProp(k));
 
 export const avatar = forKey('avatar');
 export const session = forKey('session');
-export const webId = compose(session, lensForImmutable('webId'));
+export const files = forKey('files');
+export const folderUri = forKey('folderUri');
+export const webId = compose(session, lensProp('webId'));
 export const folderUriChanging = forKey('folderUriChanging');
+export const logOut = set(rootLens, initial);
+
+export const deleteFile = filePath => dissocPath([root, 'files', ...filePath]);
 

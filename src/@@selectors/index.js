@@ -1,4 +1,5 @@
-import * as YasguiSate from '@@app-state/yasgui/state';
+import * as YasguiState from '@@app-state/yasgui/state';
+import * as SolidState from '@@app-state/solid/state';
 import {entityTypes} from '@@constants/entityTypes';
 import { view } from 'ramda';
 const { limit, dirty, limitEnabled, lastSave, labelsLoadingProgress, language, showHumanReadable, classes } = require('@@app-state/model/state');
@@ -46,10 +47,11 @@ export const getAvatar = view(avatar);
 export const getLastSave = view(lastSave);
 
 export const getFolderUri = (appState, original) => {
+  const folderUri = view(SolidState.folderUri, appState);
   if (original) {
-    return appState.solid.get('folderUri');
+    return folderUri;
   }
-  let uri = appState.solid.get('folderUri') || '/';
+  let uri = folderUri || '/';
   if (uri[uri.length - 1] !== '/') {
     uri = uri + '/';
   }
@@ -59,9 +61,9 @@ export const getFolderUri = (appState, original) => {
 
 export const getFolderUriChanging = view(folderUriChanging);
 
-export const getFiles = appState => appState.solid.get('files').toJS();
+export const getFiles = view(SolidState.files);
 
-export const getQuery = view(YasguiSate.query);
-export const getEndpoint = view(YasguiSate.endpoint);
-export const getSimpleQuery = view(YasguiSate.simpleQuery);
-export const getPrefixes = view(YasguiSate.prefixes);
+export const getQuery = view(YasguiState.query);
+export const getEndpoint = view(YasguiState.endpoint);
+export const getSimpleQuery = view(YasguiState.simpleQuery);
+export const getPrefixes = view(YasguiState.prefixes);

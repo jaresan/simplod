@@ -3,7 +3,6 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import rootReducer from '@@reducers/index';
 import sagas from '@@sagas/index';
-import {fromJS} from 'immutable';
 import {set, curry, identity, equals, map, is, fromPairs, toPairs} from 'ramda';
 import {stream} from 'kefir';
 
@@ -26,7 +25,8 @@ export const store = createStore(
 		}
 	},
 	{
-		yasgui: require('./yasgui/state').initial
+		yasgui: require('./yasgui/state').initial,
+		solid: require('./solid/state').initial
 	}, // FIXME: Add initial state
 	middleware
 );
