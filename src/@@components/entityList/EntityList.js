@@ -33,6 +33,7 @@ class EntityListComponent extends React.Component {
 		const {searchText} = this.props;
 		let entities = this.props.entities;
 		if (this.props.onlySelected) {
+			// FIXME: @immutable
 			entities = entities.filter(e => e.get('selected') || e.get('propertyIds').some(pId => this.props.properties.getIn([pId, 'selected'])));
 		}
 		const searchTerms = entities.map((val, id) => getSearchTerm([id, val.toJS()])).toJS();

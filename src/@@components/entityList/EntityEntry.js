@@ -7,7 +7,6 @@ import {PrefixedText} from './PrefixedText';
 import {RightOutlined, DownOutlined, EyeInvisibleOutlined, EyeOutlined, InfoCircleOutlined} from '@ant-design/icons';
 import styled from '@emotion/styled';
 import { getClassById, getShowHumanReadable } from '@@selectors';
-import Actions from '@@actions/model';
 import * as Controls from './Controls';
 import * as ModelState from '@@app-state/model/state';
 import { dispatch } from '@@app-state';
@@ -138,7 +137,7 @@ const mapStateToProps = (appState, {id}) => ({
 
 const mapDispatchToProps = {
   toggleHidden: pipe(ModelState.toggleClassHidden, dispatch),
-  toggleSelected: Actions.Creators.r_toggleEntitySelected,
+  toggleSelected: pipe(ModelState.toggleClassSelected, dispatch),
   updateName: pipe(ModelState.updateClassName, dispatch)
 };
 

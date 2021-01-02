@@ -84,12 +84,40 @@ const update = curry((type, key, id, value) => set(compose(byTypeAndId(type, id)
 const updateProperty = update(entityTypes.property);
 const updateEntity = update(entityTypes.class);
 
+// FIXME: Move to /property.js and use lensProp
 export const togglePropertyOptional = updateProperty('optional');
 export const togglePropertyAsVariable = updateProperty('asVariable');
 export const savePropertyName = updateProperty('varName');
 export const toggleClassHidden = updateEntity('hidden');
 export const toggleClassAsVariable = updateEntity('asVariable');
 export const updateClassName = updateEntity('varName');
+
+const updateSelected = curry((type, id, selected, s) => {
+  s = update(type, 'selected', id, selected)(s);
+  const order = view(selectionOrder, s);
+  if (selected) {
+    return set(selectionOrder, order.push(id), s);
+  }
+
+  return set(selectionOrder, order.remove(order.indexOf(id)), s);
+});
+
+export const togglePropertySelected = updateSelected(entityTypes.property);
+
+export const toggleClassSelected = curry((id, selected, state) => {
+  state = updateSelected(entityTypes.class, id, selected, state);
+  const oldProperties = view(properties, state);
+  const newProperties = oldProperties.map(property => {
+    const target = view(classById(property.get('target')), state);
+
+    if (target && target.get('selected')) {
+      return property.set('bound', true);
+    }
+
+    return property.set('bound', false);
+  });
+  return set(properties, newProperties, state);
+});
 
 const byTypeAndId = curry((type, id) => compose(entitiesByType[type], lensForImmutable(id)));
 export const propertyById = byTypeAndId(entityTypes.property);

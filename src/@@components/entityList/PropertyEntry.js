@@ -12,7 +12,6 @@ import {
   TagOutlined, LinkOutlined
 } from '@ant-design/icons';
 import {getPropertyById, getSelectedClasses} from '@@selectors';
-import Actions from '@@actions/model';
 import { connect } from 'react-redux';
 import * as ModelState from '@@app-state/model/state';
 import {dispatch} from '@@app-state';
@@ -131,7 +130,7 @@ const mapStateToProps = (appState, {id}) => ({
 });
 
 const mapDispatchToProps = {
-  onSelect: Actions.Creators.r_togglePropertySelected,
+  onSelect: pipe(ModelState.togglePropertySelected, dispatch),
   onSetAsVariable: pipe(ModelState.togglePropertyAsVariable, dispatch),
   onSetName: pipe(ModelState.savePropertyName, dispatch),
   onSetOptional: pipe(ModelState.togglePropertyOptional, dispatch)
