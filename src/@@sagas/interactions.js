@@ -11,7 +11,7 @@ import {fromJS} from 'immutable';
 
 export const dataChanged = () => {
 	const state = getState();
-	const prefixes = state.yasgui.get('prefixes').toJS();
+	const prefixes = view(YasguiState.prefixes, state);
 	const selectedProperties = state.model.getIn(['entities', entityTypes.property]).filter(e => e.get('selected')).toJS();
 	const selectedEntities = state.model.getIn(['entities', entityTypes.class]).filter(e => e.get('selected')).toJS();
 	const limit = view(ModelState.limit, state);
@@ -27,7 +27,7 @@ const getHumanData = () => {
 	dispatchSet(ModelState.labelsLoadingProgress, 0);
 	const state = getState();
 	const classes = view(ModelState.classes, state);
-	const prefixes = state.yasgui.get('prefixes').toJS();
+	const prefixes = view(YasguiState.prefixes, state);
 	const language = view(ModelState.language, state);
 	const jsClasses = classes.toJS();
 	const urls = Object.keys(jsClasses);

@@ -1,3 +1,4 @@
+import * as YasguiSate from '@@app-state/yasgui/state';
 import {entityTypes} from '@@constants/entityTypes';
 import { view } from 'ramda';
 const { limit, dirty, limitEnabled, lastSave, labelsLoadingProgress, language, showHumanReadable, classes } = require('@@app-state/model/state');
@@ -23,8 +24,6 @@ export const getEntities = view(classes);
 export const getEntityById = (appState, id) => appState.model.getIn(['entities', entityTypes.class, id]);
 export const getPropertyIdsByEntityId = (appState, id) => appState.model.getIn(['entities', entityTypes.class, id, 'propertyIds'])
 export const getShowHumanReadable = view(showHumanReadable);
-
-export const getPrefixes = appState => appState.yasgui.get('prefixes').toJS();
 
 export const getSelectedProperties = appState => appState.model.getIn(['entities', entityTypes.property]).filter(e => e.get('selected')).toJS();
 export const getSelectedEntities = appState => appState.model.getIn(['entities', entityTypes.class]).filter(e => e.get('selected')).toJS();
@@ -62,6 +61,7 @@ export const getFolderUriChanging = view(folderUriChanging);
 
 export const getFiles = appState => appState.solid.get('files').toJS();
 
-export const getQuery = appState => appState.yasgui.get('query');
-export const getEndpoint = appState => appState.yasgui.get('endpoint');
-export const getSimpleQuery = appState => appState.yasgui.get('simpleQuery');
+export const getQuery = view(YasguiSate.query);
+export const getEndpoint = view(YasguiSate.endpoint);
+export const getSimpleQuery = view(YasguiSate.simpleQuery);
+export const getPrefixes = view(YasguiSate.prefixes);
