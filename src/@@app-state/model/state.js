@@ -94,9 +94,10 @@ export const updateClassName = updateEntity('varName');
 
 const updateSelected = curry((type, id, selected, s) => {
   s = update(type, 'selected', id, selected)(s);
+  // @immutable
   const order = view(selectionOrder, s);
   if (selected) {
-    return set(selectionOrder, order.push(id), s);
+    return set(selectionOrder, order.concat(id), s);
   }
 
   return set(selectionOrder, order.remove(order.indexOf(id)), s);

@@ -92,7 +92,7 @@ class App extends Component {
     Property.clear();
     Node.clear();
     Edge.clear();
-    this.props.clearData();
+    dispatchProps.clearData();
     fetch(url)
       .then(res => res.text())
       .then(async ttl => {
@@ -111,12 +111,12 @@ class App extends Component {
   toggleLayout = ({target: {value: horizontalLayout}}) => this.setState({horizontalLayout})
 
   updateLimit = limit => {
-    this.props.updateLimit(limit);
+    dispatchProps.updateLimit(limit);
     dataChanged();
   };
 
   toggleLimit = checked => {
-    this.props.toggleLimit(checked);
+    dispatchProps.toggleLimit(checked);
     dataChanged();
   };
 
@@ -159,7 +159,7 @@ class App extends Component {
               <ControlPanel/>
               Downloading human readable data:
               <Progress percent={loadingHumanReadable} status={loadingHumanReadable < 100 && "active"} />
-              <span>Show labels: <Switch style={{width: 32}} onChange={this.props.toggleHumanReadable} /></span>
+              <span>Show labels: <Switch style={{width: 32}} onChange={dispatchProps.toggleHumanReadable} /></span>
               <span>Select language: <Select onChange={changeLanguage} value={language}>{languageOptions}</Select></span>
               <Tabs>
                 <TabPane tab="Available" key="1">
@@ -196,11 +196,12 @@ const mapStateToProps = appState => ({
   lastSave: getLastSave(appState)
 });
 
-const mapDispatchToProps = {
+// TODO: @dispatch rewrite
+const dispatchProps = {
   clearData: () => dispatch(ModelState.clearData),
   updateLimit: dispatchSet(ModelState.limit),
   toggleLimit: dispatchSet(ModelState.limitEnabled),
   toggleHumanReadable: dispatchSet(ModelState.showHumanReadable)
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, null)(App);

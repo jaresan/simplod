@@ -11,6 +11,7 @@ import {fromJS} from 'immutable';
 export const dataChanged = () => {
 	const state = getState();
 	const prefixes = view(YasguiState.prefixes, state);
+	// FIXME: @immutable
 	const selectedProperties = state.model.getIn(['entities', entityTypes.property]).filter(e => e.get('selected')).toJS();
 	const selectedEntities = state.model.getIn(['entities', entityTypes.class]).filter(e => e.get('selected')).toJS();
 	const limit = view(ModelState.limit, state);
@@ -89,6 +90,7 @@ export const changeLanguage = language => {
 
 export const onDataLoaded = () => {
 	const state = getState();
+	// FIXME: @immutable
 	const propsById = state.model.getIn(['entities', entityTypes.property])
 		.reduce((acc, p, id) => {
 			const source = p.get('source');

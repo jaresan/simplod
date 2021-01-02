@@ -79,6 +79,7 @@ export class Handler {
     this.lastState = state;
     Object.values(this.recipients)
       .forEach(recipient => {
+        // FIXME: @immutable
         const subState = state.getIn(['entities', recipient.handler.entityType, recipient.id]);
         if (subState && subState !== recipient.__lastState) {
           // FIXME: Map to relevant properties for the wrapper instead of sending subState.toJS() as a whole

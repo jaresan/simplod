@@ -18,6 +18,7 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
+// FIXME: @immutable
 const getItems = (items, selectionOrder) => selectionOrder
   .filter(id => items.getIn([id, 'selected']))
   .filter(id => !items.getIn([id, 'bound']))
@@ -64,8 +65,7 @@ class ColumnListComponent extends Component {
       result.destination.index
     );
 
-    console.log(items.map(prop('id')));
-    this.props.updateSelectionOrder(items.map(prop('id')));
+    dispatchProps.updateSelectionOrder(items.map(prop('id')));
     dataChanged();
   }
 
@@ -124,8 +124,9 @@ const mapStateToProps = appState => ({
   selectionOrder: getSelectionOrder(appState).toJS()
 });
 
-const mapDispatchToProps = {
+// TODO: @dispatch
+const dispatchProps = {
   updateSelectionOrder: dispatchSet(ModelState.selectionOrder)
 };
 
-export const ColumnList = connect(mapStateToProps, mapDispatchToProps)(ColumnListComponent);
+export const ColumnList = connect(mapStateToProps, null)(ColumnListComponent);

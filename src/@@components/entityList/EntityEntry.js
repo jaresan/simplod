@@ -56,7 +56,8 @@ class EntityEntryComponent extends React.Component {
   getToggleIcon = () => this.state.expanded ? <DownOutlined /> : <RightOutlined />
 
   getControls = () => {
-    const {id, entity, toggleSelected, toggleHidden, updateName} = this.props;
+    const {id, entity} = this.props;
+    const {toggleSelected, toggleHidden, updateName} = dispatchProps;
     const {selected, hidden} = entity.toJS();
     const {varName} = this.state;
     return (
@@ -135,10 +136,11 @@ const mapStateToProps = (appState, {id}) => ({
   showHumanReadable: getShowHumanReadable(appState)
 });
 
-const mapDispatchToProps = {
+// TODO: @dispatch rewrite
+const dispatchProps = {
   toggleHidden: pipe(ModelState.toggleClassHidden, dispatch),
   toggleSelected: pipe(ModelState.toggleClassSelected, dispatch),
   updateName: pipe(ModelState.updateClassName, dispatch)
 };
 
-export const EntityEntry = connect(mapStateToProps, mapDispatchToProps)(EntityEntryComponent);
+export const EntityEntry = connect(mapStateToProps, null)(EntityEntryComponent);

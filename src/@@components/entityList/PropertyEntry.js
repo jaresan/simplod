@@ -56,7 +56,8 @@ class PropertyEntryComponent extends React.Component {
   onNameChange = e => this.setState({varName: e.target.value});
 
   render() {
-    const {selectedEntities, property, id, onSelect, onSetAsVariable, onSetName, onSetOptional} = this.props;
+    const {selectedEntities, property, id} = this.props;
+    const {onSelect, onSetAsVariable, onSetName, onSetOptional} = dispatchProps;
 
     const {predicate, asVariable, optional, selected, dataProperty, target, bound} = property.toJS();
     const {varName} = this.state;
@@ -129,11 +130,12 @@ const mapStateToProps = (appState, {id}) => ({
   selectedEntities: getSelectedClasses(appState)
 });
 
-const mapDispatchToProps = {
+// TODO: @dispatch rewrite
+const dispatchProps = {
   onSelect: pipe(ModelState.togglePropertySelected, dispatch),
   onSetAsVariable: pipe(ModelState.togglePropertyAsVariable, dispatch),
   onSetName: pipe(ModelState.savePropertyName, dispatch),
   onSetOptional: pipe(ModelState.togglePropertyOptional, dispatch)
 };
 
-export const PropertyEntry = connect(mapStateToProps, mapDispatchToProps)(PropertyEntryComponent);
+export const PropertyEntry = connect(mapStateToProps, null)(PropertyEntryComponent);
