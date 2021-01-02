@@ -2,6 +2,7 @@ import React from 'react';
 import { Checkbox, Input, Space, List, Tooltip } from 'antd';
 import { PrefixedText } from './PrefixedText';
 import styled from '@emotion/styled';
+import {pipe} from 'ramda';
 import * as Controls from './Controls';
 import {
   EyeInvisibleOutlined,
@@ -13,6 +14,8 @@ import {
 import {getPropertyById, getSelectedClasses} from '@@selectors';
 import Actions from '@@actions/model';
 import { connect } from 'react-redux';
+import * as ModelState from '@@app-state/model/state';
+import {dispatch} from '@@app-state';
 
 const StyledInput = styled(Input)`	
 	width: 128px;	
@@ -129,9 +132,9 @@ const mapStateToProps = (appState, {id}) => ({
 
 const mapDispatchToProps = {
   onSelect: Actions.Creators.r_togglePropertySelected,
-  onSetAsVariable: Actions.Creators.r_togglePropertyAsVariable,
-  onSetName: Actions.Creators.r_savePropertyName,
-  onSetOptional: Actions.Creators.r_togglePropertyOptional
+  onSetAsVariable: pipe(ModelState.togglePropertyAsVariable, dispatch),
+  onSetName: pipe(ModelState.savePropertyName, dispatch),
+  onSetOptional: pipe(ModelState.togglePropertyOptional, dispatch)
 };
 
 export const PropertyEntry = connect(mapStateToProps, mapDispatchToProps)(PropertyEntryComponent);

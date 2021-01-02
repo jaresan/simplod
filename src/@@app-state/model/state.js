@@ -80,8 +80,20 @@ const entitiesByType = {
 };
 export const selectionOrder = forKey('selectionOrder');
 
-export const propertyById = id => compose(properties, lensForImmutable(id));
-export const classById = id => compose(classes, lensForImmutable(id));
+const update = curry((type, key, id, value) => set(compose(byTypeAndId(type, id), lensForImmutable(key)), value));
+const updateProperty = update(entityTypes.property);
+const updateEntity = update(entityTypes.class);
+
+export const togglePropertyOptional = updateProperty('optional');
+export const togglePropertyAsVariable = updateProperty('asVariable');
+export const savePropertyName = updateProperty('varName');
+export const toggleClassHidden = updateEntity('hidden');
+export const toggleClassAsVariable = updateEntity('asVariable');
+export const updateClassName = updateEntity('varName');
+
+const byTypeAndId = curry((type, id) => compose(entitiesByType[type], lensForImmutable(id)));
+export const propertyById = byTypeAndId(entityTypes.property);
+export const classById = byTypeAndId(entityTypes.class);
 
 // FIXME: @immutable
 export const getSelectedClasses = pipe(view(classes), filter(e => e.get('selected')), res => res.toJS());

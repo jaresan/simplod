@@ -1,5 +1,5 @@
 import React from 'react';
-import {path, paths} from 'ramda';
+import { path, paths, pipe } from 'ramda';
 import { List, Card, Space, Checkbox, Tooltip, Input } from 'antd';
 import {connect} from 'react-redux';
 import {PropertyEntry} from './PropertyEntry';
@@ -9,6 +9,8 @@ import styled from '@emotion/styled';
 import { getClassById, getShowHumanReadable } from '@@selectors';
 import Actions from '@@actions/model';
 import * as Controls from './Controls';
+import * as ModelState from '@@app-state/model/state';
+import { dispatch } from '@@app-state';
 
 const ExpandIconContainer = styled.div`
   display: inline-block;
@@ -135,9 +137,9 @@ const mapStateToProps = (appState, {id}) => ({
 });
 
 const mapDispatchToProps = {
-  toggleHidden: Actions.Creators.r_toggleEntityHidden,
+  toggleHidden: pipe(ModelState.toggleClassHidden, dispatch),
   toggleSelected: Actions.Creators.r_toggleEntitySelected,
-  updateName: Actions.Creators.r_updateEntityName
+  updateName: pipe(ModelState.updateClassName, dispatch)
 };
 
 export const EntityEntry = connect(mapStateToProps, mapDispatchToProps)(EntityEntryComponent);

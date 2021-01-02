@@ -53,14 +53,8 @@ const updateEntitySelected = (state, {id, selected}) => {
 
 const handlers = {
   [Actions.Types.R_TOGGLE_PROPERTY_SELECTED]: updatePropertySelected,
-  [Actions.Types.R_TOGGLE_PROPERTY_OPTIONAL]: updateProperty('optional'),
-  [Actions.Types.R_TOGGLE_PROPERTY_AS_VARIABLE]: updateProperty('asVariable'),
-  [Actions.Types.R_SAVE_PROPERTY_NAME]: updateProperty('varName'),
   [Actions.Types.R_UPDATE_PROPERTY_POSITIONS]: updatePropertyPositions,
-  [Actions.Types.R_TOGGLE_ENTITY_HIDDEN]: updateEntity('hidden'),
   [Actions.Types.R_TOGGLE_ENTITY_SELECTED]: updateEntitySelected,
-  [Actions.Types.R_TOGGLE_ENTITY_AS_VARIABLE]: updateEntity('asVariable'),
-  [Actions.Types.R_UPDATE_ENTITY_NAME]: updateEntity('varName')
 };
 
 export default (state = initialState, action) => {

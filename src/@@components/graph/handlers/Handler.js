@@ -4,7 +4,6 @@
  * handles the changes by itself.
  */
 import {store, dispatch} from '@@app-state';
-import Actions from '@@actions';
 import {dataChanged as onDataChanged} from '@@sagas/interactions';
 import {debounce} from 'lodash';
 import * as ModelState from '@@app-state/model/state';
@@ -67,7 +66,7 @@ export class Handler {
   }
 
   static toggleEntityHidden(id, hidden) {
-    this.dispatch(Actions.Model.Creators.r_toggleEntityHidden(id, hidden))
+    dispatch(ModelState.toggleClassHidden(id, hidden))
   }
 
   /**
