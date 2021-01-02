@@ -1,6 +1,7 @@
 import {entityTypes} from '@@constants/entityTypes';
-import { lastSave, labelsLoadingProgress } from '@@app-state/model/state';
 import { view } from 'ramda';
+const { limit, dirty, limitEnabled, lastSave, labelsLoadingProgress, language, showHumanReadable, classes } = require('@@app-state/model/state');
+const { avatar, session, webId, folderUriChanging } = require('@@app-state/solid/state');
 
 export const getModel = state => state.model;
 
@@ -18,10 +19,10 @@ export const getSelectedData = appState =>
 
 export const getProperties = (appState) => appState.model.getIn(['entities', entityTypes.property]);
 export const getProperty = (appState, id) => appState.model.getIn(['entities', entityTypes.property, id]);
-export const getEntities = appState => appState.model.getIn(['entities', entityTypes.class]);
+export const getEntities = view(classes);
 export const getEntityById = (appState, id) => appState.model.getIn(['entities', entityTypes.class, id]);
 export const getPropertyIdsByEntityId = (appState, id) => appState.model.getIn(['entities', entityTypes.class, id, 'propertyIds'])
-export const getShowHumanReadable = appState => appState.model.get('showHumanReadable');
+export const getShowHumanReadable = view(showHumanReadable);
 
 export const getPrefixes = appState => appState.yasgui.get('prefixes').toJS();
 
@@ -36,15 +37,13 @@ export const getInfo = appState => {
   }
 }
 
-export const getSession = appState => appState.solid.get('session').toJS();
-export const getUser = appState => appState.solid.getIn(['session', 'webId']);
-
-export const getDirty = appState => appState.model.get('dirty');
-export const getLanguage = appState => appState.model.get('language');
+export const getUser = view(webId);
+export const getDirty = view(dirty);
+export const getLanguage = view(language);
 export const getLoadingHumanReadable = view(labelsLoadingProgress);
-export const getLimit = appState => appState.model.get('limit');
-export const getLimitEnabled = appState => appState.model.get('limitEnabled');
-export const getAvatar = appState => appState.solid.get('avatar');
+export const getLimit = view(limit);
+export const getLimitEnabled = view(limitEnabled);
+export const getAvatar = view(avatar);
 export const getLastSave = view(lastSave);
 
 export const getFolderUri = (appState, original) => {
@@ -59,7 +58,7 @@ export const getFolderUri = (appState, original) => {
   return uri;
 };
 
-export const getFolderUriChanging = appState => appState.solid.get('folderUriChanging');
+export const getFolderUriChanging = view(folderUriChanging);
 
 export const getFiles = appState => appState.solid.get('files').toJS();
 

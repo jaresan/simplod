@@ -5,6 +5,7 @@
  */
 import {store} from '@@app-state';
 import Actions from '@@actions';
+import {dataChanged as onDataChanged} from '@@sagas/interactions';
 import {debounce} from 'lodash';
 import { entityTypes } from '@@constants/entityTypes';
 
@@ -89,7 +90,7 @@ export class Handler {
         }
       });
     if (dataChanged) {
-      this.dispatch(Actions.Interactions.Creators.s_dataChanged());
+      onDataChanged();
     }
   };
 }

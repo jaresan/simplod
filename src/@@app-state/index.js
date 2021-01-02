@@ -6,7 +6,6 @@ import sagas from '@@sagas/index';
 import {fromJS} from 'immutable';
 import {set, curry, identity, equals, map, is, fromPairs, toPairs} from 'ramda';
 import {stream} from 'kefir';
-Object.assign(window, require('ramda'));
 
 const fn = Symbol('function');
 
@@ -17,7 +16,7 @@ if (process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION__
 	middleware = compose(middleware, window.__REDUX_DEVTOOLS_EXTENSION__());
 }
 
-const store = createStore(
+export const store = createStore(
 	(s, a) => {
 		switch (a.type) {
 			case fn:
@@ -26,16 +25,19 @@ const store = createStore(
 				return rootReducer(s, a);
 		}
 	},
-	{}, // FIXME: Add initial state
+	{
+		yasgui: require('./yasgui/state').initial
+	}, // FIXME: Add initial state
 	middleware
 );
 
 sagaMiddleware.run(sagas);
 
-const dispatch = f => store.dispatch({type: fn, fn: f});
-const dispatchSet = curry((ln, v) => dispatch(set(ln, v)));
+export const dispatch = f => store.dispatch({type: fn, fn: f});
+export const dispatchSet = curry((ln, v) => dispatch(set(ln, v)));
+export const getState = () => store.getState();
 
-const extract = curry((spec, obj) => fromPairs(
+export const extract = curry((spec, obj) => fromPairs(
 	toPairs(spec).map(([key, f]) => [key, is(Function, f) ? f(obj) : extract(f, obj)])
 ));
 
@@ -47,7 +49,7 @@ const extractStreamDedupe = (dedupe, extractor) => state$
 	.map(extractor || identity)
 	.skipDuplicates(dedupe);
 
-const connect = curry((extractor, setter, Component) => {
+export const connect = curry((extractor, setter, Component) => {
 	const dispatchBindings = map(f => (...args) => dispatch(f(...args)), setter);
 	const initialState = extract(extractor)(store.getState());
 
@@ -72,10 +74,3 @@ const connect = curry((extractor, setter, Component) => {
 		}
 	}
 });
-
-export {
-	dispatch,
-	dispatchSet,
-	connect,
-	store
-};

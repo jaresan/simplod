@@ -4,7 +4,7 @@ import ControlPanel from './ControlPanel';
 import {connect} from 'react-redux';
 import {parseTTL} from '@@data/parseTTL';
 import {AntVExample} from './AntVExample';
-import {invertObj, keys} from 'ramda';
+import {invertObj, keys, set} from 'ramda';
 import {Handler} from './graph/handlers/Handler';
 import Actions from '@@actions';
 import { Progress, Radio, Button, InputNumber, Space, Select, Switch, Layout, Menu, Avatar } from 'antd';
@@ -17,7 +17,11 @@ import { Tabs } from 'antd';
 import {ColumnList} from './ColumnList';
 import { getLanguage, getLoadingHumanReadable, getLimit, getLimitEnabled, getAvatar, getLastSave } from '@@selectors';
 import { languages } from '@@constants/languages';
+import {limit, limitEnabled, showHumanReadable} from '@@app-state/model/state';
+import * as YasguiState from '@@app-state/yasgui/state';
+import {dispatchSet} from '@@app-state';
 import hotkeys from 'hotkeys-js';
+import { changeLanguage, loadData, saveData, dataChanged, onDataLoaded } from '@@sagas/interactions';
 
 import 'antd/dist/antd.compact.css';
 
@@ -72,13 +76,13 @@ class App extends Component {
     // TODO: Move setup logic to saga
     hotkeys('command+s,ctrl+s', e => {
       e.preventDefault()
-      this.props.saveData();
+      saveData();
     });
   }
 
   componentDidMount() {
     this.fetchData(this.schemaURL);
-    this.props.setEndpoint(this.endpointURL);
+    dispatchSet(YasguiState.endpoint, this.endpointURL);
     this.setup();
   }
 
@@ -100,8 +104,8 @@ class App extends Component {
           }), {});
 
         this.setState({loaded: true});
-        this.props.setPrefixes(invertObj(json.__prefixes__));
-        this.props.onDataLoaded();
+        dispatchSet(YasguiState.prefixes, invertObj(json.__prefixes__));
+        onDataLoaded();
       });
   };
 
@@ -109,17 +113,17 @@ class App extends Component {
 
   updateLimit = limit => {
     this.props.updateLimit(limit);
-    this.props.dataChanged();
+    dataChanged();
   };
 
   toggleLimit = checked => {
     this.props.toggleLimit(checked);
-    this.props.dataChanged();
+    dataChanged();
   };
 
 
   render() {
-    const {saveData, loadData, language, loadingHumanReadable, limitEnabled, limit, avatar, lastSave} = this.props;
+    const {language, loadingHumanReadable, limitEnabled, limit, avatar, lastSave} = this.props;
     const {horizontalLayout} = this.state;
 
     return (
@@ -157,7 +161,7 @@ class App extends Component {
               Downloading human readable data:
               <Progress percent={loadingHumanReadable} status={loadingHumanReadable < 100 && "active"} />
               <span>Show labels: <Switch style={{width: 32}} onChange={this.props.toggleHumanReadable} /></span>
-              <span>Select language: <Select onChange={this.props.changeLanguage} value={language}>{languageOptions}</Select></span>
+              <span>Select language: <Select onChange={changeLanguage} value={language}>{languageOptions}</Select></span>
               <Tabs>
                 <TabPane tab="Available" key="1">
                   <EntityListContainer>
@@ -194,17 +198,10 @@ const mapStateToProps = appState => ({
 });
 
 const mapDispatchToProps = {
-  setPrefixes: Actions.Yasgui.Creators.r_setPrefixes,
   clearData: Actions.Model.Creators.r_clearData,
-  setEndpoint: Actions.Yasgui.Creators.r_setEndpoint,
-  onDataLoaded: Actions.Interactions.Creators.s_dataLoaded,
-  updateLimit: Actions.Model.set('limit'),
-  toggleLimit: Actions.Model.set('limitEnabled'),
-  dataChanged: Actions.Interactions.Creators.s_dataChanged,
-  saveData: Actions.Interactions.Creators.s_saveData,
-  loadData: Actions.Interactions.Creators.s_loadData,
-  changeLanguage: Actions.Interactions.Creators.s_changeLanguage,
-  toggleHumanReadable: Actions.Model.set('showHumanReadable')
+  updateLimit: dispatchSet(limit),
+  toggleLimit: dispatchSet(limitEnabled),
+  toggleHumanReadable: dispatchSet(showHumanReadable)
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -40,18 +40,6 @@ const getEntity = (state, id, additionalPath = []) => state.getIn(['entities', e
 const updateEntities = (state, {items}) => state.mergeDeepIn(['entities', entityTypes.class], items);
 const toggleSelections = (state, {entityType, selection}) => state.mergeDeepIn(['entities', entityType], selection);
 
-const connectProperties = state => {
-  const propsById = state.getIn(['entities', entityTypes.property])
-    .reduce((acc, p, id) => {
-      const source = p.get('source');
-      const existing = acc[source] || [];
-
-      return Object.assign(acc, {[source]: existing.concat(id)});
-    }, {});
-
-  return state.updateIn(['entities', entityTypes.class], classes => classes.map((c, id) => c.set('propertyIds', propsById[id])));
-}
-
 const deselectAll = state => state.update('entities', entities => {
   return Object.keys(entityTypes).reduce((acc, type) => {
     const ids = acc.get(type).keySeq();
@@ -127,9 +115,7 @@ const handlers = {
   [Actions.Types.R_UPDATE_SELECTION_ORDER]: updateSelectionOrder,
   [Actions.Types.R_CLEAR_DATA]: clearData,
   [Actions.Types.R_VIEW_LOADED]: loadView,
-  [Actions.Types.R_DATA_LOADED]: connectProperties,
   [Actions.Types.R_UPDATE_LIMIT]: updateLimit,
-  [Actions.Types.R_LOAD_STATE]: (state, {json}) => fromJS(Object.assign(json, pick(['lastSave'], state.toJS()))),
   [Actions.Types.R_TOGGLE_SELECTIONS]: toggleSelections,
   [Actions.Types.R_SET_LANGUAGE]: updateLanguage,
   [Actions.Types.R_TOGGLE_HUMAN_READABLE]: toggleHumanReadable,

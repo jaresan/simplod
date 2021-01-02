@@ -19,7 +19,6 @@ export default {
     r_dataLoaded: null,
     r_updateSelectionOrder: ['selectionIds'],
     r_updateLimit: ['limit'],
-    r_loadState: ['json'],
     r_setLanguage: ['language'],
     r_toggleHumanReadable: ['show'],
     r_toggleLimit: ['show']

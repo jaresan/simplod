@@ -1,33 +1,36 @@
-import { takeEvery, put, select, all, call } from 'redux-saga/effects';
-import { getPrefixes, getSelectedProperties, getInfo, getSelectedEntities, getModel, getEntities, getLanguage } from '@@selectors';
-import Interactions from '@@actions/interactions';
-import Query from '@@actions/yasgui';
 import Model from '@@actions/model';
 import { parseSPARQLQuery } from '@@utils/parseQuery';
-import { invertObj, paths } from 'ramda';
+import { invertObj, mergeDeepRight, paths, pick, view, map } from 'ramda';
 import possiblePrefixes from '@@constants/possiblePrefixes';
 import {getHumanReadableDataPromises} from '@@api';
-import {store, dispatchSet} from '@@app-state';
-import { lastSave, labelsLoadingProgress } from '@@app-state/model/state';
+import {store, dispatchSet, getState} from '@@app-state';
+import * as ModelState from '@@app-state/model/state';
+import * as YasguiState from '@@app-state/yasgui/state';
+import { entityTypes } from '@@constants/entityTypes';
+import {fromJS} from 'immutable';
 
-function* dataChanged() {
-	const prefixes = yield select(getPrefixes);
-	const selectedProperties = yield select(getSelectedProperties);
-	const selectedEntities = yield select(getSelectedEntities);
-	const {selectionOrder, limit, limitEnabled} = yield select(getInfo);
+export const dataChanged = () => {
+	const state = getState();
+	const prefixes = state.yasgui.get('prefixes').toJS();
+	const selectedProperties = state.model.getIn(['entities', entityTypes.property]).filter(e => e.get('selected')).toJS();
+	const selectedEntities = state.model.getIn(['entities', entityTypes.class]).filter(e => e.get('selected')).toJS();
+	const limit = view(ModelState.limit, state);
+	const limitEnabled = view(ModelState.limitEnabled, state);
+	const selectionOrder = view(ModelState.selectionOrder, state).toJS();
 	const prefixToIRI = Object.assign(prefixes, invertObj(possiblePrefixes));
-	yield put(Query.Creators.r_updateQuery(parseSPARQLQuery({selectedProperties, selectedEntities, prefixes: prefixToIRI, limit, limitEnabled, selectionOrder})));
+	dispatchSet(YasguiState.query, parseSPARQLQuery({selectedProperties, selectedEntities, prefixes: prefixToIRI, limit, limitEnabled, selectionOrder}));
 }
 
 const getField = (languageOrder, field, data) => paths(languageOrder.map(l => [l, field]), data).find(a => a);
 
-function* getHumanData() {
-	yield dispatchSet(labelsLoadingProgress, 0);
-	const prefixes = yield select(getPrefixes);
-	const entities = yield select(getEntities);
-	const language = yield select(getLanguage);
-	const jsEntities = entities.toJS();
-	const urls = Object.keys(jsEntities);
+const getHumanData = () => {
+	dispatchSet(ModelState.labelsLoadingProgress, 0);
+	const state = getState();
+	const classes = view(ModelState.classes, state);
+	const prefixes = state.yasgui.get('prefixes').toJS();
+	const language = view(ModelState.language, state);
+	const jsClasses = classes.toJS();
+	const urls = Object.keys(jsClasses);
 	const prefixToIri = prefixes;
 	const iriToPrefix = invertObj(prefixes);
 	// const data = yield call(getHumanReadableData, {urls, prefixToIri, iriToPrefix});
@@ -36,78 +39,83 @@ function* getHumanData() {
 	const promises = getHumanReadableDataPromises({urls, prefixToIri, iriToPrefix})
 		.map((p, i, arr) => {
 			return p.then(data => {
-				const newEntities = {}
+				const newClasses = {}
 				for (const id of Object.keys(data)) {
-					if (jsEntities[id]) {
-						newEntities[id] = {
-							...jsEntities[id],
+					if (jsClasses[id]) {
+						newClasses[id] = {
+							...jsClasses[id],
 							info: {byLanguage: (data[id] || {})}
 						};
 					}
 
-					store.dispatch(Model.Creators.r_updateEntities(updateEntityLanguageInfo(newEntities, language)));
+					// FIXME: Aggregate into one dispatch
+					store.dispatch(Model.Creators.r_updateEntities(updateEntityLanguageInfo(newClasses, language)));
 				}
 			})
 			.catch(() => {})
 			.finally(() => {
 				resolved++;
-				dispatchSet(labelsLoadingProgress, Math.round(resolved / arr.length * 100));
+				dispatchSet(ModelState.labelsLoadingProgress, Math.round(resolved / arr.length * 100));
 			})
 		});
 
-	yield Promise.all(promises);
-	dispatchSet(labelsLoadingProgress, 100);
+	Promise.all(promises)
+		.then(() => dispatchSet(ModelState.labelsLoadingProgress, 100));
 }
 
 const updateEntityLanguageInfo = (entities, language) => {
-	const languageOrder = [language, 'en', 'de', 'default'];
-	for (const id of Object.keys(entities)) {
-		if (entities[id]) {
-			const info = (entities[id].info || {});
-			entities[id] = {
-				...entities[id],
-				info: {
-					...info,
-					label: getField(languageOrder, 'label', info.byLanguage),
-					description: getField(languageOrder, 'description', info.byLanguage),
-				}
-			};
-		}
+	// TODO: @immutable
+	if (entities.toJS) {
+		entities = entities.toJS()
 	}
+	const languageOrder = [language, 'en', 'de', 'default'];
 
-	return entities;
+	return map(e => {
+		const info = e.info || {};
+		return mergeDeepRight(e, {
+			info: {
+				label: getField(languageOrder, 'label', info.byLanguage),
+				description: getField(languageOrder, 'description', info.byLanguage)
+			}
+		})
+	}, entities);
 }
 
-function* changeLanguage({language}) {
-	yield put(Model.Creators.r_setLanguage(language));
-	let entities = yield select(getEntities);
-	const newEntities = updateEntityLanguageInfo(entities.toJS(), language);
+export const changeLanguage = language => {
+	dispatchSet(ModelState.language, language);
+	const state = getState();
+	const classes = view(ModelState.classes, state);
+	const updatedClasses = updateEntityLanguageInfo(classes, language);
 
-	yield put(Model.Creators.r_updateEntities(newEntities));
+	const newClasses = classes.mergeDeep(fromJS(updatedClasses));
+	dispatchSet(ModelState.classes, newClasses);
 }
 
-function* onDataLoaded() {
-	yield put(Model.Creators.r_dataLoaded());
-	yield getHumanData();
+export const onDataLoaded = () => {
+	const state = getState();
+	const propsById = state.model.getIn(['entities', entityTypes.property])
+		.reduce((acc, p, id) => {
+			const source = p.get('source');
+			const existing = acc[source] || [];
+
+			return Object.assign(acc, {[source]: existing.concat(id)});
+		}, {});
+
+	const newClasses = view(ModelState.classes, state).map((c, id) => c.set('propertyIds', propsById[id]));
+	dispatchSet(ModelState.classes, newClasses);
+	getHumanData();
 }
 
 // FIXME: Save only the diff, otherwise too big
-function* saveData() {
-	const data = yield select(getModel);
-	yield dispatchSet(lastSave, Date.now());
-	localStorage.setItem('model', JSON.stringify(data.toJS()));
+export const saveData = () => {
+	const state = getState().model;
+	dispatchSet(ModelState.lastSave, Date.now());
+	localStorage.setItem('model', JSON.stringify(state.toJS()));
 }
 
-function* loadData() {
-	yield put(Model.Creators.r_loadState(JSON.parse(localStorage.getItem('model'))));
-}
-
-export default function*() {
-	yield all([
-		takeEvery(Interactions.Types.S_DATA_CHANGED, dataChanged),
-		takeEvery(Interactions.Types.S_SAVE_DATA, saveData),
-		takeEvery(Interactions.Types.S_LOAD_DATA, loadData),
-		takeEvery(Interactions.Types.S_DATA_LOADED, onDataLoaded),
-		takeEvery(Interactions.Types.S_CHANGE_LANGUAGE, changeLanguage),
-	]);
+export const loadData = () => {
+	const state = getState().model;
+	const json = JSON.parse(localStorage.getItem('model'));
+	const newState = fromJS(Object.assign(json, pick(['lastSave'], state.toJS())));
+	dispatchSet(ModelState.root, newState);
 }

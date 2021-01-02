@@ -6,7 +6,7 @@ import { prop } from 'ramda';
 import { connect } from 'react-redux';
 import { getProperties, getEntities, getInfo } from '@@selectors';
 import ModelActions from '@@actions/model';
-import InteractionActions from '@@actions/interactions';
+import {dataChanged} from '@@sagas/interactions';
 
 // a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
@@ -64,7 +64,7 @@ class ColumnListComponent extends Component {
     );
 
     this.props.updateSelectionOrder(items.map(prop('id')));
-    this.props.dataChanged();
+    dataChanged();
   }
 
   getEmptyMessage = () => {
@@ -123,8 +123,7 @@ const mapStateToProps = appState => ({
 });
 
 const mapDispatchToProps = {
-  updateSelectionOrder: ModelActions.Creators.r_updateSelectionOrder,
-  dataChanged: InteractionActions.Creators.s_dataChanged
+  updateSelectionOrder: ModelActions.Creators.r_updateSelectionOrder
 };
 
 export const ColumnList = connect(mapStateToProps, mapDispatchToProps)(ColumnListComponent);
