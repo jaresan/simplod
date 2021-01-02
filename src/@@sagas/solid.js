@@ -2,6 +2,7 @@ import { takeEvery, select, call, put, all } from 'redux-saga/effects';
 import { getViewSelection } from '@@selectors';
 import {dispatchSet, dispatch, getState} from '@@app-state';
 import * as SolidState from '@@app-state/solid/state';
+import * as ModelState from '@@app-state/model/state';
 import SolidActions from '@@actions/solid';
 import ModelActions from '@@actions/model';
 import {pipe, path, assocPath, identity, replace, view, mergeDeepRight} from 'ramda';
@@ -126,11 +127,12 @@ function* loadOwnView({uri}) {
       message.error(errMsg)
     } else {
       const json = yield res.json();
-      yield put(ModelActions.Creators.r_deselectAll());
+      dispatch(ModelState.deselectAll);
       yield put(ModelActions.Creators.r_viewLoaded(json));
       message.success('View loaded');
     }
   } catch (e) {
+    console.error(e);
     message.error(errMsg)
   } finally {
     loading();
@@ -170,7 +172,7 @@ function* loadExternalView({uri}) {
     const logStatus = webId ? `You are logged in as ${webId}.` : 'You are not logged in.';
     if (res.status >= 200 && res.status < 300) {
       const json = yield res.json();
-      yield put(ModelActions.Creators.r_deselectAll());
+      dispatch(ModelState.deselectAll);
       yield put(ModelActions.Creators.r_viewLoaded(json));
     } else if (res.status === 401) {
       message.error(`

@@ -5,7 +5,8 @@ import { Tag } from 'antd';
 import { prop } from 'ramda';
 import { connect } from 'react-redux';
 import { getProperties, getClasses, getSelectionOrder } from '@@selectors';
-import ModelActions from '@@actions/model';
+import {dispatchSet} from '@@app-state';
+import * as ModelState from '@@app-state/model/state';
 import {dataChanged} from '@@sagas/interactions';
 
 // a little function to help us with reordering the result
@@ -63,6 +64,7 @@ class ColumnListComponent extends Component {
       result.destination.index
     );
 
+    console.log(items.map(prop('id')));
     this.props.updateSelectionOrder(items.map(prop('id')));
     dataChanged();
   }
@@ -119,11 +121,11 @@ class ColumnListComponent extends Component {
 const mapStateToProps = appState => ({
   properties: getProperties(appState),
   entities: getClasses(appState),
-  selectionOrder: getSelectionOrder(appState)
+  selectionOrder: getSelectionOrder(appState).toJS()
 });
 
 const mapDispatchToProps = {
-  updateSelectionOrder: ModelActions.Creators.r_updateSelectionOrder
+  updateSelectionOrder: dispatchSet(ModelState.selectionOrder)
 };
 
 export const ColumnList = connect(mapStateToProps, mapDispatchToProps)(ColumnListComponent);

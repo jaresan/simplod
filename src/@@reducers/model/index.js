@@ -35,14 +35,6 @@ const defaultEntityProps = {
 };
 
 const updateEntities = (state, {items}) => state.mergeDeepIn(['entities', entityTypes.class], items);
-const toggleSelections = (state, {entityType, selection}) => state.mergeDeepIn(['entities', entityType], selection);
-
-const deselectAll = state => state.update('entities', entities => {
-  return Object.keys(entityTypes).reduce((acc, type) => {
-    const ids = acc.get(type).keySeq();
-    return ids.reduce((acc2, id) => acc2.setIn([type, id, 'selected'], false), acc)
-  }, entities);
-}).set('selectionOrder', fromJS([]));
 
 const registerResources = (state, {entityType, resources}) => {
   const withDefaultProps = map(mergeRight(defaultEntityProps[entityType] || {}), resources);
@@ -83,11 +75,6 @@ const updateEntitySelected = (state, {id, selected}) => {
   )
   return state;
 }
-const updateSelectionOrder = (state, {selectionIds}) => state.set('selectionOrder', fromJS(selectionIds));
-const clearData = () => initialState;
-const updateLimit = (state, {limit}) => state.set('limit', limit);
-const updateLanguage = (state, {language}) => state.set('language', language);
-const toggleHumanReadable = (state, {show}) => state.set('showHumanReadable', show);
 
 const loadView = (state, {json}) =>
   Object.entries(json).reduce((newState, [entityType, entities]) =>
@@ -98,7 +85,6 @@ const loadView = (state, {json}) =>
 
 const handlers = {
   [Actions.Types.R_UPDATE_ENTITIES]: updateEntities,
-  [Actions.Types.R_DESELECT_ALL]: deselectAll,
   [Actions.Types.R_REGISTER_RESOURCES]: registerResources,
   [Actions.Types.R_TOGGLE_PROPERTY_SELECTED]: updatePropertySelected,
   [Actions.Types.R_TOGGLE_PROPERTY_OPTIONAL]: updateProperty('optional'),
@@ -109,14 +95,7 @@ const handlers = {
   [Actions.Types.R_TOGGLE_ENTITY_SELECTED]: updateEntitySelected,
   [Actions.Types.R_TOGGLE_ENTITY_AS_VARIABLE]: updateEntity('asVariable'),
   [Actions.Types.R_UPDATE_ENTITY_NAME]: updateEntity('varName'),
-  [Actions.Types.R_UPDATE_SELECTION_ORDER]: updateSelectionOrder,
-  [Actions.Types.R_CLEAR_DATA]: clearData,
-  [Actions.Types.R_VIEW_LOADED]: loadView,
-  [Actions.Types.R_UPDATE_LIMIT]: updateLimit,
-  [Actions.Types.R_TOGGLE_SELECTIONS]: toggleSelections,
-  [Actions.Types.R_SET_LANGUAGE]: updateLanguage,
-  [Actions.Types.R_TOGGLE_HUMAN_READABLE]: toggleHumanReadable,
-  [Actions.Types.R_TOGGLE_LIMIT]: (state, {show}) => state.set('limitEnabled', show)
+  [Actions.Types.R_VIEW_LOADED]: loadView
 };
 
 export default (state = initialState, action) => {

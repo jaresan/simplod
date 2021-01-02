@@ -17,9 +17,9 @@ import { Tabs } from 'antd';
 import {ColumnList} from './ColumnList';
 import { getLanguage, getLoadingHumanReadable, getLimit, getLimitEnabled, getAvatar, getLastSave } from '@@selectors';
 import { languages } from '@@constants/languages';
-import {limit, limitEnabled, showHumanReadable} from '@@app-state/model/state';
+import * as ModelState from '@@app-state/model/state';
 import * as YasguiState from '@@app-state/yasgui/state';
-import {dispatchSet} from '@@app-state';
+import {dispatchSet, dispatch} from '@@app-state';
 import hotkeys from 'hotkeys-js';
 import { changeLanguage, loadData, saveData, dataChanged, onDataLoaded } from '@@sagas/interactions';
 
@@ -198,10 +198,10 @@ const mapStateToProps = appState => ({
 });
 
 const mapDispatchToProps = {
-  clearData: Actions.Model.Creators.r_clearData,
-  updateLimit: dispatchSet(limit),
-  toggleLimit: dispatchSet(limitEnabled),
-  toggleHumanReadable: dispatchSet(showHumanReadable)
+  clearData: () => dispatch(ModelState.clearData),
+  updateLimit: dispatchSet(ModelState.limit),
+  toggleLimit: dispatchSet(ModelState.limitEnabled),
+  toggleHumanReadable: dispatchSet(ModelState.showHumanReadable)
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

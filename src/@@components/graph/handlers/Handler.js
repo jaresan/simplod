@@ -3,10 +3,11 @@
  * No UI logic is directly handled here, everything is delegated to the UI layer which
  * handles the changes by itself.
  */
-import {store} from '@@app-state';
+import {store, dispatch} from '@@app-state';
 import Actions from '@@actions';
 import {dataChanged as onDataChanged} from '@@sagas/interactions';
 import {debounce} from 'lodash';
+import * as ModelState from '@@app-state/model/state';
 import { entityTypes } from '@@constants/entityTypes';
 
 export class Handler {
@@ -51,7 +52,7 @@ export class Handler {
   }
 
   static commitSelects = () => {
-    Object.keys(this.toSelect).forEach(type => this.dispatch(Actions.Model.Creators.r_toggleSelections(type, this.toSelect[type])));
+    Object.keys(this.toSelect).forEach(type => dispatch(ModelState.toggleSelections(type, this.toSelect[type])));
     this.clearSelection();
   };
 
