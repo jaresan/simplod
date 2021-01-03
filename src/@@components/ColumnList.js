@@ -17,6 +17,7 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
+// FIXME: @reference 'selected' 'bound' 'varName'
 const getItems = (items, selectionOrder) => selectionOrder
   .filter(id => path([id, 'selected'], items))
   .filter(id => !path([id, 'bound'], items))

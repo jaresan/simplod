@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import YasguiContainer from './YasguiContainer';
-import ControlPanel from './ControlPanel';
+import ControlPanel from '@@components/controls/control-panel';
 import {connect} from 'react-redux';
 import {parseTTL} from '@@data/parseTTL';
 import {AntVExample} from './AntVExample';

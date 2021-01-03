@@ -3,10 +3,18 @@ import { message, Popconfirm, Button, Input, Tree, Tooltip, Space } from 'antd';
 import {CloseOutlined, PlusOutlined, UploadOutlined} from '@ant-design/icons';
 import {curry} from 'ramda';
 import path from 'path';
+import {
+  getDirty,
+  getFiles,
+  getUser
+} from '@@selectors';
+import Actions from '@@actions/solid';
+import { connect, Provider } from 'react-redux';
+import { store } from '@@app-state';
 
 const newViewSuffix = '__newView';
 
-export default class FileList extends Component {
+class FileList extends Component {
   state = {
     creatingView: false,
     folderWithNewView: ''
@@ -49,7 +57,7 @@ export default class FileList extends Component {
   }
 
   getCreateNewFileIcon = ({key}) => {
-    if (!this.props.canSave) {
+    if (!this.props.isDirty) {
       return <Tooltip
         title="No properties selected, newly created file would be empty"
       >
@@ -135,7 +143,7 @@ export default class FileList extends Component {
     const isLeaf = content === null;
     const folderInitialized = !isLeaf && __loaded;
     if (folderInitialized) {
-      const isNewFileInput = key === this.state.folderWithNewView && this.props.canSave;
+      const isNewFileInput = key === this.state.folderWithNewView && this.props.isDirty;
 
       children = Object.entries(rest).map(this.getFileSubtree(key));
       children.push({isNewFilePrompt: !isNewFileInput, isNewFileInput, key: `${key}${newViewSuffix}`, isLeaf: true});
@@ -158,18 +166,34 @@ export default class FileList extends Component {
     if (!this.props.files || !this.props.user) return null;
 
     const treeData = this.getFileTreeData();
-    return (
-      <>
-        <h3>Your files:</h3>
-        <Tree.DirectoryTree
-          showLine={{showLeafIcon: false}}
-          selectable={false}
-          titleRender={this.renderTreeNode}
-          loadData={this.loadTreeNodeData}
-          defaultExpandedKeys={['/']}
-          treeData={treeData}
-        />
-      </>
-    )
+    return <Tree.DirectoryTree
+      showLine={{showLeafIcon: false}}
+      selectable={false}
+      titleRender={this.renderTreeNode}
+      loadData={this.loadTreeNodeData}
+      defaultExpandedKeys={['/']}
+      treeData={treeData}
+    />
   }
 }
+
+
+// FIXME: @dispatch @store remove hacky connection and use @@app-state connect
+const mapStateToProps = appState => ({
+  isDirty: getDirty(appState),
+  user: getUser(appState),
+  files: getFiles(appState)
+});
+
+const mapDispatchToProps = {
+  onSave: Actions.Creators.s_onViewSave,
+  loadOwnView: Actions.Creators.s_loadOwnView,
+  deleteFile: Actions.Creators.s_deleteFile,
+  loadFiles: Actions.Creators.s_loadFiles,
+  saveOwnView: Actions.Creators.s_saveOwnView
+};
+
+// Connect component to enable use in modal content
+const Connected = connect(mapStateToProps, mapDispatchToProps)(FileList);
+
+export default props => <Provider store={store}><Connected {...props}/></Provider>;

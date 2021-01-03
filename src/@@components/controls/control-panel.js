@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Actions from '@@actions/solid';
-import { message, Button } from 'antd';
+import { message, Button, Tabs } from 'antd';
 import {
   getViewSelection,
   getUser,
@@ -11,7 +11,10 @@ import {
   getEndpoint,
   getFiles, getSimpleQuery
 } from '@@selectors';
-import FileList from './fileList/FileList';
+import FileList from '@@components/controls/file-list';
+import { AsyncModal } from '@@modal';
+
+const {TabPane} = Tabs;
 
 class ControlPanel extends Component {
   state = {
@@ -106,9 +109,7 @@ class ControlPanel extends Component {
         onClick={() => this.onSaveView()}
         disabled={!this.props.isDirty}
       >
-        {
-          this.props.user ? "Save view at URI" : "Download view"
-        }
+        { this.props.user ? "Save view at URI" : "Download view" }
       </Button>
       &nbsp;
       <Button type="primary" onClick={() => this.onLoadView()}>Load view by URI</Button>
@@ -119,21 +120,23 @@ class ControlPanel extends Component {
     this.props.saveOwnView(key);
   };
 
+  getTabContents = () => <Tabs>
+    <TabPane tab="By uri" key="1">
+      <input />
+    </TabPane>
+    <TabPane tab="By folder" key="2">
+      <h3>Your files:</h3>
+      <FileList />
+    </TabPane>
+  </Tabs>;
+
   render() {
-    const {isDirty, user, files, loadOwnView, deleteFile, loadFiles, saveOwnView} = this.props;
     return (
       <div className="login-container">
         { this.getLoginData() }
         { this.getControlPanel() }
-        <FileList
-          canSave={isDirty}
-          user={user}
-          files={files}
-          loadOwnView={loadOwnView}
-          deleteFile={deleteFile}
-          loadFiles={loadFiles}
-          saveOwnView={saveOwnView}
-        />
+        <FileList/>
+        <Button onClick={() => AsyncModal.info({title: 'Save file?', content: this.getTabContents()})}>Open modal</Button>
         <Button onClick={() => {
           window.navigator.clipboard.writeText(this.props.simpleQuery);
           message.success('Query URL copied to clipboard');

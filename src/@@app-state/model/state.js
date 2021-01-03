@@ -2,11 +2,10 @@ import {
   compose,
   lensProp,
   curry,
-  lens,
   filter,
   view,
   pipe,
-  reduce,
+  keys,
   prop,
   set,
   map,
@@ -14,7 +13,8 @@ import {
   mergeDeepRight,
   mergeRight,
   any,
-  values
+  values,
+  uniq
 } from 'ramda';
 import { entityTypes } from '@@model/entity-types';
 
@@ -58,7 +58,7 @@ const P = {
 }
 
 export const middleware = s => {
-  const isDirty = any(x => any(E.selected, values(x)), values(view(entities, s)));
+  const isDirty = !!view(selectionOrder, s).length;
   return set(dirty, isDirty, s);
 };
 
@@ -105,7 +105,8 @@ const updateSelected = curry((type, id, selected, s) => {
     return set(selectionOrder, order.concat(id), s);
   }
 
-  return set(selectionOrder, order.splice(order.indexOf(id), 1), s);
+  order.splice(order.indexOf(id), 1);
+  return set(selectionOrder, order, s);
 });
 
 export const togglePropertySelected = updateSelected(entityTypes.property);
@@ -139,6 +140,14 @@ export const deselectAll = s => {
 export const toggleSelections = curry((type, selection, s) => {
   const entityLens = entitiesByType[type];
   const oldEntities = view(entityLens, s);
+
+  // Change selection order if properties or classes are selected
+  if (type !== entityTypes.edge) {
+    const oldSelected = view(selectionOrder, s);
+    const newSelected = keys(filter(E.selected, selection));
+    s = set(selectionOrder, uniq(oldSelected.concat(newSelected)), s);
+  }
+
   return set(entityLens, mergeDeepRight(oldEntities, selection), s);
 });
 export const updateClasses = curry((newClasses, s) => {
