@@ -1,6 +1,6 @@
 import React from 'react';
 import G6 from '@antv/g6';
-import {Graph, getNodes, getEdges} from './graph';
+import {Graph, getNodes, getEdges} from '@@graph';
 
 // const minimap = new G6.Minimap({
 //   size: [300, 300],
@@ -20,7 +20,7 @@ export class AntVExample extends React.Component {
   }
 
   loadData() {
-    // FIXME: Add graph handling to reducers and sagas --> graph instance should be available in the state
+    // FIXME: Add @@graph handling to reducers and sagas --> @@graph instance should be available in the state
     console.time('loadData');
     const {data, width, height} = this.props;
 
@@ -67,9 +67,9 @@ export class AntVExample extends React.Component {
     this.graph = new Graph(graph);
     console.timeEnd('graphConstructor2')
 
-    console.time('graph.loadData')
+    console.time('@@graph.loadData')
     this.graph.loadData({nodes, edges});
-    console.timeEnd('graph.loadData')
+    console.timeEnd('@@graph.loadData')
     console.timeEnd('loadData');
   }
 

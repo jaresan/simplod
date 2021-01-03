@@ -1,8 +1,8 @@
-import {Wrapper} from './Wrapper';
-import {Property as PropertyHandler} from '../handlers';
-import {PROP_LINE_HEIGHT} from '../Node';
+import {Wrapper} from '@@graph/wrappers/Wrapper';
+import {Property as PropertyHandler} from '@@graph/handlers';
+import {PROP_LINE_HEIGHT} from '@@graph/Node';
 
-// FIXME: Add this to graph/node
+// FIXME: Add this to @@graph/node
 const defaultStyle = {
   opacity: 1,
   lineWidth: 1,

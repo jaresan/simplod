@@ -1,6 +1,6 @@
 import {curry} from 'ramda';
-import {Canvas as CanvasWrapper} from './wrappers';
-import {Property, Node, Edge} from './handlers';
+import {Canvas as CanvasWrapper} from '@@graph/wrappers';
+import {Property, Node, Edge} from '@@graph/handlers';
 
 const getWrapper = n => {
   if (!n) return;
@@ -32,9 +32,9 @@ export class Graph {
   }
 
   loadData(data) {
-    console.time('this.graph.clear();')
+    console.time('this.@@graph.clear();')
     this.graph.clear();
-    console.timeEnd('this.graph.clear();')
+    console.timeEnd('this.@@graph.clear();')
 
     console.time('this.deregisterBehaviours();')
     this.deregisterBehaviours();
@@ -44,9 +44,9 @@ export class Graph {
     this.registerBehaviours();
     console.timeEnd('this.registerBehaviours();')
 
-    console.time('this.graph.data(data);')
+    console.time('this.@@graph.data(data);')
     this.graph.data(data);
-    console.timeEnd('this.graph.data(data);')
+    console.timeEnd('this.@@graph.data(data);')
 
     console.time('this.render();')
     this.render();

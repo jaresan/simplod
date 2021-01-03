@@ -1,7 +1,7 @@
 import G6 from '@antv/g6';
 import {flatten, values, concat} from 'ramda';
 import {entityTypes} from '@@model/entity-types';
-import {Edge as EdgeWrapper} from './wrappers';
+import {Edge as EdgeWrapper} from '@@graph/wrappers';
 const EDGE_TYPE = 'graphEdge';
 
 export const Edge = data => ({

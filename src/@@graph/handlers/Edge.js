@@ -1,4 +1,4 @@
-import {Handler} from './Handler';
+import {Handler} from '@@graph/handlers/Handler';
 import { entityTypes } from '@@model/entity-types';
 
 export class Edge extends Handler {

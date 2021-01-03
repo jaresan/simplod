@@ -1,4 +1,4 @@
-import {Canvas} from '../handlers';
+import {Canvas} from '@@graph/handlers';
 
 export class Wrapper {
   // nodeType denotes the type of the node from AntD to use when rendering this object --> e.g. wrapped as a text
@@ -18,7 +18,7 @@ export class Wrapper {
 
 
   /**
-   * Sets the wrappers node in the graph (the graph's representation of the node).
+   * Sets the wrappers node in the @@graph (the @@graph's representation of the node).
    * @param node
    */
   setNode(node) {

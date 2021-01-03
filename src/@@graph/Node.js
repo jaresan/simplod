@@ -1,7 +1,7 @@
 import G6 from '@antv/g6';
 import {flatten} from 'ramda';
-import E from './ElementCreators';
-import Group from './wrappers/Group';
+import E from '@@graph/ElementCreators';
+import Group from '@@graph/wrappers/Group';
 const NODE_TYPE = 'graphNode';
 
 export const PROP_LINE_HEIGHT = 12;

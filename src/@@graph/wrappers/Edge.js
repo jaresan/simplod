@@ -1,6 +1,6 @@
-import {Wrapper} from './Wrapper';
+import {Wrapper} from '@@graph/wrappers/Wrapper';
 import {path} from 'ramda';
-import {Edge as EdgeHandler} from '../handlers';
+import {Edge as EdgeHandler} from '@@graph/handlers';
 
 const styles = {
   hover: {

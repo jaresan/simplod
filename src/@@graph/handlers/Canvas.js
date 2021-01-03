@@ -1,4 +1,4 @@
-import {Handler} from './Handler';
+import {Handler} from '@@graph/handlers/Handler';
 import {dispatch} from '@@app-state';
 import {deselectAll} from '@@app-state/model/state';
 

@@ -1,4 +1,4 @@
-import {Property, Method, Node, Edge} from './wrappers';
+import {Property, Method, Node, Edge} from '@@graph/wrappers';
 
 const create = (group, elements = []) => elements.map(el => group.addShape(el));
 

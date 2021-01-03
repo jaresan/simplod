@@ -1,9 +1,9 @@
 import React from 'react';
+import {set, curry, identity, equals, map, is, fromPairs, toPairs} from 'ramda';
 import { createStore, applyMiddleware, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import sagas from '@@sagas/index';
-import {set, curry, identity, equals, map, is, fromPairs, toPairs} from 'ramda';
 import {stream} from 'kefir';
+import sagas from '@@sagas/index';
 import {middleware as modelMiddleware} from '@@app-state/model/state';
 
 const fn = Symbol('function');

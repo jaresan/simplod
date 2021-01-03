@@ -5,13 +5,13 @@ import {connect} from 'react-redux';
 import {parseTTL} from '@@data/parseTTL';
 import {AntVExample} from './AntVExample';
 import {invertObj, keys, set} from 'ramda';
-import {Handler} from './graph/handlers/Handler';
+import {Handler} from '@@graph/handlers/Handler';
 import { Progress, Radio, Button, InputNumber, Space, Select, Switch, Layout, Menu, Avatar } from 'antd';
 import {UserOutlined} from '@ant-design/icons';
 import {getContainerStyle, getMenuStyle} from './App.styled';
 import { EntityList } from './entityList/EntityList';
 import styled from '@emotion/styled';
-import { Edge, Node, Property } from './graph/handlers';
+import { Edge, Node, Property } from '@@graph/handlers';
 import { Tabs } from 'antd';
 import {ColumnList} from './ColumnList';
 import { getLanguage, getLoadingHumanReadable, getLimit, getLimitEnabled, getAvatar, getLastSave } from '@@selectors';
@@ -81,7 +81,7 @@ class App extends Component {
 
   // FIXME: Move fetch to sagas
   fetchData = url => {
-    // FIXME: Move Handler clearing somewhere else (ideally to saga which pings graph which pings handler)
+    // FIXME: Move Handler clearing somewhere else (ideally to saga which pings @@graph which pings handler)
     Handler.clear();
     Property.clear();
     Node.clear();

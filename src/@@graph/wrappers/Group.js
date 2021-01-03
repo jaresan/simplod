@@ -1,7 +1,7 @@
 import { invoker, memoizeWith, pick, assocPath, path, identity, map, filter } from 'ramda';
-import {Property, Method} from './index';
-import { Handler } from '../handlers/Handler';
-import { PROP_LINE_HEIGHT } from '../Node';
+import {Property, Method} from '@@graph/wrappers/index';
+import { Handler } from '@@graph/handlers/Handler';
+import { PROP_LINE_HEIGHT } from '@@graph/Node';
 
 const getWrapper = memoizeWith(t => t.get('id'), target => target.get('wrapper'));
 function propagate(target, key) {
