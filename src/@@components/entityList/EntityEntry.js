@@ -1,5 +1,5 @@
 import React from 'react';
-import { path, paths, pipe } from 'ramda';
+import { path, pick, pipe } from 'ramda';
 import { List, Card, Space, Checkbox, Tooltip, Input } from 'antd';
 import {connect} from 'react-redux';
 import {PropertyEntry} from './PropertyEntry';
@@ -104,9 +104,10 @@ class EntityEntryComponent extends React.Component {
     const {id, entity, showHumanReadable} = this.props;
     const {propertyIds, info} = entity;
 
+    // FIXME: @reference to entity fields
+    let toShow = pick(['label', 'description'], info);
     if (!showHumanReadable) {
-      info.label = '';
-      info.description = '';
+      toShow = {};
     }
 
     return (
@@ -115,8 +116,8 @@ class EntityEntryComponent extends React.Component {
         title={<ExpandIconContainer onClick={this.toggleExpanded}>
           <Space>
             {this.getToggleIcon()}
-            {this.getTitle(info.label)}
-            {this.getInfoIcon(info.description)}
+            {this.getTitle(toShow.label)}
+            {this.getInfoIcon(toShow.description)}
           </Space>
         </ExpandIconContainer>}
         size="small"

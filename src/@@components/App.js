@@ -19,8 +19,7 @@ import { languages } from '@@constants/languages';
 import * as ModelState from '@@app-state/model/state';
 import * as YasguiState from '@@app-state/yasgui/state';
 import {dispatchSet, dispatch} from '@@app-state';
-import hotkeys from 'hotkeys-js';
-import { changeLanguage, loadData, saveData, dataChanged, onDataLoaded } from '@@sagas/interactions';
+import { changeLanguage, loadData, saveData, dataChanged, onDataLoaded, onAppStart } from '@@sagas/interactions';
 
 import 'antd/dist/antd.compact.css';
 
@@ -71,18 +70,10 @@ class App extends Component {
     }
   }
 
-  setup() {
-    // TODO: Move setup logic to saga
-    hotkeys('command+s,ctrl+s', e => {
-      e.preventDefault()
-      saveData();
-    });
-  }
-
   componentDidMount() {
     this.fetchData(this.schemaURL);
     dispatchSet(YasguiState.endpoint, this.endpointURL);
-    this.setup();
+    onAppStart();
   }
 
   // FIXME: Move fetch to sagas
