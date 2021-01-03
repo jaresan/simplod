@@ -1,18 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Actions from '@@actions/solid';
 import { message, Button, Tabs } from 'antd';
 import {
   getViewSelection,
   getUser,
   getDirty,
-  getFolderUri,
-  getFolderUriChanging,
   getEndpoint,
   getFiles, getSimpleQuery
 } from '@@selectors';
 import FileList from '@@components/controls/file-list';
 import { AsyncModal } from '@@modal';
+import { onSolidLogin, onSolidLogout, onSolidStart, onViewSave, saveOwnView } from '@@actions/solid';
 
 const {TabPane} = Tabs;
 
@@ -26,15 +24,15 @@ class ControlPanel extends Component {
   fileFetchMap = {};
 
   componentDidMount = async () => {
-    this.props.onSolidStart();
+    onSolidStart();
   };
 
   onLogin = () => {
-    this.props.onSolidLogin();
+    onSolidLogin();
   };
 
   onLogout = () => {
-    this.props.onSolidLogout();
+    onSolidLogout();
   };
 
   downloadView = () => {
@@ -51,15 +49,6 @@ class ControlPanel extends Component {
     downloadAnchorNode.remove();
   };
 
-
-  onSaveNewView = () => {
-    const uri = this.props.folderUri.replace(/\/?$/, `/${this.state.newViewName}`);
-    this.onSaveView(uri);
-    this.setState({
-      creatingView: false,
-    })
-  };
-
   onSaveView = (uri) => {
     if (!this.props.user) {
       return this.downloadView();
@@ -71,15 +60,7 @@ class ControlPanel extends Component {
 
 
     if (uri) {
-      this.props.onSave(uri);
-    }
-  };
-
-  saveFolderUri = () => {
-    if (!this.props.folderUri.match(/^https?:\/\//)) {
-      message.error('Folder uri has to be an absolute URL.');
-    } else {
-      this.props.saveFolderUri(this.props.folderUri);
+      onViewSave(uri);
     }
   };
 
@@ -117,7 +98,7 @@ class ControlPanel extends Component {
   );
 
   saveNewView = key => {
-    this.props.saveOwnView(key);
+    saveOwnView(key);
   };
 
   getTabContents = () => <Tabs>
@@ -149,26 +130,10 @@ class ControlPanel extends Component {
 const mapStateToProps = appState => ({
   user: getUser(appState),
   isDirty: getDirty(appState),
-  folderUri: getFolderUri(appState, true),
   view: getViewSelection(appState),
-  folderUriChanging: getFolderUriChanging(appState),
   endpoint: getEndpoint(appState),
   files: getFiles(appState),
   simpleQuery: getSimpleQuery(appState)
 });
 
-const mapDispatchToProps = {
-  onSolidLogin: Actions.Creators.s_onSolidLogin,
-  onSolidLogout: Actions.Creators.s_onSolidLogout,
-  onSolidStart: Actions.Creators.s_onSolidStart,
-  onSave: Actions.Creators.s_onViewSave,
-  loadOwnView: Actions.Creators.s_loadOwnView,
-  saveFolderUri: Actions.Creators.s_saveFolderUri,
-  setFolderUri: Actions.Creators.r_setFolderUri,
-  toggleFolderUriChanging: Actions.Creators.r_toggleFolderUriChanging,
-  deleteFile: Actions.Creators.s_deleteFile,
-  loadFiles: Actions.Creators.s_loadFiles,
-  saveOwnView: Actions.Creators.s_saveOwnView
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ControlPanel);
+export default connect(mapStateToProps, null)(ControlPanel);

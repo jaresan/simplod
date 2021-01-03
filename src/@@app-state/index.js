@@ -1,18 +1,15 @@
 import React from 'react';
 import {set, curry, identity, equals, map, is, fromPairs, toPairs} from 'ramda';
-import { createStore, applyMiddleware, compose } from 'redux';
-import createSagaMiddleware from 'redux-saga';
+import { createStore, compose } from 'redux';
 import {stream} from 'kefir';
-import sagas from '@@sagas/index';
 import {middleware as modelMiddleware} from '@@app-state/model/state';
 
 const fn = Symbol('function');
 
-const sagaMiddleware = createSagaMiddleware();
-let middleware = applyMiddleware(sagaMiddleware);
+let middleware = null;
 
 if (process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION__) {
-	middleware = compose(middleware, window.__REDUX_DEVTOOLS_EXTENSION__());
+	middleware = window.__REDUX_DEVTOOLS_EXTENSION__();
 }
 
 export const store = createStore(
@@ -34,8 +31,6 @@ export const store = createStore(
 	},
 	middleware
 );
-
-sagaMiddleware.run(sagas);
 
 export const dispatch = f => store.dispatch({type: fn, fn: f});
 export const dispatchSet = curry((ln, v) => dispatch(set(ln, v)));

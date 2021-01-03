@@ -8,9 +8,9 @@ import {
   getFiles,
   getUser
 } from '@@selectors';
-import Actions from '@@actions/solid';
 import { connect, Provider } from 'react-redux';
 import { store } from '@@app-state';
+import { deleteFile, loadFiles, loadOwnView, saveOwnView } from '@@actions/solid';
 
 const newViewSuffix = '__newView';
 
@@ -23,15 +23,15 @@ class FileList extends Component {
   fileFetchMap = {};
 
   saveNewView = key => {
-    this.props.saveOwnView(key);
+    saveOwnView(key);
   };
 
   onLoadView = (uri) => {
-    this.props.loadOwnView(uri);
+    loadOwnView(uri);
   };
 
   onDeleteFile = uri => {
-    this.props.deleteFile(uri);
+    deleteFile(uri);
   };
 
   getNewFileInput = ({key}) => {
@@ -117,7 +117,7 @@ class FileList extends Component {
         return;
       }
 
-      this.props.loadFiles(key);
+      loadFiles(key);
 
       this.fileFetchMap[key] = {
         resolve,
@@ -185,15 +185,7 @@ const mapStateToProps = appState => ({
   files: getFiles(appState)
 });
 
-const mapDispatchToProps = {
-  onSave: Actions.Creators.s_onViewSave,
-  loadOwnView: Actions.Creators.s_loadOwnView,
-  deleteFile: Actions.Creators.s_deleteFile,
-  loadFiles: Actions.Creators.s_loadFiles,
-  saveOwnView: Actions.Creators.s_saveOwnView
-};
-
 // Connect component to enable use in modal content
-const Connected = connect(mapStateToProps, mapDispatchToProps)(FileList);
+const Connected = connect(mapStateToProps, null)(FileList);
 
 export default props => <Provider store={store}><Connected {...props}/></Provider>;
