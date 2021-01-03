@@ -6,6 +6,7 @@
 import {store, dispatch} from '@@app-state';
 import {dataChanged as onDataChanged} from '@@sagas/interactions';
 import {debounce} from 'lodash';
+import {path} from 'ramda';
 import * as ModelState from '@@app-state/model/state';
 import { entityTypes } from '@@constants/entityTypes';
 
@@ -79,13 +80,13 @@ export class Handler {
     this.lastState = state;
     Object.values(this.recipients)
       .forEach(recipient => {
-        // FIXME: @immutable
-        const subState = state.getIn(['entities', recipient.handler.entityType, recipient.id]);
+        // FIXME: @reference don't use 'entities'
+        const subState = path(['entities', recipient.handler.entityType, recipient.id], state);
         if (subState && subState !== recipient.__lastState) {
-          // FIXME: Map to relevant properties for the wrapper instead of sending subState.toJS() as a whole
+          // FIXME: Map to relevant properties for the wrapper instead of sending subState as a whole
           // define selectors and mapping between redux state -> UI state in Wrappers themselves,
           // e.g. stateToStyle = {selected: {selected: true}} and then react to the child keys
-          recipient.onStateChanged(subState.toJS());
+          recipient.onStateChanged(subState);
           recipient.__lastState = subState;
           dataChanged = true;
         }

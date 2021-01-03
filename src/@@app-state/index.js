@@ -1,7 +1,6 @@
 import React from 'react';
 import { createStore, applyMiddleware, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import rootReducer from '@@reducers/index';
 import sagas from '@@sagas/index';
 import {set, curry, identity, equals, map, is, fromPairs, toPairs} from 'ramda';
 import {stream} from 'kefir';
@@ -18,21 +17,21 @@ if (process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION__
 
 export const store = createStore(
 	(s, a) => {
-		let res;
 		switch (a.type) {
 			case fn:
-				res = a.fn(s);
+				Object.assign(window, {fn: a.fn, s});
+				s = a.fn(s);
 				break;
 			default:
-				res = rootReducer(s, a);
 				break;
 		}
-		return modelMiddleware(res);
+		return modelMiddleware(s);
 	},
 	{
 		yasgui: require('./yasgui/state').initial,
-		solid: require('./solid/state').initial
-	}, // FIXME: Add initial state
+		solid: require('./solid/state').initial,
+		model: require('./model/state').initial
+	},
 	middleware
 );
 

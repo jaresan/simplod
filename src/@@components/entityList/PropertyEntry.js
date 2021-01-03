@@ -42,11 +42,13 @@ class PropertyEntryComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      varName: props.property.get('varName')
+      // FIXME: @reference
+      varName: props.property.varName
     }
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const varName = this.props.property.get('varName');
+    // FIXME: @reference
+    const varName = this.props.property.varName;
 
     if (varName !== prevState.varName && (prevState.varName === this.state.varName)) {
       this.setState({varName});
@@ -59,7 +61,7 @@ class PropertyEntryComponent extends React.Component {
     const {selectedEntities, property, id} = this.props;
     const {onSelect, onSetAsVariable, onSetName, onSetOptional} = dispatchProps;
 
-    const {predicate, asVariable, optional, selected, dataProperty, target, bound} = property.toJS();
+    const {predicate, asVariable, optional, selected, dataProperty, target, bound} = property;
     const {varName} = this.state;
 
     let nameInput;

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { DragOutlined } from '@ant-design/icons';
 import { Tag } from 'antd';
-import { prop } from 'ramda';
+import { prop, path } from 'ramda';
 import { connect } from 'react-redux';
 import { getProperties, getClasses, getSelectionOrder } from '@@selectors';
 import {dispatchSet} from '@@app-state';
@@ -18,13 +18,12 @@ const reorder = (list, startIndex, endIndex) => {
   return result;
 };
 
-// FIXME: @immutable
 const getItems = (items, selectionOrder) => selectionOrder
-  .filter(id => items.getIn([id, 'selected']))
-  .filter(id => !items.getIn([id, 'bound']))
+  .filter(id => path([id, 'selected'], items))
+  .filter(id => !path([id, 'bound'], items))
   .map(id => ({
     id,
-    content: `${items.getIn([id, 'varName'])}`
+    content: `${path([id, 'varName'], items)}`
   }));
 
 class ColumnListComponent extends Component {
@@ -121,7 +120,7 @@ class ColumnListComponent extends Component {
 const mapStateToProps = appState => ({
   properties: getProperties(appState),
   entities: getClasses(appState),
-  selectionOrder: getSelectionOrder(appState).toJS()
+  selectionOrder: getSelectionOrder(appState)
 });
 
 // TODO: @dispatch

@@ -37,12 +37,14 @@ class EntityEntryComponent extends React.Component {
 
     this.state = {
       expanded: false,
-      varName: props.entity.get('varName')
+      // FIXME: @reference
+      varName: props.entity.varName
     };
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const varName = this.props.entity.get('varName');
+    // FIXME: @reference
+    const varName = this.props.entity.varName;
 
     if (varName !== prevState.varName && (prevState.varName === this.state.varName)) {
       this.setState({varName});
@@ -58,7 +60,7 @@ class EntityEntryComponent extends React.Component {
   getControls = () => {
     const {id, entity} = this.props;
     const {toggleSelected, toggleHidden, updateName} = dispatchProps;
-    const {selected, hidden} = entity.toJS();
+    const {selected, hidden} = entity;
     const {varName} = this.state;
     return (
       <ControlsContainer>
@@ -100,7 +102,7 @@ class EntityEntryComponent extends React.Component {
 
   render() {
     const {id, entity, showHumanReadable} = this.props;
-    const {propertyIds, info} = entity.toJS();
+    const {propertyIds, info} = entity;
 
     if (!showHumanReadable) {
       info.label = '';

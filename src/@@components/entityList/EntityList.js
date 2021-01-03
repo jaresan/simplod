@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { getClasses, getProperties } from '@@selectors';
 import {EntityEntry} from './EntityEntry';
 import { List, Empty } from 'antd';
+import {filter, map, path} from 'ramda';
 import { withSearch } from '../withSearch';
 import styled from '@emotion/styled';
 
@@ -33,11 +34,11 @@ class EntityListComponent extends React.Component {
 		const {searchText} = this.props;
 		let entities = this.props.entities;
 		if (this.props.onlySelected) {
-			// FIXME: @immutable
-			entities = entities.filter(e => e.get('selected') || e.get('propertyIds').some(pId => this.props.properties.getIn([pId, 'selected'])));
+			// FIXME: @reference don't use e.selected e.propertyIds, 'selected'
+			entities = filter(e => e.selected || e.propertyIds.some(pId => path([pId, 'selected']), this.props.properties), entities);
 		}
-		const searchTerms = entities.map((val, id) => getSearchTerm([id, val.toJS()])).toJS();
-		return Object.keys(entities.toJS())
+		const searchTerms = map((val, id) => getSearchTerm([id, val]), entities);
+		return Object.keys(entities)
 			.sort()
 			.filter(id => searchTerms[id].includes(searchText.toLowerCase()));
 	}

@@ -12,9 +12,10 @@ import {
   map,
   assoc,
   mergeDeepRight,
-  mergeRight
+  mergeRight,
+  any,
+  values
 } from 'ramda';
-import {fromJS} from 'immutable';
 import { entityTypes } from '@@constants/entityTypes';
 
 export const initial = {
@@ -48,19 +49,23 @@ const defaultEntityProps = {
   }
 };
 
-// FIXME: @immutable
+const E = {
+  selected: prop('selected')
+};
+
+const P = {
+  target: prop('target')
+}
+
 export const middleware = s => {
-  const isDirty = view(entities, s).some(x => x.some(e => e.get('selected')));
+  const isDirty = any(x => any(E.selected, values(x)), values(view(entities, s)));
   return set(dirty, isDirty, s);
 };
 
 const root = 'model';
 export const rootLens = lensProp(root);
 
-// FIXME: @immutable Replace with normal lensprop once refactored
-const lensForImmutable = k => lens(s => s.get(k), curry((v, s) => s.set(k, fromJS(v))));
-
-const forKey = k => compose(rootLens, lensForImmutable(k));
+const forKey = k => compose(rootLens, lensProp(k));
 
 export const lastSave = forKey('lastSave');
 export const labelsLoadingProgress = forKey('labelsLoadingProgress');
@@ -70,9 +75,9 @@ export const showHumanReadable = forKey('showHumanReadable');
 export const language = forKey('language');
 export const dirty = forKey('dirty');
 export const entities = forKey('entities');
-export const classes = compose(entities, lensForImmutable(entityTypes.class));
-export const properties = compose(entities, lensForImmutable(entityTypes.property));
-export const edges = compose(entities, lensForImmutable(entityTypes.edge));
+export const classes = compose(entities, lensProp(entityTypes.class));
+export const properties = compose(entities, lensProp(entityTypes.property));
+export const edges = compose(entities, lensProp(entityTypes.edge));
 const entitiesByType = {
   [entityTypes.class]: classes,
   [entityTypes.property]: properties,
@@ -80,7 +85,7 @@ const entitiesByType = {
 };
 export const selectionOrder = forKey('selectionOrder');
 
-const update = curry((type, key, id, value) => set(compose(byTypeAndId(type, id), lensForImmutable(key)), value));
+const update = curry((type, key, id, value) => set(compose(byTypeAndId(type, id), lensProp(key)), value));
 const updateProperty = update(entityTypes.property);
 const updateEntity = update(entityTypes.class);
 
@@ -93,14 +98,14 @@ export const toggleClassAsVariable = updateEntity('asVariable');
 export const updateClassName = updateEntity('varName');
 
 const updateSelected = curry((type, id, selected, s) => {
+  // FIXME: @reference Not 'selected', use a reference
   s = update(type, 'selected', id, selected)(s);
-  // @immutable
   const order = view(selectionOrder, s);
   if (selected) {
     return set(selectionOrder, order.concat(id), s);
   }
 
-  return set(selectionOrder, order.remove(order.indexOf(id)), s);
+  return set(selectionOrder, order.splice(order.indexOf(id), 1), s);
 });
 
 export const togglePropertySelected = updateSelected(entityTypes.property);
@@ -108,62 +113,42 @@ export const togglePropertySelected = updateSelected(entityTypes.property);
 export const toggleClassSelected = curry((id, selected, state) => {
   state = updateSelected(entityTypes.class, id, selected, state);
   const oldProperties = view(properties, state);
-  const newProperties = oldProperties.map(property => {
-    const target = view(classById(property.get('target')), state);
+  const newProperties = map(property => {
+    const target = view(classById(P.target(property)), state);
 
-    if (target && target.get('selected')) {
-      return property.set('bound', true);
-    }
-
-    return property.set('bound', false);
-  });
+    // FIXME: @reference Use reference
+    property.bound = target && E.selected(target);
+    return property;
+  }, oldProperties);
   return set(properties, newProperties, state);
 });
 
-const byTypeAndId = curry((type, id) => compose(entitiesByType[type], lensForImmutable(id)));
+const byTypeAndId = curry((type, id) => compose(entitiesByType[type], lensProp(id)));
 export const propertyById = byTypeAndId(entityTypes.property);
 export const classById = byTypeAndId(entityTypes.class);
 
-// FIXME: @immutable
-export const getSelectedClasses = pipe(view(classes), filter(e => e.get('selected')), res => res.toJS());
-export const getSelectedEntities = pipe(view(entities), e => e.toJS(), Object.entries, reduce((acc, [type, entities]) => Object.assign(acc, {[type]: filter(prop('selected'), entities)}), {}));
-export const clearData = set(rootLens, fromJS(initial));
+export const getSelectedClasses = pipe(view(classes), filter(E.selected));
+export const getSelectedEntities = pipe(view(entities), map(filter(E.selected)));
+export const clearData = set(rootLens, initial);
 export const deselectAll = s => {
-  const toDeselect = view(entities, s).toJS();
+  const toDeselect = view(entities, s);
+  // FIXME: @reference Use reference instead of 'selected'
   const newEntities = map(map(assoc('selected', false)), toDeselect);
   return pipe(set(entities, newEntities), set(selectionOrder, []))(s);
 };
 export const toggleSelections = curry((type, selection, s) => {
   const entityLens = entitiesByType[type];
-  const oldEntities = view(entityLens, s).toJS();
+  const oldEntities = view(entityLens, s);
   return set(entityLens, mergeDeepRight(oldEntities, selection), s);
 });
 export const updateClasses = curry((newClasses, s) => {
   // performance issues with ramda
-  return {
-    ...s,
-    [root]: s[root].mergeDeepIn(['entities', entityTypes.class], fromJS(newClasses))
-  };
   const oldClasses = view(classes, s);
-
-  return set(classes, oldClasses.merge(newClasses), s);
+  return set(classes, mergeRight(oldClasses, newClasses), s);
 });
 export const registerResources = curry((entityType, resources, s) => {
   const withDefaultProps = map(mergeRight(defaultEntityProps[entityType] || {}), resources);
-  return {
-    ...s,
-    [root]: s[root].setIn(['entities', entityType], fromJS(withDefaultProps))
-  };
-});
-export const loadView = curry((json, s) => {
-  const substate = Object.entries(json).reduce((newState, [entityType, entities]) =>
-    Object.entries(entities).reduce((subState, [id, props]) =>
-        subState.updateIn(['entities', entityType], i => i.merge(fromJS({[id]: props}))),
-      newState),
-    s[root]);
-  return {
-    ...s,
-    [root]: substate
-  };
+  return set(entitiesByType[entityType], withDefaultProps, s);
 });
 
+export const loadView = curry((json, s) => set(entities, mergeDeepRight(view(entities, s), json), s));
