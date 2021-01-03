@@ -1,5 +1,5 @@
 import React from 'react';
-import { path, pick, pipe } from 'ramda';
+import { pick, pipe } from 'ramda';
 import { List, Card, Space, Checkbox, Tooltip, Input } from 'antd';
 import {connect} from 'react-redux';
 import {PropertyEntry} from './PropertyEntry';
@@ -101,7 +101,7 @@ class EntityEntryComponent extends React.Component {
   >{label}</Tooltip> : <PrefixedText title={this.props.id}/>;
 
   render() {
-    const {id, entity, showHumanReadable} = this.props;
+    const {entity, showHumanReadable} = this.props;
     const {propertyIds, info} = entity;
 
     // FIXME: @reference to entity fields

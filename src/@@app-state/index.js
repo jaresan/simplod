@@ -1,7 +1,5 @@
-import React from 'react';
-import {set, curry, identity, equals, map, is, fromPairs, toPairs} from 'ramda';
-import { createStore, compose } from 'redux';
-import {stream} from 'kefir';
+import {set, curry} from 'ramda';
+import { createStore } from 'redux';
 import {middleware as modelMiddleware} from '@@app-state/model/state';
 
 const fn = Symbol('function');
@@ -35,41 +33,3 @@ export const store = createStore(
 export const dispatch = f => store.dispatch({type: fn, fn: f});
 export const dispatchSet = curry((ln, v) => dispatch(set(ln, v)));
 export const getState = () => store.getState();
-
-export const extract = curry((spec, obj) => fromPairs(
-	toPairs(spec).map(([key, f]) => [key, is(Function, f) ? f(obj) : extract(f, obj)])
-));
-
-const state$ = stream(emit => store.subscribe(() => {
-	emit.value(store.getState());
-}));
-
-const extractStreamDedupe = (dedupe, extractor) => state$
-	.map(extractor || identity)
-	.skipDuplicates(dedupe);
-
-export const connect = curry((extractor, setter, Component) => {
-	const dispatchBindings = map(f => (...args) => dispatch(f(...args)), setter);
-	const initialState = extract(extractor)(store.getState());
-
-	return class extends React.Component {
-		constructor(props) {
-			super(props);
-			this.state = initialState;
-		}
-		componentDidMount() {
-			this.subscription = extractStreamDedupe(equals, extract(extractor))
-				.observe(s => {
-					this.setState(s);
-				});
-		}
-
-		componentWillUnmount() {
-			this.subscription.unsubscribe();
-		}
-
-		render() {
-			return <Component {...Object.assign({}, this.state, dispatchBindings, this.props)} />;
-		}
-	}
-});

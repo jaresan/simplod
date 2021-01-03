@@ -1,5 +1,3 @@
-import {merge} from 'ramda';
-
 const root = 'https://sparql-proxy-api.jaresantonin.now.sh';
 
 const downloadHumanReadableData = ({urls, prefixToIri, iriToPrefix}) => fetch(`${root}/getData`, {method: 'POST', body: JSON.stringify({urls, prefixToIri, iriToPrefix})}).then(data => data.json())

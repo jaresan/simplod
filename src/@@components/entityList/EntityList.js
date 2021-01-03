@@ -35,7 +35,7 @@ class EntityListComponent extends React.Component {
 		let entities = this.props.entities;
 		if (this.props.onlySelected) {
 			// FIXME: @reference don't use e.selected e.propertyIds, 'selected'
-			entities = filter(e => e.selected || e.propertyIds.some(pId => path([pId, 'selected']), this.props.properties), entities);
+			entities = filter(e => e.selected || e.propertyIds.some(pId => path([pId, 'selected'], this.props.properties)), entities);
 		}
 		const searchTerms = map((val, id) => getSearchTerm([id, val]), entities);
 		return Object.keys(entities)

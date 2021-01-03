@@ -12,8 +12,6 @@ import {
   assoc,
   mergeDeepRight,
   mergeRight,
-  any,
-  values,
   uniq
 } from 'ramda';
 import { entityTypes } from '@@model/entity-types';

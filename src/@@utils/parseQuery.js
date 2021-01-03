@@ -1,4 +1,4 @@
-import { groupBy, path, prop, map, partition, pipe, pick, flatten, values } from 'ramda';
+import { groupBy, path, prop, map, partition, pipe, pick } from 'ramda';
 
 const snakeToCamel = (str) => str.replace(
   /([-]\w)/g,

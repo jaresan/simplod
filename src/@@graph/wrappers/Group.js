@@ -1,4 +1,4 @@
-import { invoker, memoizeWith, pick, assocPath, path, identity, map, filter } from 'ramda';
+import { memoizeWith, pick, assocPath, path, identity, map, filter } from 'ramda';
 import {Property, Method} from '@@graph/wrappers/index';
 import { Handler } from '@@graph/handlers/Handler';
 import { PROP_LINE_HEIGHT } from '@@graph/Node';
