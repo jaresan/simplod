@@ -123,14 +123,14 @@ export default class FileList extends Component {
 
   getFileSubtree = curry((curr, [title, content]) => {
     const key = path.join(curr, title);
+
     const {timeout, resolve} = (this.fileFetchMap[key] || {});
-    if (resolve) {
+    const {__loaded, ...rest} = (content || {});
+    if (resolve && __loaded) {
       resolve();
       clearTimeout(timeout);
       delete this.fileFetchMap[key];
     }
-
-    const {__loaded, ...rest} = (content || {});
     let children = null;
     const isLeaf = content === null;
     const folderInitialized = !isLeaf && __loaded;
