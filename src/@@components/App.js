@@ -19,7 +19,10 @@ import { languages } from '@@constants/languages';
 import * as ModelState from '@@app-state/model/state';
 import * as YasguiState from '@@app-state/yasgui/state';
 import {dispatchSet, dispatch} from '@@app-state';
-import { changeLanguage, loadData, saveData, dataChanged, onDataLoaded, onAppStart } from '@@sagas/interactions';
+import {loadData, saveData} from '@@actions/save-load';
+import {dataChanged} from '@@actions/lifecycle';
+import {changeLanguage} from '@@actions/interactions/change-language';
+import {onAppStart, onDataLoaded} from '@@actions/lifecycle';
 
 import 'antd/dist/antd.compact.css';
 

@@ -1,6 +1,6 @@
 import {Parser} from 'n3';
 import { invertObj } from 'ramda';
-import possiblePrefixes from '@@constants/possiblePrefixes';
+import possiblePrefixes from '@@constants/possible-prefixes';
 import { parsePrefix } from './parsePrefix';
 
 export const parseTTL = ttlString => new Promise((res, err) => {

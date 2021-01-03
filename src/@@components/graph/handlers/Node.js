@@ -1,5 +1,5 @@
 import {Handler} from './Handler';
-import { entityTypes } from '@@constants/entityTypes';
+import { entityTypes } from '@@model/entity-types';
 
 export class Node extends Handler {
   static entityType = entityTypes.class;

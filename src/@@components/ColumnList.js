@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { DragOutlined } from '@ant-design/icons';
 import { Tag } from 'antd';
-import { prop, path } from 'ramda';
+import { prop, path, mergeRight } from 'ramda';
 import { connect } from 'react-redux';
 import { getProperties, getClasses, getSelectionOrder } from '@@selectors';
 import {dispatchSet} from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
-import {dataChanged} from '@@sagas/interactions';
+import {dataChanged} from '@@actions/lifecycle';
 
-// a little function to help us with reordering the result
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
@@ -40,7 +39,7 @@ class ColumnListComponent extends Component {
 
   updateItems() {
     const {entities, properties, selectionOrder} = this.props;
-    const items = getItems(entities.merge(properties), selectionOrder);
+    const items = getItems(mergeRight(entities, properties), selectionOrder);
     this.setState({items});
   }
 

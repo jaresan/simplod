@@ -16,7 +16,7 @@ import {
   any,
   values
 } from 'ramda';
-import { entityTypes } from '@@constants/entityTypes';
+import { entityTypes } from '@@model/entity-types';
 
 export const initial = {
   entities: {
