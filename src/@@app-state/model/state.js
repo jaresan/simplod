@@ -12,7 +12,7 @@ import {
   assoc,
   mergeDeepRight,
   mergeRight,
-  uniq
+  uniq, partition
 } from 'ramda';
 import { entityTypes } from '@@model/entity-types';
 
@@ -142,14 +142,14 @@ export const toggleSelections = curry((type, selection, s) => {
   // Change selection order if properties or classes are selected
   if (type !== entityTypes.edge) {
     const oldSelected = view(selectionOrder, s);
-    const newSelected = keys(filter(E.selected, selection));
-    s = set(selectionOrder, uniq(oldSelected.concat(newSelected)), s);
+    const [newSelected, newDeselected] = partition(E.selected, selection);
+    const newSelectionOrder = oldSelected.concat(keys(newSelected)).filter(id => !newDeselected[id]);
+    s = set(selectionOrder, uniq(newSelectionOrder), s);
   }
 
   return set(entityLens, mergeDeepRight(oldEntities, selection), s);
 });
 export const updateClasses = curry((newClasses, s) => {
-  // performance issues with ramda
   const oldClasses = view(classes, s);
   return set(classes, mergeRight(oldClasses, newClasses), s);
 });
