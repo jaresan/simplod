@@ -14,7 +14,15 @@ import styled from '@emotion/styled';
 import { Edge, Node, Property } from '@@graph/handlers';
 import { Tabs } from 'antd';
 import {ColumnList} from './ColumnList';
-import { getLanguage, getLoadingHumanReadable, getLimit, getLimitEnabled, getAvatar, getLastSave } from '@@selectors';
+import {
+  getLanguage,
+  getLoadingHumanReadable,
+  getLimit,
+  getLimitEnabled,
+  getAvatar,
+  getLastSave,
+  getShowHumanReadable
+} from '@@selectors';
 import { languages } from '@@constants/languages';
 import * as ModelState from '@@app-state/model/state';
 import * as YasguiState from '@@app-state/yasgui/state';
@@ -117,7 +125,7 @@ class App extends Component {
 
 
   render() {
-    const {language, loadingHumanReadable, limitEnabled, limit, avatar, lastSave} = this.props;
+    const {language, loadingHumanReadable, limitEnabled, limit, avatar, lastSave, showHumanReadable} = this.props;
     const {horizontalLayout} = this.state;
 
     return (
@@ -154,7 +162,7 @@ class App extends Component {
               <ControlPanel/>
               Downloading human readable data:
               <Progress percent={loadingHumanReadable} status={loadingHumanReadable < 100 && "active"} />
-              <span>Show labels: <Switch style={{width: 32}} onChange={dispatchProps.toggleHumanReadable} /></span>
+              <span>Show labels: <Switch style={{width: 32}} onChange={dispatchProps.toggleHumanReadable} checked={showHumanReadable} /></span>
               <span>Select language: <Select onChange={changeLanguage} value={language}>{languageOptions}</Select></span>
               <Tabs>
                 <TabPane tab="Available" key="1">
@@ -185,6 +193,7 @@ class App extends Component {
 const mapStateToProps = appState => ({
   language: getLanguage(appState),
   loadingHumanReadable: getLoadingHumanReadable(appState),
+  showHumanReadable: getShowHumanReadable(appState),
   limit: getLimit(appState),
   limitEnabled: getLimitEnabled(appState),
   avatar: getAvatar(appState),

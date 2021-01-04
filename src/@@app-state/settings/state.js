@@ -1,9 +1,8 @@
 import { assoc, compose, lens, lensProp, prop } from 'ramda';
-import { saveSettingsLocally } from '@@actions/save-load';
 
 export const initial = {
   language: navigator.language,
-  loadingHumanReadable: 0,
+  labelsLoadingProgress: 0,
   showHumanReadable: false,
   limitEnabled: false,
   limit: 100,
@@ -11,17 +10,21 @@ export const initial = {
 };
 
 const root = 'settings';
-export const rootLens = lens(prop(root), (toSet, state) => {
-  const res = assoc(root, toSet, state);
-  saveSettingsLocally(res);
-  return res;
-});
+export const rootLens = lensProp(root);
 
 const forKey = k => compose(rootLens, lensProp(k));
 
-export const lastSave = forKey('lastSave');
+const withAutoSave = k => compose(rootLens, lens(prop(k), (toSet, state) => {
+  const newSettings = assoc(k, toSet, state);
+
+  // Require directly to prevent circular dependencies
+  require('@@actions/save-load').updateLocalSettings({[k]: toSet});
+  return newSettings;
+}));
+
+export const lastSave = withAutoSave('lastSave');
 export const labelsLoadingProgress = forKey('labelsLoadingProgress');
-export const limit = forKey('limit');
-export const limitEnabled = forKey('limitEnabled');
-export const showHumanReadable = forKey('showHumanReadable');
-export const language = forKey('language');
+export const limit = withAutoSave('limit');
+export const limitEnabled = withAutoSave('limitEnabled');
+export const showHumanReadable = withAutoSave('showHumanReadable');
+export const language = withAutoSave('language');

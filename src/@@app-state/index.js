@@ -1,6 +1,7 @@
 import {set, curry} from 'ramda';
 import { createStore } from 'redux';
 import {middleware as modelMiddleware} from '@@app-state/model/state';
+import { initial } from '@@app-state/initial';
 
 const fn = Symbol('function');
 
@@ -21,12 +22,7 @@ export const store = createStore(
 		}
 		return modelMiddleware(s);
 	},
-	{
-		yasgui: require('./yasgui/state').initial,
-		solid: require('./solid/state').initial,
-		model: require('./model/state').initial,
-		settings: require('./settings/state').initial
-	},
+	initial,
 	middleware
 );
 

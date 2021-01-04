@@ -6,13 +6,12 @@ import { dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import { filter, invertObj, mapObjIndexed, view } from 'ramda';
 import { loadHumanReadableData } from '@@actions/interactions/load-human-readable';
-import {saveDataLocally} from '@@actions/save-load';
+import { loadLocalSettings, saveDataLocally } from '@@actions/save-load';
 import * as YasguiState from '@@app-state/yasgui/state';
 import * as SettingsState from '@@app-state/settings/state';
 import possiblePrefixes from '@@constants/possible-prefixes';
 import { parseSPARQLQuery } from '@@utils/parseQuery';
 import E from '@@model/entity';
-import { getLastLocalState } from '@@storage';
 
 /**
  * Used to setup the application on start. Hotkeys, state loading, pre data fetching initialization goes here.
@@ -23,9 +22,7 @@ export const onAppStart = () => {
     saveDataLocally();
   });
 
-  // FIXME: @reference 'state'
-  const prevSessionState = getLastLocalState();
-  dispatchSet(SettingsState.lastSave, view(SettingsState.lastSave, prevSessionState));
+  loadLocalSettings();
 };
 
 /**

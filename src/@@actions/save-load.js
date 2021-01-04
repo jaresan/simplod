@@ -4,31 +4,29 @@
 import { dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
-import { view } from 'ramda';
+import { view, mergeDeepRight } from 'ramda';
 import { getLastLocalState, saveLocalState } from '@@storage';
 
-// export const getSaveData = () => view()
-//
-//
-// export const loadData = data
+export const getSaveData = () => ({model: view(ModelState.rootLens, getState())});
+export const getLoadData = json => json.model;
 
-export const saveSettingsLocally = state => {
-  const settings = view(SettingsState.rootLens, state);
+export const clearLocalSettings = () => saveLocalState({settings: {}});
 
-  saveLocalState({settings});
-};
+export const updateLocalSettings = update => {
+  const {settings} = getLastLocalState();
+  saveLocalState({settings: mergeDeepRight(settings, update)});
+}
+
+export const loadLocalSettings = () => {
+  dispatchSet(SettingsState.rootLens, getLastLocalState().settings);
+}
 
 export const saveDataLocally = () => {
   dispatchSet(SettingsState.lastSave, Date.now());
-  const model = view(ModelState.rootLens, getState());
-
-  saveLocalState({model});
+  saveLocalState(getSaveData());
 }
 
 export const loadLocalData = () => {
-  const loadedState = getLastLocalState();
-
-  // Don't overwrite current lastSave
-  const newState = Object.assign(loadedState.model);
-  dispatchSet(ModelState.rootLens, newState);
+  const lastState = getLastLocalState();
+  dispatchSet(ModelState.rootLens, getLoadData(lastState));
 }
