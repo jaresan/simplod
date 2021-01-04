@@ -14,7 +14,6 @@ export const store = createStore(
 	(s, a) => {
 		switch (a.type) {
 			case fn:
-				Object.assign(window, {fn: a.fn, s});
 				s = a.fn(s);
 				break;
 			default:
@@ -25,7 +24,8 @@ export const store = createStore(
 	{
 		yasgui: require('./yasgui/state').initial,
 		solid: require('./solid/state').initial,
-		model: require('./model/state').initial
+		model: require('./model/state').initial,
+		settings: require('./settings/state').initial
 	},
 	middleware
 );

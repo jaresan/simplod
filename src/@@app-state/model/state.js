@@ -21,13 +21,7 @@ export const initial = {
     ...Object.keys(entityTypes).reduce((acc, type) => Object.assign(acc, {[type]: {}}), {})
   },
   dirty: false,
-  selectionOrder: [],
-  language: navigator.language,
-  loadingHumanReadable: 0,
-  showHumanReadable: false,
-  limitEnabled: false,
-  limit: 100,
-  lastSave: 0
+  selectionOrder: []
 };
 
 const defaultEntityProps = {
@@ -65,12 +59,6 @@ export const rootLens = lensProp(root);
 
 const forKey = k => compose(rootLens, lensProp(k));
 
-export const lastSave = forKey('lastSave');
-export const labelsLoadingProgress = forKey('labelsLoadingProgress');
-export const limit = forKey('limit');
-export const limitEnabled = forKey('limitEnabled');
-export const showHumanReadable = forKey('showHumanReadable');
-export const language = forKey('language');
 export const dirty = forKey('dirty');
 export const entities = forKey('entities');
 export const classes = compose(entities, lensProp(entityTypes.class));

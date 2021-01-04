@@ -18,8 +18,9 @@ import { getLanguage, getLoadingHumanReadable, getLimit, getLimitEnabled, getAva
 import { languages } from '@@constants/languages';
 import * as ModelState from '@@app-state/model/state';
 import * as YasguiState from '@@app-state/yasgui/state';
+import * as SettingsState from '@@app-state/settings/state';
 import {dispatchSet, dispatch} from '@@app-state';
-import {loadData, saveData} from '@@actions/save-load';
+import {loadLocalData, saveDataLocally} from '@@actions/save-load';
 import {dataChanged} from '@@actions/lifecycle';
 import {changeLanguage} from '@@actions/interactions/change-language';
 import {onAppStart, onDataLoaded} from '@@actions/lifecycle';
@@ -131,8 +132,8 @@ class App extends Component {
             <Button onClick={() => this.fetchData(this.applicantsURL)}>Single</Button>
             <Button onClick={() => this.fetchData(this.courtExampleURL)}>Court example</Button>
             <Button onClick={() => this.fetchData(this.govURL)}>Gov example</Button>
-            <Button onClick={saveData}>Save local</Button>
-            <Button onClick={loadData}>Load local {new Date(lastSave).toLocaleString()}</Button>
+            <Button onClick={saveDataLocally}>Save local</Button>
+            <Button onClick={loadLocalData}>Load local {new Date(lastSave).toLocaleString()}</Button>
           </Space>
           <br/>
           <Radio.Group onChange={this.toggleLayout} value={this.state.horizontalLayout}>
@@ -193,9 +194,9 @@ const mapStateToProps = appState => ({
 // TODO: @dispatch rewrite
 const dispatchProps = {
   clearData: () => dispatch(ModelState.clearData),
-  updateLimit: dispatchSet(ModelState.limit),
-  toggleLimit: dispatchSet(ModelState.limitEnabled),
-  toggleHumanReadable: dispatchSet(ModelState.showHumanReadable)
+  updateLimit: dispatchSet(SettingsState.limit),
+  toggleLimit: dispatchSet(SettingsState.limitEnabled),
+  toggleHumanReadable: dispatchSet(SettingsState.showHumanReadable)
 };
 
 export default connect(mapStateToProps, null)(App);

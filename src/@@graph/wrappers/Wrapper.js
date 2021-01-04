@@ -93,6 +93,13 @@ export class Wrapper {
   }
 
   onStateChanged(state) {
-    this.setState(state);
+    if (state && state !== this.__lastState) {
+      this.setState(state);
+      this.__lastState = state;
+
+      return true;
+    }
+
+    return false;
   };
 }

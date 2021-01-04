@@ -20,6 +20,7 @@ const handle = curry((methodName, e) => {
 });
 
 export class Graph {
+  // TODO: Use specific node events, not using graph events?
   behaviours = {
     click: 'onClick',
     dblclick: 'onDoubleClick',

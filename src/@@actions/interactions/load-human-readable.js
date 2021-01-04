@@ -2,6 +2,7 @@ import { dispatch, dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import { invertObj, map, view } from 'ramda';
 import * as YasguiState from '@@app-state/yasgui/state';
+import * as SettingsState from '@@app-state/settings/state';
 import { getHumanReadableDataPromises } from '@@api';
 import { updateLanguageInfo } from '@@model/class-entity';
 
@@ -9,11 +10,11 @@ import { updateLanguageInfo } from '@@model/class-entity';
  * Loads labels and comments for the existing entities in the application.
  */
 export const loadHumanReadableData = () => {
-  dispatchSet(ModelState.labelsLoadingProgress, 0);
+  dispatchSet(SettingsState.labelsLoadingProgress, 0);
   const state = getState();
   const classes = view(ModelState.classes, state);
   const prefixes = view(YasguiState.prefixes, state);
-  const language = view(ModelState.language, state);
+  const language = view(SettingsState.language, state);
   const urls = Object.keys(classes);
   const prefixToIri = prefixes;
   const iriToPrefix = invertObj(prefixes);
@@ -35,10 +36,10 @@ export const loadHumanReadableData = () => {
         .catch(() => {})
         .finally(() => {
           resolved++;
-          dispatchSet(ModelState.labelsLoadingProgress, Math.round(resolved / arr.length * 100));
+          dispatchSet(SettingsState.labelsLoadingProgress, Math.round(resolved / arr.length * 100));
         })
     });
 
   Promise.all(promises)
-    .then(() => dispatchSet(ModelState.labelsLoadingProgress, 100));
+    .then(() => dispatchSet(SettingsState.labelsLoadingProgress, 100));
 }

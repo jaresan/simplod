@@ -6,8 +6,9 @@ import { dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import { filter, invertObj, mapObjIndexed, view } from 'ramda';
 import { loadHumanReadableData } from '@@actions/interactions/load-human-readable';
-import {saveData} from '@@actions/save-load';
+import {saveDataLocally} from '@@actions/save-load';
 import * as YasguiState from '@@app-state/yasgui/state';
+import * as SettingsState from '@@app-state/settings/state';
 import possiblePrefixes from '@@constants/possible-prefixes';
 import { parseSPARQLQuery } from '@@utils/parseQuery';
 import E from '@@model/entity';
@@ -19,12 +20,12 @@ import { getLastLocalState } from '@@storage';
 export const onAppStart = () => {
   hotkeys('command+s,ctrl+s', e => {
     e.preventDefault()
-    saveData();
+    saveDataLocally();
   });
 
   // FIXME: @reference 'state'
   const prevSessionState = getLastLocalState();
-  dispatchSet(ModelState.lastSave, view(ModelState.lastSave, prevSessionState));
+  dispatchSet(SettingsState.lastSave, view(SettingsState.lastSave, prevSessionState));
 };
 
 /**
@@ -55,8 +56,8 @@ export const dataChanged = () => {
   const prefixes = view(YasguiState.prefixes, state);
   const selectedProperties = filter(E.selected, view(ModelState.properties, state));
   const selectedClasses = filter(E.selected, view(ModelState.classes, state));
-  const limit = view(ModelState.limit, state);
-  const limitEnabled = view(ModelState.limitEnabled, state);
+  const limit = view(SettingsState.limit, state);
+  const limitEnabled = view(SettingsState.limitEnabled, state);
   const selectionOrder = view(ModelState.selectionOrder, state);
   const prefixToIRI = Object.assign(prefixes, invertObj(possiblePrefixes));
 

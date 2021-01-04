@@ -72,7 +72,7 @@ export const onViewSave = async uri  => {
 
 
 export const saveOwnView = async uri  => {
-  const view = getViewSelection(getState());
+  const model = getState().model;
 
   // FIXME: Extract url sanitization
   const {webId} = await getSessionOrLogin();
@@ -87,7 +87,7 @@ export const saveOwnView = async uri  => {
     const res = await auth.fetch(uri, {
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(view)
+      body: JSON.stringify(model)
     });
 
     const logStatus = webId ? `You are logged in as ${webId}.` : 'You are not logged in.';
@@ -125,7 +125,7 @@ export const loadOwnView = async uri  => {
     } else {
       const json = await res.json();
       dispatch(ModelState.deselectAll);
-      dispatch(ModelState.loadView(json));
+      dispatchSet(ModelState.rootLens, json);
       message.success('View loaded');
     }
   } catch (e) {
