@@ -1,10 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { getClasses, getProperties } from '@@selectors';
+import {connect} from 'react-redux';
+import {getClasses, getProperties} from '@@selectors';
 import {EntityEntry} from './EntityEntry';
-import { List, Empty } from 'antd';
-import {filter, mapObjIndexed, path} from 'ramda';
-import { withSearch } from '../withSearch';
+import {List, Empty} from 'antd';
+import {filter, mapObjIndexed, path, any} from 'ramda';
+import {withSearch} from '../withSearch';
 import styled from '@emotion/styled';
 
 const EntityRow = styled(List.Item)`
@@ -35,7 +35,7 @@ class EntityListComponent extends React.Component {
 		let entities = this.props.entities;
 		if (this.props.onlySelected) {
 			// FIXME: @reference don't use e.selected e.propertyIds, 'selected'
-			entities = filter(e => e.selected || e.propertyIds.some(pId => path([pId, 'selected'], this.props.properties)), entities);
+			entities = filter(e => e.selected || any(pId => path([pId, 'selected'], this.props.properties), e.propertyIds), entities);
 		}
 		const searchTerms = mapObjIndexed((val, id) => getSearchTerm([id, val]), entities);
 		return Object.keys(entities)

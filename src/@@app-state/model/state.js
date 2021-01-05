@@ -37,7 +37,10 @@ const defaultEntityProps = {
     info: {
       label: '', // From remote
       description: '' // From remote
-    }
+    },
+    propertyIds: [],
+    hidden: false,
+    expanded: false
   }
 };
 
