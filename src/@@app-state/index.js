@@ -1,11 +1,11 @@
-import {set, curry} from 'ramda';
+import {set, curry, compose} from 'ramda';
 import { createStore } from 'redux';
 import {middleware as modelMiddleware} from '@@app-state/model/state';
 import { initial } from '@@app-state/initial';
 
 const fn = Symbol('function');
 
-let middleware = null;
+let middleware = compose;
 
 if (process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION__) {
 	middleware = window.__REDUX_DEVTOOLS_EXTENSION__();
