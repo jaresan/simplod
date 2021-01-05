@@ -1,4 +1,5 @@
 import {Canvas} from '@@graph/handlers';
+import { mergeRight } from 'ramda';
 
 export class Wrapper {
   // nodeType denotes the type of the node from AntD to use when rendering this object --> e.g. wrapped as a text
@@ -57,9 +58,9 @@ export class Wrapper {
   }
 
   setState(state) {
-    const lastState = Object.assign({}, this.state);
-    Object.assign(this.state, state);
-    this.callOnParent('stateChanged', {target: this, state, lastState});
+    const lastState = this.state;
+    this.state = mergeRight(this.state, state);
+    this.callOnParent('stateChanged', {target: this, state: this.state, lastState});
     this.updateStyles();
   }
 

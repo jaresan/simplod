@@ -70,6 +70,10 @@ export class Handler {
     dispatch(ModelState.toggleClassHidden(id, hidden))
   }
 
+  static toggleEntityExpanded(id, expanded) {
+    dispatch(ModelState.toggleClassExpanded(id, expanded))
+  }
+
   /**
    * Subscription method to redux store responding to changes on the store;
    */

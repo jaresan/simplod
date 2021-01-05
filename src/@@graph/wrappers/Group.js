@@ -21,7 +21,8 @@ class GroupController {
   state = {
     selected: false,
     hover: false,
-    hidden: false
+    hidden: false,
+    expanded: false
   };
 
   constructor(entityId, group) {
@@ -32,7 +33,7 @@ class GroupController {
     this.propertyWrappers = filter(w => (w instanceof Property) || (w instanceof Method), this.childrenWrappers);
     this.propertyContainer = this.children['property-container'];
     this.defaultChildAttrs = {};
-    this.toggleProperties(false);
+    this.toggleExpanded(false);
   }
 
   getEdges() {
@@ -56,6 +57,10 @@ class GroupController {
 
   cancelStyle(target, stylePath) {
     target.attr(path([target.get('id'), ...stylePath], this.defaultChildAttrs));
+  }
+
+  onLoad() {
+    this.updateExpandIcon();
   }
 
   onHover(target) {
@@ -93,14 +98,15 @@ class GroupController {
         p.onToggleSelect(selected);
       }
     })
-    this.toggleProperties(selected);
+    this.toggleExpanded(selected);
   }
 
-  toggleProperties(show) {
+  toggleExpanded(expand) {
     this.group.toFront();
-    this.showProperties = typeof show === 'undefined' ? !this.showProperties : show;
+    this.state.expanded = typeof expand === 'undefined' ? !this.state.expanded : expand;
 
     this.updatePropertyContainer();
+    this.updateExpandIcon();
   }
 
   updatePropertyContainer() {
@@ -108,7 +114,7 @@ class GroupController {
     let maxWidth = 0;
     Object.values(this.propertyWrappers)
       .forEach(wrapper => {
-        if (this.showProperties || wrapper.state.selected) {
+        if (this.state.expanded || wrapper.state.selected) {
           wrapper.show();
           wrapper.setIndex(i++);
           maxWidth = Math.max(maxWidth, wrapper.node.attr('width'));
@@ -128,12 +134,14 @@ class GroupController {
 
 
   // TODO: Take dynamically from the object (save the paths to the attrs)
-  swapExpandIcon() {
+  updateExpandIcon() {
     const icon = this.children['expand-icon'];
     const collapseIconPath = 'images/collapse.png';
     const expandIconPath = 'images/expand.png';
 
-    icon.attrs.img.src = this.showProperties ? collapseIconPath : expandIconPath;
+    if (typeof icon.attrs.img !== 'string') {
+      icon.attrs.img.src = this.state.expanded ? collapseIconPath : expandIconPath;
+    }
   }
 
   isVisible = () => this.group.get('visible');
@@ -144,26 +152,24 @@ class GroupController {
 
     this.group[method]();
     this.getEdges().forEach(e => e[method]());
-    this.handler.toggleEntityHidden(this.entityId, this.state.hidden);
   }
 
   selectAllProperties() {
     this.handler.startSelectBatch();
     Object.values(this.propertyWrappers).forEach(p => p.onToggleSelect(true));
     this.handler.stopSelectBatch();
-    this.toggleProperties(true);
+    this.toggleExpanded(true);
   }
 
   onClick(target) {
     const name = target.get('name');
 
     if (['node-container', 'expand-icon-container', 'node-title', 'expand-icon'].includes(name)) {
-      this.toggleProperties();
-      this.swapExpandIcon()
+      this.handler.toggleEntityExpanded(this.entityId, !this.state.expanded);
     } else if (name.includes('select-all')) {
       this.selectAllProperties();
     } else if (name.includes('hide')) {
-      this.toggleHidden();
+      this.handler.toggleEntityHidden(this.entityId, !this.state.hidden);
     } else {
       propagate(target, 'onClick');
     }
@@ -177,6 +183,9 @@ class GroupController {
     }
     if (!!state.hidden !== !!lastState.hidden) {
       this.toggleHidden(state.hidden);
+    }
+    if (!!state.expanded !== !!lastState.expanded) {
+      this.toggleExpanded(state.expanded);
     }
   }
 }

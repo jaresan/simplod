@@ -73,15 +73,16 @@ export const selectionOrder = forKey('selectionOrder');
 
 const update = curry((type, key, id, value) => set(compose(byTypeAndId(type, id), lensProp(key)), value));
 const updateProperty = update(entityTypes.property);
-const updateEntity = update(entityTypes.class);
+const updateClass = update(entityTypes.class);
 
 // FIXME: Move to /property.js and use lensProp
 export const togglePropertyOptional = updateProperty('optional');
 export const togglePropertyAsVariable = updateProperty('asVariable');
 export const savePropertyName = updateProperty('varName');
-export const toggleClassHidden = updateEntity('hidden');
-export const toggleClassAsVariable = updateEntity('asVariable');
-export const updateClassName = updateEntity('varName');
+export const toggleClassHidden = updateClass('hidden');
+export const toggleClassExpanded = updateClass('expanded');
+export const toggleClassAsVariable = updateClass('asVariable');
+export const updateClassName = updateClass('varName');
 
 const updateSelected = curry((type, id, selected, s) => {
   // FIXME: @reference Not 'selected', use a reference

@@ -46,6 +46,7 @@ export class Graph {
         const {x, y} = bbox;
         moveFns.push(() => {
           n.get('group').get('item').updatePosition({x, y});
+          n.get('group').get('wrapper').onLoad();
           n.getEdges().forEach(e => e.refresh());
         });
       }
