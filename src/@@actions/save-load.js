@@ -25,7 +25,12 @@ export const updateLocalSettings = update => {
   saveLocalState({settings: mergeDeepRight(settings, update)});
 }
 
-export const loadLocalSettings = () => dispatchSet(SettingsState.rootLens, getLastLocalState().settings);
+export const loadLocalSettings = () => {
+  const settings = getLastLocalState().settings;
+  if (settings) {
+    dispatchSet(SettingsState.rootLens, settings);
+  }
+}
 
 export const saveDataLocally = () => {
   dispatchSet(SettingsState.lastSave, Date.now());
