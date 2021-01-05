@@ -117,6 +117,12 @@ export const classById = byTypeAndId(entityTypes.class);
 export const getSelectedClasses = pipe(view(classes), filter(E.selected));
 export const getSelectedEntities = pipe(view(entities), map(filter(E.selected)));
 export const clearData = set(rootLens, initial);
+export const setBoundingBoxes = curry((boxesById, state) => {
+  const toUpdate = view(classes, state);
+  const updated = mergeDeepRight(toUpdate, boxesById);
+
+  return set(classes, updated, state);
+});
 export const deselectAll = s => {
   const toDeselect = view(entities, s);
   // FIXME: @reference Use reference instead of 'selected'

@@ -6,6 +6,7 @@ import {pipe, path, assocPath, identity, replace, view, mergeDeepRight} from 'ra
 import {message} from 'antd';
 import auth from 'solid-auth-client';
 import rdf from 'rdflib';
+import { generateSaveData, loadData } from '@@actions/save-load';
 
 // FIXME: Move all predicate etc specifiers to constants
 // TODO: Split to multiple different files in a 'solid' directory
@@ -72,7 +73,7 @@ export const onViewSave = async uri  => {
 
 
 export const saveOwnView = async uri  => {
-  const model = getState().model;
+  const saveData = generateSaveData();
 
   // FIXME: Extract url sanitization
   const {webId} = await getSessionOrLogin();
@@ -87,7 +88,7 @@ export const saveOwnView = async uri  => {
     const res = await auth.fetch(uri, {
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(model)
+      body: JSON.stringify(saveData)
     });
 
     const logStatus = webId ? `You are logged in as ${webId}.` : 'You are not logged in.';
@@ -125,7 +126,7 @@ export const loadOwnView = async uri  => {
     } else {
       const json = await res.json();
       dispatch(ModelState.deselectAll);
-      dispatchSet(ModelState.rootLens, json);
+      loadData(json);
       message.success('View loaded');
     }
   } catch (e) {

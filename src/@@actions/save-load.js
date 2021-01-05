@@ -1,14 +1,22 @@
 /**
  * File containing logic for saving/loading application data.
  */
-import { dispatchSet, getState } from '@@app-state';
+import { dispatch, dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
 import { view, mergeDeepRight } from 'ramda';
 import { getLastLocalState, saveLocalState } from '@@storage';
+import { Graph } from '@@graph';
+import { classes } from '@@app-state/model/state';
 
-export const getSaveData = () => ({model: view(ModelState.rootLens, getState())});
-export const getLoadData = json => json.model;
+export const generateSaveData = () => {
+
+  const bBoxesById = Graph.getBBoxesById();
+  dispatch(ModelState.setBoundingBoxes(bBoxesById));
+  return {model: view(ModelState.rootLens, getState())};
+}
+
+const getLoadData = json => json.model;
 
 export const clearLocalSettings = () => saveLocalState({settings: {}});
 
@@ -17,16 +25,18 @@ export const updateLocalSettings = update => {
   saveLocalState({settings: mergeDeepRight(settings, update)});
 }
 
-export const loadLocalSettings = () => {
-  dispatchSet(SettingsState.rootLens, getLastLocalState().settings);
-}
+export const loadLocalSettings = () => dispatchSet(SettingsState.rootLens, getLastLocalState().settings);
 
 export const saveDataLocally = () => {
   dispatchSet(SettingsState.lastSave, Date.now());
-  saveLocalState(getSaveData());
+  saveLocalState(generateSaveData());
 }
 
-export const loadLocalData = () => {
-  const lastState = getLastLocalState();
-  dispatchSet(ModelState.rootLens, getLoadData(lastState));
+export const loadData = json => {
+  const newData = getLoadData(json);
+  Graph.reset();
+  dispatchSet(ModelState.rootLens, newData);
+  Graph.updatePositions(view(classes, getState()));
 }
+
+export const loadLocalData = () => loadData(getLastLocalState());

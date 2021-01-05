@@ -1,4 +1,4 @@
-import {curry} from 'ramda';
+import { curry, fromPairs, path } from 'ramda';
 import {Canvas as CanvasWrapper} from '@@graph/wrappers';
 import {Property, Node, Edge} from '@@graph/handlers';
 
@@ -28,8 +28,33 @@ export class Graph {
     mouseout: 'onBlur',
     contextmenu: 'onContextMenu'
   };
+
   constructor(graph) {
     this.graph = graph;
+    Graph.instance = this;
+  }
+
+  static getBBoxesById() {
+    return fromPairs(Graph.instance.graph.getNodes().map(n => [n.get('id'), {bbox: n.getBBox()}]));
+  }
+
+  static updatePositions(dataById) {
+    const moveFns = [];
+    Graph.instance.graph.getNodes().forEach(n => {
+      const bbox = path([n.get('id'), 'bbox'], dataById);
+      if (bbox) {
+        const {x, y} = bbox;
+        moveFns.push(() => {
+          n.get('group').get('item').updatePosition({x, y});
+          n.getEdges().forEach(e => e.refresh());
+        });
+      }
+    })
+    Graph.instance.graph.on('afterlayout', () => {
+      moveFns.forEach(f => f());
+      Graph.instance.graph.fitView()
+      Graph.instance.graph.off('afterlayout');
+    });
   }
 
   loadData(data) {
@@ -55,12 +80,16 @@ export class Graph {
   }
 
   registerBehaviours() {
-    console.log('register');
     Object.entries(this.behaviours).forEach(([key, targetMethod]) => this.graph.on(key, handle(targetMethod)));
   }
 
   deregisterBehaviours() {
     Object.keys(this.behaviours).forEach(key => this.graph.off(key));
+  }
+
+  static reset() {
+    Graph.instance.graph.clear();
+    Graph.instance.graph.render();
   }
 
   render() {
@@ -74,3 +103,4 @@ export class Graph {
     this.graph.destroy();
   }
 }
+window.Graph = Graph;
