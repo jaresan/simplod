@@ -8,7 +8,7 @@ import {invertObj, keys} from 'ramda';
 import {Handler} from '@@graph/handlers/Handler';
 import { Progress, Radio, Button, InputNumber, Space, Select, Switch, Layout, Avatar } from 'antd';
 import {UserOutlined} from '@ant-design/icons';
-import {getContainerStyle, getMenuStyle} from './App.styled';
+import { getContainerStyle, getGraphContainerStyle, getMenuStyle } from './App.styled';
 import { EntityList } from './entityList/EntityList';
 import styled from '@emotion/styled';
 import { Edge, Node, Property } from '@@graph/handlers';
@@ -43,7 +43,7 @@ const {Header, Content, Footer} = Layout;
 const EntityListContainer = styled.div`
   border: solid 1px black;
   overflow: auto;
-  width: 512px;
+  width: 100%;
   height: 512px;
   display: flex;
   flex-direction: column;
@@ -151,20 +151,20 @@ class App extends Component {
           </Radio.Group>
           <br/>
           <div style={getContainerStyle(horizontalLayout)}>
-            {
-              this.state.loaded && <AntVExample
-                width={window.innerWidth * (horizontalLayout ? 0.5 : 1)}
-                height={window.innerHeight * (horizontalLayout ? 0.5 : 1)}
-                data={this.schemaData}
-              />
-            }
+            <div style={getGraphContainerStyle(horizontalLayout)}>
+              {
+                this.state.loaded && <AntVExample
+                  data={this.schemaData}
+                />
+              }
+            </div>
             <div style={getMenuStyle(horizontalLayout)}>
               <ControlPanel/>
-              Downloading human readable data:
-              <Progress percent={loadingHumanReadable} status={loadingHumanReadable < 100 && "active"} />
+              Downloading human readable labels:
+              <Progress style={{width: 256}} percent={loadingHumanReadable} status={loadingHumanReadable < 100 && "active"} />
               <span>Show labels: <Switch style={{width: 32}} onChange={dispatchProps.toggleHumanReadable} checked={showHumanReadable} /></span>
               <span>Select language: <Select onChange={changeLanguage} value={language}>{languageOptions}</Select></span>
-              <Tabs>
+              <Tabs style={{width: '100%'}}>
                 <TabPane tab="Available" key="1">
                   <EntityListContainer>
                     <EntityList />

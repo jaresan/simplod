@@ -9,7 +9,9 @@ import { dispatchSet } from '@@app-state';
 
 
 const Container = styled.div`
-	overflow: auto;
+	width: 100%;
+	max-width: 100%;
+	overflow: hidden;
 	.yasqe {
 		text-align: left;
 	}
