@@ -7,7 +7,6 @@ import * as SettingsState from '@@app-state/settings/state';
 import { view, mergeDeepRight } from 'ramda';
 import { getLastLocalState, saveLocalState } from '@@storage';
 import { Graph } from '@@graph';
-import { classes } from '@@app-state/model/state';
 
 export const generateSaveData = () => {
 
@@ -41,7 +40,7 @@ export const loadData = json => {
   const newData = getLoadData(json);
   Graph.reset();
   dispatchSet(ModelState.rootLens, newData);
-  Graph.updatePositions(view(classes, getState()));
+  Graph.updatePositions(view(ModelState.classes, getState()));
 }
 
 export const loadLocalData = () => loadData(getLastLocalState());

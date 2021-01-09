@@ -3,7 +3,7 @@ import { assoc, compose, lens, lensProp, prop } from 'ramda';
 export const initial = {
   language: navigator.language,
   labelsLoadingProgress: 0,
-  showHumanReadable: false,
+  showHumanReadable: true,
   limitEnabled: false,
   limit: 100,
   lastSave: 0

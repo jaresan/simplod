@@ -51,6 +51,9 @@ export class Graph {
         });
       }
     })
+
+    // Trigger the move functions only after the graph is done layouting (to prevent delayed zoom changes
+    // messing up the placement)
     Graph.instance.graph.on('afterlayout', () => {
       moveFns.forEach(f => f());
       Graph.instance.graph.fitView()
