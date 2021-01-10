@@ -1,6 +1,6 @@
 import { groupBy, path, prop, map, partition, pipe, pick } from 'ramda';
 
-const snakeToCamel = (str) => str.replace(
+const sanitizeVarName = str => str.replace(
   /([-]\w)/g,
   group => group.toUpperCase().replace('-', '')
 ).replace(/-/g, '');
@@ -15,12 +15,12 @@ const getDefaultEntityVarNames = types => {
     const suffix = stripped.match(/([^/#:]+)$/)
     let varName;
     if (suffix && suffix[1]) {
-      varName = snakeToCamel(suffix[1]);
+      varName = sanitizeVarName(suffix[1]);
     }
     if (varName && !nameCount[varName]) {
       nameCount[varName] = 1;
     } else {
-      varName = snakeToCamel(`${varName}${nameCount[varName]}`);
+      varName = sanitizeVarName(`${varName}${nameCount[varName]}`);
       nameCount[varName]++;
     }
     return Object.assign(acc, {[t]: varName});
@@ -29,7 +29,7 @@ const getDefaultEntityVarNames = types => {
 
 const getProperties = (prefixToIRI, getEntityVariable, propertiesBySource) => {
   const getProperty = ({asVariable, varName, predicate, source, optional, target, position}) => {
-    const targetVarName = snakeToCamel(getEntityVariable(target) || varName); // Use existing queried entity if available to prevent cartesian products
+    const targetVarName = sanitizeVarName(getEntityVariable(target) || varName); // Use existing queried entity if available to prevent cartesian products
 
     return {
       predicate, asVariable, position, optional, source,
@@ -47,7 +47,7 @@ const getProperties = (prefixToIRI, getEntityVariable, propertiesBySource) => {
 
 const getSelectVariables = (selectionOrder, selectedObjects) => selectionOrder
   .filter(id => path([id, 'asVariable'], selectedObjects) && !path([id, 'bound'], selectedObjects))
-  .map(id => `?${selectedObjects[id].varName}`);
+  .map(id => `?${sanitizeVarName(selectedObjects[id].varName)}`);
 
 const getSelectText = pipe(getSelectVariables, vars => vars.join(' ') || '*');
 
@@ -89,7 +89,7 @@ export const parseSPARQLQuery = ({selectedProperties, selectedEntities, prefixes
 
   const getPropertyRow = ({predicate, varName}, i, arr) => `${predicate} ${varName}${i === arr.length - 1 ? '.' : ';'}`
   const rows = Object.entries(properties).map(([source, {required, optional}]) => {
-    const entityVar = getEntityVariable(source);
+    const entityVar = sanitizeVarName(getEntityVariable(source));
     let res = `?${entityVar} a ${source}.`;
     if (required.length) {
       res = `?${entityVar} a ${source};${required.map(getPropertyRow).join('\n')}`;
