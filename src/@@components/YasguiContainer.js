@@ -21,7 +21,7 @@ class YasguiContainer extends Component {
 	constructor(props) {
 		super(props);
 		this.yasgui = null;
-		localStorage.removeItem('yagui__config')
+		localStorage.removeItem('yagui__config') // Remove old saved data -- "yagui" instead of "yasgui" is on purpose
 	}
 
 	componentDidUpdate(prevProps, prevState, snapshot) {
@@ -29,11 +29,10 @@ class YasguiContainer extends Component {
 		tab.setQuery(this.props.query);
 		setTimeout(() => tab.yasqe.autoformat(), 1);
 		tab.setEndpoint(this.props.endpoint);
-		dispatchSet(YasguiState.simpleQuery, tab.yasr.config.getPlainQueryLinkToEndpoint());
 	}
 
 	componentDidMount() {
-		const yasgui = new YASGUI(this.yasguiMountNode, {
+		this.yasgui = new YASGUI(this.yasguiMountNode, {
 			requestConfig: {
 				// endpoint: this.props.endpointURL,
 				// headers: () => ({
@@ -43,11 +42,10 @@ class YasguiContainer extends Component {
 			}
 		});
 
-		this.yasgui = yasgui;
-		window.current = yasgui;
-		window.yasgui = YASGUI;
 		// Force usage of cors
 		YASGUI.__defineGetter__('corsEnabled', () => ({}))
+		dispatchSet(YasguiState.instance, this.yasgui);
+		window.a = this.yasgui;
 	}
 
 	render() {

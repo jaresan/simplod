@@ -1,7 +1,8 @@
-import { memoizeWith, pick, assocPath, path, identity, map, filter } from 'ramda';
+import { memoizeWith, pick, assocPath, path, identity, map, filter, prop } from 'ramda';
 import {Property, Method} from '@@graph/wrappers/index';
 import { Handler } from '@@graph/handlers/Handler';
 import { PROP_LINE_HEIGHT } from '@@graph/Node';
+import { entityTypes } from '@@model/entity-types';
 
 const getWrapper = memoizeWith(t => t.get('id'), target => target.get('wrapper'));
 function propagate(target, key) {
@@ -107,6 +108,7 @@ class GroupController {
 
     this.updatePropertyContainer();
     this.updateExpandIcon();
+    this.handler.toggleEntityExpanded(this.entityId, this.state.expanded);
   }
 
   updatePropertyContainer() {
@@ -155,9 +157,9 @@ class GroupController {
   }
 
   selectAllProperties() {
-    this.handler.startSelectBatch();
-    Object.values(this.propertyWrappers).forEach(p => p.onToggleSelect(true));
-    this.handler.stopSelectBatch();
+    this.handler.batchSelect(entityTypes.property, Object.values(this.propertyWrappers).map(prop('id')));
+    // FIXME: Select edges as well / select them through properties? / add the highlight logic in edge wrappers directly? --> check any property selected
+    this.updatePropertyContainer();
     this.toggleExpanded(true);
   }
 
@@ -165,7 +167,7 @@ class GroupController {
     const name = target.get('name');
 
     if (['node-container', 'expand-icon-container', 'node-title', 'expand-icon'].includes(name)) {
-      this.handler.toggleEntityExpanded(this.entityId, !this.state.expanded);
+      this.toggleExpanded(!this.state.expanded);
     } else if (name.includes('select-all')) {
       this.selectAllProperties();
     } else if (name.includes('hide')) {
@@ -177,14 +179,14 @@ class GroupController {
   }
 
   stateChanged({target, state, lastState}) {
-    if (!!state.selected !== !!lastState.selected) {
+    if (state.selected !== lastState.selected) {
       this.updateHighlight(state.selected);
       this.updatePropertyContainer();
     }
-    if (!!state.hidden !== !!lastState.hidden) {
+    if (state.hidden !== lastState.hidden) {
       this.toggleHidden(state.hidden);
     }
-    if (!!state.expanded !== !!lastState.expanded) {
+    if (state.expanded !== lastState.expanded) {
       this.toggleExpanded(state.expanded);
     }
   }

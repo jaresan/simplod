@@ -46,5 +46,6 @@ export class Property extends Wrapper {
     this.handler.onToggleSelect(this.id, this.state.selected);
     const groupController = this.getGroupController();
     groupController.updatePropertyContainer()
+    // FIXME: Update edge as well
   }
 }

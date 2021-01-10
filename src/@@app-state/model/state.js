@@ -114,6 +114,19 @@ export const toggleClassSelected = curry((id, selected, state) => {
   return set(properties, newProperties, state);
 });
 
+export const toggleSelected = (type, ...args) => {
+  if (type === entityTypes.property) {
+    return togglePropertySelected(...args);
+  }
+  if (type === entityTypes.class) {
+    return toggleClassSelected(...args)
+  }
+  if (type === entityTypes.edge) {
+    // @reference don't use 'selected'
+    return update(entityTypes.edge, 'selected', ...args);
+  }
+}
+
 const byTypeAndId = curry((type, id) => compose(entitiesByType[type], lensProp(id)));
 export const propertyById = byTypeAndId(entityTypes.property);
 export const classById = byTypeAndId(entityTypes.class);

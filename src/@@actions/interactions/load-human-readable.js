@@ -12,17 +12,17 @@ import { updateLanguageInfo } from '@@model/class-entity';
 export const loadHumanReadableData = () => {
   dispatchSet(SettingsState.labelsLoadingProgress, 0);
   const state = getState();
-  const classes = view(ModelState.classes, state);
   const prefixes = view(YasguiState.prefixes, state);
   const language = view(SettingsState.language, state);
-  const urls = Object.keys(classes);
   const prefixToIri = prefixes;
   const iriToPrefix = invertObj(prefixes);
+  const urls = Object.keys(view(ModelState.classes, state));
 
   let resolved = 0;
   const promises = getHumanReadableDataPromises({urls, prefixToIri, iriToPrefix})
     .map((p, i, arr) => {
       return p.then(data => {
+        const classes = view(ModelState.classes, getState());
         const newClasses = Object.keys(data)
           .filter(id => classes.hasOwnProperty(id))
           .reduce((acc, id) => Object.assign(acc, {[id]: {

@@ -29,5 +29,4 @@ export const getFolderUri = view(SolidState.folderUri);
 
 export const getQuery = view(YasguiState.query);
 export const getEndpoint = view(YasguiState.endpoint);
-export const getSimpleQuery = view(YasguiState.simpleQuery);
 export const getPrefixes = view(YasguiState.prefixes);

@@ -6,7 +6,7 @@
 import {store, dispatch} from '@@app-state';
 import {dataChanged as onDataChanged} from '@@actions/lifecycle';
 import {debounce} from 'lodash';
-import {path} from 'ramda';
+import { fromPairs, path } from 'ramda';
 import * as ModelState from '@@app-state/model/state';
 import { entityTypes } from '@@model/entity-types';
 
@@ -17,16 +17,11 @@ export class Handler {
   static dispatch = action => store.dispatch(action);
   static entityType = 'unknown';
   static resources = {};
-  static toSelect = Object.keys(entityTypes).reduce((acc, type) => ({[type]: {}, ...acc}), {});
 
   static clear() {
     this.lastState = {};
     this.recipients = {};
     this.resources = {};
-  }
-
-  static clearSelection() {
-    this.toSelect = Object.keys(entityTypes).reduce((acc, type) => ({[type]: {}, ...acc}), {});
   }
 
   static subscribeToChanges = (id, recipient) => {
@@ -42,28 +37,11 @@ export class Handler {
   }
 
   static onToggleSelect(id, selected) {
-    this.toSelect[this.entityType][id] = {selected};
-
-    if (this.batchingSelect) {
-      this.commitSelectsDebounced();
-    } else {
-      this.commitSelects();
-    }
+    dispatch(ModelState.toggleSelected(this.entityType, id, selected));
   }
 
-  static commitSelects = () => {
-    Object.keys(this.toSelect).forEach(type => dispatch(ModelState.toggleSelections(type, this.toSelect[type])));
-    this.clearSelection();
-  };
-
-  static commitSelectsDebounced = debounce(this.commitSelects, 250, {leading: true});
-
-  static startSelectBatch() {
-    this.batchingSelect = true;
-  }
-
-  static stopSelectBatch() {
-    this.batchingSelect = false;
+  static batchSelect(type, ids) {
+    dispatch(ModelState.toggleSelections(type, fromPairs(ids.map(id => [id, {selected: true}]))));
   }
 
   static toggleEntityHidden(id, hidden) {

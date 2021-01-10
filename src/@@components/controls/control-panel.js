@@ -119,7 +119,7 @@ class ControlPanel extends Component {
         <FileList/>
         <Button onClick={() => AsyncModal.info({title: 'Save file?', content: this.getTabContents()})}>Open modal</Button>
         <Button onClick={() => {
-          window.navigator.clipboard.writeText(this.props.simpleQuery);
+          // window.navigator.clipboard.writeText(this.props.simpleQuery);
           message.success('Query URL copied to clipboard');
         }}>Copy request URL to clipboard</Button>
       </div>
@@ -132,8 +132,7 @@ const mapStateToProps = appState => ({
   isDirty: getDirty(appState),
   view: getViewSelection(appState),
   endpoint: getEndpoint(appState),
-  files: getFiles(appState),
-  simpleQuery: getSimpleQuery(appState)
+  files: getFiles(appState)
 });
 
 export default connect(mapStateToProps, null)(ControlPanel);

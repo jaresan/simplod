@@ -34,11 +34,13 @@ import {changeLanguage} from '@@actions/interactions/change-language';
 import {onAppStart, onDataLoaded} from '@@actions/lifecycle';
 
 import 'antd/dist/antd.compact.css';
+import { Menu } from '@@components/menu/menu';
+import { loadOwnView } from '@@actions/solid';
 
 
 const {Option} = Select;
 const {TabPane} = Tabs;
-const {Header, Content, Footer} = Layout;
+const {Header, Content, Sider, Footer} = Layout;
 
 const EntityListContainer = styled.div`
   border: solid 1px black;
@@ -60,22 +62,23 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    const params = new URLSearchParams(window.location.search);
-    this.schemaURL = params.get('schemaURL');
-    this.endpointURL = params.get('endpointURL') || 'http://dbpedia.org/sparql';
+    const url = new URL(window.location);
+    this.schemaURL = url.searchParams.get('schemaURL');
+    this.endpointURL = url.searchParams.get('endpointURL') || 'http://dbpedia.org/sparql';
+    this.modelURL = url.searchParams.get('modelURL');
 
     this.courtExampleURL = 'https://sparql-proxy-api.jaresantonin.now.sh/spo-court.ttl';
     this.applicantsURL = 'https://sparql-proxy-api.jaresantonin.now.sh/spo-job-applicants.ttl';
     this.govURL = "https://sparql-proxy-api.jaresantonin.now.sh/data.gov.cz.ttl";
     this.beefURL = '/samples/http---linked.opendata.cz-sparql.ttl'
-    this.endpointURL = 'http://linked.opendata.cz/sparql'
-    this.beefURL = '/samples/http---data.open.ac.uk-query.ttl';
-    this.endpointURL = 'http://data.open.ac.uk/query';
-    this.beefURL = '/samples/http---nl.dbpedia.org-sparql.ttl';
-    this.endpointURL = 'http://nl.dbpedia.org/sparql';
+    this.beefEndpointURL = 'http://linked.opendata.cz/sparql'
+    this.ukURL = '/samples/http---data.open.ac.uk-query.ttl';
+    this.ukEndpointURL = 'http://data.open.ac.uk/query';
+    // this.beefURL = '/samples/http---nl.dbpedia.org-sparql.ttl';
+    // this.endpointURL = 'http://nl.dbpedia.org/sparql';
     if (process.env.NODE_ENV === 'development') {
       // this.schemaURL = this.courtExampleURL;
-      this.schemaURL = this.applicantsURL;
+      this.schemaURL = this.schemaURL || this.applicantsURL;
       // this.schemaURL = this.govURL;
       // this.schemaURL = this.beefURL;
       this.endpointURL = "https://data.gov.cz/sparql";
@@ -83,7 +86,13 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.fetchData(this.schemaURL);
+    this.fetchData(this.schemaURL)
+      .then(() => {
+        if (this.modelURL) {
+          loadOwnView(this.modelURL);
+        }
+      });
+    dispatchSet(YasguiState.dataSchemaURL, this.schemaURL);
     dispatchSet(YasguiState.endpoint, this.endpointURL);
     onAppStart();
   }
@@ -96,7 +105,7 @@ class App extends Component {
     Node.clear();
     Edge.clear();
     dispatchProps.clearData();
-    fetch(url)
+    return fetch(url)
       .then(res => res.text())
       .then(async ttl => {
         const json = await parseTTL(ttl);
@@ -131,7 +140,7 @@ class App extends Component {
     return (
       <Layout>
         <Header style={{background: '#EEE', border: 'solid 1px black'}}>
-          <Avatar size="large" src={avatar} icon={<UserOutlined />} />
+          <Menu/>
         </Header>
         <Content style={{padding: '0 50px', background: 'white'}}>
           <Space>
@@ -196,7 +205,6 @@ const mapStateToProps = appState => ({
   showHumanReadable: getShowHumanReadable(appState),
   limit: getLimit(appState),
   limitEnabled: getLimitEnabled(appState),
-  avatar: getAvatar(appState),
   lastSave: getLastSave(appState)
 });
 

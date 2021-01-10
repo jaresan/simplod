@@ -5,7 +5,8 @@ export const initial = {
   files: {},
   avatar: '',
   folderUriChanging: false,
-  folderUri: ''
+  folderUri: '',
+  modelFileLocation: ''
 };
 
 const root = 'solid';
@@ -20,6 +21,7 @@ export const folderUri = forKey('folderUri');
 export const webId = compose(session, lensProp('webId'));
 export const folderUriChanging = forKey('folderUriChanging');
 export const logOut = set(rootLens, initial);
+export const modelFileLocation = forKey('modelFileLocation');
 
 export const deleteFile = filePath => dissocPath([root, 'files', ...filePath]);
 
