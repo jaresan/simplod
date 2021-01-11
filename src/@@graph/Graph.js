@@ -92,8 +92,10 @@ export class Graph {
   }
 
   static reset() {
-    Graph.instance.graph.clear();
-    Graph.instance.graph.render();
+    if (Graph.instance) {
+      Graph.instance.graph.clear();
+      Graph.instance.render();
+    }
   }
 
   render() {

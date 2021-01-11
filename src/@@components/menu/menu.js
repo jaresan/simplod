@@ -3,20 +3,9 @@ import {connect} from 'react-redux';
 import { Avatar, Menu, Tooltip } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import {view} from 'ramda';
-import {
-  getAvatar,
-  getLanguage, getLastSave,
-  getLimit,
-  getLimitEnabled,
-  getLoadingHumanReadable,
-  getShowHumanReadable
-} from '@@selectors';
-import { dispatch, dispatchSet } from '@@app-state';
-import * as ModelState from '@@app-state/model/state';
-import * as SettingsState from '@@app-state/settings/state';
+import {getAvatar} from '@@selectors';
 import * as SolidState from '@@app-state/solid/state';
 import * as YasguiState from '@@app-state/yasgui/state';
-import styled from '@emotion/styled';
 
 class MenuComponent extends React.Component {
   onGetCurlClick = () => {

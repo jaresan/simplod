@@ -10,7 +10,7 @@ export const initial = {
 };
 
 const root = 'solid';
-const rootLens = lensProp(root);
+export const rootLens = lensProp(root);
 
 const forKey = k => compose(rootLens, lensProp(k));
 

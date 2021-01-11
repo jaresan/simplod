@@ -6,7 +6,7 @@ import { dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import { filter, invertObj, mapObjIndexed, view } from 'ramda';
 import { loadHumanReadableData } from '@@actions/interactions/load-human-readable';
-import { loadLocalSettings, saveDataLocally } from '@@actions/save-load';
+import { loadLocalSettings, saveData } from '@@actions/save-load';
 import * as YasguiState from '@@app-state/yasgui/state';
 import * as SettingsState from '@@app-state/settings/state';
 import possiblePrefixes from '@@constants/possible-prefixes';
@@ -19,7 +19,7 @@ import E from '@@model/entity';
 export const onAppStart = () => {
   hotkeys('command+s,ctrl+s', e => {
     e.preventDefault()
-    saveDataLocally();
+    saveData();
   });
 
   loadLocalSettings();

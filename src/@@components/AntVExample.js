@@ -40,7 +40,9 @@ export class AntVExample extends React.Component {
   }
 
   onContainerResize = e => {
-    this.graph.graph.changeSize(this.mountNode.clientWidth - 12, this.mountNode.clientHeight - 12);
+    if (this.mountNode) {
+      this.graph.graph.changeSize(this.mountNode.clientWidth - 12, this.mountNode.clientHeight - 12);
+    }
   };
 
   componentWillUnmount() {

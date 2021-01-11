@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { message, Popconfirm, Button, Input, Tree, Tooltip, Space } from 'antd';
-import {CloseOutlined, PlusOutlined, UploadOutlined} from '@ant-design/icons';
-import {curry} from 'ramda';
+import { CloseOutlined, PlusOutlined, ShareAltOutlined, UploadOutlined } from '@ant-design/icons';
+import { curry, view } from 'ramda';
 import path from 'path';
 import {
   getDirty,
@@ -9,8 +9,9 @@ import {
   getUser
 } from '@@selectors';
 import { connect, Provider } from 'react-redux';
-import { store } from '@@app-state';
+import {store} from '@@app-state';
 import { deleteFile, loadFiles, loadOwnView, saveOwnView } from '@@actions/solid';
+import { getShareableURL } from '@@actions/solid/files';
 
 const newViewSuffix = '__newView';
 
@@ -68,10 +69,15 @@ class FileList extends Component {
     }
   };
 
+  getShareableURL = filePath => {
+    console.log(getShareableURL(filePath));
+  };
+
   getFileWithControls = ({title, key}) => {
     return (
       <span>
         {title}
+        <ShareAltOutlined onClick={() => this.getShareableURL(key)} />
         <Popconfirm
           title="Are you sure you want to apply this view?"
           onConfirm={() => this.onLoadView(key)}

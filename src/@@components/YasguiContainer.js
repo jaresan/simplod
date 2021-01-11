@@ -45,7 +45,6 @@ class YasguiContainer extends Component {
 		// Force usage of cors
 		YASGUI.__defineGetter__('corsEnabled', () => ({}))
 		dispatchSet(YasguiState.instance, this.yasgui);
-		window.a = this.yasgui;
 	}
 
 	render() {

@@ -7,6 +7,7 @@ import {message} from 'antd';
 import auth from 'solid-auth-client';
 import rdf from 'rdflib';
 import { generateSaveData, loadData } from '@@actions/save-load';
+import { saveFile } from '@@actions/solid/save';
 
 // FIXME: Move all predicate etc specifiers to constants
 // TODO: Split to multiple different files in a 'solid' directory
@@ -82,34 +83,7 @@ export const saveOwnView = async uri  => {
   uri = `${origin}/${uri.replace(origin, '').replace(/^\//, '')}`; // Enforce domain if relative URL provided
   uri = uri.replace(/(.json)?$/, '.json');
 
-  const loading = message.loading('Saving view...');
-  const errMsg = 'An error occured while trying to save the view.';
-  try {
-    const res = await auth.fetch(uri, {
-      method: 'PUT',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(saveData)
-    });
-
-    const logStatus = webId ? `You are logged in as ${webId}.` : 'You are not logged in.';
-    if (res.status === 401) {
-      message.error(`
-        The request returned 401 - unauthorized.
-        ${logStatus}
-        Either you don't have access to the requested resource or the permissions on it are not set up correctly.
-      `);
-    } else if (res.status < 200 || res.status >= 300) {
-      message.error(errMsg)
-    } else {
-      message.success('Saved successfully!');
-      dispatchSet(SolidState.modelFileLocation, uri);
-    }
-  } catch (e) {
-    message.error(errMsg)
-  } finally {
-    loading();
-  }
-
+  await saveFile({uri, data: saveData, webId});
   await loadFiles(uri.replace(/\/[^/]*$/, ''));
 }
 
@@ -325,7 +299,7 @@ export const loadFiles = async url  => {
 
   const files = store.statementsMatching(null, type, resource)
     .map(getValue)
-  .filter(name => !folders[name] && isTypeValid(name))
+    .filter(name => !folders[name] && isTypeValid(name))
     .reduce((acc, name) => Object.assign(acc, {[name]: null}), {});
 
   const state = getState();

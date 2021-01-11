@@ -28,10 +28,11 @@ import * as ModelState from '@@app-state/model/state';
 import * as YasguiState from '@@app-state/yasgui/state';
 import * as SettingsState from '@@app-state/settings/state';
 import {dispatchSet, dispatch} from '@@app-state';
-import {loadLocalData, saveDataLocally} from '@@actions/save-load';
+import {loadLocalData, saveData} from '@@actions/save-load';
 import {dataChanged} from '@@actions/lifecycle';
 import {changeLanguage} from '@@actions/interactions/change-language';
 import {onAppStart, onDataLoaded} from '@@actions/lifecycle';
+import {Graph} from '@@graph';
 
 import 'antd/dist/antd.compact.css';
 import { Menu } from '@@components/menu/menu';
@@ -92,14 +93,13 @@ class App extends Component {
           loadOwnView(this.modelURL);
         }
       });
-    dispatchSet(YasguiState.dataSchemaURL, this.schemaURL);
-    dispatchSet(YasguiState.endpoint, this.endpointURL);
     onAppStart();
   }
 
   // FIXME: Move fetch to sagas
   fetchData = url => {
     // FIXME: Move Handler clearing somewhere else (ideally to saga which pings @@graph which pings handler)
+    this.setState({loaded: false});
     Handler.clear();
     Property.clear();
     Node.clear();
@@ -116,7 +116,10 @@ class App extends Component {
 
         this.setState({loaded: true});
         dispatchSet(YasguiState.prefixes, invertObj(json.__prefixes__));
+        dispatchSet(YasguiState.dataSchemaURL, url);
+        dispatchSet(YasguiState.endpoint, this.endpointURL);
         onDataLoaded();
+        Graph.reset();
       });
   };
 
@@ -149,7 +152,7 @@ class App extends Component {
             <Button onClick={() => this.fetchData(this.applicantsURL)}>Single</Button>
             <Button onClick={() => this.fetchData(this.courtExampleURL)}>Court example</Button>
             <Button onClick={() => this.fetchData(this.govURL)}>Gov example</Button>
-            <Button onClick={saveDataLocally}>Save local</Button>
+            <Button onClick={saveData}>Save local</Button>
             <Button onClick={loadLocalData}>Load local {new Date(lastSave).toLocaleString()}</Button>
           </Space>
           <br/>
