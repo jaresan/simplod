@@ -1,10 +1,10 @@
-import { memoizeWith, pick, assocPath, path, identity, map, filter, prop } from 'ramda';
+import { pick, assocPath, path, identity, map, filter, prop } from 'ramda';
 import {Property, Method} from '@@graph/wrappers/index';
 import { Handler } from '@@graph/handlers/Handler';
 import { PROP_LINE_HEIGHT } from '@@graph/Node';
 import { entityTypes } from '@@model/entity-types';
 
-const getWrapper = memoizeWith(t => t.get('id'), target => target.get('wrapper'));
+const getWrapper = target => target.get('wrapper');
 function propagate(target, key) {
   const wrapper = getWrapper(target);
   return wrapper && wrapper[key] && wrapper[key]();
