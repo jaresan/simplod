@@ -6,8 +6,7 @@ import {parseTTL} from '@@data/parseTTL';
 import {AntVExample} from './AntVExample';
 import {invertObj, keys} from 'ramda';
 import {Handler} from '@@graph/handlers/Handler';
-import { Progress, Radio, Button, InputNumber, Space, Select, Switch, Layout, Avatar } from 'antd';
-import {UserOutlined} from '@ant-design/icons';
+import { Progress, Radio, Button, InputNumber, Space, Select, Switch, Layout } from 'antd';
 import { getContainerStyle, getGraphContainerStyle, getMenuStyle } from './App.styled';
 import { EntityList } from './entityList/EntityList';
 import styled from '@emotion/styled';
@@ -19,7 +18,6 @@ import {
   getLoadingHumanReadable,
   getLimit,
   getLimitEnabled,
-  getAvatar,
   getLastSave,
   getShowHumanReadable
 } from '@@selectors';
@@ -41,7 +39,7 @@ import { loadOwnView } from '@@actions/solid';
 
 const {Option} = Select;
 const {TabPane} = Tabs;
-const {Header, Content, Sider, Footer} = Layout;
+const {Header, Content, Footer} = Layout;
 
 const EntityListContainer = styled.div`
   border: solid 1px black;
@@ -137,7 +135,7 @@ class App extends Component {
 
 
   render() {
-    const {language, loadingHumanReadable, limitEnabled, limit, avatar, lastSave, showHumanReadable} = this.props;
+    const {language, loadingHumanReadable, limitEnabled, limit, lastSave, showHumanReadable} = this.props;
     const {horizontalLayout} = this.state;
 
     return (

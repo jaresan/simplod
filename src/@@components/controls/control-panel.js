@@ -6,7 +6,7 @@ import {
   getUser,
   getDirty,
   getEndpoint,
-  getFiles, getSimpleQuery
+  getFiles
 } from '@@selectors';
 import FileList from '@@components/controls/file-list';
 import { AsyncModal } from '@@modal';

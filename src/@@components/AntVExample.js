@@ -2,8 +2,7 @@ import React from 'react';
 import G6 from '@antv/g6';
 import {Graph, getNodes, getEdges} from '@@graph';
 import styled from '@emotion/styled';
-import { Button, Tooltip } from 'antd';
-import {CompressOutlined} from '@ant-design/icons';
+import { Button } from 'antd';
 import { dispatch } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 

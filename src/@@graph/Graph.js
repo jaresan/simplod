@@ -109,4 +109,3 @@ export class Graph {
     this.graph.destroy();
   }
 }
-window.Graph = Graph;

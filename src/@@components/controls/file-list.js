@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { message, Popconfirm, Button, Input, Tree, Tooltip, Space } from 'antd';
 import { CloseOutlined, PlusOutlined, ShareAltOutlined, UploadOutlined } from '@ant-design/icons';
-import { curry, view } from 'ramda';
+import { curry } from 'ramda';
 import path from 'path';
 import {
   getDirty,
