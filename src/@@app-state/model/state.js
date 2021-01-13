@@ -21,7 +21,9 @@ export const initial = {
     ...Object.keys(entityTypes).reduce((acc, type) => Object.assign(acc, {[type]: {}}), {})
   },
   dirty: false,
-  selectionOrder: []
+  selectionOrder: [],
+  endpoint: '',
+  dataSchemaURL: '',
 };
 
 const defaultEntityProps = {
@@ -67,6 +69,8 @@ export const entities = forKey('entities');
 export const classes = compose(entities, lensProp(entityTypes.class));
 export const properties = compose(entities, lensProp(entityTypes.property));
 export const edges = compose(entities, lensProp(entityTypes.edge));
+export const endpoint = forKey('endpoint');
+export const dataSchemaURL = forKey('dataSchemaURL');
 const entitiesByType = {
   [entityTypes.class]: classes,
   [entityTypes.property]: properties,

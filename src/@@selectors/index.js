@@ -28,5 +28,5 @@ export const getAvatar = view(SolidState.avatar);
 export const getFolderUri = view(SolidState.folderUri);
 
 export const getQuery = view(YasguiState.query);
-export const getEndpoint = view(YasguiState.endpoint);
+export const getEndpoint = view(ModelState.endpoint);
 export const getPrefixes = view(YasguiState.prefixes);

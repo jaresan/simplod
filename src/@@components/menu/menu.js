@@ -6,6 +6,7 @@ import {view} from 'ramda';
 import {getAvatar} from '@@selectors';
 import * as SolidState from '@@app-state/solid/state';
 import * as YasguiState from '@@app-state/yasgui/state';
+import * as ModelState from '@@app-state/model/state';
 
 class MenuComponent extends React.Component {
   onGetCurlClick = () => {
@@ -55,8 +56,8 @@ class MenuComponent extends React.Component {
 const mapStateToProps = appState => ({
   avatar: getAvatar(appState),
   yasguiInstance: view(YasguiState.instance, appState),
-  endpoint: view(YasguiState.endpoint, appState),
-  dataSchemaURL: view(YasguiState.dataSchemaURL, appState),
+  endpoint: view(ModelState.endpoint, appState),
+  dataSchemaURL: view(ModelState.dataSchemaURL, appState),
   modelFileLocation: view(SolidState.modelFileLocation, appState)
 });
 

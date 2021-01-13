@@ -114,8 +114,8 @@ class App extends Component {
 
         this.setState({loaded: true});
         dispatchSet(YasguiState.prefixes, invertObj(json.__prefixes__));
-        dispatchSet(YasguiState.dataSchemaURL, url);
-        dispatchSet(YasguiState.endpoint, this.endpointURL);
+        dispatchSet(ModelState.dataSchemaURL, url);
+        dispatchSet(ModelState.endpoint, this.endpointURL);
         onDataLoaded();
         Graph.reset();
       });
