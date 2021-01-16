@@ -11,7 +11,7 @@ import {
 import { connect, Provider } from 'react-redux';
 import {store} from '@@app-state';
 import { deleteFile, loadFiles, loadOwnView, saveOwnView } from '@@actions/solid';
-import { getShareableURL } from '@@actions/solid/files';
+import { getShareableURL } from '@@actions/solid/share';
 
 const newViewSuffix = '__newView';
 

@@ -8,40 +8,10 @@ import auth from 'solid-auth-client';
 import rdf from 'rdflib';
 import { generateSaveData, loadData } from '@@actions/save-load';
 import { saveFile } from '@@actions/solid/save';
+import { getSessionOrLogin } from '@@actions/solid/auth';
 
 // FIXME: Move all predicate etc specifiers to constants
 // TODO: Split to multiple different files in a 'solid' directory
-
-const login = async ()  => {
-  const popupUri = 'dist-popup/popup.html';
-  const session = await auth.popupLogin({ popupUri });
-  dispatchSet(SolidState.session, session);
-
-  return session;
-}
-
-export const onSolidLogin = async ()  => {
-  await login();
-  await onLoggedIn();
-}
-
-const getSession = async ()  => {
-  const session = await auth.currentSession();
-  const expiration = path(['idClaims', 'exp'], session) * 1000;
-  return {
-    session,
-    valid: expiration > Date.now()
-  };
-}
-
-const getSessionOrLogin = async ()  => {
-  const {session, valid} = await getSession();
-  if (!valid) {
-    return await login();
-  } else {
-    return session;
-  }
-}
 
 export const onViewSave = async uri  => {
   const view = getViewSelection(getState());
@@ -232,38 +202,6 @@ export const deleteFile = async uri  => {
 //   }
 //   yield put(SolidActions.Creators.r_toggleFolderUriChanging(false));
 // }
-
-const updateAvatar = async webId  => {
-  const store = rdf.graph();
-  const ttl = await auth.fetch(webId).then(data => data.text());
-  rdf.parse(ttl, store, webId);
-  const vCard = rdf.Namespace('http://www.w3.org/2006/vcard/ns#')
-  const hasPhoto = vCard('hasPhoto');
-  const avatar = path([0, 'object', 'value'], store.statementsMatching(null, hasPhoto, null));
-  dispatchSet(SolidState.avatar, avatar);
-}
-
-const onLoggedIn = async ()  => {
-  const {session: {webId}} = await getSession();
-  await loadFiles(new URL(webId).origin);
-  await updateAvatar(webId);
-}
-
-export const onSolidStart = async ()  => {
-  const {session, valid} = await getSession();
-
-  if (valid) {
-    await onLoggedIn();
-    dispatchSet(SolidState.session, session);
-  } else {
-    await auth.logout();
-  }
-}
-
-export const onSolidLogout = async ()  => {
-  await auth.logout();
-  dispatch(SolidState.logOut())
-}
 
 export const loadFiles = async url  => {
   const {webId} = await getSessionOrLogin();

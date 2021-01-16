@@ -10,7 +10,9 @@ import {
 } from '@@selectors';
 import FileList from '@@components/controls/file-list';
 import { AsyncModal } from '@@modal';
-import { onSolidLogin, onSolidLogout, onSolidStart, onViewSave, saveOwnView } from '@@actions/solid';
+import {onViewSave, saveOwnView } from '@@actions/solid';
+import {onSolidStart} from '@@actions/solid/lifecycle';
+import {logoutSolid, loginToSolid} from '@@actions/solid/auth';
 
 const {TabPane} = Tabs;
 
@@ -28,11 +30,11 @@ class ControlPanel extends Component {
   };
 
   onLogin = () => {
-    onSolidLogin();
+    loginToSolid();
   };
 
   onLogout = () => {
-    onSolidLogout();
+    logoutSolid();
   };
 
   downloadView = () => {

@@ -97,6 +97,9 @@ class App extends Component {
   // FIXME: Move fetch to sagas
   fetchData = url => {
     // FIXME: Move Handler clearing somewhere else (ideally to saga which pings @@graph which pings handler)
+    // FIXME: Move the whole flow to AntVHandler
+    // treat everything as loadOwnView
+    // loadData first, render graph, then loadOwnView
     this.setState({loaded: false});
     Handler.clear();
     Property.clear();
