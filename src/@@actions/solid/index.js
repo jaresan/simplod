@@ -1,7 +1,6 @@
 import { getViewSelection } from '@@selectors';
-import {dispatchSet, dispatch, getState} from '@@app-state';
+import {dispatchSet, getState} from '@@app-state';
 import * as SolidState from '@@app-state/solid/state';
-import * as ModelState from '@@app-state/model/state';
 import {pipe, path, assocPath, identity, replace, view, mergeDeepRight} from 'ramda';
 import {message} from 'antd';
 import auth from 'solid-auth-client';

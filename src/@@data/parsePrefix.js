@@ -1,7 +1,7 @@
 export const parsePrefix = (prefixes, iri) => {
   const suffix = iri.replace(/.*(\/|#)/, '');
   const prefixIri = iri.replace(/(\/|#)[^/#]*$/, '$1');
-  const alias = prefixes[prefixIri] || 'ns';
+  const alias = prefixes[prefixIri] || 'ns_';
 
   return {
     alias,

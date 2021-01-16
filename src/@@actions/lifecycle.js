@@ -5,7 +5,6 @@ import hotkeys from 'hotkeys-js';
 import { dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import { filter, invertObj, mapObjIndexed, view } from 'ramda';
-import { loadHumanReadableData } from '@@actions/interactions/load-human-readable';
 import { loadLocalSettings, saveData } from '@@actions/save-load';
 import * as YasguiState from '@@app-state/yasgui/state';
 import * as SettingsState from '@@app-state/settings/state';
@@ -42,7 +41,6 @@ export const onDataLoaded = () => {
   // FIXME: @reference to set propertyIds
   const newClasses = mapObjIndexed((c, id) => Object.assign(c, {propertyIds: propsById[id]}), view(ModelState.classes, state));
   dispatchSet(ModelState.classes, newClasses);
-  loadHumanReadableData();
 }
 
 /**

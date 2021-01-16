@@ -1,29 +1,19 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import { Avatar, Menu, Tooltip } from 'antd';
+import { Avatar, Menu, Modal, Tooltip } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import {view} from 'ramda';
 import {getAvatar} from '@@selectors';
 import * as SolidState from '@@app-state/solid/state';
-import * as YasguiState from '@@app-state/yasgui/state';
 import * as ModelState from '@@app-state/model/state';
+import { ShareMenu } from '@@components/menu/share-menu';
 
 class MenuComponent extends React.Component {
-  onGetCurlClick = () => {
-    alert(this.props.yasguiInstance.getTab().yasqe.getAsCurlString());
-  }
-
-  onGetURL = () => {
-    alert(this.props.yasguiInstance.getTab().yasr.config.getPlainQueryLinkToEndpoint());
-  }
-
   onGetApplicationURL = () => {
     const url = new URL(window.location);
     url.searchParams.set('modelURL', this.props.modelFileLocation);
     url.searchParams.set('schemaURL', this.props.dataSchemaURL);
     url.searchParams.set('endpoint', this.props.endpoint);
-    console.log(url);
-    alert(url);
   };
 
   getAppUrlButton = () => {
@@ -38,11 +28,16 @@ class MenuComponent extends React.Component {
     return <Menu.Item onClick={this.onGetApplicationURL}>Application URL</Menu.Item>;
   }
 
+  openShareModal = () => {
+    Modal.info({maskClosable: true, icon: null, content: <ShareMenu/>});
+  }
+
   render() {
     const {avatar} = this.props;
 
     return <Menu mode="horizontal">
       <Menu.Item><Avatar size="large" src={avatar} icon={<UserOutlined />} /></Menu.Item>
+      <Menu.Item title="Share" onClick={this.openShareModal}>Share</Menu.Item>
       <Menu.SubMenu title="Share">
         {this.getAppUrlButton()}
         <Menu.Divider />
@@ -55,7 +50,6 @@ class MenuComponent extends React.Component {
 
 const mapStateToProps = appState => ({
   avatar: getAvatar(appState),
-  yasguiInstance: view(YasguiState.instance, appState),
   endpoint: view(ModelState.endpoint, appState),
   dataSchemaURL: view(ModelState.dataSchemaURL, appState),
   modelFileLocation: view(SolidState.modelFileLocation, appState)

@@ -79,13 +79,13 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.fetchData(this.schemaURL);
+    this.fetchData(this.schemaURL, this.modelURL);
     onAppStart();
   }
 
-  fetchData = url => {
+  fetchData = (dataSchemaURL, modelURL) => {
     this.setState({loaded: false});
-    loadGraph({dataSchemaURL: url, endpointURL: this.endpointURL})
+    loadGraph({dataSchemaURL, endpointURL: this.endpointURL, modelURL})
       .then(() => this.setState({loaded: true}));
   };
 
