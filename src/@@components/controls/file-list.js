@@ -10,8 +10,10 @@ import {
 } from '@@selectors';
 import { connect, Provider } from 'react-redux';
 import {store} from '@@app-state';
-import { deleteFile, loadFiles, loadOwnView, saveOwnView } from '@@actions/solid';
+import {loadFiles, saveOwnView} from '@@actions/solid';
+import {deleteFile} from '@@actions/solid/files';
 import { getShareableURL } from '@@actions/solid/share';
+import { loadGraph } from '@@actions/model/load-graph';
 
 const newViewSuffix = '__newView';
 
@@ -28,7 +30,7 @@ class FileList extends Component {
   };
 
   onLoadView = (uri) => {
-    loadOwnView(uri);
+    loadGraph({modelURL: uri});
   };
 
   onDeleteFile = uri => {

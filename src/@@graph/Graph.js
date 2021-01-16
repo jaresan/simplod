@@ -1,6 +1,9 @@
 import { curry, fromPairs, path } from 'ramda';
 import {Canvas as CanvasWrapper} from '@@graph/wrappers';
 import {Property, Node, Edge} from '@@graph/handlers';
+import { Handler } from '@@graph/handlers/Handler';
+import { getNodes } from '@@graph/Node';
+import { getEdges } from '@@graph/Edge';
 
 const getWrapper = n => {
   if (!n) return;
@@ -21,7 +24,7 @@ const handle = curry((methodName, e) => {
 
 export class Graph {
   // TODO: Use specific node events, not using graph events?
-  behaviours = {
+  static behaviours = {
     click: 'onClick',
     dblclick: 'onDoubleClick',
     mouseover: 'onHover',
@@ -29,18 +32,27 @@ export class Graph {
     contextmenu: 'onContextMenu'
   };
 
-  constructor(graph) {
-    this.graph = graph;
-    Graph.instance = this;
+  static setInstance(graph) {
+    this.instance = graph;
+  }
+
+  static loadData(data) {
+    console.time('getNodes')
+    const nodes = getNodes(data);
+    console.timeEnd('getNodes')
+    console.time('getEdges')
+    const edges = getEdges(data);
+    console.timeEnd('getEdges');
+    this.instance.data({nodes, edges});
   }
 
   static getBBoxesById() {
-    return fromPairs(Graph.instance.graph.getNodes().map(n => [n.get('id'), {bbox: n.getBBox()}]));
+    return fromPairs(this.instance.getNodes().map(n => [n.get('id'), {bbox: n.getBBox()}]));
   }
 
   static updatePositions(dataById) {
     const moveFns = [];
-    Graph.instance.graph.getNodes().forEach(n => {
+    this.instance.getNodes().forEach(n => {
       const bbox = path([n.get('id'), 'bbox'], dataById);
       if (bbox) {
         const {x, y} = bbox;
@@ -54,16 +66,16 @@ export class Graph {
 
     // Trigger the move functions only after the graph is done layouting (to prevent delayed zoom changes
     // messing up the placement)
-    Graph.instance.graph.on('afterlayout', () => {
+    this.instance.on('afterlayout', () => {
       moveFns.forEach(f => f());
-      Graph.instance.graph.fitView()
-      Graph.instance.graph.off('afterlayout');
+      this.instance.fitView()
+      this.instance.off('afterlayout');
     });
   }
 
-  loadData(data) {
+  static initialize(data) {
     console.time('this.@@graph.clear();')
-    this.graph.clear();
+    this.instance.clear();
     console.timeEnd('this.@@graph.clear();')
 
     console.time('this.deregisterBehaviours();')
@@ -74,38 +86,41 @@ export class Graph {
     this.registerBehaviours();
     console.timeEnd('this.registerBehaviours();')
 
-    console.time('this.@@graph.data(data);')
-    this.graph.data(data);
-    console.timeEnd('this.@@graph.data(data);')
+    console.time('this.graph.data();')
+    this.loadData(data);
+    console.timeEnd('this.graph.data();')
 
     console.time('this.render();')
     this.render();
     console.timeEnd('this.render();')
   }
 
-  registerBehaviours() {
-    Object.entries(this.behaviours).forEach(([key, targetMethod]) => this.graph.on(key, handle(targetMethod)));
+  static registerBehaviours() {
+    Object.entries(this.behaviours).forEach(([key, targetMethod]) => this.instance.on(key, handle(targetMethod)));
   }
 
-  deregisterBehaviours() {
-    Object.keys(this.behaviours).forEach(key => this.graph.off(key));
+  static deregisterBehaviours() {
+    Object.keys(this.behaviours).forEach(key => this.instance.off(key));
   }
 
-  static reset() {
-    if (Graph.instance) {
-      Graph.instance.graph.clear();
-      Graph.instance.render();
+  static clear() {
+    Handler.clear();
+    Property.clear();
+    Node.clear();
+    Edge.clear();
+    if (this.instance) {
+      this.instance.clear();
     }
   }
 
-  render() {
-    this.graph.render();
+  static render() {
+    this.instance.render();
     Property.commitResources();
     Node.commitResources();
     Edge.commitResources();
   }
 
-  destroy() {
-    this.graph.destroy();
+  static destroy() {
+    this.instance.destroy();
   }
 }

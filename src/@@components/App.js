@@ -2,15 +2,11 @@ import React, {Component} from 'react';
 import YasguiContainer from './YasguiContainer';
 import ControlPanel from '@@components/controls/control-panel';
 import {connect} from 'react-redux';
-import {parseTTL} from '@@data/parseTTL';
-import {AntVExample} from './AntVExample';
-import {invertObj, keys} from 'ramda';
-import {Handler} from '@@graph/handlers/Handler';
-import { Progress, Radio, Button, InputNumber, Space, Select, Switch, Layout } from 'antd';
+import {GraphContainer} from './GraphContainer';
+import { Progress, Radio, Button, InputNumber, Space, Select, Switch, Layout, Input } from 'antd';
 import { getContainerStyle, getGraphContainerStyle, getMenuStyle } from './App.styled';
 import { EntityList } from './entityList/EntityList';
 import styled from '@emotion/styled';
-import { Edge, Node, Property } from '@@graph/handlers';
 import { Tabs } from 'antd';
 import {ColumnList} from './ColumnList';
 import {
@@ -23,18 +19,16 @@ import {
 } from '@@selectors';
 import { languages } from '@@constants/languages';
 import * as ModelState from '@@app-state/model/state';
-import * as YasguiState from '@@app-state/yasgui/state';
 import * as SettingsState from '@@app-state/settings/state';
 import {dispatchSet, dispatch} from '@@app-state';
 import {loadLocalData, saveData} from '@@actions/save-load';
 import {dataChanged} from '@@actions/lifecycle';
 import {changeLanguage} from '@@actions/interactions/change-language';
-import {onAppStart, onDataLoaded} from '@@actions/lifecycle';
-import {Graph} from '@@graph';
+import {onAppStart} from '@@actions/lifecycle';
 
 import 'antd/dist/antd.compact.css';
 import { Menu } from '@@components/menu/menu';
-import { loadOwnView } from '@@actions/solid';
+import { loadGraph } from '@@actions/model/load-graph';
 
 
 const {Option} = Select;
@@ -85,43 +79,14 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.fetchData(this.schemaURL)
-      .then(() => {
-        if (this.modelURL) {
-          loadOwnView(this.modelURL);
-        }
-      });
+    this.fetchData(this.schemaURL);
     onAppStart();
   }
 
-  // FIXME: Move fetch to sagas
   fetchData = url => {
-    // FIXME: Move Handler clearing somewhere else (ideally to saga which pings @@graph which pings handler)
-    // FIXME: Move the whole flow to AntVHandler
-    // treat everything as loadOwnView
-    // loadData first, render graph, then loadOwnView
     this.setState({loaded: false});
-    Handler.clear();
-    Property.clear();
-    Node.clear();
-    Edge.clear();
-    dispatchProps.clearData();
-    return fetch(url)
-      .then(res => res.text())
-      .then(async ttl => {
-        const json = await parseTTL(ttl);
-        this.schemaData = keys(json.data).reduce((acc, key) =>
-          Object.assign(acc, {
-            [key]: json.data[key]
-          }), {});
-
-        this.setState({loaded: true});
-        dispatchSet(YasguiState.prefixes, invertObj(json.__prefixes__));
-        dispatchSet(ModelState.dataSchemaURL, url);
-        dispatchSet(ModelState.endpoint, this.endpointURL);
-        onDataLoaded();
-        Graph.reset();
-      });
+    loadGraph({dataSchemaURL: url, endpointURL: this.endpointURL})
+      .then(() => this.setState({loaded: true}));
   };
 
   toggleLayout = ({target: {value: horizontalLayout}}) => this.setState({horizontalLayout})
@@ -136,6 +101,7 @@ class App extends Component {
     dataChanged();
   };
 
+  updateEndpoint = dispatchSet(ModelState.endpoint);
 
   render() {
     const {language, loadingHumanReadable, limitEnabled, limit, lastSave, showHumanReadable} = this.props;
@@ -148,8 +114,10 @@ class App extends Component {
         </Header>
         <Content style={{padding: '0 50px', background: 'white'}}>
           <Space>
-            <input type="text" ref={e => this.dataSchemaInput = e} placeholder="Data schema URL"/>
-            <Button onClick={() => this.fetchData(this.dataSchemaInput.value)}>Reload schema URL</Button>
+            <Input type="text" ref={e => this.dataSchemaInput = e} placeholder="Data schema URL"/>
+            <Button onClick={() => this.fetchData(this.dataSchemaInput.input.value)}>Reload schema URL</Button>
+            <Input type="text" ref={e => this.endpointInput = e} placeholder="Endpoint URL" onPressEnter={e => this.updateEndpoint(e.target.value)}/>
+            <Button onClick={() => this.updateEndpoint(this.endpointInput.input.value)}>Set endpoint</Button>
             <Button onClick={() => this.fetchData(this.applicantsURL)}>Single</Button>
             <Button onClick={() => this.fetchData(this.courtExampleURL)}>Court example</Button>
             <Button onClick={() => this.fetchData(this.govURL)}>Gov example</Button>
@@ -165,11 +133,7 @@ class App extends Component {
           <br/>
           <div style={getContainerStyle(horizontalLayout)}>
             <div style={getGraphContainerStyle(horizontalLayout)}>
-              {
-                this.state.loaded && <AntVExample
-                  data={this.schemaData}
-                />
-              }
+              <GraphContainer />
             </div>
             <div style={getMenuStyle(horizontalLayout)}>
               <ControlPanel/>

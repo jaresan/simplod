@@ -5,10 +5,10 @@ import { dispatch, dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
 import * as SolidState from '@@app-state/solid/state';
-import { view, mergeDeepRight } from 'ramda';
+import { view, mergeDeepRight, prop } from 'ramda';
 import { getLastLocalState, saveLocalState } from '@@storage';
 import { Graph } from '@@graph';
-import { saveFile } from '@@actions/solid/save';
+import { saveFile } from '@@actions/solid/files';
 import { message } from 'antd';
 
 export const generateSaveData = () => {
@@ -17,7 +17,7 @@ export const generateSaveData = () => {
   return {model: view(ModelState.rootLens, getState())};
 }
 
-const getLoadData = json => json.model;
+export const getModelData = prop('model');
 
 export const clearLocalSettings = () => saveLocalState({settings: {}});
 
@@ -50,11 +50,10 @@ export const saveDataLocally = () => {
   message.success('Data saved locally.');
 }
 
-export const loadData = json => {
-  const newData = getLoadData(json);
-  Graph.reset();
+export const loadModel = json => {
+  const newData = getModelData(json);
   dispatchSet(ModelState.rootLens, newData);
   Graph.updatePositions(view(ModelState.classes, getState()));
 }
 
-export const loadLocalData = () => loadData(getLastLocalState());
+export const loadLocalData = () => loadModel(getLastLocalState());

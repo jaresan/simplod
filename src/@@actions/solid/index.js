@@ -6,8 +6,8 @@ import {pipe, path, assocPath, identity, replace, view, mergeDeepRight} from 'ra
 import {message} from 'antd';
 import auth from 'solid-auth-client';
 import rdf from 'rdflib';
-import { generateSaveData, loadData } from '@@actions/save-load';
-import { saveFile } from '@@actions/solid/save';
+import { generateSaveData } from '@@actions/save-load';
+import { saveFile } from '@@actions/solid/files';
 import { getSessionOrLogin } from '@@actions/solid/auth';
 
 // FIXME: Move all predicate etc specifiers to constants
@@ -55,55 +55,6 @@ export const saveOwnView = async uri  => {
 
   await saveFile({uri, data: saveData, webId});
   await loadFiles(uri.replace(/\/[^/]*$/, ''));
-}
-
-export const loadOwnView = async uri  => {
-  const {webId} = await getSessionOrLogin();
-  const {origin} = new URL(webId);
-
-  const loading = message.loading('Loading view...');
-  const errMsg = 'There was an error loading the view. Please make sure it corresponds to the data schema.';
-  uri = `${origin}/${uri.replace(origin, '').replace(/^\//, '')}`
-  try {
-    const res = await auth.fetch(uri);
-    if (res.status < 200 || res.status >= 300) {
-      message.error(errMsg)
-    } else {
-      const json = await res.json();
-      dispatch(ModelState.deselectAll);
-      loadData(json);
-      message.success('View loaded');
-    }
-  } catch (e) {
-    console.error(e);
-    message.error(errMsg)
-  } finally {
-    loading();
-  }
-}
-
-export const deleteFile = async uri  => {
-  const loading = message.loading('Deleting view...');
-  try {
-    const {webId} = await getSessionOrLogin();
-    const {origin} = new URL(webId);
-    uri = `${origin}/${uri.replace(origin, '').replace(/^\//, '')}`; // Enforce domain if relative URL provided
-
-    const res = await auth.fetch(uri, { method: 'DELETE'});
-
-    if (res.status < 200 || res.status >= 300) {
-      message.error('An error occured while trying to delete the view.')
-    } else {
-      message.success('View deleted');
-      const filePath = ['/'].concat(uri.replace(origin, '').split('/')).filter(identity);
-      dispatch(SolidState.deleteFile(filePath));
-    }
-  } catch (e) {
-    console.error(e);
-    message.error('An error occured while trying to delete the view.')
-  } finally {
-    loading();
-  }
 }
 
 // const loadExternalView = async uri  => {

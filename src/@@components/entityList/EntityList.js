@@ -37,6 +37,7 @@ class EntityListComponent extends React.Component {
 			// FIXME: @reference don't use e.selected e.propertyIds, 'selected'
 			entities = filter(e => e.selected || any(pId => path([pId, 'selected'], this.props.properties), e.propertyIds), entities);
 		}
+
 		const searchTerms = mapObjIndexed((val, id) => getSearchTerm([id, val]), entities);
 		return Object.keys(entities)
 			.sort()

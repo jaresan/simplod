@@ -135,7 +135,6 @@ const NodeImplementation = {
     });
     const wrapper = new Group(group.entityId, group);
     group.set('wrapper', wrapper);
-    wrapper.toggleExpanded(false);
   }
 };
 

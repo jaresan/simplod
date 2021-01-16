@@ -1,6 +1,6 @@
 import React from 'react';
 import G6 from '@antv/g6';
-import {Graph, getNodes, getEdges} from '@@graph';
+import {Graph} from '@@graph';
 import styled from '@emotion/styled';
 import { Button } from 'antd';
 import { dispatch } from '@@app-state';
@@ -17,53 +17,21 @@ const Container = styled.div`
   height: 100vh;
 `;
 
-const GraphContainer = styled.div`
+const GraphMountContainer = styled.div`
   border: solid 1px black;
   width: 100%;
   height: 100%;
 `;
 
-export class AntVExample extends React.Component {
+export class GraphContainer extends React.Component {
   componentDidMount() {
-    this.loadData();
+    this.instantiateGraph();
     this.resizeObserver = new ResizeObserver(this.onContainerResize);
 
     this.resizeObserver.observe(this.containerNode);
-    window.graph = this.graph;
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.data !== this.props.data) {
-      this.loadData();
-    }
-  }
-
-  onContainerResize = e => {
-    if (this.mountNode) {
-      this.graph.graph.changeSize(this.mountNode.clientWidth - 12, this.mountNode.clientHeight - 12);
-    }
-  };
-
-  componentWillUnmount() {
-    this.resizeObserver.unobserve(this.mountNode);
-  }
-
-  loadData() {
-    // FIXME: Add @@graph handling to reducers and sagas --> @@graph instance should be available in the state
-    console.time('loadData');
-    const {data} = this.props;
-
-    if (this.graph) {
-      this.graph.destroy();
-    }
-
-    console.time('getNodes')
-    const nodes = getNodes(data);
-    console.timeEnd('getNodes')
-    console.time('getEdges')
-    const edges = getEdges(data);
-    console.timeEnd('getEdges')
-    console.time('graphConstructor')
+  instantiateGraph() {
     const graph = new G6.Graph({
       container: this.mountNode,
       width: this.mountNode.clientWidth,
@@ -95,26 +63,29 @@ export class AntVExample extends React.Component {
       },
       // plugins: [minimap]
     });
-    console.timeEnd('graphConstructor')
 
-    console.time('graphConstructor2')
-    this.graph = new Graph(graph);
-    console.timeEnd('graphConstructor2')
-
-    console.time('@@graph.loadData')
-    this.graph.loadData({nodes, edges});
-    console.timeEnd('@@graph.loadData')
-    console.timeEnd('loadData');
+    this.graph = graph;
+    Graph.setInstance(graph);
   }
 
-  fitView = () => this.graph.graph.fitView();
+  onContainerResize = e => {
+    if (this.mountNode) {
+      this.graph.changeSize(this.mountNode.clientWidth - 12, this.mountNode.clientHeight - 12);
+    }
+  };
+
+  componentWillUnmount() {
+    this.resizeObserver.unobserve(this.mountNode);
+  }
+
+  fitView = () => this.graph.fitView();
   clearSelection = () => dispatch(ModelState.deselectAll);
 
   render() {
     return <Container ref={ref => this.containerNode = ref}>
       <Button title="Fit to view" onClick={this.fitView}>Fit to view</Button>
       <Button title="Clear selection" onClick={this.clearSelection}>Clear selection</Button>
-      <GraphContainer ref={ref => this.mountNode = ref}/>
+      <GraphMountContainer ref={ref => this.mountNode = ref}/>
     </Container>;
   }
 }

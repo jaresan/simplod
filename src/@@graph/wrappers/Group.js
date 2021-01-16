@@ -34,7 +34,6 @@ class GroupController {
     this.propertyWrappers = filter(w => (w instanceof Property) || (w instanceof Method), this.childrenWrappers);
     this.propertyContainer = this.children['property-container'];
     this.defaultChildAttrs = {};
-    this.toggleExpanded(false);
   }
 
   getEdges() {
