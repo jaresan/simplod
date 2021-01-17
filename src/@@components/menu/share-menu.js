@@ -17,7 +17,7 @@ const getAppLinks = () => <>
 </>;
 
 const getFileModalButton = () => <>
-  <Text>No file detected, please save to a destination first</Text>
+  <Text>To be able to share this file, please save it remotely first.</Text>
   <br />
   <Button type="primary" onClick={openFileDialogModal}>Files</Button>
 </>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Menu, Upload } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 import { openLoadDialogModal } from '@@components/controls/file-dialog';
 import { loadLocalData } from '@@actions/save-load';
 import { pipe, path } from 'ramda';
@@ -16,7 +17,7 @@ const loadUploadedFile = file => {
 };
 
 export const LoadMenu = ({lastLocalSave, loggedIn}) => (
-  <Menu.SubMenu title="Load" onTitleClick={loggedIn ? openLoadDialogModal : loadLocalData}>
+  <Menu.SubMenu icon={<UploadOutlined />} title="Load" onTitleClick={loggedIn ? openLoadDialogModal : loadLocalData}>
     <Menu.Item>
       <Upload style={{display: 'none'}} accept=".json" beforeUpload={loadUploadedFile}>Upload file</Upload>
     </Menu.Item>

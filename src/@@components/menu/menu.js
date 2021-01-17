@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import { Avatar, Menu } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { UserOutlined, ShareAltOutlined, FileOutlined } from '@ant-design/icons';
 import { getAvatar, getLastSave, getSessionValid } from '@@selectors';
 import { openShareModal } from '@@components/menu/share-menu';
 import { openFileDialogModal } from '@@components/controls/file-dialog';
@@ -14,8 +14,8 @@ class MenuComponent extends React.Component {
 
     return <Menu selectable={false} mode="horizontal">
       <Menu.Item><Avatar size="large" src={avatar} icon={<UserOutlined />} /></Menu.Item>
-      <Menu.Item title="Share" onClick={openShareModal}>Share</Menu.Item>
-      <Menu.Item title="Files" onClick={openFileDialogModal}>Files</Menu.Item>
+      <Menu.Item icon={<ShareAltOutlined />} title="Share" onClick={openShareModal}>Share</Menu.Item>
+      <Menu.Item icon={<FileOutlined />} title="Files" onClick={openFileDialogModal}>Files</Menu.Item>
       {LoadMenu({lastLocalSave, loggedIn})}
       {SaveMenu({lastLocalSave, loggedIn})}
     </Menu>;
