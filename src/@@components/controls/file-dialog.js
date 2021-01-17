@@ -12,6 +12,7 @@ const {Option} = Select;
 
 const TabContents = ({canSave, canLoad}) => {
   const inputRef = createRef();
+  const [permissions, setPermissions] = useState('private');
   const [loggedIn, setLoggedIn] = useState(getUser(getState()))
   return <Space direction="vertical">
     <Tabs>
@@ -19,7 +20,7 @@ const TabContents = ({canSave, canLoad}) => {
         {
           loggedIn ? <>
             <h3>Your files:</h3>
-            <FileList canSave={canSave} canLoad={canLoad}/>
+            <FileList permissions={permissions} canSave={canSave} canLoad={canLoad}/>
           </>
             :
           <Button type="primary" onClick={() => loginToSolid().then(() => setLoggedIn(true))}>
@@ -31,7 +32,7 @@ const TabContents = ({canSave, canLoad}) => {
         <Space direction="horizontal">
           <Input ref={inputRef} />
           {
-            canSave && <Button onClick={() => saveViewByUri(inputRef.current.input.value)}>Save</Button>
+            canSave && <Button onClick={() => saveViewByUri(inputRef.current.input.value, permissions)}>Save</Button>
           }
           {
             canLoad && <Button onClick={() => loadGraphFromURL({modelURL: inputRef.current.input.value})}>Load</Button>
@@ -42,7 +43,7 @@ const TabContents = ({canSave, canLoad}) => {
     {
       canSave && <Space direction="horizontal">
         <Typography.Text>Saved file permissions:</Typography.Text>
-        <Select defaultValue="private" style={{ width: 120 }}>
+        <Select value={permissions} onChange={setPermissions} defaultValue="private" style={{ width: 120 }}>
           <Option value="private">Private</Option>
           <Option value="public/read">Public/Read</Option>
           <Option value="public/write">Public/Write</Option>

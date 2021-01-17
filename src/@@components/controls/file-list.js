@@ -9,7 +9,7 @@ import {
 } from '@@selectors';
 import { connect, Provider } from 'react-redux';
 import { store } from '@@app-state';
-import {loadFiles, saveOwnView, getFileUrl} from '@@actions/solid';
+import {loadFiles, saveViewByUri, getFileUrl} from '@@actions/solid';
 import {deleteFile} from '@@actions/solid/files';
 import { loadGraphFromURL } from '@@actions/model/load-graph';
 
@@ -23,8 +23,8 @@ class FileList extends Component {
 
   fileFetchMap = {};
 
-  saveNewView = key => {
-    saveOwnView(key);
+  saveNewView = async key => {
+    saveViewByUri(await getFileUrl(key), this.props.permissions);
   };
 
   onLoadView = async uri => {

@@ -68,7 +68,7 @@ export const deleteFile = async uri  => {
     if (res.status < 200 || res.status >= 300) {
       message.error('An error occured while trying to delete the view.')
     } else {
-      message.success('View deleted');
+      message.success(`${uri} deleted.`);
       const filePath = ['/'].concat(uri.replace(origin, '').split('/')).filter(identity);
       dispatch(SolidState.deleteFile(filePath));
     }

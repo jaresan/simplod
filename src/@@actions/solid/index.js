@@ -41,22 +41,7 @@ export const onViewSave = async uri  => {
   }
 }
 
-
-export const saveOwnView = async uri  => {
-  const saveData = generateSaveData();
-
-  // FIXME: Extract url sanitization
-  const {webId} = await getSessionOrLogin();
-  const {origin} = new URL(webId);
-
-  uri = `${origin}/${uri.replace(origin, '').replace(/^\//, '')}`; // Enforce domain if relative URL provided
-  uri = uri.replace(/(.json)?$/, '.json');
-
-  await saveFile({uri, data: saveData, webId});
-  await loadFiles(uri.replace(/\/[^/]*$/, ''));
-}
-
-export const saveViewByUri = async uri => {
+export const saveViewByUri = async (uri, permissions) => {
   const saveData = generateSaveData();
   const {valid} = await getSession();
 
@@ -73,8 +58,8 @@ export const saveViewByUri = async uri => {
 export const getFileUrl = async relativePath => {
   const webId = view(SolidState.webId, getState());
   const url = new URL(webId);
-  url.pathname = relativePath;
-  return `${url}`;
+  relativePath = relativePath.replace(/^\//, '');
+  return `${url.origin}/${relativePath}`;
 }
 
 // const loadExternalView = async uri  => {
