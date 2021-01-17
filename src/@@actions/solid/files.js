@@ -92,6 +92,8 @@ export const changePermissions = async ({uri, permissions}) => {
       await notifyUnauthorized();
     } else if (res.status < 200 || res.status >= 300) {
       message.error(errMsg)
+    } else {
+      message.success('Updated permissions!');
     }
   } catch (e) {
     message.error(errMsg)

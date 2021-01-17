@@ -29,6 +29,7 @@ export const getUser = view(SolidState.webId);
 export const getSessionValid = pipe(view(SolidState.session), path(['idClaims', 'exp']), exp => exp * 1000 > Date.now());
 export const getAvatar = view(SolidState.avatar);
 export const getFolderUri = view(SolidState.folderUri);
+export const getModelFileLocation = view(SolidState.modelFileLocation);
 
 export const getQuery = view(YasguiState.query);
 export const getEndpoint = view(ModelState.endpoint);

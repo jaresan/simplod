@@ -18,5 +18,3 @@ export const getCurrentFileShareableUrl = () => {
   url.searchParams.set('modelURL', `${path}`);
   return `${url}`;
 };
-
-export const getCurrentFileUrl = () => view(SolidState.modelFileLocation, getState());

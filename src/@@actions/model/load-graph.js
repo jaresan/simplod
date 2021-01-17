@@ -5,10 +5,12 @@ import { dispatchSet } from '@@app-state';
 import * as YasguiState from '@@app-state/yasgui/state';
 import { invertObj, view } from 'ramda';
 import * as ModelState from '@@app-state/model/state';
+import * as SolidState from '@@app-state/solid/state';
 import { fetchFile } from '@@actions/solid/files';
 import { loadModel } from '@@actions/save-load';
 import { withLoadingP, withLoading } from '@@utils/with-loading';
 import { loadHumanReadableData } from '@@actions/interactions/load-human-readable';
+import { Modal } from 'antd';
 
 const loadGraph = async url => {
   const {prefixes, schemaData} = await withLoadingP('Fetching RDF Schema...')(fetchDataSchema(url));
@@ -25,6 +27,13 @@ const loadDataFromFile = async modelURL => {
     await loadGraph(dataSchemaURL);
     loadModel(json);
     loadHumanReadableData();
+    Modal.destroyAll();
+
+    setTimeout(() => {
+      Modal.confirm({title: `Do you want to set ${modelURL} as your current working file?`, onOk: () => {
+        dispatchSet(SolidState.modelFileLocation, modelURL)
+      }})
+    }, 500);
   } catch (e) {
     console.error(e);
   }
