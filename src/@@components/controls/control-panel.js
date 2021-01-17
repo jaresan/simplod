@@ -8,7 +8,6 @@ import {
   getEndpoint,
   getFiles
 } from '@@selectors';
-import FileList from '@@components/controls/file-list';
 import {onViewSave, saveOwnView } from '@@actions/solid';
 import {onSolidStart} from '@@actions/solid/lifecycle';
 import {logoutSolid, loginToSolid} from '@@actions/solid/auth';
