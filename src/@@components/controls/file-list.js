@@ -68,14 +68,16 @@ class FileList extends Component {
     return (
       <Space size={4}>
         {title}
-        <Popconfirm
-          title="Are you sure you want to overwrite this file?"
-          onConfirm={() => this.saveNewView(key)}
-          okText="Save"
-          cancelText="Cancel"
-        >
-          <SaveOutlined />
-        </Popconfirm>
+        {
+          this.props.canSave && <Popconfirm
+            title="Are you sure you want to overwrite this file?"
+            onConfirm={() => this.saveNewView(key)}
+            okText="Save"
+            cancelText="Cancel"
+          >
+            <SaveOutlined />
+          </Popconfirm>
+        }
         <Popconfirm
           title="Are you sure you want to load this file?"
           onConfirm={() => this.onLoadView(key)}

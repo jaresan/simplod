@@ -15,10 +15,12 @@ const getTabContents = ({canSave}) => {
     </TabPane>
     <TabPane tab="By uri" key="2">
       <Input ref={inputRef} />
-      <Button onClick={() => saveViewByUri(inputRef.current.input.value)}>Save</Button>
+      {
+        canSave && <Button onClick={() => saveViewByUri(inputRef.current.input.value)}>Save</Button>
+      }
       <Button onClick={() => loadGraphFromURL({modelURL: inputRef.current.input.value})}>Load</Button>
     </TabPane>
   </Tabs>;
 }
 
-export const openFileDialogModal = () => Modal.info({icon: null, maskClosable: true, content: getTabContents({canSave: true})});
+export const openFileDialogModal = ({canSave = true}) => Modal.info({icon: null, maskClosable: true, content: getTabContents({canSave})});

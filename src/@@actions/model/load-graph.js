@@ -45,3 +45,5 @@ export const loadGraphFromURL = async ({modelURL, dataSchemaURL, endpointURL}) =
     dispatchSet(ModelState.endpoint, endpointURL);
   }
 };
+
+export const loadGraphFromJSON = json => loadGraphFromURL({dataSchemaURL: view(ModelState.dataSchemaURL, json)})

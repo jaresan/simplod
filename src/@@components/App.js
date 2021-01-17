@@ -109,9 +109,7 @@ class App extends Component {
 
     return (
       <Layout>
-        <Header style={{background: '#EEE', border: 'solid 1px black'}}>
-          <Menu/>
-        </Header>
+        <Menu/>
         <Content style={{padding: '0 50px', background: 'white'}}>
           <Space>
             <Input type="text" ref={e => this.dataSchemaInput = e} placeholder="Data schema URL"/>
@@ -122,7 +120,6 @@ class App extends Component {
             <Button onClick={() => this.fetchData(this.courtExampleURL)}>Court example</Button>
             <Button onClick={() => this.fetchData(this.govURL)}>Gov example</Button>
             <Button onClick={saveData}>Save local</Button>
-            <Button onClick={loadLocalData}>Load local {new Date(lastSave).toLocaleString()}</Button>
           </Space>
           <br/>
           <Radio.Group onChange={this.toggleLayout} value={this.state.horizontalLayout}>
