@@ -12,9 +12,8 @@ import { store } from '@@app-state';
 import {loadFiles, saveOwnView, getFileUrl} from '@@actions/solid';
 import {deleteFile} from '@@actions/solid/files';
 import { loadGraphFromURL } from '@@actions/model/load-graph';
-import { loginToSolid } from '@@actions/solid/auth';
 
-const newViewSuffix = '__newView';
+const newViewSuffix = '__newView'; // Used to add a key to the rendered empty node in the same folder so that it doesn't clash with the folder's key itself
 
 class FileList extends Component {
   state = {
@@ -78,15 +77,16 @@ class FileList extends Component {
             <SaveOutlined />
           </Popconfirm>
         }
-        <Popconfirm
-          title="Are you sure you want to load this file?"
-          onConfirm={() => this.onLoadView(key)}
-          okText="Load"
-          cancelText="Cancel"
-        >
-          <UploadOutlined />
-        </Popconfirm>
-        <Space />
+        {
+          this.props.canLoad && <Popconfirm
+            title="Are you sure you want to load this file?"
+            onConfirm={() => this.onLoadView(key)}
+            okText="Load"
+            cancelText="Cancel"
+          >
+            <UploadOutlined />
+          </Popconfirm>
+        }
         <Popconfirm
           title="Are you sure you want to delete this file?"
           onConfirm={() => this.onDeleteFile(key)}
@@ -171,20 +171,14 @@ class FileList extends Component {
   }
 
   render() {
-    if (!this.props.files || !this.props.user) {
-      return <Button type="primary" onClick={loginToSolid}>
-        Login
-      </Button>;
-    } else {
-      return <Tree.DirectoryTree
-        showLine={{showLeafIcon: false}}
-        selectable={false}
-        titleRender={this.renderTreeNode}
-        loadData={this.loadTreeNodeData}
-        defaultExpandedKeys={['/']}
-        treeData={this.getFileTreeData()}
-      />
-    }
+    return <Tree.DirectoryTree
+      showLine={{showLeafIcon: false}}
+      selectable={false}
+      titleRender={this.renderTreeNode}
+      loadData={this.loadTreeNodeData}
+      defaultExpandedKeys={['/']}
+      treeData={this.getFileTreeData()}
+    />
   }
 }
 

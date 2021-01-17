@@ -45,6 +45,17 @@ export const saveData = () => {
   }
 };
 
+export const downloadData = () => {
+  const data = generateSaveData();
+  const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+  const downloadNode = document.createElement('a');
+  downloadNode.setAttribute('href', dataStr);
+  downloadNode.setAttribute('download', 'application-model.json');
+  document.body.appendChild(downloadNode);
+  downloadNode.click();
+  downloadNode.remove();
+};
+
 export const saveDataLocally = () => {
   dispatchSet(SettingsState.lastSave, Date.now());
   saveLocalState(generateSaveData());

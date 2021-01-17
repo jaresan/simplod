@@ -45,7 +45,7 @@ export const saveFile = async ({uri, data}) => {
     } else if (res.status < 200 || res.status >= 300) {
       message.error(errMsg)
     } else {
-      message.success('Saved successfully!');
+      message.success(`Saved to ${uri}!`);
       dispatchSet(SolidState.modelFileLocation, uri);
     }
   } catch (e) {

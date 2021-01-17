@@ -14,14 +14,12 @@ import {
   getLoadingHumanReadable,
   getLimit,
   getLimitEnabled,
-  getLastSave,
   getShowHumanReadable
 } from '@@selectors';
 import { languages } from '@@constants/languages';
 import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
 import {dispatchSet, dispatch} from '@@app-state';
-import {loadLocalData, saveData} from '@@actions/save-load';
 import {dataChanged} from '@@actions/lifecycle';
 import {changeLanguage} from '@@actions/interactions/change-language';
 import {onAppStart} from '@@actions/lifecycle';
@@ -33,7 +31,7 @@ import { loadGraphFromURL } from '@@actions/model/load-graph';
 
 const {Option} = Select;
 const {TabPane} = Tabs;
-const {Header, Content, Footer} = Layout;
+const {Content, Footer} = Layout;
 
 const EntityListContainer = styled.div`
   border: solid 1px black;
@@ -104,7 +102,7 @@ class App extends Component {
   updateEndpoint = dispatchSet(ModelState.endpoint);
 
   render() {
-    const {language, loadingHumanReadable, limitEnabled, limit, lastSave, showHumanReadable} = this.props;
+    const {language, loadingHumanReadable, limitEnabled, limit, showHumanReadable} = this.props;
     const {horizontalLayout} = this.state;
 
     return (
@@ -119,7 +117,6 @@ class App extends Component {
             <Button onClick={() => this.fetchData(this.applicantsURL)}>Single</Button>
             <Button onClick={() => this.fetchData(this.courtExampleURL)}>Court example</Button>
             <Button onClick={() => this.fetchData(this.govURL)}>Gov example</Button>
-            <Button onClick={saveData}>Save local</Button>
           </Space>
           <br/>
           <Radio.Group onChange={this.toggleLayout} value={this.state.horizontalLayout}>
@@ -169,8 +166,7 @@ const mapStateToProps = appState => ({
   loadingHumanReadable: getLoadingHumanReadable(appState),
   showHumanReadable: getShowHumanReadable(appState),
   limit: getLimit(appState),
-  limitEnabled: getLimitEnabled(appState),
-  lastSave: getLastSave(appState)
+  limitEnabled: getLimitEnabled(appState)
 });
 
 // TODO: @dispatch rewrite
