@@ -8,6 +8,6 @@ export const SaveMenu = () => (
   <Menu.SubMenu icon={<SaveOutlined />} title="Save" onTitleClick={saveData}>
     <Menu.Item onClick={downloadData}>Download file</Menu.Item>
     <Menu.Item onClick={saveDataLocally}>Save locally</Menu.Item>
-    <Menu.Item onClick={openSaveDialogModal}>Save as</Menu.Item>
+    <Menu.Item onClick={() => openSaveDialogModal({enablePermissions: true})}>Save as</Menu.Item>
   </Menu.SubMenu>
 );

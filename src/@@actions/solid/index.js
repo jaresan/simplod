@@ -6,7 +6,7 @@ import { message, notification } from 'antd';
 import auth from 'solid-auth-client';
 import rdf from 'rdflib';
 import { generateSaveData } from '@@actions/save-load';
-import { saveFile } from '@@actions/solid/files';
+import { changePermissions, saveFile } from '@@actions/solid/files';
 import { getSession, getSessionOrLogin } from '@@actions/solid/auth';
 
 // FIXME: Move all predicate etc specifiers to constants
@@ -49,6 +49,10 @@ export const saveViewByUri = async (uri, permissions) => {
   uri = uri.replace(/(.json)?$/, '.json');
 
   await saveFile({uri, data: saveData});
+
+  if (permissions) {
+    await changePermissions({uri, permissions});
+  }
 
   if (valid) {
     await loadFiles(uri.replace(/\/[^/]*$/, ''));

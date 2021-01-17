@@ -55,6 +55,51 @@ export const saveFile = async ({uri, data}) => {
   }
 };
 
+export const changePermissions = async ({uri, permissions}) => {
+  const {webId} = await getSessionOrLogin();
+  const loading = message.loading('Setting permissions...');
+  const errMsg = 'An error occurred while trying change the permissions.';
+
+  // TODO: Use RDF graph, not direct string interpolation.
+  const publicPermissions = permissions.includes('public/write') ? 'acl:mode acl:Read, acl:Write.' : 'acl:mode acl:Read.';
+  const publicPart = permissions.includes('public') ? `
+    <#public>
+      a acl:Authorization;
+      acl:agentClass foaf:Agent;
+      acl:accessTo <${uri}>;
+      ${publicPermissions}
+    ` : '';
+
+  const data = `
+    @prefix acl: <http://www.w3.org/ns/auth/acl#>.
+    @prefix foaf: <http://xmlns.com/foaf/0.1/>.
+    
+    <#owner>
+        a acl:Authorization;
+        acl:agent <${webId}>;
+        acl:accessTo <${uri}>;
+        acl:mode acl:Read, acl:Write, acl:Control.
+    ${publicPart}`;
+
+  try {
+    const res = await auth.fetch(`${uri}.acl`, {
+      method: 'PUT',
+      headers: {'Content-Type': 'text/turtle'},
+      body: data
+    });
+
+    if (res.status === 401) {
+      await notifyUnauthorized();
+    } else if (res.status < 200 || res.status >= 300) {
+      message.error(errMsg)
+    }
+  } catch (e) {
+    message.error(errMsg)
+  } finally {
+    loading();
+  }
+};
+
 
 export const deleteFile = async uri  => {
   const loading = message.loading('Deleting view...');

@@ -10,9 +10,9 @@ import { getState } from '@@app-state';
 const {TabPane} = Tabs;
 const {Option} = Select;
 
-const TabContents = ({canSave, canLoad}) => {
+const TabContents = ({canSave, canLoad, enablePermissions}) => {
   const inputRef = createRef();
-  const [permissions, setPermissions] = useState('private');
+  const [permissions, setPermissions] = useState(enablePermissions ? 'private' : '');
   const [loggedIn, setLoggedIn] = useState(getUser(getState()))
   return <Space direction="vertical">
     <Tabs>
@@ -41,9 +41,10 @@ const TabContents = ({canSave, canLoad}) => {
       </TabPane>
     </Tabs>
     {
-      canSave && <Space direction="horizontal">
+      enablePermissions && <Space direction="horizontal">
         <Typography.Text>Saved file permissions:</Typography.Text>
         <Select value={permissions} onChange={setPermissions} defaultValue="private" style={{ width: 120 }}>
+          <Option value="">Unchanged</Option>
           <Option value="private">Private</Option>
           <Option value="public/read">Public/Read</Option>
           <Option value="public/write">Public/Write</Option>
@@ -53,6 +54,6 @@ const TabContents = ({canSave, canLoad}) => {
   </Space>
 }
 
-export const openFileDialogModal = ({canSave = true, canLoad = true}) => Modal.info({icon: null, maskClosable: true, content: <TabContents canSave={canSave} canLoad={canLoad} /> });
-export const openSaveDialogModal = () => openFileDialogModal({canSave: true, canLoad: false});
-export const openLoadDialogModal = () => openFileDialogModal({canSave: false, canLoad: true});
+export const openFileDialogModal = ({canSave = true, canLoad = true, enablePermissions = true}) => Modal.info({icon: null, maskClosable: true, content: <TabContents enablePermissions={enablePermissions} canSave={canSave} canLoad={canLoad} /> });
+export const openSaveDialogModal = () => openFileDialogModal({canSave: true, canLoad: false, enablePermissions: true});
+export const openLoadDialogModal = () => openFileDialogModal({canSave: false, canLoad: true, enablePermissions: false});
