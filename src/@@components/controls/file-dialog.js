@@ -2,7 +2,7 @@ import React, {createRef} from 'react';
 import { Button, Modal, Tabs, Input } from 'antd';
 import FileList from '@@components/controls/file-list';
 import { saveViewByUri } from '@@actions/solid';
-import { loadGraph } from '@@actions/model/load-graph';
+import { loadGraphFromURL } from '@@actions/model/load-graph';
 
 const {TabPane} = Tabs;
 
@@ -16,7 +16,7 @@ const getTabContents = ({canSave}) => {
     <TabPane tab="By uri" key="2">
       <Input ref={inputRef} />
       <Button onClick={() => saveViewByUri(inputRef.current.input.value)}>Save</Button>
-      <Button onClick={() => loadGraph({modelURL: inputRef.current.input.value})}>Load</Button>
+      <Button onClick={() => loadGraphFromURL({modelURL: inputRef.current.input.value})}>Load</Button>
     </TabPane>
   </Tabs>;
 }

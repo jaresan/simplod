@@ -28,7 +28,7 @@ import {onAppStart} from '@@actions/lifecycle';
 
 import 'antd/dist/antd.compact.css';
 import { Menu } from '@@components/menu/menu';
-import { loadGraph } from '@@actions/model/load-graph';
+import { loadGraphFromURL } from '@@actions/model/load-graph';
 
 
 const {Option} = Select;
@@ -85,7 +85,7 @@ class App extends Component {
 
   fetchData = (dataSchemaURL, modelURL) => {
     this.setState({loaded: false});
-    loadGraph({dataSchemaURL, endpointURL: this.endpointURL, modelURL})
+    loadGraphFromURL({dataSchemaURL, endpointURL: this.endpointURL, modelURL})
       .then(() => this.setState({loaded: true}));
   };
 

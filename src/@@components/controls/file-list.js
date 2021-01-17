@@ -9,9 +9,9 @@ import {
 } from '@@selectors';
 import { connect, Provider } from 'react-redux';
 import { store } from '@@app-state';
-import {loadFiles, saveOwnView} from '@@actions/solid';
+import {loadFiles, saveOwnView, getFileUrl} from '@@actions/solid';
 import {deleteFile} from '@@actions/solid/files';
-import { loadGraph } from '@@actions/model/load-graph';
+import { loadGraphFromURL } from '@@actions/model/load-graph';
 import { loginToSolid } from '@@actions/solid/auth';
 
 const newViewSuffix = '__newView';
@@ -28,8 +28,8 @@ class FileList extends Component {
     saveOwnView(key);
   };
 
-  onLoadView = (uri) => {
-    loadGraph({modelURL: uri});
+  onLoadView = async uri => {
+    loadGraphFromURL({modelURL: await getFileUrl(uri)});
   };
 
   onDeleteFile = uri => {

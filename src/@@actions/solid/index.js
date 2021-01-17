@@ -70,6 +70,13 @@ export const saveViewByUri = async uri => {
   }
 };
 
+export const getFileUrl = async relativePath => {
+  const webId = view(SolidState.webId, getState());
+  const url = new URL(webId);
+  url.pathname = relativePath;
+  return `${url}`;
+}
+
 // const loadExternalView = async uri  => {
 //   try {
 //     const res = await auth.fetch(uri);

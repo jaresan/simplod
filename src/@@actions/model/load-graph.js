@@ -7,12 +7,14 @@ import { invertObj, view } from 'ramda';
 import * as ModelState from '@@app-state/model/state';
 import { fetchFile } from '@@actions/solid/files';
 import { loadModel } from '@@actions/save-load';
-import { withLoading, withLoadingP } from '@@utils/with-loading';
+import { withLoadingP, withLoading } from '@@utils/with-loading';
 import { loadHumanReadableData } from '@@actions/interactions/load-human-readable';
 
-const initializeGraph = data => {
+const loadGraph = async url => {
+  const {prefixes, schemaData} = await withLoadingP('Fetching RDF Schema...')(fetchDataSchema(url));
+  dispatchSet(YasguiState.prefixes, invertObj(prefixes));
   Graph.clear();
-  Graph.initialize(data);
+  withLoading('Initializing graph...')(Graph.initialize(schemaData));
 };
 
 const loadDataFromFile = async modelURL => {
@@ -20,9 +22,7 @@ const loadDataFromFile = async modelURL => {
     const json = await withLoadingP('Fetching file...')(fetchFile(modelURL).then(data => data.json()));
     const dataSchemaURL = view(ModelState.dataSchemaURL, json);
 
-    const {schemaData, prefixes} = await withLoadingP('Fetching RDF Schema...')(fetchDataSchema(dataSchemaURL));
-    dispatchSet(YasguiState.prefixes, invertObj(prefixes));
-    withLoading('Initializing graph...')(initializeGraph(schemaData));
+    await loadGraph(dataSchemaURL);
     loadModel(json);
     loadHumanReadableData();
   } catch (e) {
@@ -31,14 +31,12 @@ const loadDataFromFile = async modelURL => {
 };
 
 const loadNewGraph = async dataSchemaURL => {
-  const {prefixes, schemaData} = await withLoadingP('Fetching RDF Schema...')(fetchDataSchema(dataSchemaURL));
-  dispatchSet(YasguiState.prefixes, invertObj(prefixes));
-  initializeGraph(schemaData);
+  await loadGraph(dataSchemaURL);
   onDataLoaded();
   loadHumanReadableData();
 }
 
-export const loadGraph = async ({modelURL, dataSchemaURL, endpointURL}) => {
+export const loadGraphFromURL = async ({modelURL, dataSchemaURL, endpointURL}) => {
   if (modelURL) {
     await loadDataFromFile(modelURL);
   } else {

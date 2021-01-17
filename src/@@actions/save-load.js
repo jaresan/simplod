@@ -10,6 +10,7 @@ import { getLastLocalState, saveLocalState } from '@@storage';
 import { Graph } from '@@graph';
 import { saveFile } from '@@actions/solid/files';
 import { message } from 'antd';
+import { loadGraphFromURL } from '@@actions/model/load-graph';
 
 export const generateSaveData = () => {
   const bBoxesById = Graph.getBBoxesById();
@@ -56,4 +57,8 @@ export const loadModel = json => {
   Graph.updatePositions(view(ModelState.classes, getState()));
 }
 
-export const loadLocalData = () => loadModel(getLastLocalState());
+export const loadLocalData = async () => {
+  const state = getLastLocalState();
+  await loadGraphFromURL({dataSchemaURL: view(ModelState.dataSchemaURL, state)})
+  loadModel(state);
+};

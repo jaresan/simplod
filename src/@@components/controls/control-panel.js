@@ -8,7 +8,7 @@ import {
   getEndpoint,
   getFiles
 } from '@@selectors';
-import {onViewSave, saveOwnView } from '@@actions/solid';
+import {onViewSave, saveOwnView} from '@@actions/solid';
 import {onSolidStart} from '@@actions/solid/lifecycle';
 import {logoutSolid, loginToSolid} from '@@actions/solid/auth';
 
