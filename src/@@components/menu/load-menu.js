@@ -17,7 +17,8 @@ const loadUploadedFile = file => {
 };
 
 export const LoadMenu = ({lastLocalSave, loggedIn}) => (
-  <Menu.SubMenu icon={<UploadOutlined />} title="Load" onTitleClick={loggedIn ? openLoadDialogModal : loadLocalData}>
+  // <Menu.SubMenu icon={<UploadOutlined />} title="Load" onTitleClick={loggedIn ? openLoadDialogModal : loadLocalData}>
+  <Menu.SubMenu icon={<UploadOutlined />} title="Load">
     <Menu.Item>
       <Upload style={{display: 'none'}} accept=".json" beforeUpload={loadUploadedFile}>Upload file</Upload>
     </Menu.Item>

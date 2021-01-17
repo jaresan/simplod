@@ -6,12 +6,13 @@ import { downloadData, saveData, saveDataLocally } from '@@actions/save-load';
 import { always, cond, equals, T } from 'ramda';
 
 const getTitle = cond([
-  [equals(''), always(<Tooltip title="File not saved remotely">Save <WarningTwoTone twoToneColor="orange" /></Tooltip>)],
+  [equals(''), always(<>Save<Tooltip title="File not saved remotely"><WarningTwoTone twoToneColor="orange" /></Tooltip></>)],
   [T, always('Save')]
 ]);
 
 export const SaveMenu = ({modelFileLocation}) => (
-  <Menu.SubMenu icon={<SaveOutlined />} title={getTitle(modelFileLocation)} onTitleClick={saveData}>
+  // <Menu.SubMenu icon={<SaveOutlined />} title={getTitle(modelFileLocation)} onTitleClick={saveData}>
+  <Menu.SubMenu icon={<SaveOutlined />} title={getTitle(modelFileLocation)}>
     <Menu.Item onClick={downloadData}>Download file</Menu.Item>
     <Menu.Item onClick={saveDataLocally}>Save locally</Menu.Item>
     <Menu.Item onClick={() => openSaveDialogModal({enablePermissions: true})}>Save as</Menu.Item>

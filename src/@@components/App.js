@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import YasguiContainer from './YasguiContainer';
-import ControlPanel from '@@components/controls/control-panel';
 import {connect} from 'react-redux';
 import {GraphContainer} from './GraphContainer';
 import { Progress, Radio, Button, InputNumber, Space, Select, Switch, Layout, Input } from 'antd';
@@ -130,7 +129,6 @@ class App extends Component {
               <GraphContainer />
             </div>
             <div style={getMenuStyle(horizontalLayout)}>
-              <ControlPanel/>
               Downloading human readable labels:
               <Progress style={{width: 256}} percent={loadingHumanReadable} status={loadingHumanReadable < 100 && "active"} />
               <span>Show labels: <Switch style={{width: 32}} onChange={dispatchProps.toggleHumanReadable} checked={showHumanReadable} /></span>

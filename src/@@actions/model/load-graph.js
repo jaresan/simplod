@@ -55,4 +55,8 @@ export const loadGraphFromURL = async ({modelURL, dataSchemaURL, endpointURL}) =
   }
 };
 
-export const loadGraphFromJSON = json => loadGraphFromURL({dataSchemaURL: view(ModelState.dataSchemaURL, json)})
+export const loadGraphFromJSON = async json => {
+  const dataSchemaURL = view(ModelState.dataSchemaURL, json);
+  await loadGraph(dataSchemaURL);
+  loadModel(json);
+}
