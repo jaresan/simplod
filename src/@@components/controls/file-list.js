@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
-import { message, Popconfirm, Button, Input, Tree, Tooltip, Space } from 'antd';
-import { CloseOutlined, PlusOutlined, ShareAltOutlined, UploadOutlined } from '@ant-design/icons';
+import { message, Popconfirm, Button, Input, Tree, Space } from 'antd';
+import { CloseOutlined, PlusOutlined, UploadOutlined, SaveOutlined } from '@ant-design/icons';
 import { curry } from 'ramda';
 import path from 'path';
 import {
-  getDirty,
-  getFiles,
+  getFiles, getSessionValid,
   getUser
 } from '@@selectors';
 import { connect, Provider } from 'react-redux';
-import {store} from '@@app-state';
+import { store } from '@@app-state';
 import {loadFiles, saveOwnView} from '@@actions/solid';
 import {deleteFile} from '@@actions/solid/files';
-import { getShareableURL } from '@@actions/solid/share';
 import { loadGraph } from '@@actions/model/load-graph';
+import { loginToSolid } from '@@actions/solid/auth';
 
 const newViewSuffix = '__newView';
 
@@ -60,44 +59,41 @@ class FileList extends Component {
   }
 
   getCreateNewFileIcon = ({key}) => {
-    if (!this.props.isDirty) {
-      return <Tooltip
-        title="No properties selected, newly created file would be empty"
-      >
-        <PlusOutlined disabled style={{color: 'grey'}}/>
-      </Tooltip>
-    } else {
+    if (this.props.canSave) {
       return <PlusOutlined onClick={() => {this.setState({folderWithNewView: key})}} style={{color: 'blue'}}/>;
     }
   };
 
-  getShareableURL = filePath => {
-    console.log(getShareableURL(filePath));
-  };
-
   getFileWithControls = ({title, key}) => {
     return (
-      <span>
+      <Space size={4}>
         {title}
-        <ShareAltOutlined onClick={() => this.getShareableURL(key)} />
         <Popconfirm
-          title="Are you sure you want to apply this view?"
+          title="Are you sure you want to overwrite this file?"
+          onConfirm={() => this.saveNewView(key)}
+          okText="Save"
+          cancelText="Cancel"
+        >
+          <SaveOutlined />
+        </Popconfirm>
+        <Popconfirm
+          title="Are you sure you want to load this file?"
           onConfirm={() => this.onLoadView(key)}
-          okText="Apply"
+          okText="Load"
           cancelText="Cancel"
         >
           <UploadOutlined />
         </Popconfirm>
         <Space />
         <Popconfirm
-          title="Are you sure you want to delete this view?"
+          title="Are you sure you want to delete this file?"
           onConfirm={() => this.onDeleteFile(key)}
           okText="Delete"
           cancelText="Cancel"
         >
           <CloseOutlined/>
         </Popconfirm>
-      </span>
+      </Space>
     );
   };
 
@@ -151,10 +147,12 @@ class FileList extends Component {
     const isLeaf = content === null;
     const folderInitialized = !isLeaf && __loaded;
     if (folderInitialized) {
-      const isNewFileInput = key === this.state.folderWithNewView && this.props.isDirty;
+      const isNewFileInput = key === this.state.folderWithNewView && this.props.canSave;
 
       children = Object.entries(rest).map(this.getFileSubtree(key));
-      children.push({isNewFilePrompt: !isNewFileInput, isNewFileInput, key: `${key}${newViewSuffix}`, isLeaf: true});
+      if (this.props.canSave) {
+        children.push({isNewFilePrompt: !isNewFileInput, isNewFileInput, key: `${key}${newViewSuffix}`, isLeaf: true});
+      }
     }
 
     return {
@@ -171,26 +169,29 @@ class FileList extends Component {
   }
 
   render() {
-    if (!this.props.files || !this.props.user) return null;
-
-    const treeData = this.getFileTreeData();
-    return <Tree.DirectoryTree
-      showLine={{showLeafIcon: false}}
-      selectable={false}
-      titleRender={this.renderTreeNode}
-      loadData={this.loadTreeNodeData}
-      defaultExpandedKeys={['/']}
-      treeData={treeData}
-    />
+    if (!this.props.files || !this.props.user) {
+      return <Button type="primary" onClick={loginToSolid}>
+        Login
+      </Button>;
+    } else {
+      return <Tree.DirectoryTree
+        showLine={{showLeafIcon: false}}
+        selectable={false}
+        titleRender={this.renderTreeNode}
+        loadData={this.loadTreeNodeData}
+        defaultExpandedKeys={['/']}
+        treeData={this.getFileTreeData()}
+      />
+    }
   }
 }
 
 
 // FIXME: @dispatch @store remove hacky connection and use @@app-state connect
 const mapStateToProps = appState => ({
-  isDirty: getDirty(appState),
   user: getUser(appState),
-  files: getFiles(appState)
+  files: getFiles(appState),
+  sessionValid: getSessionValid(appState)
 });
 
 // Connect component to enable use in modal content

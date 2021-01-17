@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { message, Button, Tabs } from 'antd';
+import { Button } from 'antd';
 import {
   getViewSelection,
   getUser,
@@ -9,12 +9,9 @@ import {
   getFiles
 } from '@@selectors';
 import FileList from '@@components/controls/file-list';
-import { AsyncModal } from '@@modal';
 import {onViewSave, saveOwnView } from '@@actions/solid';
 import {onSolidStart} from '@@actions/solid/lifecycle';
 import {logoutSolid, loginToSolid} from '@@actions/solid/auth';
-
-const {TabPane} = Tabs;
 
 class ControlPanel extends Component {
   state = {
@@ -103,27 +100,11 @@ class ControlPanel extends Component {
     saveOwnView(key);
   };
 
-  getTabContents = () => <Tabs>
-    <TabPane tab="By uri" key="1">
-      <input />
-    </TabPane>
-    <TabPane tab="By folder" key="2">
-      <h3>Your files:</h3>
-      <FileList />
-    </TabPane>
-  </Tabs>;
-
   render() {
     return (
       <div className="login-container">
         { this.getLoginData() }
         { this.getControlPanel() }
-        <FileList/>
-        <Button onClick={() => AsyncModal.info({title: 'Save file?', content: this.getTabContents()})}>Open modal</Button>
-        <Button onClick={() => {
-          // window.navigator.clipboard.writeText(this.props.simpleQuery);
-          message.success('Query URL copied to clipboard');
-        }}>Copy request URL to clipboard</Button>
       </div>
     );
   }

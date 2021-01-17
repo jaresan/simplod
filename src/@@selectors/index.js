@@ -2,7 +2,8 @@ import * as YasguiState from '@@app-state/yasgui/state';
 import * as SolidState from '@@app-state/solid/state';
 import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
-import {view} from 'ramda';
+import { path, view, pipe } from 'ramda';
+
 export const getPropertyById = (id, s) => view(ModelState.propertyById(id), s);
 export const getClassById = (id, s) => view(ModelState.classById(id), s);
 
@@ -23,7 +24,9 @@ export const getLastSave = view(SettingsState.lastSave);
 
 export const getFolderUriChanging = view(SolidState.folderUriChanging);
 export const getFiles = view(SolidState.files);
+export const getCurrentFileLocation = view(SolidState.modelFileLocation);
 export const getUser = view(SolidState.webId);
+export const getSessionValid = pipe(view(SolidState.session), path(['idClaims', 'exp']), exp => exp * 1000 > Date.now());
 export const getAvatar = view(SolidState.avatar);
 export const getFolderUri = view(SolidState.folderUri);
 

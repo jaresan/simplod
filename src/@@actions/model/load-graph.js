@@ -16,14 +16,18 @@ const initializeGraph = data => {
 };
 
 const loadDataFromFile = async modelURL => {
-  const json = await withLoadingP('Fetching file...')(fetchFile(modelURL));
-  const dataSchemaURL = view(ModelState.dataSchemaURL, json);
+  try {
+    const json = await withLoadingP('Fetching file...')(fetchFile(modelURL).then(data => data.json()));
+    const dataSchemaURL = view(ModelState.dataSchemaURL, json);
 
-  const {schemaData, prefixes} = await withLoadingP('Fetching RDF Schema...')(fetchDataSchema(dataSchemaURL));
-  dispatchSet(YasguiState.prefixes, invertObj(prefixes));
-  withLoading('Initializing graph...')(initializeGraph(schemaData));
-  loadModel(json);
-  loadHumanReadableData();
+    const {schemaData, prefixes} = await withLoadingP('Fetching RDF Schema...')(fetchDataSchema(dataSchemaURL));
+    dispatchSet(YasguiState.prefixes, invertObj(prefixes));
+    withLoading('Initializing graph...')(initializeGraph(schemaData));
+    loadModel(json);
+    loadHumanReadableData();
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 const loadNewGraph = async dataSchemaURL => {

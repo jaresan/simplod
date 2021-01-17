@@ -2,12 +2,12 @@ import { getViewSelection } from '@@selectors';
 import {dispatchSet, getState} from '@@app-state';
 import * as SolidState from '@@app-state/solid/state';
 import {pipe, path, assocPath, identity, replace, view, mergeDeepRight} from 'ramda';
-import {message} from 'antd';
+import { message, notification } from 'antd';
 import auth from 'solid-auth-client';
 import rdf from 'rdflib';
 import { generateSaveData } from '@@actions/save-load';
 import { saveFile } from '@@actions/solid/files';
-import { getSessionOrLogin } from '@@actions/solid/auth';
+import { getSession, getSessionOrLogin } from '@@actions/solid/auth';
 
 // FIXME: Move all predicate etc specifiers to constants
 // TODO: Split to multiple different files in a 'solid' directory
@@ -28,7 +28,7 @@ export const onViewSave = async uri  => {
 
     const logStatus = webId ? `You are logged in as ${webId}.` : 'You are not logged in.';
     if (res.status === 401) {
-      message.error(`
+      notification.error(`
         The request returned 401 - unauthorized.
         ${logStatus}
         Either you don't have access to the requested resource or the permissions on it are not set up correctly.
@@ -55,6 +55,20 @@ export const saveOwnView = async uri  => {
   await saveFile({uri, data: saveData, webId});
   await loadFiles(uri.replace(/\/[^/]*$/, ''));
 }
+
+export const saveViewByUri = async uri => {
+  const saveData = generateSaveData();
+  const {valid} = await getSession();
+
+  uri = uri.replace(/^\//, ''); // Enforce domain if relative URL provided
+  uri = uri.replace(/(.json)?$/, '.json');
+
+  await saveFile({uri, data: saveData});
+
+  if (valid) {
+    await loadFiles(uri.replace(/\/[^/]*$/, ''));
+  }
+};
 
 // const loadExternalView = async uri  => {
 //   try {
