@@ -12,6 +12,8 @@ import { withLoadingP, withLoading } from '@@utils/with-loading';
 import { loadHumanReadableData } from '@@actions/interactions/load-human-readable';
 import { Modal } from 'antd';
 import { isLoggedIn } from '@@actions/solid/auth';
+import {notification} from 'antd';
+import LoadingLabelsFeedback from '@@components/controls/loading-labels-feedback';
 
 const loadGraph = async url => {
   const {prefixes, schemaData} = await withLoadingP('Fetching RDF Schema...')(fetchDataSchema(url));
@@ -20,6 +22,12 @@ const loadGraph = async url => {
   withLoading('Initializing graph...')(Graph.initialize(schemaData));
 };
 
+const loadLabels = () => {
+  const key = 'loading-labels-notification';
+  notification.info({key, message: 'Loading labels', duration: 0, description: LoadingLabelsFeedback()});
+  loadHumanReadableData().finally(() => notification.close(key));
+}
+
 const loadDataFromFile = async modelURL => {
   try {
     const json = await withLoadingP('Fetching file...')(fetchFile(modelURL).then(data => data.json()));
@@ -27,7 +35,7 @@ const loadDataFromFile = async modelURL => {
 
     await loadGraph(dataSchemaURL);
     loadModel(json);
-    loadHumanReadableData();
+    loadLabels();
     Modal.destroyAll();
 
     if (await hasPermissions(modelURL, true) && await isLoggedIn()) {
@@ -45,7 +53,7 @@ const loadDataFromFile = async modelURL => {
 const loadNewGraph = async dataSchemaURL => {
   await loadGraph(dataSchemaURL);
   onDataLoaded();
-  loadHumanReadableData();
+  loadLabels();
 }
 
 export const loadGraphFromURL = async ({modelURL, dataSchemaURL, endpointURL}) => {

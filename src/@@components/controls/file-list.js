@@ -61,7 +61,6 @@ class FileList extends Component {
     return (
       <Space size={4}>
         <Popover
-          title="Choose an action"
           onConfirm={() => this.saveNewView(key)}
           okText="Save"
           trigger="click"

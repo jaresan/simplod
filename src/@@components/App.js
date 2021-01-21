@@ -129,8 +129,6 @@ class App extends Component {
               <GraphContainer />
             </div>
             <div style={getMenuStyle(horizontalLayout)}>
-              Downloading human readable labels:
-              <Progress style={{width: 256}} percent={loadingHumanReadable} status={loadingHumanReadable < 100 && "active"} />
               <span>Show labels: <Switch style={{width: 32}} onChange={dispatchProps.toggleHumanReadable} checked={showHumanReadable} /></span>
               <span>Select language: <Select onChange={changeLanguage} value={language}>{languageOptions}</Select></span>
               <Tabs style={{width: '100%'}}>

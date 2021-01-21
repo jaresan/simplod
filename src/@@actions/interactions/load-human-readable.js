@@ -40,6 +40,6 @@ export const loadHumanReadableData = () => {
         })
     });
 
-  Promise.all(promises)
+  return Promise.all(promises)
     .then(() => dispatchSet(SettingsState.labelsLoadingProgress, 100));
 }
