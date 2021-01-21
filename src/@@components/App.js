@@ -76,8 +76,8 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.fetchData(this.schemaURL, this.modelURL);
-    onAppStart();
+    onAppStart()
+      .then(() =>this.fetchData(this.schemaURL, this.modelURL));
   }
 
   fetchData = (dataSchemaURL, modelURL) => {

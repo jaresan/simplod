@@ -1,5 +1,5 @@
 import auth from 'solid-auth-client';
-import { path } from 'ramda';
+import { path, prop } from 'ramda';
 import { dispatch, dispatchSet } from '@@app-state';
 import * as SolidState from '@@app-state/solid/state';
 import { onLoggedIn } from '@@actions/solid/lifecycle';
@@ -30,6 +30,8 @@ export const getSession = async ()  => {
     valid: expiration > Date.now()
   };
 }
+
+export const isLoggedIn = () => getSession().then(prop('valid'));
 
 export const getSessionOrLogin = async ()  => {
   const {session, valid} = await getSession();

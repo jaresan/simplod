@@ -11,6 +11,7 @@ import * as SettingsState from '@@app-state/settings/state';
 import possiblePrefixes from '@@constants/possible-prefixes';
 import { parseSPARQLQuery } from '@@utils/parseQuery';
 import E from '@@model/entity';
+import { onSolidStart } from '@@actions/solid/lifecycle';
 
 /**
  * Used to setup the application on start. Hotkeys, state loading, pre data fetching initialization goes here.
@@ -22,6 +23,7 @@ export const onAppStart = () => {
   });
 
   loadLocalSettings();
+  return onSolidStart();
 };
 
 /**
