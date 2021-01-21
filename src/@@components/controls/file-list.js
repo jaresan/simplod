@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { message, Popconfirm, Button, Input, Tree, Space } from 'antd';
-import { CloseOutlined, PlusOutlined, UploadOutlined, SaveOutlined } from '@ant-design/icons';
+import { message, Button, Input, Tree, Space, Popover } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { curry } from 'ramda';
 import path from 'path';
 import {
@@ -23,17 +23,11 @@ class FileList extends Component {
 
   fileFetchMap = {};
 
-  saveNewView = async key => {
-    saveViewByUri(await getFileUrl(key), this.props.permissions);
-  };
+  saveNewView = async key => saveViewByUri(await getFileUrl(key), this.props.permissions);
 
-  onLoadView = async uri => {
-    loadGraphFromURL({modelURL: await getFileUrl(uri)});
-  };
+  onLoadView = async uri => loadGraphFromURL({modelURL: await getFileUrl(uri)});
 
-  onDeleteFile = uri => {
-    deleteFile(uri);
-  };
+  onDeleteFile = uri => deleteFile(uri);
 
   getNewFileInput = ({key}) => {
     const ref = React.createRef();
@@ -66,35 +60,20 @@ class FileList extends Component {
   getFileWithControls = ({title, key}) => {
     return (
       <Space size={4}>
-        {title}
-        {
-          this.props.canSave && <Popconfirm
-            title="Are you sure you want to overwrite this file?"
-            onConfirm={() => this.saveNewView(key)}
-            okText="Save"
-            cancelText="Cancel"
-          >
-            <SaveOutlined />
-          </Popconfirm>
-        }
-        {
-          this.props.canLoad && <Popconfirm
-            title="Are you sure you want to load this file?"
-            onConfirm={() => this.onLoadView(key)}
-            okText="Load"
-            cancelText="Cancel"
-          >
-            <UploadOutlined />
-          </Popconfirm>
-        }
-        <Popconfirm
-          title="Are you sure you want to delete this file?"
-          onConfirm={() => this.onDeleteFile(key)}
-          okText="Delete"
+        <Popover
+          title="Choose an action"
+          onConfirm={() => this.saveNewView(key)}
+          okText="Save"
+          trigger="click"
           cancelText="Cancel"
+          content={<Space direction="horizontal">
+            {this.props.canSave && <Button onClick={() => this.saveNewView(key)}>Save</Button>}
+            {this.props.canLoad && <Button onClick={() => this.onLoadView(key)}>Load</Button>}
+            <Button danger onClick={() => this.onDeleteFile(key)}>Delete</Button>
+          </Space>}
         >
-          <CloseOutlined/>
-        </Popconfirm>
+          {title}
+        </Popover>
       </Space>
     );
   };

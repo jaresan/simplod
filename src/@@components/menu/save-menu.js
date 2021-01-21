@@ -14,7 +14,7 @@ export const SaveMenu = ({modelFileLocation}) => (
   // <Menu.SubMenu icon={<SaveOutlined />} title={getTitle(modelFileLocation)} onTitleClick={saveData}>
   <Menu.SubMenu icon={<SaveOutlined />} title={getTitle(modelFileLocation)}>
     <Menu.Item onClick={downloadData}>Download file</Menu.Item>
-    <Menu.Item onClick={saveDataLocally}>Save locally</Menu.Item>
+    <Menu.Item onClick={saveDataLocally}>Save to browser storage</Menu.Item>
     <Menu.Item onClick={() => openSaveDialogModal({enablePermissions: true})}>Save as</Menu.Item>
   </Menu.SubMenu>
 );
