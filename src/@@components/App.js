@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
-import YasguiContainer from './YasguiContainer';
 import {connect} from 'react-redux';
 import {GraphContainer} from './GraphContainer';
-import { Progress, Radio, Button, InputNumber, Space, Select, Switch, Layout, Input } from 'antd';
+import { Radio, Button, Space, Select, Switch, Layout, Input } from 'antd';
 import { getContainerStyle, getGraphContainerStyle, getMenuStyle } from './App.styled';
 import { EntityList } from './entityList/EntityList';
 import styled from '@emotion/styled';
@@ -10,16 +9,12 @@ import { Tabs } from 'antd';
 import {ColumnList} from './ColumnList';
 import {
   getLanguage,
-  getLoadingHumanReadable,
-  getLimit,
-  getLimitEnabled,
   getShowHumanReadable
 } from '@@selectors';
 import { languages } from '@@constants/languages';
 import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
 import {dispatchSet, dispatch} from '@@app-state';
-import {dataChanged} from '@@actions/lifecycle';
 import {changeLanguage} from '@@actions/interactions/change-language';
 import {onAppStart} from '@@actions/lifecycle';
 
@@ -88,20 +83,10 @@ class App extends Component {
 
   toggleLayout = ({target: {value: horizontalLayout}}) => this.setState({horizontalLayout})
 
-  updateLimit = limit => {
-    dispatchProps.updateLimit(limit);
-    dataChanged();
-  };
-
-  toggleLimit = checked => {
-    dispatchProps.toggleLimit(checked);
-    dataChanged();
-  };
-
   updateEndpoint = dispatchSet(ModelState.endpoint);
 
   render() {
-    const {language, loadingHumanReadable, limitEnabled, limit, showHumanReadable} = this.props;
+    const {language, showHumanReadable} = this.props;
     const {horizontalLayout} = this.state;
 
     return (
@@ -140,14 +125,12 @@ class App extends Component {
                 <TabPane tab="Selected" key="2">
                   <Space direction="vertical">
                     <ColumnList />
-                    <span>Maximum number of results (limit): <InputNumber value={limit} onChange={this.updateLimit} />Use limit: <Switch checked={limitEnabled} onChange={this.toggleLimit}/></span>
                     <EntityListContainer>
                       <EntityList onlySelected />
                     </EntityListContainer>
                   </Space>
                 </TabPane>
               </Tabs>
-              <YasguiContainer/>
             </div>
           </div>
         </Content>
@@ -159,17 +142,12 @@ class App extends Component {
 
 const mapStateToProps = appState => ({
   language: getLanguage(appState),
-  loadingHumanReadable: getLoadingHumanReadable(appState),
-  showHumanReadable: getShowHumanReadable(appState),
-  limit: getLimit(appState),
-  limitEnabled: getLimitEnabled(appState)
+  showHumanReadable: getShowHumanReadable(appState)
 });
 
 // TODO: @dispatch rewrite
 const dispatchProps = {
   clearData: () => dispatch(ModelState.clearData),
-  updateLimit: dispatchSet(SettingsState.limit),
-  toggleLimit: dispatchSet(SettingsState.limitEnabled),
   toggleHumanReadable: dispatchSet(SettingsState.showHumanReadable)
 };
 

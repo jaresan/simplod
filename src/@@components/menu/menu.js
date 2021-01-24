@@ -1,13 +1,14 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import { Avatar, Menu } from 'antd';
-import { UserOutlined, ShareAltOutlined, FileOutlined } from '@ant-design/icons';
+import { UserOutlined, ShareAltOutlined, FileOutlined, DatabaseOutlined } from '@ant-design/icons';
 import { getAvatar, getLastSave, getSessionValid, getModelFileLocation } from '@@selectors';
 import { openShareModal } from '@@components/menu/share-menu';
 import { openFileDialogModal } from '@@components/controls/file-dialog';
 import { LoadMenu } from '@@components/menu/load-menu';
 import { SaveMenu } from '@@components/menu/save-menu';
 import { loginToSolid, logoutSolid } from '@@actions/solid/auth';
+import { openYasguiModal } from '@@components/Yasgui';
 
 class MenuComponent extends React.Component {
   render() {
@@ -23,6 +24,7 @@ class MenuComponent extends React.Component {
       {LoadMenu({lastLocalSave, loggedIn})}
       {SaveMenu({modelFileLocation})}
       <Menu.Item icon={<ShareAltOutlined />} title="Share" onClick={openShareModal}>Share</Menu.Item>
+      <Menu.Item icon={<DatabaseOutlined />} title="Share" onClick={openYasguiModal}>SPARQL</Menu.Item>
     </Menu>;
   };
 }

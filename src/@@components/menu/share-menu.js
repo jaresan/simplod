@@ -41,6 +41,6 @@ const mapStateToProps = appState => ({
 // Connect component to enable use in modal content
 const ConnectedComponent = connect(mapStateToProps, null)(ShareMenuComponent);
 
-const ShareMenu = props => <Provider store={store}><ConnectedComponent {...props}/></Provider>;
+const content = <Provider store={store}><ConnectedComponent/></Provider>;
 
-export const openShareModal = () => Modal.info({maskClosable: true, icon: null, content: <ShareMenu/>});
+export const openShareModal = () => Modal.info({maskClosable: true, icon: null, content});
