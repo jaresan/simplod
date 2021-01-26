@@ -19,11 +19,25 @@ const YasguiContainer = styled.div`
 	}
 `;
 
+const yasguiRoot = document.createElement('div');
+const yasgui = new YASGUI(yasguiRoot, {
+	requestConfig: {
+		// endpoint: this.props.endpointURL,
+		// headers: () => ({
+		// 	Accept: 'application/sparql-results+json'
+		// }),
+		// method: 'GET',
+	}
+});
+// Force usage of cors
+YASGUI.__defineGetter__('corsEnabled', () => ({}))
+dispatchSet(YasguiState.instance, yasgui);
+localStorage.removeItem('yagui__config') // Remove old saved data -- "yagui" instead of "yasgui" is on purpose
+
 class Yasgui extends Component {
 	constructor(props) {
 		super(props);
-		this.yasgui = null;
-		localStorage.removeItem('yagui__config') // Remove old saved data -- "yagui" instead of "yasgui" is on purpose
+		this.yasgui = yasgui;
 	}
 
 	componentDidUpdate(prevProps, prevState, snapshot) {
@@ -38,20 +52,8 @@ class Yasgui extends Component {
 	}
 
 	componentDidMount() {
-		this.yasgui = new YASGUI(this.yasguiMountNode, {
-			requestConfig: {
-				// endpoint: this.props.endpointURL,
-				// headers: () => ({
-				// 	Accept: 'application/sparql-results+json'
-				// }),
-				// method: 'GET',
-			}
-		});
-
-		// Force usage of cors
-		YASGUI.__defineGetter__('corsEnabled', () => ({}))
-		dispatchSet(YasguiState.instance, this.yasgui);
 		this.update();
+		this.yasguiContainer.appendChild(yasguiRoot);
 	}
 
 	updateLimit = limit => {
@@ -68,7 +70,7 @@ class Yasgui extends Component {
 		const {limit, limitEnabled} = this.props;
 		return <>
 			<span>Maximum number of results (limit): <InputNumber value={limit} onChange={this.updateLimit} />Use limit: <Switch checked={limitEnabled} onChange={this.toggleLimit}/></span>
-			<YasguiContainer id="yasgui" ref={ref => this.yasguiMountNode = ref}/>
+			<YasguiContainer ref={ref => this.yasguiContainer = ref}/>
 		</>;
 	}
 }

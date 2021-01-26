@@ -10,24 +10,19 @@ import { SaveMenu } from '@@components/menu/save-menu';
 import { loginToSolid, logoutSolid } from '@@actions/solid/auth';
 import { openYasguiModal } from '@@components/Yasgui';
 
-class MenuComponent extends React.Component {
-  render() {
-    const {avatar, lastLocalSave, loggedIn, modelFileLocation} = this.props;
-
-    return <Menu selectable={false} mode="horizontal">
-      <Menu.SubMenu icon={<Avatar size="large" src={avatar} icon={<UserOutlined />} />}>
-        {
-          loggedIn ? <Menu.Item onClick={logoutSolid}>Logout</Menu.Item> : <Menu.Item onClick={loginToSolid}>Login</Menu.Item>
-        }
-      </Menu.SubMenu>
-      <Menu.Item icon={<FileOutlined />} title="Files" onClick={openFileDialogModal}>Files</Menu.Item>
-      {LoadMenu({lastLocalSave, loggedIn})}
-      {SaveMenu({modelFileLocation})}
-      <Menu.Item icon={<ShareAltOutlined />} title="Share" onClick={openShareModal}>Share</Menu.Item>
-      <Menu.Item icon={<DatabaseOutlined />} title="Share" onClick={openYasguiModal}>SPARQL</Menu.Item>
-    </Menu>;
-  };
-}
+const MenuComponent = ({avatar, lastLocalSave, loggedIn, modelFileLocation}) =>
+  <Menu selectable={false} mode="horizontal">
+    <Menu.SubMenu icon={<Avatar size="large" src={avatar} icon={<UserOutlined />} />}>
+      {
+        loggedIn ? <Menu.Item onClick={logoutSolid}>Logout</Menu.Item> : <Menu.Item onClick={loginToSolid}>Login</Menu.Item>
+      }
+    </Menu.SubMenu>
+    <Menu.Item icon={<FileOutlined />} title="Files" onClick={openFileDialogModal}>Files</Menu.Item>
+    {LoadMenu({lastLocalSave, loggedIn})}
+    {SaveMenu({modelFileLocation})}
+    <Menu.Item icon={<ShareAltOutlined />} title="Share" onClick={openShareModal}>Share</Menu.Item>
+    <Menu.Item icon={<DatabaseOutlined />} title="Share" onClick={openYasguiModal}>SPARQL</Menu.Item>
+  </Menu>;
 
 const mapStateToProps = appState => ({
   avatar: getAvatar(appState),
