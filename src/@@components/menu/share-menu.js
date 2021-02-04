@@ -31,12 +31,14 @@ const AppShareMenu = (modelFileLocation) => {
     {getAppLinks(modelFileLocation)}
     <Space direction="horizontal">
       <Typography.Text>Permissions:</Typography.Text>
-      <Select value={permissions} onChange={setPermissions} defaultValue="private" style={{ width: 120 }}>
+      <Select value={permissions} onChange={permissions => {
+        setPermissions(permissions);
+        changePermissions({uri: modelFileLocation, permissions})
+      }} defaultValue="private" style={{ width: 120 }}>
         <Option value="private">Private</Option>
         <Option value="public/read">Public/Read</Option>
         <Option value="public/write">Public/Write</Option>
       </Select>
-      <Button type="primary" onClick={() => changePermissions({uri: modelFileLocation, permissions})}>Set permissions</Button>
     </Space>
   </>;
 };
