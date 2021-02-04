@@ -16,6 +16,8 @@ export const getClasses = view(ModelState.classes);
 export const getShowHumanReadable = view(SettingsState.showHumanReadable);
 export const getSelectionOrder = view(ModelState.selectionOrder);
 export const getDirty = view(ModelState.dirty);
+export const getFilename = view(ModelState.filename);
+
 export const getLanguage = view(SettingsState.language);
 export const getLoadingHumanReadable = view(SettingsState.labelsLoadingProgress);
 export const getLimit = view(SettingsState.limit);

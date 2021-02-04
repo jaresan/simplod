@@ -66,7 +66,7 @@ class FileList extends Component {
           trigger="click"
           cancelText="Cancel"
           content={<Space direction="horizontal">
-            {this.props.canSave && <Button onClick={() => this.saveNewView(key)}>Save</Button>}
+            {this.props.canSave && <Button danger onClick={() => this.saveNewView(key)}>Overwrite</Button>}
             {this.props.canLoad && <Button onClick={() => this.onLoadView(key)}>Load</Button>}
             <Button danger onClick={() => this.onDeleteFile(key)}>Delete</Button>
           </Space>}
