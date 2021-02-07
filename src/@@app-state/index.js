@@ -13,6 +13,7 @@ let middleware = compose;
 
 export const store = createStore(
 	(s, a) => {
+		const oldState = s;
 		switch (a.type) {
 			case fn:
 				s = a.fn(s);
@@ -20,7 +21,7 @@ export const store = createStore(
 			default:
 				break;
 		}
-		return modelMiddleware(s);
+		return modelMiddleware(oldState, s, a);
 	},
 	initial,
 	middleware

@@ -4,6 +4,7 @@ import { dispatch, dispatchSet } from '@@app-state';
 import * as SolidState from '@@app-state/solid/state';
 import { getSession, getSessionOrLogin } from '@@actions/solid/auth';
 import { identity } from 'ramda';
+import * as ModelState from '@@app-state/model/state';
 
 const notifyUnauthorized = async () => {
   const {webId} = await getSession();
@@ -53,6 +54,7 @@ export const saveFile = async ({uri, data}) => {
   } finally {
     loading();
   }
+  dispatchSet(ModelState.dirty, false);
 };
 
 export const changePermissions = async ({uri, permissions}) => {

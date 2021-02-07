@@ -12,7 +12,7 @@ import {
   assoc,
   mergeDeepRight,
   mergeRight,
-  uniq, partition
+  uniq, partition,
 } from 'ramda';
 import { entityTypes } from '@@model/entity-types';
 
@@ -54,11 +54,6 @@ const E = {
 const P = {
   target: prop('target')
 }
-
-export const middleware = s => {
-  const isDirty = !!view(selectionOrder, s).length;
-  return set(dirty, isDirty, s);
-};
 
 const root = 'model';
 export const rootLens = lensProp(root);
@@ -176,3 +171,14 @@ export const registerResources = curry((entityType, resources, s) => {
 });
 
 export const loadView = curry((json, s) => set(entities, mergeDeepRight(view(entities, s), json), s));
+
+export const middleware = (oldState, newState) => {
+  // Return changed state if it was a changed cause by setting the 'dirty' flag
+  if (view(dirty, oldState) !== view(dirty, newState)) {
+    return newState;
+  }
+  if (view(rootLens, oldState) !== view(rootLens, newState)) {
+    return set(dirty, true, newState);
+  }
+  return newState;
+};
