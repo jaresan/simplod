@@ -19,19 +19,23 @@ const Settings = ({language, showHumanReadable, endpointURL, dataSchemaURL}) => 
 
   return <Space direction="vertical">
     <Space>
+      <span>Data schema URL:</span>
       <Input type="text" value={dataSchemaURL} ref={dataSchemaInput} placeholder="Data schema URL"/>
       <Button onClick={() => loadGraphFromURL({dataSchemaURL: dataSchemaInput.current.input.value, endpointURL})}>
         Reload graph
       </Button>
     </Space>
-    <Input
-      type="text"
-      value={endpointURL}
-      ref={endpointInput}
-      placeholder="Endpoint URL"
-      onChange={e => dispatchProps.updateEndpoint(e.target.value)}
-      onPressEnter={e => dispatchProps.updateEndpoint(e.target.value)}
-    />
+    <Space>
+      <span>Endpoint:</span>
+      <Input
+        type="text"
+        value={endpointURL}
+        ref={endpointInput}
+        placeholder="Endpoint URL"
+        onChange={e => dispatchProps.updateEndpoint(e.target.value)}
+        onPressEnter={e => dispatchProps.updateEndpoint(e.target.value)}
+      />
+    </Space>
     <Space>
       <span>Show labels:</span>
       <Switch style={{width: 32}} onChange={dispatchProps.toggleHumanReadable} checked={showHumanReadable}/>

@@ -173,12 +173,14 @@ export const registerResources = curry((entityType, resources, s) => {
 export const loadView = curry((json, s) => set(entities, mergeDeepRight(view(entities, s), json), s));
 
 export const middleware = (oldState, newState) => {
-  // Return changed state if it was a changed cause by setting the 'dirty' flag
+  const state = set(dirty, view(dirty, newState), newState);
+  // Return original changed state if it was a change cause by setting the 'dirty' flag
   if (view(dirty, oldState) !== view(dirty, newState)) {
-    return newState;
+    return state;
   }
+  // Set dirty to true if the change was made to the model state
   if (view(rootLens, oldState) !== view(rootLens, newState)) {
     return set(dirty, true, newState);
   }
-  return newState;
+  return state;
 };
