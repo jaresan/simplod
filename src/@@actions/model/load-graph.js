@@ -6,6 +6,7 @@ import * as YasguiState from '@@app-state/yasgui/state';
 import { invertObj, view } from 'ramda';
 import * as ModelState from '@@app-state/model/state';
 import * as SolidState from '@@app-state/solid/state';
+import * as SettingsState from '@@app-state/settings/state';
 import { fetchFile, hasPermissions } from '@@actions/solid/files';
 import { loadModel } from '@@actions/save-load';
 import { withLoadingP, withLoading } from '@@utils/with-loading';
@@ -57,6 +58,7 @@ const loadNewGraph = async dataSchemaURL => {
 }
 
 export const loadGraphFromURL = async ({modelURL, dataSchemaURL, endpointURL}) => {
+  dispatchSet(SettingsState.loaded, false);
   if (modelURL) {
     await loadDataFromFile(modelURL);
   } else {
@@ -64,6 +66,7 @@ export const loadGraphFromURL = async ({modelURL, dataSchemaURL, endpointURL}) =
     dispatchSet(ModelState.dataSchemaURL, dataSchemaURL);
     dispatchSet(ModelState.endpoint, endpointURL);
   }
+  dispatchSet(SettingsState.loaded, true);
 };
 
 export const loadGraphFromJSON = async json => {

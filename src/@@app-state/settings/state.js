@@ -6,7 +6,8 @@ export const initial = {
   showHumanReadable: true,
   limitEnabled: false,
   limit: 100,
-  lastSave: 0
+  lastSave: 0,
+  loaded: false
 };
 
 const root = 'settings';
@@ -28,3 +29,4 @@ export const limit = withAutoSave('limit');
 export const limitEnabled = withAutoSave('limitEnabled');
 export const showHumanReadable = withAutoSave('showHumanReadable');
 export const language = withAutoSave('language');
+export const loaded = forKey('loaded');

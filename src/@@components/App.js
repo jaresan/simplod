@@ -1,29 +1,17 @@
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
 import {GraphContainer} from './GraphContainer';
-import { Radio, Button, Space, Select, Switch, Layout, Input } from 'antd';
+import { Radio, Button, Space, Layout } from 'antd';
 import { getContainerStyle, getGraphContainerStyle, getMenuStyle } from './App.styled';
 import { EntityList } from './entityList/EntityList';
 import styled from '@emotion/styled';
 import { Tabs } from 'antd';
 import {ColumnList} from './ColumnList';
-import {
-  getLanguage,
-  getShowHumanReadable
-} from '@@selectors';
-import { languages } from '@@constants/languages';
-import * as ModelState from '@@app-state/model/state';
-import * as SettingsState from '@@app-state/settings/state';
-import {dispatchSet, dispatch} from '@@app-state';
-import {changeLanguage} from '@@actions/interactions/change-language';
 import {onAppStart} from '@@actions/lifecycle';
 
 import 'antd/dist/antd.compact.css';
 import { Menu } from '@@components/menu/menu';
 import { loadGraphFromURL } from '@@actions/model/load-graph';
 
-
-const {Option} = Select;
 const {TabPane} = Tabs;
 const {Content, Footer} = Layout;
 
@@ -37,11 +25,8 @@ const EntityListContainer = styled.div`
   align-items: center;
 `;
 
-const languageOptions = languages.sort().map(code => <Option key={code} value={code}>{code}</Option>);
-
 class App extends Component {
   state = {
-    loaded: false,
     horizontalLayout: true
   };
 
@@ -72,21 +57,12 @@ class App extends Component {
 
   componentDidMount() {
     onAppStart()
-      .then(() =>this.fetchData(this.schemaURL, this.modelURL));
+      .then(() => loadGraphFromURL({dataSchemaURL: this.schemaURL, endpointURL: this.endpointURL, modelURL: this.modelURL}));
   }
-
-  fetchData = (dataSchemaURL, modelURL) => {
-    this.setState({loaded: false});
-    loadGraphFromURL({dataSchemaURL, endpointURL: this.endpointURL, modelURL})
-      .then(() => this.setState({loaded: true}));
-  };
 
   toggleLayout = ({target: {value: horizontalLayout}}) => this.setState({horizontalLayout})
 
-  updateEndpoint = dispatchSet(ModelState.endpoint);
-
   render() {
-    const {language, showHumanReadable} = this.props;
     const {horizontalLayout} = this.state;
 
     return (
@@ -94,13 +70,9 @@ class App extends Component {
         <Menu/>
         <Content style={{padding: '0 50px', background: 'white'}}>
           <Space>
-            <Input type="text" ref={e => this.dataSchemaInput = e} placeholder="Data schema URL"/>
-            <Button onClick={() => this.fetchData(this.dataSchemaInput.input.value)}>Reload schema URL</Button>
-            <Input type="text" ref={e => this.endpointInput = e} placeholder="Endpoint URL" onPressEnter={e => this.updateEndpoint(e.target.value)}/>
-            <Button onClick={() => this.updateEndpoint(this.endpointInput.input.value)}>Set endpoint</Button>
-            <Button onClick={() => this.fetchData(this.applicantsURL)}>Single</Button>
-            <Button onClick={() => this.fetchData(this.courtExampleURL)}>Court example</Button>
-            <Button onClick={() => this.fetchData(this.govURL)}>Gov example</Button>
+            <Button onClick={() => loadGraphFromURL({dataSchemaURL: this.applicantsURL, endpointURL: this.endpointURL})}>Single</Button>
+            <Button onClick={() => loadGraphFromURL({dataSchemaURL: this.courtExampleURL, endpointURL: this.endpointURL})}>Court example</Button>
+            <Button onClick={() => loadGraphFromURL({dataSchemaURL: this.govURL, endpointURL: this.endpointURL})}>Gov example</Button>
           </Space>
           <br/>
           <Radio.Group onChange={this.toggleLayout} value={this.state.horizontalLayout}>
@@ -114,8 +86,6 @@ class App extends Component {
               <GraphContainer />
             </div>
             <div style={getMenuStyle(horizontalLayout)}>
-              <span>Show labels: <Switch style={{width: 32}} onChange={dispatchProps.toggleHumanReadable} checked={showHumanReadable} /></span>
-              <span>Select language: <Select onChange={changeLanguage} value={language}>{languageOptions}</Select></span>
               <Tabs style={{width: '100%'}}>
                 <TabPane tab="Available" key="1">
                   <EntityListContainer>
@@ -134,21 +104,10 @@ class App extends Component {
             </div>
           </div>
         </Content>
-        <Footer style={{textAlign: 'center'}}>Simplified view for linked data ©2020 Created by Antonin Jares</Footer>
+        <Footer style={{textAlign: 'center'}}><a href="https://jaresan.github.io/simplod/">Simplified view for linked data ©2020 Created by Antonin Jares</a></Footer>
       </Layout>
     );
   }
 }
 
-const mapStateToProps = appState => ({
-  language: getLanguage(appState),
-  showHumanReadable: getShowHumanReadable(appState)
-});
-
-// TODO: @dispatch rewrite
-const dispatchProps = {
-  clearData: () => dispatch(ModelState.clearData),
-  toggleHumanReadable: dispatchSet(SettingsState.showHumanReadable)
-};
-
-export default connect(mapStateToProps, null)(App);
+export default App;

@@ -17,6 +17,8 @@ export const getShowHumanReadable = view(SettingsState.showHumanReadable);
 export const getSelectionOrder = view(ModelState.selectionOrder);
 export const getDirty = view(ModelState.dirty);
 export const getFilename = view(ModelState.filename);
+export const getEndpoint = view(ModelState.endpoint);
+export const getDataSchemaURL = view(ModelState.dataSchemaURL);
 
 export const getLanguage = view(SettingsState.language);
 export const getLoadingHumanReadable = view(SettingsState.labelsLoadingProgress);
@@ -34,5 +36,4 @@ export const getFolderUri = view(SolidState.folderUri);
 export const getModelFileLocation = view(SolidState.modelFileLocation);
 
 export const getQuery = view(YasguiState.query);
-export const getEndpoint = view(ModelState.endpoint);
 export const getPrefixes = view(YasguiState.prefixes);
