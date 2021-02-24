@@ -57,16 +57,14 @@ class PropertyEntryComponent extends React.Component {
 
   onNameChange = e => this.setState({varName: e.target.value});
 
-  render() {
+  getNameInput = () => {
     const {selectedEntities, property, id} = this.props;
-    const {onSelect, onSetAsVariable, onSetName, onSetOptional} = dispatchProps;
+    const {onSetName} = dispatchProps;
 
-    const {predicate, asVariable, optional, selected, dataProperty, target, bound} = property;
+    const {asVariable, target} = property;
     const {varName} = this.state;
-
-    let nameInput;
-    if (bound) {
-      nameInput = <Tooltip
+    if (this.props.bound) {
+      return <Tooltip
         title="This variable can't be renamed because it is bound to an already selected entity"
       >
         <div>
@@ -78,7 +76,7 @@ class PropertyEntryComponent extends React.Component {
         </div>
       </Tooltip>;
     } else {
-      nameInput = <StyledInput
+      return <StyledInput
         type="text"
         disabled={!asVariable}
         value={varName}
@@ -87,6 +85,13 @@ class PropertyEntryComponent extends React.Component {
         onPressEnter={() => onSetName(id, varName)}
       />;
     }
+  };
+
+  render() {
+    const {property, id} = this.props;
+    const {onSelect, onSetAsVariable, onSetOptional} = dispatchProps;
+
+    const {predicate, asVariable, optional, selected, dataProperty, target} = property;
 
     return (
       <RowContainer>
@@ -100,7 +105,7 @@ class PropertyEntryComponent extends React.Component {
             {getIcon(dataProperty)}
             <PrefixedText title={predicate}/>
             -->
-            {nameInput}
+            {this.getNameInput()}
             <Controls.Toggle
               flag={asVariable}
               tooltipTextOn="Hide from result set"
