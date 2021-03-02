@@ -4,7 +4,7 @@ import { Avatar, Menu, Input, Affix, Button, Tooltip } from 'antd';
 import { UserOutlined, ShareAltOutlined, CloudUploadOutlined } from '@ant-design/icons';
 import { getAvatar, getLastSave, getSessionValid, getModelFileLocation, getFilename, getDirty } from '@@selectors';
 import { openShareModal } from '@@components/menu/share-menu';
-import { openFileDialogModal, openSaveDialogModal } from '@@components/controls/file-dialog';
+import { openSaveDialogModal } from '@@components/controls/file-dialog';
 import { LoadMenu } from '@@components/menu/load-menu';
 import { SaveMenu } from '@@components/menu/save-menu';
 import { loginToSolid, logoutSolid } from '@@actions/solid/auth';
@@ -13,6 +13,7 @@ import { dispatchSet } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import styled from '@emotion/styled';
 import { openSettingsModal } from '@@components/controls/settings';
+import { FileMenu } from '@@components/menu/file-menu';
 
 const FilenameInput = styled(Input)`
   border: none;
@@ -41,7 +42,7 @@ const MenuComponent = ({avatar, lastLocalSave, loggedIn, modelFileLocation, isDi
         {getSaveIcons(modelFileLocation, isDirty)}
       </Menu.Item>
       <br/>
-      <Menu.Item title="Files" onClick={openFileDialogModal}>Files</Menu.Item>
+      {FileMenu()}
       {LoadMenu({lastLocalSave, loggedIn})}
       {SaveMenu({modelFileLocation})}
       <Menu.Item title="SPARQL" onClick={openYasguiModal}>SPARQL</Menu.Item>

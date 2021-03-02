@@ -64,7 +64,9 @@ export const loadGraphFromURL = async ({modelURL, dataSchemaURL, endpointURL}) =
   } else {
     await loadNewGraph(dataSchemaURL);
     dispatchSet(ModelState.dataSchemaURL, dataSchemaURL);
-    dispatchSet(ModelState.endpoint, endpointURL);
+    if (endpointURL) {
+      dispatchSet(ModelState.endpoint, endpointURL);
+    }
   }
   dispatchSet(SettingsState.loaded, true);
 };

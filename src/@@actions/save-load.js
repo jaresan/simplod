@@ -30,7 +30,7 @@ export const updateLocalSettings = update => {
 export const loadLocalSettings = () => {
   const settings = getLastLocalState().settings;
   if (settings) {
-    dispatchSet(SettingsState.rootLens, settings);
+    dispatchSet(SettingsState.rootLens, Object.assign(SettingsState.initial, settings));
   }
 }
 

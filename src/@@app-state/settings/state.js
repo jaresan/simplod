@@ -7,7 +7,8 @@ export const initial = {
   limitEnabled: false,
   limit: 100,
   lastSave: 0,
-  loaded: false
+  loaded: false,
+  horizontalLayout: false
 };
 
 const root = 'settings';
@@ -30,3 +31,4 @@ export const limitEnabled = withAutoSave('limitEnabled');
 export const showHumanReadable = withAutoSave('showHumanReadable');
 export const language = withAutoSave('language');
 export const loaded = forKey('loaded');
+export const horizontalLayout = withAutoSave('horizontalLayout');

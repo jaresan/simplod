@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {GraphContainer} from './GraphContainer';
-import { Radio, Button, Space, Layout } from 'antd';
+import { Space, Layout } from 'antd';
 import { getContainerStyle, getGraphContainerStyle, getMenuStyle } from './App.styled';
 import { EntityList } from './entityList/EntityList';
 import styled from '@emotion/styled';
@@ -11,6 +11,8 @@ import {onAppStart} from '@@actions/lifecycle';
 import 'antd/dist/antd.compact.css';
 import { Menu } from '@@components/menu/menu';
 import { loadGraphFromURL } from '@@actions/model/load-graph';
+import { getHorizontalLayout } from '@@selectors';
+import { connect } from 'react-redux';
 
 const {TabPane} = Tabs;
 const {Content, Footer} = Layout;
@@ -26,10 +28,6 @@ const EntityListContainer = styled.div`
 `;
 
 class App extends Component {
-  state = {
-    horizontalLayout: true
-  };
-
   constructor(props) {
     super(props);
     const url = new URL(window.location);
@@ -60,27 +58,13 @@ class App extends Component {
       .then(() => loadGraphFromURL({dataSchemaURL: this.schemaURL, endpointURL: this.endpointURL, modelURL: this.modelURL}));
   }
 
-  toggleLayout = ({target: {value: horizontalLayout}}) => this.setState({horizontalLayout})
-
   render() {
-    const {horizontalLayout} = this.state;
+    const {horizontalLayout} = this.props;
 
     return (
       <Layout>
         <Menu/>
         <Content style={{padding: '0 50px', background: 'white'}}>
-          <Space>
-            <Button onClick={() => loadGraphFromURL({dataSchemaURL: this.applicantsURL, endpointURL: this.endpointURL})}>Single</Button>
-            <Button onClick={() => loadGraphFromURL({dataSchemaURL: this.courtExampleURL, endpointURL: this.endpointURL})}>Court example</Button>
-            <Button onClick={() => loadGraphFromURL({dataSchemaURL: this.govURL, endpointURL: this.endpointURL})}>Gov example</Button>
-          </Space>
-          <br/>
-          <Radio.Group onChange={this.toggleLayout} value={this.state.horizontalLayout}>
-            View:
-            <Radio.Button value={true}>Horizontal</Radio.Button>
-            <Radio.Button value={false}>Vertical</Radio.Button>
-          </Radio.Group>
-          <br/>
           <div style={getContainerStyle(horizontalLayout)}>
             <div style={getGraphContainerStyle(horizontalLayout)}>
               <GraphContainer />
@@ -110,4 +94,8 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = appState => ({
+  horizontalLayout: getHorizontalLayout(appState)
+});
+
+export default connect(mapStateToProps, null)(App);
