@@ -20,7 +20,7 @@ export const LoadMenu = ({lastLocalSave}) => (
     <Menu.Item>
       <Upload style={{display: 'none'}} accept=".json" beforeUpload={loadUploadedFile}>Upload file</Upload>
     </Menu.Item>
-    <Menu.Item onClick={loadLocalData}>Load from browser storage - {new Date(lastLocalSave).toLocaleString()}</Menu.Item>
+    <Menu.Item disabled={!lastLocalSave} onClick={loadLocalData}>Load from browser storage{lastLocalSave ? ` - ${new Date(lastLocalSave).toLocaleString()}` : ''}</Menu.Item>
     <Menu.Item onClick={openLoadDialogModal}>Load remote resource</Menu.Item>
   </Menu.SubMenu>
 );
