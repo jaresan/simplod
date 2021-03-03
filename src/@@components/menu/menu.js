@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import { Avatar, Menu, Input, Affix, Button, Tooltip } from 'antd';
+import { Avatar, Menu, Input, Affix, Button, Space } from 'antd';
 import { UserOutlined, ShareAltOutlined, CloudUploadOutlined } from '@ant-design/icons';
 import { getAvatar, getLastSave, getSessionValid, getModelFileLocation, getFilename, getDirty } from '@@selectors';
 import { openShareModal } from '@@components/menu/share-menu';
@@ -26,10 +26,11 @@ const getSaveIcons = (modelFileLocation, isDirty) => {
     isDirty ? {color: 'orange', text: 'Last changes not saved remotely'} : {color: 'green', text: `File saved at ${modelFileLocation}`}
     : {color: 'red', text: 'File not saved remotely'};
 
-  return <>
+  return <span>
     {/*<Tooltip title={localProps.text}><ChromeOutlined style={{color: localProps.color, fontSize: 16}}/></Tooltip>*/}
-    <Tooltip title={cloudProps.text}><CloudUploadOutlined onClick={openSaveDialogModal} style={{color: cloudProps.color, fontSize: 16}}/></Tooltip>
-  </>
+    <CloudUploadOutlined onClick={openSaveDialogModal} style={{color: cloudProps.color, fontSize: 16}}/>
+    {cloudProps.text}
+  </span>
 };
 
 const iconStyle = {height: 48, width: 48};
@@ -38,8 +39,10 @@ const MenuComponent = ({avatar, lastLocalSave, loggedIn, modelFileLocation, isDi
   <Affix>
     <Menu selectable={false} mode="horizontal" style={{marginTop: -8, paddingLeft: 8}}>
       <Menu.Item style={{marginLeft: 4, padding: 0, marginBottom: -8, border: 'none'}}>
-        <FilenameInput value={filename} onPressEnter={e => e.target.blur()} onChange={e => dispatchProps.updateFilename(e.target.value)}/>
-        {getSaveIcons(modelFileLocation, isDirty)}
+        <Space>
+          <FilenameInput value={filename} onPressEnter={e => e.target.blur()} onChange={e => dispatchProps.updateFilename(e.target.value)}/>
+          {getSaveIcons(modelFileLocation, isDirty)}
+        </Space>
       </Menu.Item>
       <br/>
       {FileMenu()}
