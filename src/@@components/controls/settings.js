@@ -17,7 +17,6 @@ const languageOptions = languages.sort().map(code => <Option key={code} value={c
 const Settings = ({language, showHumanReadable, endpointURL, dataSchemaURL, horizontalLayout}) => {
   const dataSchemaInput = React.createRef();
   const endpointInput = React.createRef();
-  console.log({horizontalLayout});
 
   return <Space direction="vertical">
     <Space>

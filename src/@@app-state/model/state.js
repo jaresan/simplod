@@ -24,7 +24,8 @@ export const initial = {
   selectionOrder: [],
   endpoint: '',
   dataSchemaURL: '',
-  filename: 'Untitled'
+  filename: 'Untitled',
+  description: ''
 };
 
 const defaultEntityProps = {
@@ -68,6 +69,8 @@ export const edges = compose(entities, lensProp(entityTypes.edge));
 export const endpoint = forKey('endpoint');
 export const dataSchemaURL = forKey('dataSchemaURL');
 export const filename = forKey('filename');
+export const description = forKey('description');
+
 const entitiesByType = {
   [entityTypes.class]: classes,
   [entityTypes.property]: properties,
