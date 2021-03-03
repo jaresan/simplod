@@ -1,9 +1,9 @@
 import React from 'react';
 import { Menu } from 'antd';
-import { loadLocalData } from '@@actions/save-load';
 import { openFileDialogModal } from '@@components/controls/file-dialog';
 import { loadGraphFromURL } from '@@actions/model/load-graph';
 import { openNewFileModal } from '@@components/menu/new-file';
+import { openPropertiesModal } from '@@components/menu/properties';
 
 const endpointURL = 'https://data.gov.cz/sparql';
 export const FileMenu = () => (
@@ -17,6 +17,6 @@ export const FileMenu = () => (
     </Menu.SubMenu>
     <Menu.Divider/>
     <Menu.Item title="Files" onClick={openFileDialogModal}>SOLID Files</Menu.Item>
-    <Menu.Item onClick={loadLocalData}>Properties</Menu.Item>
+    <Menu.Item onClick={openPropertiesModal}>Properties</Menu.Item>
   </Menu.SubMenu>
 );

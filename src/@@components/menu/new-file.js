@@ -4,10 +4,10 @@ import {pipe, path} from 'ramda';
 import { dispatchSet, store } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import { loadGraphFromURL } from '@@actions/model/load-graph';
-import { getDataSchemaURL, getEndpoint, getFiles, getSessionValid, getUser } from '@@selectors';
+import { getDataSchemaURL, getEndpoint } from '@@selectors';
 import { connect, Provider } from 'react-redux';
 
-const unwrapped = pipe(path(['target', 'value']));
+const unwrapped = fn => pipe(path(['target', 'value']), fn);
 
 const NewFile = ({schemaURL, endpointURL}) => {
   const [schemaUrl, setSchemaUrl] = useState(schemaURL);
@@ -73,8 +73,7 @@ const dispatchProps = {
 };
 
 // Connect component to enable use in modal content
-const Connected = connect(mapStateToProps, null)(NewFile);
+const NewFileConnected = connect(mapStateToProps, null)(NewFile);
+const NewFileContainer = props => <Provider store={store}><NewFileConnected {...props}/></Provider>;
 
-const Container = props => <Provider store={store}><Connected {...props}/></Provider>;
-
-export const openNewFileModal = () => Modal.info({icon: null, okButtonProps: {style: {display: 'none'}}, maskClosable: true, content: <Container />});
+export const openNewFileModal = () => Modal.info({icon: null, okButtonProps: {style: {display: 'none'}}, maskClosable: true, content: <NewFileContainer />});

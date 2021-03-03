@@ -129,4 +129,12 @@ export const deleteFile = async uri  => {
   }
 }
 
-export const hasPermissions = async (uri, write) => auth.fetch(uri, {method: write ? 'PUT' : 'GET'}).then(({status}) => status >= 200 && status < 300);
+export const hasPermissions = async (uri, write) => {
+  try {
+    const json = await auth.fetch(uri).then(a => a.json());
+    if (!write) return true;
+    return auth.fetch(uri, {method: 'PUT', body: JSON.stringify(json), headers: {'Content-Type': 'application/json'}}).then(({status}) => status >= 200 && status < 300);
+  } catch (e) {
+    return false;
+  }
+}
