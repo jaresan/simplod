@@ -2,9 +2,11 @@ import React from 'react';
 import G6 from '@antv/g6';
 import {Graph} from '@@graph';
 import styled from '@emotion/styled';
-import { Button } from 'antd';
+import { Space } from 'antd';
 import { dispatch } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
+import { PlayCircleFilled, FullscreenExitOutlined, DeleteOutlined } from '@ant-design/icons';
+import { openYasguiModal } from '@@components/Yasgui';
 
 // const minimap = new G6.Minimap({
 //   size: [300, 300],
@@ -21,6 +23,14 @@ const GraphMountContainer = styled.div`
   border: solid 1px black;
   width: 100%;
   height: 100%;
+  position: relative;
+`;
+
+const GraphControlsContainer = styled.div`
+  position: absolute;
+  right: 16px;
+  top: 8px;
+  font-size: 32px;
 `;
 
 export class GraphContainer extends React.Component {
@@ -83,9 +93,15 @@ export class GraphContainer extends React.Component {
 
   render() {
     return <Container ref={ref => this.containerNode = ref}>
-      <Button title="Fit to view" onClick={this.fitView}>Fit to view</Button>
-      <Button title="Clear selection" onClick={this.clearSelection}>Clear selection</Button>
-      <GraphMountContainer ref={ref => this.mountNode = ref}/>
+      <GraphMountContainer ref={ref => this.mountNode = ref}>
+        <GraphControlsContainer>
+          <Space>
+            <FullscreenExitOutlined title="Fit to view" onClick={this.fitView}/>
+            <DeleteOutlined title="Clear selection" onClick={this.clearSelection}/>
+            <PlayCircleFilled onClick={() => openYasguiModal({runQuery: true})} />
+          </Space>
+        </GraphControlsContainer>
+      </GraphMountContainer>
     </Container>;
   }
 }

@@ -7,7 +7,6 @@ import { getDataSchemaURL, getEndpoint, getLanguage, getShowHumanReadable, getHo
 import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
 import { languages } from '@@constants/languages';
-import { loadGraphFromURL } from '@@actions/model/load-graph';
 import {pipe, path} from 'ramda';
 
 const {Option} = Select;
@@ -33,7 +32,7 @@ const Settings = ({language, showHumanReadable, horizontalLayout}) =>
     </Space>
   </Space>;
 
-const mapStateToProps = appState => console.log(appState) || ({
+const mapStateToProps = appState => ({
   language: getLanguage(appState),
   showHumanReadable: getShowHumanReadable(appState),
   endpointURL: getEndpoint(appState),

@@ -10,7 +10,6 @@ import {
 } from '@@selectors';
 import { connect, Provider } from 'react-redux';
 import { loadGraphFromURL } from '@@actions/model/load-graph';
-import * as SettingsState from '@@app-state/settings/state';
 
 const { TextArea } = Input;
 
@@ -36,12 +35,12 @@ const Properties = ({description, dataSchemaURL, endpointURL, filename}) => {
       />
     </Space>
     <span>Project title:</span>
-    <TextArea
+    <Input
       type="text"
       onChange={unwrapped(dispatchProps.updateFilename)}
       value={filename}
       placeholder="Project title"
-  />
+    />
     <span>Description:</span>
     <TextArea
       type="text"

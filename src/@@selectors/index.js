@@ -39,3 +39,4 @@ export const getModelFileLocation = view(SolidState.modelFileLocation);
 
 export const getQuery = view(YasguiState.query);
 export const getPrefixes = view(YasguiState.prefixes);
+export const getInstance = view(YasguiState.instance);
