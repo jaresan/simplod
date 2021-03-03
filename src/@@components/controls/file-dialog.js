@@ -26,7 +26,7 @@ const TabContents = ({canSave, canLoad}) => {
           </Button>
         }
       </TabPane>
-      <TabPane tab="By uri" key="2">
+      <TabPane tab="By URI" key="2">
         <Space direction="horizontal">
           <Input ref={inputRef} />
           {

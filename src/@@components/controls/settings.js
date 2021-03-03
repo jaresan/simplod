@@ -14,29 +14,8 @@ const {Option} = Select;
 
 const languageOptions = languages.sort().map(code => <Option key={code} value={code}>{code}</Option>);
 
-const Settings = ({language, showHumanReadable, endpointURL, dataSchemaURL, horizontalLayout}) => {
-  const dataSchemaInput = React.createRef();
-  const endpointInput = React.createRef();
-
-  return <Space direction="vertical">
-    <Space>
-      <span>Data schema URL:</span>
-      <Input type="text" value={dataSchemaURL} ref={dataSchemaInput} placeholder="Data schema URL"/>
-      <Button onClick={() => loadGraphFromURL({dataSchemaURL: dataSchemaInput.current.input.value, endpointURL})}>
-        Reload graph
-      </Button>
-    </Space>
-    <Space>
-      <span>Endpoint:</span>
-      <Input
-        type="text"
-        value={endpointURL}
-        ref={endpointInput}
-        placeholder="Endpoint URL"
-        onChange={e => dispatchProps.updateEndpoint(e.target.value)}
-        onPressEnter={e => dispatchProps.updateEndpoint(e.target.value)}
-      />
-    </Space>
+const Settings = ({language, showHumanReadable, horizontalLayout}) =>
+  <Space direction="vertical">
     <Space>
       <span>Show labels:</span>
       <Switch style={{width: 32}} onChange={dispatchProps.toggleHumanReadable} checked={showHumanReadable}/>
@@ -52,8 +31,7 @@ const Settings = ({language, showHumanReadable, endpointURL, dataSchemaURL, hori
         <Radio.Button value={false}>Vertical</Radio.Button>
       </Radio.Group>
     </Space>
-  </Space>
-}
+  </Space>;
 
 const mapStateToProps = appState => console.log(appState) || ({
   language: getLanguage(appState),

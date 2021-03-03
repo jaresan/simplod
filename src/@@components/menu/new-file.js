@@ -35,7 +35,7 @@ const NewFile = ({schemaURL, endpointURL}) => {
       />
     </Space>
     <Space>
-      <span>Filename:</span>
+      <span>Title:</span>
       <Input
         type="text"
         onChange={unwrapped(setFileName)}

@@ -11,7 +11,7 @@ import { fetchFile, hasPermissions } from '@@actions/solid/files';
 import { loadModel } from '@@actions/save-load';
 import { withLoadingP, withLoading } from '@@utils/with-loading';
 import { loadHumanReadableData } from '@@actions/interactions/load-human-readable';
-import { Modal } from 'antd';
+import { message, Modal } from 'antd';
 import { isLoggedIn } from '@@actions/solid/auth';
 import {notification} from 'antd';
 import LoadingLabelsFeedback from '@@components/controls/loading-labels-feedback';
@@ -52,9 +52,14 @@ const loadDataFromFile = async modelURL => {
 };
 
 const loadNewGraph = async dataSchemaURL => {
-  await loadGraph(dataSchemaURL);
-  onDataLoaded();
-  loadLabels();
+  try {
+    await loadGraph(dataSchemaURL);
+    onDataLoaded();
+    loadLabels();
+  } catch (e) {
+    console.error(e);
+    message.error('An error occurred while trying to download the schema.');
+  }
 }
 
 export const loadGraphFromURL = async ({modelURL, dataSchemaURL, endpointURL}) => {

@@ -1,32 +1,69 @@
-import React from 'react';
-import { Input, Space, Modal } from 'antd';
+import React, {useState} from 'react';
+import { Input, Space, Modal, Button } from 'antd';
 import {pipe, path} from 'ramda';
 import { dispatchSet, store } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
-import { getDescription } from '@@selectors';
+import {
+  getDataSchemaURL,
+  getDescription,
+  getEndpoint, getFilename
+} from '@@selectors';
 import { connect, Provider } from 'react-redux';
+import { loadGraphFromURL } from '@@actions/model/load-graph';
+import * as SettingsState from '@@app-state/settings/state';
 
 const { TextArea } = Input;
 
 const unwrapped = fn => pipe(path(['target', 'value']), fn);
 
-const Properties = ({description}) => <Space>
-  <span>Description:</span>
-  <TextArea
-    type="text"
-    onChange={unwrapped(dispatchProps.updateDescription)}
-    value={description}
-    placeholder="File description"
+const Properties = ({description, dataSchemaURL, endpointURL, filename}) => {
+  const [schemaURL, setSchemaURL] = useState(dataSchemaURL);
+  return <Space direction="vertical">
+    <Space>
+      <span>Data schema URL:</span>
+      <Input type="text" onChange={unwrapped(setSchemaURL)} value={schemaURL} placeholder="Data schema URL"/>
+      <Button onClick={() => loadGraphFromURL({dataSchemaURL: schemaURL, endpointURL})}>
+        Reload schema
+      </Button>
+    </Space>
+    <Space>
+      <span>Endpoint:</span>
+      <Input
+        type="text"
+        value={endpointURL}
+        placeholder="Endpoint URL"
+        onChange={unwrapped(dispatchProps)}
+      />
+    </Space>
+    <span>Project title:</span>
+    <TextArea
+      type="text"
+      onChange={unwrapped(dispatchProps.updateFilename)}
+      value={filename}
+      placeholder="Project title"
   />
-</Space>;
+    <span>Description:</span>
+    <TextArea
+      type="text"
+      onChange={unwrapped(dispatchProps.updateDescription)}
+      value={description}
+      placeholder="File description"
+    />
+  </Space>;
+}
 
+  // FIXME: Add filename edit
 const mapStateToProps = appState => ({
-  description: getDescription(appState)
+  description: getDescription(appState),
+  endpointURL: getEndpoint(appState),
+  dataSchemaURL: getDataSchemaURL(appState),
+  filename: getFilename(appState)
 });
 
 const dispatchProps = {
   updateFilename: dispatchSet(ModelState.filename),
-  updateDescription: dispatchSet(ModelState.description)
+  updateDescription: dispatchSet(ModelState.description),
+  updateEndpoint: dispatchSet(ModelState.endpoint)
 };
 
 // Connect component to enable use in modal content

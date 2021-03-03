@@ -45,9 +45,7 @@ const MenuComponent = ({avatar, lastLocalSave, loggedIn, modelFileLocation, isDi
         </Space>
       </Menu.Item>
       <br/>
-      {FileMenu()}
-      {LoadMenu({lastLocalSave, loggedIn})}
-      {SaveMenu({modelFileLocation})}
+      {FileMenu({modelFileLocation, lastLocalSave, loggedIn})}
       <Menu.Item title="SPARQL" onClick={openYasguiModal}>SPARQL</Menu.Item>
       <Menu.Item title="Settings" onClick={openSettingsModal}>Settings</Menu.Item>
       <Menu.SubMenu style={{height: 64, width: 64, position: 'absolute', top: 8, right: 0}} icon={<Avatar style={iconStyle} size="large" src={avatar} icon={<UserOutlined style={iconStyle} />} />}>

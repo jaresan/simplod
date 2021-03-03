@@ -1,12 +1,13 @@
 import React from 'react';
 import { Menu } from 'antd';
-import { openFileDialogModal } from '@@components/controls/file-dialog';
 import { loadGraphFromURL } from '@@actions/model/load-graph';
 import { openNewFileModal } from '@@components/menu/new-file';
 import { openPropertiesModal } from '@@components/menu/properties';
+import { SaveMenu } from '@@components/menu/save-menu';
+import { LoadMenu } from '@@components/menu/load-menu';
 
 const endpointURL = 'https://data.gov.cz/sparql';
-export const FileMenu = () => (
+export const FileMenu = ({modelFileLocation, lastLocalSave, loggedIn}) => (
   <Menu.SubMenu title="File">
     <Menu.Item onClick={openNewFileModal}>New</Menu.Item>
     <Menu.Divider/>
@@ -16,7 +17,8 @@ export const FileMenu = () => (
       <Menu.Item onClick={() => loadGraphFromURL({dataSchemaURL: 'https://sparql-proxy-api.jaresantonin.now.sh/data.gov.cz.ttl', endpointURL})}>Gov example</Menu.Item>
     </Menu.SubMenu>
     <Menu.Divider/>
-    <Menu.Item title="Files" onClick={openFileDialogModal}>SOLID Files</Menu.Item>
+    {SaveMenu({modelFileLocation})}
+    {LoadMenu({lastLocalSave, loggedIn})}
     <Menu.Item onClick={openPropertiesModal}>Properties</Menu.Item>
   </Menu.SubMenu>
 );
