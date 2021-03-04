@@ -63,9 +63,9 @@ class PropertyEntryComponent extends React.Component {
 
     const {asVariable, target} = property;
     const {varName} = this.state;
-    if (this.props.bound) {
+    if (property.bound) {
       return <Tooltip
-        title="This variable can't be renamed because it is bound to an already selected entity"
+        title="This variable can't be renamed because it is bound to an already selected entity. To change its name, rename the linked entity."
       >
         <div>
           <StyledInput
