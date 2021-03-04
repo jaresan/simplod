@@ -83,12 +83,11 @@ class ColumnListComponent extends Component {
       <div>
         Result column order:
         <DragDropContext onDragEnd={this.onDragEnd}>
-          <Droppable droppableId="droppable" direction="horizontal">
+          <Droppable droppableId="droppable" direction="vertical">
             {(provided, snapshot) => (
               <div
                 ref={provided.innerRef}
                 style={{
-                  display: 'flex',
                   padding: 4,
                   overflow: 'auto',
                 }}

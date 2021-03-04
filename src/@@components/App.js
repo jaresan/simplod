@@ -81,12 +81,10 @@ class App extends Component {
                   </EntityListContainer>
                 </TabPane>
                 <TabPane tab="Selected" key="2">
-                  <Space direction="vertical">
-                    <ColumnList />
-                    <EntityListContainer>
-                      <EntityList onlySelected />
-                    </EntityListContainer>
-                  </Space>
+                  <ColumnList />
+                  <EntityListContainer>
+                    <EntityList onlySelected />
+                  </EntityListContainer>
                 </TabPane>
               </Tabs>
             </div>
