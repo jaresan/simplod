@@ -17,15 +17,13 @@ const unwrapped = fn => pipe(path(['target', 'value']), fn);
 
 const Properties = ({description, dataSchemaURL, endpointURL, filename}) => {
   const [schemaURL, setSchemaURL] = useState(dataSchemaURL);
-  return <Space direction="vertical">
-    <Space>
+  return <div>
+    <Space direction="vertical" style={{width: '100%'}}>
       <span>Data schema URL:</span>
       <Input type="text" onChange={unwrapped(setSchemaURL)} value={schemaURL} placeholder="Data schema URL"/>
       <Button onClick={() => loadGraphFromURL({dataSchemaURL: schemaURL, endpointURL})}>
         Reload schema
       </Button>
-    </Space>
-    <Space>
       <span>Endpoint:</span>
       <Input
         type="text"
@@ -33,22 +31,22 @@ const Properties = ({description, dataSchemaURL, endpointURL, filename}) => {
         placeholder="Endpoint URL"
         onChange={unwrapped(dispatchProps)}
       />
+      <span>Project title:</span>
+      <Input
+        type="text"
+        onChange={unwrapped(dispatchProps.updateFilename)}
+        value={filename}
+        placeholder="Project title"
+      />
+      <span>Description:</span>
+      <TextArea
+        type="text"
+        onChange={unwrapped(dispatchProps.updateDescription)}
+        value={description}
+        placeholder="File description"
+      />
     </Space>
-    <span>Project title:</span>
-    <Input
-      type="text"
-      onChange={unwrapped(dispatchProps.updateFilename)}
-      value={filename}
-      placeholder="Project title"
-    />
-    <span>Description:</span>
-    <TextArea
-      type="text"
-      onChange={unwrapped(dispatchProps.updateDescription)}
-      value={description}
-      placeholder="File description"
-    />
-  </Space>;
+  </div>;
 }
 
   // FIXME: Add filename edit

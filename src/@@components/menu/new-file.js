@@ -15,8 +15,8 @@ const NewFile = ({schemaURL, endpointURL}) => {
   const [filename, setFileName] = useState('Untitled');
   const [description, setDescription] = useState('');
 
-  return <Space direction="vertical">
-    <Space>
+  return <div>
+    <Space direction="vertical" style={{width: '100%'}}>
       <span>Data schema URL:</span>
       <Input
         type="text"
@@ -24,8 +24,6 @@ const NewFile = ({schemaURL, endpointURL}) => {
         onChange={unwrapped(setSchemaUrl)}
         placeholder="Data schema URL"
       />
-    </Space>
-    <Space>
       <span>Endpoint:</span>
       <Input
         type="text"
@@ -33,33 +31,29 @@ const NewFile = ({schemaURL, endpointURL}) => {
         onChange={unwrapped(setEndpoint)}
         placeholder="Endpoint URL"
       />
-    </Space>
-    <Space>
       <span>Title:</span>
       <Input
         type="text"
         onChange={unwrapped(setFileName)}
         value={filename}
       />
-    </Space>
-    <Space>
       <span>Description:</span>
-      <Input
+      <Input.TextArea
         type="text"
         onChange={unwrapped(setDescription)}
         value={description}
         placeholder="File description"
       />
+      <Button
+        type="primary"
+        onClick={() => {
+          dispatchProps.updateFilename(filename);
+          dispatchProps.updateDescription(description);
+          loadGraphFromURL({dataSchemaURL: schemaUrl, endpointURL: endpoint});
+          Modal.destroyAll();
+        }}>Create</Button>
     </Space>
-    <Button
-      type="primary"
-      onClick={() => {
-        dispatchProps.updateFilename(filename);
-        dispatchProps.updateDescription(description);
-        loadGraphFromURL({dataSchemaURL: schemaUrl, endpointURL: endpoint});
-        Modal.destroyAll();
-      }}>Create</Button>
-  </Space>
+  </div>
 }
 
 const mapStateToProps = appState => ({
