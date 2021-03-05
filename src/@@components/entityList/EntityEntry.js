@@ -4,7 +4,7 @@ import { List, Card, Space, Checkbox, Tooltip, Input } from 'antd';
 import {connect} from 'react-redux';
 import {PropertyEntry} from './PropertyEntry';
 import {PrefixedText} from './PrefixedText';
-import {RightOutlined, DownOutlined, EyeInvisibleOutlined, EyeOutlined, InfoCircleOutlined} from '@ant-design/icons';
+import {RightOutlined, DownOutlined, EyeInvisibleOutlined, EyeOutlined, InfoCircleOutlined, DeleteOutlined} from '@ant-design/icons';
 import styled from '@emotion/styled';
 import { getClassById, getShowHumanReadable } from '@@selectors';
 import * as Controls from './Controls';
@@ -59,8 +59,8 @@ class EntityEntryComponent extends React.Component {
 
   getControls = () => {
     const {id, entity} = this.props;
-    const {toggleSelected, toggleHidden, updateName} = dispatchProps;
-    const {selected, hidden} = entity;
+    const {toggleSelected, toggleHidden, updateName, deleteEntity} = dispatchProps;
+    const {selected, hidden, dummy} = entity;
     const {varName} = this.state;
     return (
       <ControlsContainer>
@@ -79,14 +79,24 @@ class EntityEntryComponent extends React.Component {
               checked={selected}
             />
           </Tooltip>
-          <Controls.Toggle
-            flag={!hidden}
-            tooltipTextOn="Hide entity in the graph"
-            tooltipTextOff="Show entity in the graph"
-            onClick={() => toggleHidden(id, !hidden)}
-            OnIcon={EyeOutlined}
-            OffIcon={EyeInvisibleOutlined}
-          />
+          {
+            dummy ?
+              <Controls.Toggle
+                flag={true}
+                tooltipTextOn="Delete entity"
+                onClick={() => deleteEntity(id)}
+                OnIcon={DeleteOutlined}
+              />
+              :
+              <Controls.Toggle
+                flag={!hidden}
+                tooltipTextOn="Hide entity in the graph"
+                tooltipTextOff="Show entity in the graph"
+                onClick={() => toggleHidden(id, !hidden)}
+                OnIcon={EyeOutlined}
+                OffIcon={EyeInvisibleOutlined}
+              />
+          }
         </Space>
       </ControlsContainer>
     );
@@ -143,7 +153,8 @@ const mapStateToProps = (appState, {id}) => ({
 const dispatchProps = {
   toggleHidden: pipe(ModelState.toggleClassHidden, dispatch),
   toggleSelected: pipe(ModelState.toggleClassSelected, dispatch),
-  updateName: pipe(ModelState.updateClassName, dispatch)
+  updateName: pipe(ModelState.updateClassName, dispatch),
+  deleteEntity: pipe(ModelState.deleteEntity, dispatch)
 };
 
 export const EntityEntry = connect(mapStateToProps, null)(EntityEntryComponent);

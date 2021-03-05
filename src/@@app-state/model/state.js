@@ -14,7 +14,9 @@ import {
   mergeRight,
   uniq, partition,
   lens,
-  pick
+  pick,
+  over,
+  omit
 } from 'ramda';
 import { entityTypes } from '@@model/entity-types';
 
@@ -44,6 +46,7 @@ const defaultEntityProps = {
       label: '', // From remote
       description: '' // From remote
     },
+    dummy: false, // False - node is displayed in the graph, true - node is just present to allow for linking properties to additional objects
     propertyIds: [],
     hidden: false,
     expanded: false
@@ -137,7 +140,7 @@ export const toggleSelected = (type, ...args) => {
 }
 
 const byTypeAndId = curry((type, id) => compose(entitiesByType[type], lensProp(id)));
-const byTypeAndIds = curry((type, ids) => compose(entitiesByType[type], lens(pick(ids), (val, obj) => ids.reduce((acc, id) => Object.assign(acc, {[id]: val}), obj))));
+const byTypeAndIds = curry((type, ids) => compose(entitiesByType[type], lens(pick(ids), (val, obj) => ids.reduce((acc, id) => Object.assign({}, acc, {[id]: val}), obj))));
 export const propertiesByIds = byTypeAndIds(entityTypes.property);
 export const propertyById = byTypeAndId(entityTypes.property);
 export const classById = byTypeAndId(entityTypes.class);
@@ -198,6 +201,24 @@ export const bindProperties = curry((propertyIds, state) => {
 });
 
 export const loadView = curry((json, s) => set(entities, mergeDeepRight(view(entities, s), json), s));
+
+export const registerNewClass = curry((id, s) => {
+  const entity = view(classById(id), s);
+  const toRegister = Object.assign(entity, defaultEntityProps[entityTypes.class]);
+  let i = 1;
+  while (view(classById(`${id}_${i}`), s)) {
+    i++;
+  }
+
+  Object.assign(toRegister, {
+    id: `${id}_${i}`,
+    dummy: true
+  })
+
+  return set(classById(toRegister.id), toRegister, s);
+});
+
+export const deleteEntity = id => over(classes, omit([id]));
 
 export const middleware = (oldState, newState) => {
   const state = set(dirty, view(dirty, newState), newState);
