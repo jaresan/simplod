@@ -40,7 +40,7 @@ const getProperties = (prefixToIRI, getEntityVariable, propertiesBySource) => {
   return Object.entries(propertiesBySource).reduce((acc, [source, properties]) => {
     const [optional, required] = partition(prop('optional'), properties.map(getProperty));
     return Object.assign(acc, {
-      [source]: {optional, required}
+      [source]: {optional, required, type: (properties && properties[0].sourceType) || source}
     });
   }, {});
 };
@@ -88,11 +88,11 @@ export const parseSPARQLQuery = ({selectedProperties, selectedEntities, prefixes
   const properties = getProperties(prefixes, getEntityVariable, propertiesBySource);
 
   const getPropertyRow = ({predicate, varName}, i, arr) => `${predicate} ${varName}${i === arr.length - 1 ? '.' : ';'}`
-  const rows = Object.entries(properties).map(([source, {required, optional}]) => {
+  const rows = Object.entries(properties).map(([source, {required, optional, type}]) => {
     const entityVar = sanitizeVarName(getEntityVariable(source));
-    let res = `?${entityVar} a ${source}.`;
+    let res = `?${entityVar} a ${type}.`;
     if (required.length) {
-      res = `?${entityVar} a ${source};${required.map(getPropertyRow).join('\n')}`;
+      res = `?${entityVar} a ${type};${required.map(getPropertyRow).join('\n')}`;
     }
     if (optional.length) {
       res += `\n\tOPTIONAL { ?${entityVar} ${optional.map(getPropertyRow).join('\n')} }`;
