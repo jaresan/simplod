@@ -101,7 +101,7 @@ const updateSelected = curry((type, id, selected, s) => {
   s = update(type, 'selected', id, selected)(s);
   const order = view(selectionOrder, s);
   if (selected) {
-    return set(selectionOrder, order.concat(id), s);
+    return set(selectionOrder, uniq(order.concat(id)), s);
   }
 
   order.splice(order.indexOf(id), 1);

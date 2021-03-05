@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { DragOutlined } from '@ant-design/icons';
 import { Tag } from 'antd';
-import { prop, path, mergeRight } from 'ramda';
+import { prop, path, mergeRight, uniqBy } from 'ramda';
 import { connect } from 'react-redux';
 import { getProperties, getClasses, getSelectionOrder } from '@@selectors';
 import {dispatchSet} from '@@app-state';
@@ -41,7 +41,7 @@ class ColumnListComponent extends Component {
   updateItems() {
     const {entities, properties, selectionOrder} = this.props;
     const items = getItems(mergeRight(entities, properties), selectionOrder);
-    this.setState({items});
+    this.setState({items: uniqBy(prop('content'), items)});
   }
 
 
