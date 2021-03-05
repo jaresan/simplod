@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {GraphContainer} from './GraphContainer';
-import { Space, Layout } from 'antd';
+import { Layout } from 'antd';
 import { getContainerStyle, getGraphContainerStyle, getMenuStyle } from './App.styled';
 import { EntityList } from './entityList/EntityList';
 import styled from '@emotion/styled';
@@ -35,7 +35,7 @@ class App extends Component {
     this.endpointURL = url.searchParams.get('endpointURL');
     this.modelURL = url.searchParams.get('modelURL');
 
-    // this.courtExampleURL = 'https://sparql-proxy-api.jaresantonin.now.sh/spo-court.ttl';
+    this.courtExampleURL = 'https://sparql-proxy-api.jaresantonin.now.sh/spo-court.ttl';
     // this.applicantsURL = 'https://sparql-proxy-api.jaresantonin.now.sh/spo-job-applicants.ttl';
     // this.govURL = "https://sparql-proxy-api.jaresantonin.now.sh/data.gov.cz.ttl";
     // this.beefURL = '/samples/http---linked.opendata.cz-sparql.ttl'
@@ -45,11 +45,11 @@ class App extends Component {
     // // this.beefURL = '/samples/http---nl.dbpedia.org-sparql.ttl';
     // // this.endpointURL = 'http://nl.dbpedia.org/sparql';
     // if (process.env.NODE_ENV === 'development') {
-    //   // this.schemaURL = this.courtExampleURL;
+      this.schemaURL = this.courtExampleURL;
     //   this.schemaURL = this.schemaURL || this.applicantsURL;
     //   // this.schemaURL = this.govURL;
     //   // this.schemaURL = this.beefURL;
-    //   this.endpointURL = "https://data.gov.cz/sparql";
+      this.endpointURL = "https://data.gov.cz/sparql";
     // }
   }
 

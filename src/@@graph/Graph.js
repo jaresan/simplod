@@ -4,6 +4,7 @@ import {Property, Node, Edge} from '@@graph/handlers';
 import { Handler } from '@@graph/handlers/Handler';
 import { getNodes } from '@@graph/Node';
 import { getEdges } from '@@graph/Edge';
+import * as ModelState from '@@app-state/model/state';
 
 const getWrapper = n => {
   if (!n) return;
@@ -118,6 +119,7 @@ export class Graph {
     Property.commitResources();
     Node.commitResources();
     Edge.commitResources();
+    Handler.bindProperties();
   }
 
   static destroy() {

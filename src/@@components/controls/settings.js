@@ -1,4 +1,4 @@
-import { Button, Input, Select, Space, Switch, Modal, Radio } from 'antd';
+import { Select, Space, Switch, Modal, Radio } from 'antd';
 import { changeLanguage } from '@@actions/interactions/change-language';
 import React from 'react';
 import { connect, Provider } from 'react-redux';

@@ -13,6 +13,8 @@ import {
   mergeDeepRight,
   mergeRight,
   uniq, partition,
+  lens,
+  pick
 } from 'ramda';
 import { entityTypes } from '@@model/entity-types';
 
@@ -49,11 +51,14 @@ const defaultEntityProps = {
 };
 
 const E = {
-  selected: prop('selected')
+  selected: prop('selected'),
+  varName: prop('varName')
 };
 
 const P = {
-  target: prop('target')
+  target: prop('target'),
+  id: prop('id'),
+  dataProperty: prop('dataProperty')
 }
 
 const root = 'model';
@@ -132,6 +137,8 @@ export const toggleSelected = (type, ...args) => {
 }
 
 const byTypeAndId = curry((type, id) => compose(entitiesByType[type], lensProp(id)));
+const byTypeAndIds = curry((type, ids) => compose(entitiesByType[type], lens(pick(ids), (val, obj) => ids.reduce((acc, id) => Object.assign(acc, {[id]: val}), obj))));
+export const propertiesByIds = byTypeAndIds(entityTypes.property);
 export const propertyById = byTypeAndId(entityTypes.property);
 export const classById = byTypeAndId(entityTypes.class);
 
@@ -171,6 +178,23 @@ export const updateClasses = curry((newClasses, s) => {
 export const registerResources = curry((entityType, resources, s) => {
   const withDefaultProps = map(mergeRight(defaultEntityProps[entityType] || {}), resources);
   return set(entitiesByType[entityType], withDefaultProps, s);
+});
+
+export const bindProperties = curry((propertyIds, state) => {
+  if (!propertyIds || !propertyIds.length) {
+    propertyIds = Object.keys(view(properties, state));
+  }
+
+  return propertyIds.reduce((acc, id) => {
+    const property = view(propertyById(id), acc);
+    if (P.dataProperty(property)) {
+      return acc;
+    }
+    const target = P.target(property);
+    const targetClass = view(classById(target), acc);
+    const varName = E.varName(targetClass);
+    return pipe(updateProperty('bound', id, true), updateProperty('varName', id, varName))(acc);
+  }, state);
 });
 
 export const loadView = curry((json, s) => set(entities, mergeDeepRight(view(entities, s), json), s));

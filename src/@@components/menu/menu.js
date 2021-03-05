@@ -6,7 +6,6 @@ import { getAvatar, getLastSave, getSessionValid, getModelFileLocation, getFilen
 import { openShareModal } from '@@components/menu/share-menu';
 import { openSaveDialogModal } from '@@components/controls/file-dialog';
 import { loginToSolid, logoutSolid } from '@@actions/solid/auth';
-import { openYasguiModal } from '@@components/Yasgui';
 import { dispatchSet } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import styled from '@emotion/styled';

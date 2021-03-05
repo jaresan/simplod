@@ -34,6 +34,10 @@ export class Handler {
     dispatch(ModelState.registerResources(this.entityType, this.resources));
   }
 
+  static bindProperties() {
+    dispatch(ModelState.bindProperties([]));
+  }
+
   static onToggleSelect(id, selected) {
     dispatch(ModelState.toggleSelected(this.entityType, id, selected));
   }

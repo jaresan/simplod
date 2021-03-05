@@ -9,7 +9,6 @@ import { dispatchSet, getState, store } from '@@app-state';
 import { InputNumber, Modal, Switch } from 'antd';
 import * as SettingsState from '@@app-state/settings/state';
 import { dataChanged } from '@@actions/lifecycle';
-import { view } from 'ramda';
 
 const YasguiContainer = styled.div`
 	width: fit-content;

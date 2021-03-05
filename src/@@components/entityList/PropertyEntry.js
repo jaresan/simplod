@@ -11,7 +11,7 @@ import {
   QuestionCircleFilled,
   TagOutlined, LinkOutlined
 } from '@ant-design/icons';
-import {getPropertyById, getSelectedClasses} from '@@selectors';
+import { getClasses, getPropertyById, getSelectedClasses } from '@@selectors';
 import { connect } from 'react-redux';
 import * as ModelState from '@@app-state/model/state';
 import {dispatch} from '@@app-state';
@@ -58,7 +58,7 @@ class PropertyEntryComponent extends React.Component {
   onNameChange = e => this.setState({varName: e.target.value});
 
   getNameInput = () => {
-    const {selectedEntities, property, id} = this.props;
+    const {classes, property, id} = this.props;
     const {onSetName} = dispatchProps;
 
     const {asVariable, target} = property;
@@ -71,7 +71,7 @@ class PropertyEntryComponent extends React.Component {
           <StyledInput
             type="text"
             disabled
-            value={selectedEntities[target].varName}
+            value={classes[target].varName}
           />
         </div>
       </Tooltip>;
@@ -134,7 +134,7 @@ class PropertyEntryComponent extends React.Component {
 
 const mapStateToProps = (appState, {id}) => ({
   property: getPropertyById(id, appState),
-  selectedEntities: getSelectedClasses(appState)
+  classes: getClasses(appState)
 });
 
 // TODO: @dispatch rewrite

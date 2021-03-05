@@ -140,7 +140,7 @@ const files = {
 //     title: 'parent 1-0',
 //     key: '0-0-0',
 //     children: [
-const getTree = ([key, content]) => console.log(key, content) || ({
+const getTree = ([key, content]) => ({
   title: key,
   key: key,
   children: typeof content === 'object' ? Object.entries(content).map(getTree) : []
