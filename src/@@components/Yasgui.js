@@ -8,7 +8,6 @@ import "@triply/yasgui/build/yasgui.min.css";
 import { dispatchSet, getState, store } from '@@app-state';
 import { InputNumber, Modal, Switch } from 'antd';
 import * as SettingsState from '@@app-state/settings/state';
-import { dataChanged } from '@@actions/lifecycle';
 
 const YasguiContainer = styled.div`
 	width: fit-content;
@@ -58,12 +57,10 @@ class Yasgui extends Component {
 
 	updateLimit = limit => {
 		dispatchProps.updateLimit(limit);
-		dataChanged();
 	};
 
 	toggleLimit = checked => {
 		dispatchProps.toggleLimit(checked);
-		dataChanged();
 	};
 
 	render() {

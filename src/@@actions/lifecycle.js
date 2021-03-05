@@ -4,13 +4,8 @@
 import hotkeys from 'hotkeys-js';
 import { dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
-import { filter, invertObj, mapObjIndexed, view } from 'ramda';
+import { mapObjIndexed, view } from 'ramda';
 import { loadLocalSettings, saveData } from '@@actions/save-load';
-import * as YasguiState from '@@app-state/yasgui/state';
-import * as SettingsState from '@@app-state/settings/state';
-import possiblePrefixes from '@@constants/possible-prefixes';
-import { parseSPARQLQuery } from '@@utils/parseQuery';
-import E from '@@model/entity';
 import { onSolidStart } from '@@actions/solid/lifecycle';
 
 /**
@@ -43,20 +38,4 @@ export const onDataLoaded = () => {
   // FIXME: @reference to set propertyIds
   const newClasses = mapObjIndexed((c, id) => Object.assign(c, {propertyIds: propsById[id]}), view(ModelState.classes, state));
   dispatchSet(ModelState.classes, newClasses);
-}
-
-/**
- * Updates the generated SPARQL query.
- */
-export const dataChanged = () => {
-  const state = getState();
-  const prefixes = view(YasguiState.prefixes, state);
-  const selectedProperties = filter(E.selected, view(ModelState.properties, state));
-  const selectedClasses = filter(E.selected, view(ModelState.classes, state));
-  const limit = view(SettingsState.limit, state);
-  const limitEnabled = view(SettingsState.limitEnabled, state);
-  const selectionOrder = view(ModelState.selectionOrder, state);
-  const prefixToIRI = Object.assign(prefixes, invertObj(possiblePrefixes));
-
-  dispatchSet(YasguiState.query, parseSPARQLQuery({selectedProperties, selectedEntities: selectedClasses, prefixes: prefixToIRI, limit, limitEnabled, selectionOrder}));
 }

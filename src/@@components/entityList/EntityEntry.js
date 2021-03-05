@@ -59,7 +59,7 @@ class EntityEntryComponent extends React.Component {
 
   getControls = () => {
     const {id, entity} = this.props;
-    const {toggleSelected, toggleHidden, updateName, deleteEntity} = dispatchProps;
+    const {toggleSelected, toggleHidden, updateName, deleteClass} = dispatchProps;
     const {selected, hidden, dummy} = entity;
     const {varName} = this.state;
     return (
@@ -84,7 +84,7 @@ class EntityEntryComponent extends React.Component {
               <Controls.Toggle
                 flag={true}
                 tooltipTextOn="Delete entity"
-                onClick={() => deleteEntity(id)}
+                onClick={() => deleteClass(id)}
                 OnIcon={DeleteOutlined}
               />
               :
@@ -154,7 +154,7 @@ const dispatchProps = {
   toggleHidden: pipe(ModelState.toggleClassHidden, dispatch),
   toggleSelected: pipe(ModelState.toggleClassSelected, dispatch),
   updateName: pipe(ModelState.updateClassName, dispatch),
-  deleteEntity: pipe(ModelState.deleteEntity, dispatch)
+  deleteClass: pipe(ModelState.deleteClass, dispatch)
 };
 
 export const EntityEntry = connect(mapStateToProps, null)(EntityEntryComponent);

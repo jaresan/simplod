@@ -1,4 +1,4 @@
-import { groupBy, path, prop, map, partition, pipe, pick } from 'ramda';
+import { groupBy, path, prop, map, partition, pipe, pick, uniq } from 'ramda';
 
 const sanitizeVarName = str => str.replace(
   /([-]\w)/g,
@@ -49,7 +49,7 @@ const getSelectVariables = (selectionOrder, selectedObjects) => selectionOrder
   .filter(id => path([id, 'asVariable'], selectedObjects) && !path([id, 'bound'], selectedObjects))
   .map(id => `?${sanitizeVarName(selectedObjects[id].varName)}`);
 
-const getSelectText = pipe(getSelectVariables, vars => vars.join(' ') || '*');
+const getSelectText = pipe(getSelectVariables, uniq, vars => vars.join(' ') || '*');
 
 const getPrefixDefinitions = usedPrefixes => Object.entries(usedPrefixes).map(([name, iri]) => `PREFIX ${name}: <${iri}>`).join('\n');
 

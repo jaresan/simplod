@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { getProperties, getClasses, getSelectionOrder } from '@@selectors';
 import {dispatchSet} from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
-import {dataChanged} from '@@actions/lifecycle';
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -65,7 +64,6 @@ class ColumnListComponent extends Component {
     );
 
     dispatchProps.updateSelectionOrder(items.map(prop('id')));
-    dataChanged();
   }
 
   getEmptyMessage = () => {

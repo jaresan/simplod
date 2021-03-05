@@ -16,9 +16,12 @@ import {
   lens,
   pick,
   over,
-  omit
+  omit, invertObj
 } from 'ramda';
 import { entityTypes } from '@@model/entity-types';
+import * as YasguiState from '@@app-state/yasgui/state';
+import * as SettingsState from '@@app-state/settings/state';
+import possiblePrefixes from '@@constants/possible-prefixes';
 
 export const initial = {
   entities: {
@@ -55,7 +58,8 @@ const defaultEntityProps = {
 
 const E = {
   selected: prop('selected'),
-  varName: prop('varName')
+  varName: prop('varName'),
+  propertyIds: prop('propertyIds')
 };
 
 const P = {
@@ -202,25 +206,56 @@ export const bindProperties = curry((propertyIds, state) => {
 
 export const loadView = curry((json, s) => set(entities, mergeDeepRight(view(entities, s), json), s));
 
-export const registerNewClass = curry((id, s) => {
-  const entity = view(classById(id), s);
-  const toRegister = Object.assign(entity, defaultEntityProps[entityTypes.class]);
+const suffixId = curry((getterFn, state, id) => {
   let i = 1;
-  while (view(classById(`${id}_${i}`), s)) {
+  while (view(getterFn(`${id}_${i}`), state)) {
     i++;
   }
-
-  Object.assign(toRegister, {
-    id: `${id}_${i}`,
-    dummy: true
-  })
-
-  return set(classById(toRegister.id), toRegister, s);
+  return `${id}_${i}`;
 });
 
-export const deleteEntity = id => over(classes, omit([id]));
+const registerProperties = (sourceType, source, propertyIds, s) => {
+  const getNewId = suffixId(propertyById, s);
+  const {ids, state} = propertyIds.reduce(({ids, state}, id) => {
+    const property = mergeRight(view(propertyById(id), state), defaultEntityProps[entityTypes.property]);
+    Object.assign(property, {
+      sourceType,
+      source
+    });
+    const newId = getNewId(id);
 
-export const middleware = (oldState, newState) => {
+    return {
+      ids: ids.concat(newId),
+      state: set(propertyById(newId), property, state)
+    };
+  }, {ids: [], state: s})
+
+  return {ids, state};
+};
+
+export const registerNewClass = curry((id, s) => {
+  const entity = view(classById(id), s);
+  const toRegister = Object.assign({}, entity, defaultEntityProps[entityTypes.class]);
+  const newId = suffixId(classById, s, entity.type || id);
+
+  const {ids: propertyIds, state} = registerProperties(entity.type || id, newId, entity.propertyIds, s);
+  Object.assign(toRegister, {
+    dummy: true,
+    propertyIds,
+    type: id
+  })
+
+  return set(classById(newId), toRegister, state);
+});
+window.registerNewClass = registerNewClass;
+
+export const deleteClass = curry((id, s) => {
+  const propertyIds = E.propertyIds(view(classById(id), s));
+
+  return pipe(over(properties, omit(propertyIds)), over(classes, omit([id])))(s);
+});
+
+export const middleware = curry((oldState, newState) => {
   const state = set(dirty, view(dirty, newState), newState);
   // Return original changed state if it was a change cause by setting the 'dirty' flag
   if (view(dirty, oldState) !== view(dirty, newState)) {
@@ -230,5 +265,6 @@ export const middleware = (oldState, newState) => {
   if (view(rootLens, oldState) !== view(rootLens, newState)) {
     return set(dirty, true, newState);
   }
+
   return state;
-};
+});

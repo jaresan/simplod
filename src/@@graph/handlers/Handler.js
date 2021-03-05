@@ -4,7 +4,6 @@
  * handles the changes by itself.
  */
 import {store, dispatch} from '@@app-state';
-import {dataChanged as onDataChanged} from '@@actions/lifecycle';
 import { fromPairs, path } from 'ramda';
 import * as ModelState from '@@app-state/model/state';
 
@@ -60,7 +59,6 @@ export class Handler {
   static onStateChange(state) {
     if (state === this.lastState) return;
 
-    let dataChanged = false;
     this.lastState = state;
     Object.values(this.recipients)
       .forEach(recipient => {
@@ -69,12 +67,8 @@ export class Handler {
           // FIXME: Map to relevant properties for the wrapper instead of sending subState as a whole
           // define selectors and mapping between redux state -> UI state in Wrappers themselves,
           // e.g. stateToStyle = {selected: {selected: true}} and then react to the child keys
-        dataChanged = dataChanged || recipient.onStateChanged(subState);
+        recipient.onStateChanged(subState);
       });
-
-    if (dataChanged) {
-      onDataChanged();
-    }
   };
 }
 
