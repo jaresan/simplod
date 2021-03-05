@@ -1,8 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {getClasses, getProperties} from '@@selectors';
+import { getAppLoaded, getClasses, getProperties } from '@@selectors';
 import {EntityEntry} from './EntityEntry';
-import {List, Empty} from 'antd';
+import {List, Empty, Spin} from 'antd';
 import {filter, mapObjIndexed, path, any} from 'ramda';
 import {withSearch} from '../withSearch';
 import styled from '@emotion/styled';
@@ -47,6 +47,12 @@ class EntityListComponent extends React.Component {
 	render() {
 		const filtered = this.getIds();
 
+		if (!this.props.loaded) {
+			return <Spin>
+				<NoDataContainer/>
+			</Spin>
+		}
+
 		return (
 			<>
 				{
@@ -70,7 +76,8 @@ class EntityListComponent extends React.Component {
 
 const mapStateToProps = appState => ({
 	entities: getClasses(appState),
-	properties: getProperties(appState)
+	properties: getProperties(appState),
+	loaded: getAppLoaded(appState)
 });
 
 export const EntityList = connect(mapStateToProps, null)(withSearch(EntityListComponent));

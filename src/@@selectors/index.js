@@ -27,6 +27,7 @@ export const getLimit = view(SettingsState.limit);
 export const getLimitEnabled = view(SettingsState.limitEnabled);
 export const getLastSave = view(SettingsState.lastSave);
 export const getHorizontalLayout = view(SettingsState.horizontalLayout);
+export const getAppLoaded = view(SettingsState.loaded);
 
 export const getFolderUriChanging = view(SolidState.folderUriChanging);
 export const getFiles = view(SolidState.files);
