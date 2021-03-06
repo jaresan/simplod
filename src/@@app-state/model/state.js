@@ -16,7 +16,8 @@ import {
   lens,
   pick,
   over,
-  omit, propEq
+  omit,
+  propEq
 } from 'ramda';
 import { entityTypes } from '@@model/entity-types';
 
@@ -212,7 +213,7 @@ const suffixId = curry((getterFn, state, id) => {
   return `${id}_${i}`;
 });
 
-const registerProperties = (source, propertyIds, s) => {
+const registerProperties = curry((source, propertyIds, s) => {
   const getNewId = suffixId(propertyById, s);
   const {ids, state} = propertyIds.reduce(({ids, state}, id) => {
     const property = mergeRight(view(propertyById(id), state), defaultEntityProps[entityTypes.property]);
@@ -228,7 +229,10 @@ const registerProperties = (source, propertyIds, s) => {
   }, {ids: [], state: s})
 
   return {ids, state};
-};
+});
+
+const assignPropertyTargets = curry((newTarget, propertyIds, s) =>
+  propertyIds.reduce((acc, id) => set(propertyTargetById(id), newTarget, acc), s));
 
 const createNewClassInstance = (id, s) => {
   const entity = view(classById(id), s);
@@ -260,9 +264,16 @@ export const registerNewClass = curry((id, s) => {
 });
 
 export const deleteClass = curry((id, s) => {
-  const propertyIds = E.propertyIds(view(classById(id), s));
+  const entity = view(classById(id), s);
+  const propertyIds = E.propertyIds(entity);
+  const newTarget = keys(filter(e => e !== entity && e.type === entity.type, view(classes, s)))[0];
+  const propertyIdsToReassign = keys(filter(propEq('target', id), view(properties, s)));
 
-  return pipe(over(properties, omit(propertyIds)), over(classes, omit([id])))(s);
+  return pipe(
+    assignPropertyTargets(newTarget, propertyIdsToReassign),
+    over(properties, omit(propertyIds)),
+    over(classes, omit([id]))
+  )(s);
 });
 
 export const changePropertyTarget = curry((id, newTarget, s) => set(propertyTargetById(id), newTarget, s));
