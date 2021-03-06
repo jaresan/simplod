@@ -1,9 +1,5 @@
 import { groupBy, path, prop, map, partition, pipe, pick, uniq, flatten, head } from 'ramda';
-
-const sanitizeVarName = str => str.replace(
-  /([-]\w)/g,
-  group => group.toUpperCase().replace('-', '')
-).replace(/-/g, '');
+import { sanitizeVarName } from '@@utils/sanitizeVarName';
 
 const getDefaultEntityVarNames = types => {
   if (!types.length) return '';

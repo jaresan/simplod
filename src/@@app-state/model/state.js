@@ -16,12 +16,9 @@ import {
   lens,
   pick,
   over,
-  omit, invertObj
+  omit, propEq
 } from 'ramda';
 import { entityTypes } from '@@model/entity-types';
-import * as YasguiState from '@@app-state/yasgui/state';
-import * as SettingsState from '@@app-state/settings/state';
-import possiblePrefixes from '@@constants/possible-prefixes';
 
 export const initial = {
   entities: {
@@ -147,6 +144,7 @@ const byTypeAndId = curry((type, id) => compose(entitiesByType[type], lensProp(i
 const byTypeAndIds = curry((type, ids) => compose(entitiesByType[type], lens(pick(ids), (val, obj) => ids.reduce((acc, id) => Object.assign({}, acc, {[id]: val}), obj))));
 export const propertiesByIds = byTypeAndIds(entityTypes.property);
 export const propertyById = byTypeAndId(entityTypes.property);
+export const propertyTargetById = id => compose(propertyById(id), lensProp('target'));
 export const classById = byTypeAndId(entityTypes.class);
 
 export const getSelectedClasses = pipe(view(classes), filter(E.selected));
@@ -214,12 +212,11 @@ const suffixId = curry((getterFn, state, id) => {
   return `${id}_${i}`;
 });
 
-const registerProperties = (sourceType, source, propertyIds, s) => {
+const registerProperties = (source, propertyIds, s) => {
   const getNewId = suffixId(propertyById, s);
   const {ids, state} = propertyIds.reduce(({ids, state}, id) => {
     const property = mergeRight(view(propertyById(id), state), defaultEntityProps[entityTypes.property]);
     Object.assign(property, {
-      sourceType,
       source
     });
     const newId = getNewId(id);
@@ -233,21 +230,34 @@ const registerProperties = (sourceType, source, propertyIds, s) => {
   return {ids, state};
 };
 
-export const registerNewClass = curry((id, s) => {
+const createNewClassInstance = (id, s) => {
   const entity = view(classById(id), s);
-  const toRegister = Object.assign({}, entity, defaultEntityProps[entityTypes.class]);
+
+  // Keep info intact
+  const toRegister = Object.assign({}, entity, defaultEntityProps[entityTypes.class], {info: entity.info});
   const newId = suffixId(classById, s, entity.type || id);
+  const {ids: propertyIds, state} = registerProperties(newId, entity.propertyIds, s);
 
-  const {ids: propertyIds, state} = registerProperties(entity.type || id, newId, entity.propertyIds, s);
-  Object.assign(toRegister, {
-    dummy: true,
-    propertyIds,
-    type: id
-  })
+  const typeCount = Object.keys(filter(propEq('type', entity.type), view(classes, s))).length;
+  const varName = `${entity.type.replace(/.*:/, '')}_${typeCount}`;
 
-  return set(classById(newId), toRegister, state);
+  return {
+    newId,
+    instance: Object.assign(toRegister, {
+      dummy: true,
+      type: entity.type,
+      propertyIds,
+      varName
+    }),
+    state
+  }
+}
+
+export const registerNewClass = curry((id, s) => {
+  const {newId, instance, state} = createNewClassInstance(id, s);
+
+  return set(classById(newId), instance, state);
 });
-window.registerNewClass = registerNewClass;
 
 export const deleteClass = curry((id, s) => {
   const propertyIds = E.propertyIds(view(classById(id), s));
@@ -255,16 +265,13 @@ export const deleteClass = curry((id, s) => {
   return pipe(over(properties, omit(propertyIds)), over(classes, omit([id])))(s);
 });
 
-export const middleware = curry((oldState, newState) => {
-  const state = set(dirty, view(dirty, newState), newState);
-  // Return original changed state if it was a change cause by setting the 'dirty' flag
-  if (view(dirty, oldState) !== view(dirty, newState)) {
-    return state;
-  }
-  // Set dirty to true if the change was made to the model state
-  if (view(rootLens, oldState) !== view(rootLens, newState)) {
-    return set(dirty, true, newState);
-  }
+export const changePropertyTarget = curry((id, newTarget, s) => set(propertyTargetById(id), newTarget, s));
+export const createNewPropertyTarget = curry((id, s) => {
+  const currentTargetId = view(propertyTargetById(id), s);
+  const {newId, instance, state} = createNewClassInstance(currentTargetId, s);
 
-  return state;
+  const registerNewTarget = set(classById(newId), instance);
+  const changeTarget = set(propertyTargetById(id), newId);
+
+  return pipe(registerNewTarget, changeTarget)(state);
 });

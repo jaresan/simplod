@@ -44,13 +44,14 @@ class App extends Component {
     // this.ukEndpointURL = 'http://data.open.ac.uk/query';
     // // this.beefURL = '/samples/http---nl.dbpedia.org-sparql.ttl';
     // // this.endpointURL = 'http://nl.dbpedia.org/sparql';
-    // if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development') {
+      Object.assign(window, require('ramda'));
       this.schemaURL = this.courtExampleURL;
       this.schemaURL = this.schemaURL || this.applicantsURL;
-    //   // this.schemaURL = this.govURL;
-    //   // this.schemaURL = this.beefURL;
+      // this.schemaURL = this.govURL;
+      // this.schemaURL = this.beefURL;
       this.endpointURL = "https://data.gov.cz/sparql";
-    // }
+    }
   }
 
   componentDidMount() {

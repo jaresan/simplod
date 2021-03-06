@@ -63,7 +63,7 @@ const NodeImplementation = {
       id: `property_${id}-${predicate}-${objects[0]}`,
       attrs: attrs.property({predicate, type: objects[0], i, ctx}),
       name: `property#${i}`,
-      data: {target: objects[0], source: id, predicate, varName: getSuffix(predicate), dataProperty: true}
+      data: {target: objects[0], targetType: objects[0], source: id, predicate, varName: getSuffix(predicate), dataProperty: true}
     }));
 
     let i = 0;
@@ -72,7 +72,7 @@ const NodeImplementation = {
         id: `property_${id}-${predicate}-${target}`,
         attrs: attrs.property({predicate, type: target, i: i + dataPropertyCount, ctx}),
         name: `property#${i++ + dataPropertyCount}`,
-        data: {target, source: id, predicate, varName: getSuffix(predicate)}
+        data: {target, source: id, predicate, targetType: target, varName: getSuffix(predicate)}
       }))
     ));
 
@@ -105,7 +105,7 @@ const NodeImplementation = {
     // FIXME: Separate group for logical pieces --> can have multiple groups, yes
     group.entityId = id;
     const result = E.create(group, [
-      E.Node({id, attrs: containerAttrs, name: 'node-container', data: {varName: getSuffix(id)} }),
+      E.Node({id, attrs: containerAttrs, name: 'node-container', data: {varName: getSuffix(id), type: id} }),
       E.Text({id: `node_${id}-title`, attrs: attrs['node-title'](width, cfg.label), name: 'node-title'}),
       E.Rect({id: `node_${id}-select-all-container`, attrs: {x: -16, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'select-all-container'}),
       E.Image({id: `node_${id}-select-all-icon`, name: 'select-all-icon', attrs: selectAllIconAttrs}),

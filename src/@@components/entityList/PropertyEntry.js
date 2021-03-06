@@ -2,7 +2,7 @@ import React from 'react';
 import { Checkbox, Input, Space, List, Tooltip } from 'antd';
 import { PrefixedText } from './PrefixedText';
 import styled from '@emotion/styled';
-import {pipe} from 'ramda';
+import { pickBy, pipe, propEq } from 'ramda';
 import * as Controls from './Controls';
 import {
   EyeInvisibleOutlined,
@@ -11,10 +11,11 @@ import {
   QuestionCircleFilled,
   TagOutlined, LinkOutlined
 } from '@ant-design/icons';
-import { getClasses, getPropertyById, getSelectedClasses } from '@@selectors';
+import { getClasses, getPropertyById } from '@@selectors';
 import { connect } from 'react-redux';
 import * as ModelState from '@@app-state/model/state';
 import {dispatch} from '@@app-state';
+import { PropertyTargetSelect } from '@@components/entityList/PropertyTargetSelect';
 
 const StyledInput = styled(Input)`	
 	width: 128px;	
@@ -61,21 +62,10 @@ class PropertyEntryComponent extends React.Component {
     const {classes, property, id} = this.props;
     const {onSetName} = dispatchProps;
 
-    const {asVariable, target} = property;
+    const {asVariable, target, dataProperty, targetType} = property;
     const {varName} = this.state;
-    if (property.bound) {
-      return <Tooltip
-        title="This variable can't be renamed because it is bound to an already selected entity. To change its name, rename the linked entity."
-      >
-        <div>
-          <StyledInput
-            type="text"
-            disabled
-            value={classes[target].varName}
-          />
-        </div>
-      </Tooltip>;
-    } else {
+
+    if (dataProperty) {
       return <StyledInput
         type="text"
         disabled={!asVariable}
@@ -85,13 +75,21 @@ class PropertyEntryComponent extends React.Component {
         onPressEnter={() => onSetName(id, varName)}
       />;
     }
+
+    return <PropertyTargetSelect
+      target={target}
+      targetType={targetType}
+      possibleTargets={pickBy(propEq('type', targetType), classes)}
+      onChangeTarget={t => dispatchProps.onChangePropertyTarget(id, t)}
+      onCreateNew={() => dispatchProps.onCreateNewPropertyTarget(id)}
+    />;
   };
 
   render() {
     const {property, id} = this.props;
     const {onSelect, onSetAsVariable, onSetOptional} = dispatchProps;
 
-    const {predicate, asVariable, optional, selected, dataProperty, target} = property;
+    const {predicate, asVariable, optional, selected, dataProperty, targetType} = property;
 
     return (
       <RowContainer>
@@ -123,7 +121,7 @@ class PropertyEntryComponent extends React.Component {
               OffIcon={QuestionCircleOutlined}
             />
             <span>
-            {target}
+            {targetType}
           </span>
           </Space>
         </DataContainer>
@@ -142,7 +140,9 @@ const dispatchProps = {
   onSelect: pipe(ModelState.togglePropertySelected, dispatch),
   onSetAsVariable: pipe(ModelState.togglePropertyAsVariable, dispatch),
   onSetName: pipe(ModelState.savePropertyName, dispatch),
-  onSetOptional: pipe(ModelState.togglePropertyOptional, dispatch)
+  onSetOptional: pipe(ModelState.togglePropertyOptional, dispatch),
+  onChangePropertyTarget: pipe(ModelState.changePropertyTarget, dispatch),
+  onCreateNewPropertyTarget: pipe(ModelState.createNewPropertyTarget, dispatch),
 };
 
 export const PropertyEntry = connect(mapStateToProps, null)(PropertyEntryComponent);

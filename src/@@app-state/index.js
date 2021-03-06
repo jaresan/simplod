@@ -1,6 +1,6 @@
 import { set, curry, compose, view, pipe } from 'ramda';
 import { createStore } from 'redux';
-import { middleware as modelMiddleware } from '@@app-state/model/state';
+import { middleware as modelMiddleware } from '@@app-state/model/middleware';
 import { middleware as yasguiMiddleware } from '@@app-state/yasgui/state';
 import { initial } from '@@app-state/initial';
 
