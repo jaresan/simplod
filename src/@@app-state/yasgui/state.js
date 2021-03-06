@@ -26,13 +26,14 @@ export const instance = forKey('instance');
 export const updateQuery = state => {
   const usedPrefixes = view(prefixes, state);
   const selectedProperties = filter(E.selected, view(ModelState.properties, state));
+  const classes = view(ModelState.classes, state);
   const selectedClasses = filter(E.selected, view(ModelState.classes, state));
   const limit = view(SettingsState.limit, state);
   const limitEnabled = view(SettingsState.limitEnabled, state);
   const selectionOrder = view(ModelState.selectionOrder, state);
   const prefixToIRI = Object.assign(usedPrefixes, invertObj(possiblePrefixes));
 
-  return set(query, parseSPARQLQuery({selectedProperties, selectedEntities: selectedClasses, prefixes: prefixToIRI, limit, limitEnabled, selectionOrder}), state);
+  return set(query, parseSPARQLQuery({selectedProperties, selectedClasses, classes, prefixes: prefixToIRI, limit, limitEnabled, selectionOrder}), state);
 }
 
 export const middleware = curry((oldState, newState) => {

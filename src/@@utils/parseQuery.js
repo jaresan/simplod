@@ -1,4 +1,4 @@
-import { groupBy, path, prop, map, partition, pipe, pick, uniq } from 'ramda';
+import { groupBy, path, prop, map, partition, pipe, pick, uniq, flatten, head } from 'ramda';
 
 const sanitizeVarName = str => str.replace(
   /([-]\w)/g,
@@ -27,7 +27,7 @@ const getDefaultEntityVarNames = types => {
   }, {});
 };
 
-const getProperties = (prefixToIRI, getEntityVariable, propertiesBySource) => {
+const getProperties = (prefixToIRI, getEntityVariable, propertiesBySource, classes) => {
   const getProperty = ({asVariable, varName, predicate, source, optional, target, position}) => {
     const targetVarName = sanitizeVarName(getEntityVariable(target) || varName); // Use existing queried entity if available to prevent cartesian products
 
@@ -40,7 +40,7 @@ const getProperties = (prefixToIRI, getEntityVariable, propertiesBySource) => {
   return Object.entries(propertiesBySource).reduce((acc, [source, properties]) => {
     const [optional, required] = partition(prop('optional'), properties.map(getProperty));
     return Object.assign(acc, {
-      [source]: {optional, required, type: (properties && properties[0].sourceType) || source}
+      [source]: {optional, required, type: path([source, 'type'], classes) || source}
     });
   }, {});
 };
@@ -78,18 +78,24 @@ const getUsedPrefixes = (selectedProperties, selectedEntities) => {
   return [...entityPrefixes.values(), ...propertyPrefixes.values()];
 }
 
-export const parseSPARQLQuery = ({selectedProperties, selectedEntities, prefixes, selectionOrder, limit, limitEnabled}) => {
-  const propertiesBySource = getPropertiesBySource(selectedProperties, selectedEntities);
+
+export const parseSPARQLQuery = ({selectedProperties, selectedClasses, classes, prefixes, selectionOrder, limit, limitEnabled}) => {
+  const propertiesBySource = getPropertiesBySource(selectedProperties, selectedClasses);
 
   const entityVarNames = getDefaultEntityVarNames(Object.keys(propertiesBySource));
 
-  const getEntityVariable = id => path([id, 'varName'], selectedEntities) || entityVarNames[id];
+  const getEntityVariable = id => path([id, 'varName'], selectedClasses) || entityVarNames[id];
 
-  const properties = getProperties(prefixes, getEntityVariable, propertiesBySource);
+  const properties = getProperties(prefixes, getEntityVariable, propertiesBySource, classes);
 
   const getPropertyRow = ({predicate, varName}, i, arr) => `${predicate} ${varName}${i === arr.length - 1 ? '.' : ';'}`
-  const rows = Object.entries(properties).map(([source, {required, optional, type}]) => {
-    const entityVar = sanitizeVarName(getEntityVariable(source));
+  const propertiesByVar = groupBy(pipe(head, getEntityVariable, sanitizeVarName), Object.entries(properties));
+  const rows = Object.entries(propertiesByVar).map(([entityVar, data]) => {
+    const required = flatten(data.map(d => d[1].required));
+    const optional = flatten(data.map(d => d[1].optional));
+    const types = uniq(flatten(data.map(d => d[1].type)));
+    const type = types.join('; a ');
+
     let res = `?${entityVar} a ${type}.`;
     if (required.length) {
       res = `?${entityVar} a ${type};${required.map(getPropertyRow).join('\n')}`;
@@ -100,9 +106,9 @@ export const parseSPARQLQuery = ({selectedProperties, selectedEntities, prefixes
     return res;
   });
 
-  const selected = Object.assign({}, selectedProperties, selectedEntities);
+  const selected = Object.assign({}, selectedProperties, selectedClasses);
 
-  const usedPrefixes = getUsedPrefixes(selectedProperties, selectedEntities);
+  const usedPrefixes = getUsedPrefixes(selectedProperties, selectedClasses);
   const usedPrefixesToIRI = pick(usedPrefixes, prefixes);
   return `${getPrefixDefinitions(usedPrefixesToIRI)}
     SELECT DISTINCT ${getSelectText(selectionOrder, selected)} WHERE {
