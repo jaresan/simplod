@@ -15,7 +15,6 @@ import E from '@@model/entity';
 import { compare } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
-import possiblePrefixes from '@@constants/possible-prefixes';
 import { parseSPARQLQuery } from '@@utils/parseQuery';
 
 export const initial = {
@@ -46,7 +45,7 @@ export const updateQuery = state => {
   const limit = view(SettingsState.limit, state);
   const limitEnabled = view(SettingsState.limitEnabled, state);
   const selectionOrder = view(ModelState.selectionOrder, state);
-  const prefixToIRI = Object.assign(usedPrefixes, invertObj(possiblePrefixes), invertObj(overriddenPrefixes));
+  const prefixToIRI = Object.assign({}, usedPrefixes, invertObj(overriddenPrefixes));
 
   return set(query, parseSPARQLQuery({selectedProperties, selectedClasses, classes, prefixes: prefixToIRI, limit, limitEnabled, selectionOrder}), state);
 }
