@@ -266,11 +266,13 @@ export const registerNewClass = curry((id, s) => {
   return set(classById(newId), instance, state);
 });
 
+export const getPropertiesByTarget = curry((id, s) => filter(propEq('target', id), view(properties, s)));
+
 export const deleteClass = curry((id, s) => {
   const entity = view(classById(id), s);
   const propertyIds = E.propertyIds(entity);
   const newTarget = keys(filter(e => e !== entity && e.type === entity.type, view(classes, s)))[0];
-  const propertyIdsToReassign = keys(filter(propEq('target', id), view(properties, s)));
+  const propertyIdsToReassign = keys(getPropertiesByTarget(id, s));
 
   return pipe(
     assignPropertyTargets(newTarget, propertyIdsToReassign),

@@ -1,6 +1,6 @@
 import React from 'react';
-import { pick, pipe } from 'ramda';
-import { List, Card, Space, Checkbox, Tooltip, Input } from 'antd';
+import { pick, pipe, filter, prop } from 'ramda';
+import { List, Card, Space, Checkbox, Tooltip, Input, message } from 'antd';
 import {connect} from 'react-redux';
 import {PropertyEntry} from './PropertyEntry';
 import {PrefixedText} from './PrefixedText';
@@ -9,7 +9,9 @@ import styled from '@emotion/styled';
 import { getClassById, getShowHumanReadable } from '@@selectors';
 import * as Controls from './Controls';
 import * as ModelState from '@@app-state/model/state';
-import { dispatch } from '@@app-state';
+import { dispatch, getState } from '@@app-state';
+import { translated } from '@@localization';
+import { getPropertiesByTarget } from '@@app-state/model/state';
 
 const ExpandIconContainer = styled.div`
   display: inline-block;
@@ -152,7 +154,17 @@ const mapStateToProps = (appState, {id}) => ({
 // TODO: @dispatch rewrite
 const dispatchProps = {
   toggleHidden: pipe(ModelState.toggleClassHidden, dispatch),
-  toggleSelected: pipe(ModelState.toggleClassSelected, dispatch),
+  toggleSelected: (id, selected) => {
+    dispatch(ModelState.toggleClassSelected(id, selected));
+    if (selected) {
+      const properties = getPropertiesByTarget(id, getState());
+      const selected = filter(prop('selected'), properties);
+
+      if (Object.keys(properties).length && Object.keys(selected).length === 0) {
+        message.warning(translated('No path found for the selected entity. This might result in querying a cartesian product.'))
+      }
+    }
+  },
   updateName: pipe(ModelState.updateClassName, dispatch),
   deleteClass: pipe(ModelState.deleteClass, dispatch)
 };
