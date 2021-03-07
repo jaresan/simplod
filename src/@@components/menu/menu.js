@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import { Avatar, Menu, Input, Affix, Button, Space } from 'antd';
-import { UserOutlined, ShareAltOutlined, CloudUploadOutlined } from '@ant-design/icons';
+import { UserOutlined, ShareAltOutlined, CloudUploadOutlined, DesktopOutlined } from '@ant-design/icons';
 import { getAvatar, getLastSave, getSessionValid, getModelFileLocation, getFilename, getDirty } from '@@selectors';
 import { openShareModal } from '@@components/menu/share-menu';
 import { openSaveDialogModal } from '@@components/controls/file-dialog';
@@ -11,6 +11,7 @@ import * as ModelState from '@@app-state/model/state';
 import styled from '@emotion/styled';
 import { openSettingsModal } from '@@components/controls/settings';
 import { FileMenu } from '@@components/menu/file-menu';
+import { translated } from '@@localization';
 
 const FilenameInput = styled(Input)`
   border: none;
@@ -18,16 +19,15 @@ const FilenameInput = styled(Input)`
 `;
 
 const getSaveIcons = (modelFileLocation, isDirty) => {
-  // const localProps = isDirty ? {color: 'orange', text: 'Changes not saved in the browser storage'} : {color: 'green', text: 'Changes saved in browser storage'};
-  const cloudProps = modelFileLocation ?
-    isDirty ? {color: 'orange', text: 'Last changes not saved remotely'} : {color: 'green', text: `File saved at ${modelFileLocation}`}
-    : {color: 'red', text: 'File not saved remotely'};
+  const localProps = isDirty ? {color: 'orange', text: translated('Changes not saved in the browser')} : {color: 'green', text: translated('Changes saved in the browser')};
+  const cloudProps = isDirty ? {color: 'orange', text: translated('Last changes not saved remotely')} : {color: 'green', text: translated(`File saved at ${modelFileLocation}`)};
 
-  return <span>
-    {/*<Tooltip title={localProps.text}><ChromeOutlined style={{color: localProps.color, fontSize: 16}}/></Tooltip>*/}
-    <CloudUploadOutlined onClick={openSaveDialogModal} style={{color: cloudProps.color, fontSize: 16}}/>
-    {cloudProps.text}
-  </span>
+  return <div style={{display: 'flex', alignItems: 'center'}}>
+    {!modelFileLocation && <DesktopOutlined style={{color: localProps.color, fontSize: 16}}/>}
+    {!modelFileLocation && localProps.text}
+    {modelFileLocation && <CloudUploadOutlined onClick={openSaveDialogModal} style={{color: cloudProps.color, fontSize: 16}}/>}
+    {modelFileLocation && cloudProps.text}
+  </div>
 };
 
 const iconStyle = {height: 48, width: 48};

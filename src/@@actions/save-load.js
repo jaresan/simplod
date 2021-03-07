@@ -41,7 +41,8 @@ export const saveData = () => {
   const remoteFileURL = view(SolidState.modelFileLocation, state);
 
   if (remoteFileURL) {
-    return saveFile({uri: remoteFileURL, data: generateSaveData(), webId: view(SolidState.webId, state)});
+    return saveFile({uri: remoteFileURL, data: generateSaveData(), webId: view(SolidState.webId, state)})
+      .then(() => dispatchSet(ModelState.dirty, false));
   } else {
     return saveDataLocally();
   }
@@ -65,10 +66,10 @@ export const saveDataLocally = () => {
   const toCheck = [getDataSchemaURL, getFilename, getEndpoint];
   const oldSave = getLastLocalState();
 
-  Object.assign(window, {toCheck, oldSave, saveData});
   const promptOverwrite = toCheck.some(s => s(saveData)) && toCheck.some(selector => selector(saveData) !== selector(oldSave));
   const onOk = () => {
     saveLocalState(saveData);
+    dispatchSet(ModelState.dirty, false);
     message.success('Data saved locally.');
   };
   if (promptOverwrite) {

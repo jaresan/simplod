@@ -17,12 +17,14 @@ import {translated} from '@@localization';
 import { CustomPrefixRow } from '@@components/menu/custom-prefix-row';
 import { renamePrefix, deletePrefix } from '@@actions/custom-prefix';
 import { pipe } from 'ramda';
+import { loadGraphFromURL } from '@@actions/model/load-graph';
 
 const Properties = ({description, dataSchemaURL, endpointURL, title, prefixes, customPrefixes}) => {
   const [schemaURL, setSchemaURL] = useState(dataSchemaURL);
 
   return <div>
     <FilePropertyFields
+      onSchemaReload={() => loadGraphFromURL({dataSchemaURL: schemaURL, endpointURL})}
       onTitleChange={dispatchProps.updateFilename}
       onEndpointChange={dispatchProps.updateEndpoint}
       onSchemaChange={setSchemaURL}

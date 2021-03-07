@@ -54,7 +54,6 @@ export const saveFile = async ({uri, data}) => {
   } finally {
     loading();
   }
-  dispatchSet(ModelState.dirty, false);
 };
 
 export const changePermissions = async ({uri, permissions}) => {
