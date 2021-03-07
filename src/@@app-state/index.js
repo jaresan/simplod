@@ -44,7 +44,7 @@ if (process.env.NODE_ENV === 'development') {
 			SettingsState: require('./settings/state'),
 			YasguiState: require('./yasgui/state'),
 			getState,
-			renamePrefix: require('@@actions/model/rename-prefix').renamePrefix
+			renamePrefix: require('@@actions/custom-prefix').renamePrefix
 		},
 		require('ramda')
 	);

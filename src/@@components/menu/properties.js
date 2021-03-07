@@ -15,7 +15,7 @@ import { FilePropertyFields } from '@@components/menu/file-property-fields';
 import { InfoIcon } from '@@components/controls/info-icon';
 import {translated} from '@@localization';
 import { CustomPrefixRow } from '@@components/menu/custom-prefix-row';
-import { renamePrefix, deletePrefix } from '@@actions/model/rename-prefix';
+import { renamePrefix, deletePrefix } from '@@actions/custom-prefix';
 import { pipe } from 'ramda';
 
 const Properties = ({description, dataSchemaURL, endpointURL, title, prefixes, customPrefixes}) => {

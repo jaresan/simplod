@@ -11,8 +11,8 @@ import { getLastLocalState, saveLocalState } from '@@storage';
 import { Graph } from '@@graph';
 import { saveFile } from '@@actions/solid/files';
 import { message } from 'antd';
-import { loadGraphFromURL } from '@@actions/model/load-graph';
 import { openSaveOverwritePrompt } from '@@components/controls/save-overwrite-modal';
+import { applyCustomPrefixes } from '@@actions/custom-prefix';
 
 export const generateSaveData = () => {
   const bBoxesById = Graph.getBBoxesById();
@@ -95,11 +95,11 @@ export const saveDataLocally = () => {
 export const loadModel = json => {
   const newData = getModelData(json);
   dispatchSet(ModelState.rootLens, newData);
+  dispatch(applyCustomPrefixes(view(ModelState.customPrefixes, getState())));
   Graph.updatePositions(view(ModelState.classes, getState()));
 }
 
 export const loadLocalData = async () => {
   const state = getLastLocalState();
-  await loadGraphFromURL({dataSchemaURL: view(ModelState.dataSchemaURL, state)})
   loadModel(state);
 };
