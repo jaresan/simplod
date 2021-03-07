@@ -6,11 +6,13 @@ import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
 import * as SolidState from '@@app-state/solid/state';
 import { view, mergeDeepRight, prop } from 'ramda';
+import {getEndpoint, getDataSchemaURL, getFilename} from '@@selectors';
 import { getLastLocalState, saveLocalState } from '@@storage';
 import { Graph } from '@@graph';
 import { saveFile } from '@@actions/solid/files';
 import { message } from 'antd';
 import { loadGraphFromURL } from '@@actions/model/load-graph';
+import { openSaveOverwritePrompt } from '@@components/controls/save-overwrite-modal';
 
 export const generateSaveData = () => {
   const bBoxesById = Graph.getBBoxesById();
@@ -58,8 +60,36 @@ export const downloadData = () => {
 
 export const saveDataLocally = () => {
   dispatchSet(SettingsState.lastSave, Date.now());
-  saveLocalState(generateSaveData());
-  message.success('Data saved locally.');
+  const saveData = generateSaveData();
+  // endpoint/data schema/filename
+  const toCheck = [getDataSchemaURL, getFilename, getEndpoint];
+  const oldSave = getLastLocalState();
+
+  Object.assign(window, {toCheck, oldSave, saveData});
+  const promptOverwrite = toCheck.some(s => s(saveData)) && toCheck.some(selector => selector(saveData) !== selector(oldSave));
+  const onOk = () => {
+    saveLocalState(saveData);
+    message.success('Data saved locally.');
+  };
+  if (promptOverwrite) {
+    openSaveOverwritePrompt({
+      onOk,
+      dataSchemaURL: {
+        old: getDataSchemaURL(oldSave),
+        new: getDataSchemaURL(saveData)
+      },
+      filename: {
+        old: getFilename(oldSave),
+        new: getFilename(saveData)
+      },
+      endpointURL: {
+        old: getEndpoint(oldSave),
+        new: getEndpoint(saveData)
+      },
+    })
+  } else {
+    onOk();
+  }
 }
 
 export const loadModel = json => {

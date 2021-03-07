@@ -41,6 +41,9 @@ const TabContents = ({canSave, canLoad}) => {
   </Space>
 }
 
-export const openFileDialogModal = ({canSave = true, canLoad = true}) => Modal.info({icon: null, maskClosable: true, content: <TabContents canSave={canSave} canLoad={canLoad} /> });
+export const openFileDialogModal = ({canSave = true, canLoad = true}) => {
+  Modal.destroyAll();
+  Modal.info({icon: null, maskClosable: true, content: <TabContents canSave={canSave} canLoad={canLoad} /> });
+}
 export const openSaveDialogModal = () => openFileDialogModal({canSave: true, canLoad: false});
 export const openLoadDialogModal = () => openFileDialogModal({canSave: false, canLoad: true});
