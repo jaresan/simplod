@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
-import { Input, Space, Modal, Button } from 'antd';
-import {pipe, path} from 'ramda';
+import { Modal } from 'antd';
 import { dispatchSet, store } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import {
@@ -9,44 +8,20 @@ import {
   getEndpoint, getFilename
 } from '@@selectors';
 import { connect, Provider } from 'react-redux';
-import { loadGraphFromURL } from '@@actions/model/load-graph';
+import { FilePropertyFields } from '@@components/menu/file-property-fields';
 
-const { TextArea } = Input;
-
-const unwrapped = fn => pipe(path(['target', 'value']), fn);
-
-const Properties = ({description, dataSchemaURL, endpointURL, filename}) => {
+const Properties = ({description, dataSchemaURL, endpointURL, title}) => {
   const [schemaURL, setSchemaURL] = useState(dataSchemaURL);
-  return <div>
-    <Space direction="vertical" style={{width: '100%'}}>
-      <span>Data schema URL:</span>
-      <Input type="text" onChange={unwrapped(setSchemaURL)} value={schemaURL} placeholder="Data schema URL"/>
-      <Button onClick={() => loadGraphFromURL({dataSchemaURL: schemaURL, endpointURL})}>
-        Reload schema
-      </Button>
-      <span>Endpoint:</span>
-      <Input
-        type="text"
-        value={endpointURL}
-        placeholder="Endpoint URL"
-        onChange={unwrapped(dispatchProps)}
-      />
-      <span>Project title:</span>
-      <Input
-        type="text"
-        onChange={unwrapped(dispatchProps.updateFilename)}
-        value={filename}
-        placeholder="Project title"
-      />
-      <span>Description:</span>
-      <TextArea
-        type="text"
-        onChange={unwrapped(dispatchProps.updateDescription)}
-        value={description}
-        placeholder="File description"
-      />
-    </Space>
-  </div>;
+  return <FilePropertyFields
+    onTitleChange={dispatchProps.updateFilename}
+    onEndpointChange={dispatchProps.updateEndpoint}
+    onSchemaChange={setSchemaURL}
+    onDescriptionChange={dispatchProps.updateDescription}
+    schemaURL={schemaURL}
+    endpointURL={endpointURL}
+    title={title}
+    description={description}
+  />;
 }
 
   // FIXME: Add filename edit
@@ -54,7 +29,7 @@ const mapStateToProps = appState => ({
   description: getDescription(appState),
   endpointURL: getEndpoint(appState),
   dataSchemaURL: getDataSchemaURL(appState),
-  filename: getFilename(appState)
+  title: getFilename(appState)
 });
 
 const dispatchProps = {
