@@ -8,7 +8,7 @@ export const PROP_LINE_HEIGHT = 12;
 const blue = '#49b2e7';
 const textColor = 'black';
 const getAttrs = ctx => ({
-  'node-container': ({propCount, methodCount, label}) => ({
+  'node-container': ({label}) => ({
     width: ctx.measureText(label).width + 8,
     height: 20,
     stroke: textColor, // Apply the color to the stroke. For filling, use fill: cfg.color instead
@@ -56,8 +56,7 @@ const NodeImplementation = {
     ctx.font = '12px sans-serif';
     const attrs = getAttrs(ctx);
     const dataPropertyCount = Object.keys(data.dataProperties).length;
-    const objectPropertyCount = Object.keys(data.objectProperties).length;
-    const containerAttrs = attrs['node-container']({propCount: dataPropertyCount, methodCount: objectPropertyCount, label: cfg.label});
+    const containerAttrs = attrs['node-container']({label: cfg.label});
     const {width, height} = containerAttrs;
     const dataProperties = Object.entries(data.dataProperties).map(([predicate, objects], i)=> E.DataProperty({
       id: `property_${id}-${predicate}-${objects[0]}`,
@@ -102,7 +101,6 @@ const NodeImplementation = {
     };
 
     group.set('objectProperties', objectProperties);
-    // FIXME: Separate group for logical pieces --> can have multiple groups, yes
     group.entityId = id;
     const result = E.create(group, [
       E.Node({id, attrs: containerAttrs, name: 'node-container', data: {varName: getSuffix(id), type: id} }),

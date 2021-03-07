@@ -1,7 +1,7 @@
 import { pick, assocPath, path, identity, map, filter, prop } from 'ramda';
 import {Property, Method} from '@@graph/wrappers/index';
 import { Handler } from '@@graph/handlers/Handler';
-import { PROP_LINE_HEIGHT } from '@@graph/Node';
+import { measureText, PROP_LINE_HEIGHT } from '@@graph/Node';
 import { entityTypes } from '@@model/entity-types';
 
 const getWrapper = target => target.get('wrapper');
@@ -177,6 +177,21 @@ class GroupController {
     this.group.toFront();
   }
 
+  updateClassType(type) {
+    // this.children['node-container'].get('fns').updateTitle(type);
+    // this.children['node-title'].get('fns').updateTitle(type);
+    const container = this.children['node-container'];
+    const title = this.children['node-title'];
+    const expandContainer = this.children['expand-icon-container'];
+    const expandIcon = this.children['expand-icon'];
+    const width = measureText(container, type).width + 8;
+    container.setAttr('width', width);
+    title.setAttr('x', width / 2);
+    title.setAttr('text', type);
+    expandContainer.setAttr('x', width);
+    expandIcon.setAttr('x', width + 3);
+  }
+
   stateChanged({target, state, lastState}) {
     if (state.selected !== lastState.selected) {
       this.updateHighlight(state.selected);
@@ -187,6 +202,9 @@ class GroupController {
     }
     if (state.expanded !== lastState.expanded) {
       this.toggleExpanded(state.expanded);
+    }
+    if (state.type && state.type !== lastState.type) {
+      this.updateClassType(state.type);
     }
   }
 }
