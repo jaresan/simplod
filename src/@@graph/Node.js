@@ -1,5 +1,5 @@
 import G6 from '@antv/g6';
-import {flatten} from 'ramda';
+import { flatten, map } from 'ramda';
 import E from '@@graph/ElementCreators';
 import Group from '@@graph/wrappers/Group';
 const NODE_TYPE = 'graphNode';
@@ -147,5 +147,14 @@ export const getNodes = data => Object.entries(data).map(([id, {objectProperties
   label: id,
   data: {objectProperties, dataProperties}
 }));
+
+export const measureText = (node, txt) => {
+  const ctx = node.get('canvas').get('context');
+  ctx.save();
+  ctx.font = '12px sans-serif';
+  const res = ctx.measureText(txt);
+  ctx.restore();
+  return res;
+};
 
 G6.registerNode(NODE_TYPE, NodeImplementation, 'single-node');

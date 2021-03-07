@@ -1,6 +1,6 @@
 import {Wrapper} from '@@graph/wrappers/Wrapper';
 import {Property as PropertyHandler} from '@@graph/handlers';
-import { PROP_LINE_HEIGHT } from '@@graph/Node';
+import { measureText, PROP_LINE_HEIGHT } from '@@graph/Node';
 
 const defaultStyle = {
   opacity: 1,
@@ -83,7 +83,11 @@ export class Method extends Wrapper {
   }
 
   updatePredicate({predicate, targetType}) {
-    this.node.setAttr('text', `${predicate}: ${targetType}`);
+    const text = `${predicate}: ${targetType}`;
+    const {width} = measureText(this.node, text);
+    this.node.setAttr('width', width + 8);
+    this.node.setAttr('text', text);
+    this.getGroupController().updatePropertyContainer();
   }
 
   setState(newState) {
