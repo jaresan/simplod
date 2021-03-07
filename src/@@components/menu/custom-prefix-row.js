@@ -31,10 +31,11 @@ export const CustomPrefixRow = ({value, onChangeName, onDeletePrefix, prefixes, 
   };
 
   return <Space>
-    <Select onChange={setSelectValue} value={selectValue} style={{minWidth: 64}}>
+    <Select onChange={setSelectValue} value={selectValue} style={{minWidth: 64}} dropdownMatchSelectWidth={false}>
       {
         Object.keys(prefixes).concat(Object.values(customPrefixes))
           .filter(p => !customPrefixes[p])
+          .sort()
           .map(p => <Select.Option disabled={renameMap[p]} key={p} value={p}>{p}</Select.Option>)
       }
     </Select>
