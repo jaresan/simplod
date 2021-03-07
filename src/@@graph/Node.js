@@ -1,5 +1,5 @@
 import G6 from '@antv/g6';
-import { flatten, map } from 'ramda';
+import { flatten } from 'ramda';
 import E from '@@graph/ElementCreators';
 import Group from '@@graph/wrappers/Group';
 const NODE_TYPE = 'graphNode';

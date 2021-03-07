@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Button, Space, Modal } from 'antd';
+import { Button, Modal } from 'antd';
 import { dispatchSet, store } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import { loadGraphFromURL } from '@@actions/model/load-graph';

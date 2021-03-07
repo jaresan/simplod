@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, Input, Space, Tooltip } from 'antd';
-import { loadGraphFromURL } from '@@actions/model/load-graph';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { fromEvent } from '@@data/utils';
 
