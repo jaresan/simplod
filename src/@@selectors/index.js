@@ -20,6 +20,7 @@ export const getFilename = view(ModelState.filename);
 export const getEndpoint = view(ModelState.endpoint);
 export const getDataSchemaURL = view(ModelState.dataSchemaURL);
 export const getDescription = view(ModelState.description);
+export const getCustomPrefixes = view(ModelState.customPrefixes);
 
 export const getLanguage = view(SettingsState.language);
 export const getLoadingHumanReadable = view(SettingsState.labelsLoadingProgress);

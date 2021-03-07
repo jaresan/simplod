@@ -1,10 +1,8 @@
 import React from 'react';
 import { Button, Input, Space, Tooltip } from 'antd';
 import { loadGraphFromURL } from '@@actions/model/load-graph';
-import { path, pipe } from 'ramda';
 import { InfoCircleOutlined } from '@ant-design/icons';
-
-const unwrapped = fn => pipe(path(['target', 'value']), fn);
+import { fromEvent } from '@@data/utils';
 
 const labels = {
   dataSchema: ['Data schema URL:', 'URL from which the data schema should be retrieved'],
@@ -33,7 +31,7 @@ export const FilePropertyFields = ({
     <Input
       type="text"
       value={schemaURL}
-      onChange={unwrapped(onSchemaChange)}
+      onChange={fromEvent(onSchemaChange)}
       placeholder="Data schema URL"
     />
     {
@@ -45,20 +43,20 @@ export const FilePropertyFields = ({
     <Input
       type="text"
       value={endpointURL}
-      onChange={unwrapped(onEndpointChange)}
+      onChange={fromEvent(onEndpointChange)}
       placeholder="Endpoint URL"
     />
     {getField(labels.title)}
     <Input
       type="text"
-      onChange={unwrapped(onTitleChange)}
+      onChange={fromEvent(onTitleChange)}
       value={title}
       placeholder="Project title"
     />
     {getField(labels.description)}
     <Input.TextArea
       type="text"
-      onChange={unwrapped(onDescriptionChange)}
+      onChange={fromEvent(onDescriptionChange)}
       value={description}
       placeholder="File description"
     />
