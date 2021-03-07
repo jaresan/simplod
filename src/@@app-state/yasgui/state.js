@@ -1,4 +1,4 @@
-import { complement, compose, filter, invertObj, lensProp, set, view, curry } from 'ramda';
+import { complement, compose, filter, invertObj, lensProp, set, view, curry, mergeRight } from 'ramda';
 import E from '@@model/entity';
 import { compare } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
@@ -17,6 +17,7 @@ export const root = lensProp('yasgui');
 const forKey = k => compose(root, lensProp(k));
 
 export const prefixes = forKey('prefixes');
+export const prefixById = id => compose(prefixes, lensProp(id));
 export const query = forKey('query');
 export const instance = forKey('instance');
 
@@ -31,7 +32,8 @@ export const updateQuery = state => {
   const limit = view(SettingsState.limit, state);
   const limitEnabled = view(SettingsState.limitEnabled, state);
   const selectionOrder = view(ModelState.selectionOrder, state);
-  const prefixToIRI = Object.assign(usedPrefixes, invertObj(possiblePrefixes));
+  const prefixToIRI = Object.assign(usedPrefixes, invertObj(possiblePrefixes), invertObj(view(ModelState.customPrefixes, state)));
+  window.prefixToIRI = prefixToIRI;
 
   return set(query, parseSPARQLQuery({selectedProperties, selectedClasses, classes, prefixes: prefixToIRI, limit, limitEnabled, selectionOrder}), state);
 }
@@ -41,6 +43,7 @@ export const middleware = curry((oldState, newState) => {
     ModelState.properties,
     ModelState.classes,
     ModelState.selectionOrder,
+    ModelState.customPrefixes,
     SettingsState.limitEnabled,
     SettingsState.limit
   ].some(complement(compare(oldState, newState)))

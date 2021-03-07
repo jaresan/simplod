@@ -48,4 +48,15 @@ export class Property extends Wrapper {
     groupController.updatePropertyContainer()
     // FIXME: Update edge as well
   }
+
+  updatePredicate({predicate, targetType}) {
+    this.node.setAttr('text', `${predicate}: ${targetType}`);
+  }
+
+  setState(newState) {
+    if (newState.predicate && (newState.predicate !== this.state.predicate || newState.targetType !== this.state.targetType)) {
+      this.updatePredicate(newState);
+    }
+    super.setState(newState);
+  }
 }

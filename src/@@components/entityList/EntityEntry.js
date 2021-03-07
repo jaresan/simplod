@@ -107,8 +107,8 @@ class EntityEntryComponent extends React.Component {
   </Tooltip>;
 
   getTitle = label => label ? <Tooltip
-    title={<PrefixedText.Unwrapped title={this.props.id}/>}
-  >{label}</Tooltip> : <PrefixedText title={this.props.id}/>;
+    title={<PrefixedText.Unwrapped title={this.props.entity.type}/>}
+  >{label}</Tooltip> : <PrefixedText title={this.props.entity.type}/>;
 
   render() {
     const {entity, showHumanReadable} = this.props;

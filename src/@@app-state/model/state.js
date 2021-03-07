@@ -25,6 +25,7 @@ export const initial = {
   entities: {
     ...Object.keys(entityTypes).reduce((acc, type) => Object.assign(acc, {[type]: {}}), {})
   },
+  customPrefixes: {},
   dirty: false,
   selectionOrder: [],
   endpoint: '',
@@ -80,6 +81,8 @@ export const endpoint = forKey('endpoint');
 export const dataSchemaURL = forKey('dataSchemaURL');
 export const filename = forKey('filename');
 export const description = forKey('description');
+export const customPrefixes = forKey('customPrefixes');
+export const customPrefixById = id => compose(customPrefixes, lensProp(id));
 
 const entitiesByType = {
   [entityTypes.class]: classes,

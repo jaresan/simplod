@@ -34,4 +34,18 @@ export const store = createStore(
 export const dispatch = f => store.dispatch({type: fn, fn: f});
 export const dispatchSet = curry((ln, v) => dispatch(set(ln, v)));
 export const getState = () => store.getState();
-Object.assign(window, {dispatch, getState});
+
+if (process.env.NODE_ENV === 'development') {
+	Object.assign(window,
+		{
+			dispatch,
+			dispatchSet,
+			ModelState: require('./model/state'),
+			SettingsState: require('./settings/state'),
+			YasguiState: require('./yasgui/state'),
+			getState,
+			renamePrefix: require('@@actions/model/rename-prefix').renamePrefix
+		},
+		require('ramda')
+	);
+}

@@ -45,7 +45,6 @@ class App extends Component {
     // // this.beefURL = '/samples/http---nl.dbpedia.org-sparql.ttl';
     // // this.endpointURL = 'http://nl.dbpedia.org/sparql';
     if (process.env.NODE_ENV === 'development') {
-      Object.assign(window, require('ramda'));
       this.schemaURL = this.courtExampleURL;
       this.schemaURL = this.schemaURL || this.applicantsURL;
       // this.schemaURL = this.govURL;

@@ -81,4 +81,15 @@ export class Method extends Wrapper {
   hide() {
     this.node.hide();
   }
+
+  updatePredicate({predicate, targetType}) {
+    this.node.setAttr('text', `${predicate}: ${targetType}`);
+  }
+
+  setState(newState) {
+    if (newState.predicate && (newState.predicate !== this.state.predicate || newState.targetType !== this.state.targetType)) {
+      this.updatePredicate(newState);
+    }
+    super.setState(newState);
+  }
 }
