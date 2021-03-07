@@ -1,4 +1,16 @@
-import { complement, compose, filter, invertObj, lensProp, set, view, curry, mergeRight } from 'ramda';
+import {
+  complement,
+  compose,
+  filter,
+  invertObj,
+  lensProp,
+  set,
+  view,
+  curry,
+  omit,
+  values,
+  mapObjIndexed
+} from 'ramda';
 import E from '@@model/entity';
 import { compare } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
@@ -25,15 +37,16 @@ export const instance = forKey('instance');
  * Updates the generated SPARQL query.
  */
 export const updateQuery = state => {
+  const customPrefixes = view(ModelState.customPrefixes, state);
   const usedPrefixes = view(prefixes, state);
+  const overriddenPrefixes = Object.assign(omit(values(customPrefixes), usedPrefixes), mapObjIndexed((p, key) => usedPrefixes[key], customPrefixes));
   const selectedProperties = filter(E.selected, view(ModelState.properties, state));
   const classes = view(ModelState.classes, state);
   const selectedClasses = filter(E.selected, view(ModelState.classes, state));
   const limit = view(SettingsState.limit, state);
   const limitEnabled = view(SettingsState.limitEnabled, state);
   const selectionOrder = view(ModelState.selectionOrder, state);
-  const prefixToIRI = Object.assign(usedPrefixes, invertObj(possiblePrefixes), invertObj(view(ModelState.customPrefixes, state)));
-  window.prefixToIRI = prefixToIRI;
+  const prefixToIRI = Object.assign(usedPrefixes, invertObj(possiblePrefixes), invertObj(overriddenPrefixes));
 
   return set(query, parseSPARQLQuery({selectedProperties, selectedClasses, classes, prefixes: prefixToIRI, limit, limitEnabled, selectionOrder}), state);
 }

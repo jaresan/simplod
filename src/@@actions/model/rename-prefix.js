@@ -1,13 +1,13 @@
 import { curry, omit, over, set, view, pipe, map, assoc } from 'ramda';
 import * as YasguiState from '@@app-state/yasgui/state';
 import * as ModelState from '@@app-state/model/state';
+import { customPrefixes } from '@@app-state/model/state';
 
 export const renamePrefix = curry((oldName, newName, s) => {
   const iri = view(YasguiState.prefixById(oldName), s);
 
   return pipe(
     over(YasguiState.prefixes, omit([oldName])),
-    over(ModelState.customPrefixes, omit([oldName])),
     over(ModelState.properties, map(p => {
       const [predicatePrefix, predicateSuffix] = p.predicate.split(':');
       const [typePrefix, typeSuffix] = p.targetType.split(':');
@@ -26,6 +26,20 @@ export const renamePrefix = curry((oldName, newName, s) => {
         : c;
     })),
     set(YasguiState.prefixById(newName), iri),
-    set(ModelState.customPrefixById(newName), iri)
+    set(ModelState.customPrefixById(newName), oldName)
   )(s);
 });
+
+export const deletePrefix = curry((name, s) => {
+  const oldName = view(ModelState.customPrefixById(name), s);
+
+  if (!oldName) {
+    return s;
+  }
+  return pipe(
+    renamePrefix(name, oldName),
+    over(customPrefixes, omit([name, oldName]))
+  )(s);
+});
+
+window.deletePrefix = deletePrefix;
