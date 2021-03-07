@@ -6,6 +6,7 @@ import { loadGraphFromURL } from '@@actions/model/load-graph';
 import { getDataSchemaURL, getEndpoint } from '@@selectors';
 import { connect, Provider } from 'react-redux';
 import { FilePropertyFields } from '@@components/menu/file-property-fields';
+import { examples } from '@@constants/examples';
 
 const NewFile = ({schemaURL, endpointURL}) => {
   const [schemaUrl, setSchemaUrl] = useState(schemaURL);
@@ -13,8 +14,8 @@ const NewFile = ({schemaURL, endpointURL}) => {
   const [title, setTitle] = useState('Untitled');
   const [description, setDescription] = useState('');
 
-  return <div>
-    <Space direction="vertical" style={{width: '100%'}}>
+  return <>
+    <div>
       <FilePropertyFields
         onTitleChange={setTitle}
         onEndpointChange={setEndpoint}
@@ -25,16 +26,28 @@ const NewFile = ({schemaURL, endpointURL}) => {
         title={title}
         description={description}
       />
-      <Button
-        type="primary"
-        onClick={() => {
-          dispatchProps.updateFilename(title);
-          dispatchProps.updateDescription(description);
-          loadGraphFromURL({dataSchemaURL: schemaUrl, endpointURL: endpoint});
-          Modal.destroyAll();
-        }}>Create</Button>
-    </Space>
-  </div>
+    </div>
+    <Button
+      type="primary"
+      style={{margin: '8px 0'}}
+      onClick={() => {
+        dispatchProps.updateFilename(title);
+        dispatchProps.updateDescription(description);
+        loadGraphFromURL({dataSchemaURL: schemaUrl, endpointURL: endpoint});
+        Modal.destroyAll();
+      }}>Create</Button>
+    <div>
+      <h3>From example</h3>
+      <div>
+        {
+          examples.map(e => <Button style={{margin: 4}} key={e.title} onClick={() => {
+            loadGraphFromURL(e);
+            Modal.destroyAll();
+          }}>{e.title}</Button>)
+        }
+      </div>
+    </div>
+  </>
 }
 
 const mapStateToProps = appState => ({
