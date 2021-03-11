@@ -80,7 +80,7 @@ export const parseSPARQLQuery = ({selectedProperties, selectedClasses, classes, 
 
   const entityVarNames = getDefaultEntityVarNames(Object.keys(propertiesBySource));
 
-  const getEntityVariable = id => path([id, 'varName'], selectedClasses) || entityVarNames[id];
+  const getEntityVariable = id => path([id, 'varName'], classes) || entityVarNames[id];
 
   const properties = getProperties(prefixes, getEntityVariable, propertiesBySource, classes);
 

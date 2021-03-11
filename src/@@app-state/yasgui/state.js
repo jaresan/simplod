@@ -41,7 +41,7 @@ export const updateQuery = state => {
   const overriddenPrefixes = Object.assign(omit(values(customPrefixes), usedPrefixes), mapObjIndexed((p, key) => usedPrefixes[key], customPrefixes));
   const selectedProperties = filter(E.selected, view(ModelState.properties, state));
   const classes = view(ModelState.classes, state);
-  const selectedClasses = filter(E.selected, view(ModelState.classes, state));
+  const selectedClasses = ModelState.getSelectedClasses(state);
   const limit = view(SettingsState.limit, state);
   const limitEnabled = view(SettingsState.limitEnabled, state);
   const selectionOrder = view(ModelState.selectionOrder, state);
