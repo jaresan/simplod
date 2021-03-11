@@ -5,7 +5,7 @@ import { dispatch, dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
 import * as SolidState from '@@app-state/solid/state';
-import { view, mergeDeepRight, prop } from 'ramda';
+import { view, mergeDeepRight, prop, isEmpty } from 'ramda';
 import {getEndpoint, getDataSchemaURL, getFilename} from '@@selectors';
 import { getLastLocalState, saveLocalState } from '@@storage';
 import { Graph } from '@@graph';
@@ -60,16 +60,16 @@ export const downloadData = () => {
 };
 
 export const saveDataLocally = () => {
-  dispatchSet(SettingsState.lastSave, Date.now());
   const saveData = generateSaveData();
   // endpoint/data schema/filename
   const toCheck = [getDataSchemaURL, getFilename, getEndpoint];
-  const oldSave = getLastLocalState();
 
-  const promptOverwrite = toCheck.some(s => s(saveData)) && toCheck.some(selector => selector(saveData) !== selector(oldSave));
+  const oldSave = getLastLocalState();
+  const promptOverwrite = !isEmpty(oldSave) && toCheck.some(s => s(saveData)) && toCheck.some(selector => selector(saveData) !== selector(oldSave));
   const onOk = () => {
     saveLocalState(saveData);
     dispatchSet(ModelState.dirty, false);
+    dispatchSet(SettingsState.lastSave, Date.now());
     message.success('Data saved locally.');
   };
   if (promptOverwrite) {

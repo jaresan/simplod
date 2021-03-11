@@ -26,7 +26,9 @@ const SaveOverwritePrompt = ({dataSchemaURL, endpointURL, filename}) => <Space d
   {getField(translated('Filename:'), filename)}
   {getField(translated('Data schema URL:'), dataSchemaURL)}
   {getField(translated('Endpoint URL:'), endpointURL)}
-  <div style={{marginTop: 8}}>{translated('To get complete save functionality, ')}<a href='./#' onClick={openFileDialogModal}>{translated('use your solid pod to save files.')}</a></div>
+  <div style={{marginTop: 8}}>{translated('To get complete save functionality, ')}
+    <span onClick={openFileDialogModal} style={{color: 'blue', cursor: 'pointer'}}>{translated('use your solid pod to save files.')}</span>
+  </div>
 </Space>;
 
 export const openSaveOverwritePrompt = ({onOk, dataSchemaURL, endpointURL, filename}) => Modal.confirm({
