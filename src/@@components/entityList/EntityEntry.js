@@ -12,6 +12,7 @@ import * as ModelState from '@@app-state/model/state';
 import { dispatch, getState } from '@@app-state';
 import { translated } from '@@localization';
 import { getPropertiesByTarget } from '@@app-state/model/state';
+import { VarNameContainer } from '@@components/controls/var-name-container';
 
 const ExpandIconContainer = styled.div`
   display: inline-block;
@@ -67,13 +68,15 @@ class EntityEntryComponent extends React.Component {
     return (
       <ControlsContainer>
         <Space>
-          <Input
-            type="text"
-            value={varName}
-            onChange={this.onNameChange}
-            onBlur={() => updateName(id, varName)}
-            onPressEnter={() => updateName(id, varName)}
-          />
+          <VarNameContainer>
+            <Input
+              type="text"
+              value={varName}
+              onChange={this.onNameChange}
+              onBlur={() => updateName(id, varName)}
+              onPressEnter={() => updateName(id, varName)}
+            />
+          </VarNameContainer>
           <Tooltip title={`${selected ? 'Hide' : 'Show'} entity in the result set`}>
             <Checkbox
               onChange={e => toggleSelected(id, e.target.checked)}

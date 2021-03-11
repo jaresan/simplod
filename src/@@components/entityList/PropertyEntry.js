@@ -1,5 +1,5 @@
 import React from 'react';
-import { Checkbox, Input, Space, List, Tooltip } from 'antd';
+import { Checkbox, Space, List, Tooltip, Input } from 'antd';
 import { PrefixedText } from './PrefixedText';
 import styled from '@emotion/styled';
 import { pickBy, pipe, propEq } from 'ramda';
@@ -16,10 +16,7 @@ import { connect } from 'react-redux';
 import * as ModelState from '@@app-state/model/state';
 import {dispatch} from '@@app-state';
 import { PropertyTargetSelect } from '@@components/entityList/PropertyTargetSelect';
-
-const StyledInput = styled(Input)`	
-	width: 128px;	
-`;
+import { VarNameContainer } from '@@components/controls/var-name-container';
 
 const RowContainer = styled(List.Item)`
   display: flex;
@@ -66,23 +63,28 @@ class PropertyEntryComponent extends React.Component {
     const {varName} = this.state;
 
     if (dataProperty) {
-      return <StyledInput
-        type="text"
-        disabled={!asVariable}
-        value={varName}
-        onChange={this.onNameChange}
-        onBlur={() => onSetName(id, varName)}
-        onPressEnter={() => onSetName(id, varName)}
-      />;
+      return <VarNameContainer>
+        <Input
+          style={{width: 128}}
+          type="text"
+          disabled={!asVariable}
+          value={varName}
+          onChange={this.onNameChange}
+          onBlur={() => onSetName(id, varName)}
+          onPressEnter={() => onSetName(id, varName)}
+        />
+      </VarNameContainer>;
     }
 
-    return <PropertyTargetSelect
-      target={target}
-      targetType={targetType}
-      possibleTargets={pickBy(propEq('type', targetType), classes)}
-      onChangeTarget={t => dispatchProps.onChangePropertyTarget(id, t)}
-      onCreateNew={() => dispatchProps.onCreateNewPropertyTarget(id)}
-    />;
+    return <VarNameContainer>
+      <PropertyTargetSelect
+        target={target}
+        targetType={targetType}
+        possibleTargets={pickBy(propEq('type', targetType), classes)}
+        onChangeTarget={t => dispatchProps.onChangePropertyTarget(id, t)}
+        onCreateNew={() => dispatchProps.onCreateNewPropertyTarget(id)}
+      />
+    </VarNameContainer>;
   };
 
   render() {
