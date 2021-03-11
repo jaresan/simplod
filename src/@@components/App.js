@@ -28,6 +28,10 @@ const EntityListContainer = styled.div`
 `;
 
 class App extends Component {
+  state = {
+    tabKey: 'available'
+  };
+
   constructor(props) {
     super(props);
     const url = new URL(window.location);
@@ -62,6 +66,8 @@ class App extends Component {
       });
   }
 
+  updateTabKey = tabKey => this.setState({tabKey});
+
   render() {
     const {horizontalLayout} = this.props;
 
@@ -74,16 +80,16 @@ class App extends Component {
               <GraphContainer />
             </div>
             <div style={getMenuStyle(horizontalLayout)}>
-              <Tabs style={{width: '100%'}}>
-                <TabPane tab="Available" key="1">
+              <Tabs style={{width: '100%'}} onChange={this.updateTabKey}>
+                <TabPane tab="Available" key="available">
                   <EntityListContainer>
                     <EntityList />
                   </EntityListContainer>
                 </TabPane>
-                <TabPane tab="Selected" key="2">
+                <TabPane tab="Selected" key="selected">
                   <ColumnList />
                   <EntityListContainer>
-                    <EntityList onlySelected />
+                    <EntityList active={this.state.tabKey === 'selected'} onlySelected />
                   </EntityListContainer>
                 </TabPane>
               </Tabs>

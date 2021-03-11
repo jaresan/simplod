@@ -30,12 +30,19 @@ const renderEntity = id => (
 const getSearchTerm = ([id, {info: {label, description}}]) => `${id} ${label} ${description}`.toLowerCase();
 
 class EntityListComponent extends React.Component {
+	componentDidUpdate(prevProps, prevState, snapshot) {
+		if (!this.props.active) {
+			this.didRecalculate = false;
+		}
+	}
+
 	getIds() {
 		const {searchText} = this.props;
 		let entities = this.props.entities;
-		if (this.props.onlySelected) {
+		if (this.props.onlySelected && !this.didRecalculate) {
 			// FIXME: @reference don't use e.selected e.propertyIds, 'selected'
 			entities = filter(e => e.selected || any(pId => path([pId, 'selected'], this.props.properties), e.propertyIds), entities);
+			this.didRecalculate = true;
 		}
 
 		const searchTerms = mapObjIndexed((val, id) => getSearchTerm([id, val]), entities);
