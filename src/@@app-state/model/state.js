@@ -39,8 +39,7 @@ export const initial = {
 const defaultEntityProps = {
   [entityTypes.property]: {
     asVariable: true,
-    selected: false,
-    bound: false
+    selected: false
   },
   [entityTypes.class]: {
     selected: false,
@@ -100,7 +99,6 @@ const update = curry((type, key, id, value) => set(compose(byTypeAndId(type, id)
 const updateProperty = update(entityTypes.property);
 const updateClass = update(entityTypes.class);
 
-// FIXME: Move to /property.js and use lensProp
 export const togglePropertyOptional = updateProperty('optional');
 export const togglePropertyAsVariable = updateProperty('asVariable');
 export const savePropertyName = updateProperty('varName');
@@ -110,7 +108,6 @@ export const toggleClassAsVariable = updateClass('asVariable');
 export const updateClassName = updateClass('varName');
 
 const updateSelected = curry((type, id, selected, s) => {
-  // FIXME: @reference Not 'selected', use a reference
   s = update(type, 'selected', id, selected)(s);
   const order = view(selectionOrder, s);
   if (selected) {
@@ -121,20 +118,23 @@ const updateSelected = curry((type, id, selected, s) => {
   return set(selectionOrder, order, s);
 });
 
-export const togglePropertySelected = updateSelected(entityTypes.property);
+export const togglePropertySelected = curry((id, selected, s) => {
+  const property = view(propertyById(id), s);
+  const source = P.source(property);
+  const propertyIds = E.propertyIds(view(classById(source), s));
+  const selectedPropertiesCount = values(view(propertiesByIds(propertyIds), s)).filter(P.selected).length;
 
-export const toggleClassSelected = curry((id, selected, state) => {
-  state = updateSelected(entityTypes.class, id, selected, state);
-  const oldProperties = view(properties, state);
-  const newProperties = map(property => {
-    const target = view(classById(P.target(property)), state);
+  // Select/deselect entity if the property is the first/last one being changed
+  if (selectedPropertiesCount === 0 && selected) {
+    s = toggleClassSelected(source, true, s);
+  } else if (selectedPropertiesCount === 1 && !selected) {
+    s = toggleClassSelected(source, false, s);
+  }
 
-    // FIXME: @reference Use reference
-    property.bound = target && E.selected(target);
-    return property;
-  }, oldProperties);
-  return set(properties, newProperties, state);
+  return updateSelected(entityTypes.property, id, selected, s);
 });
+
+export const toggleClassSelected = updateSelected(entityTypes.class);
 
 export const toggleSelected = (type, ...args) => {
   if (type === entityTypes.property) {
@@ -168,7 +168,6 @@ export const setBoundingBoxes = curry((boxesById, state) => {
 });
 export const deselectAll = s => {
   const toDeselect = view(entities, s);
-  // FIXME: @reference Use reference instead of 'selected'
   const newEntities = map(map(assoc('selected', false)), toDeselect);
   return pipe(set(entities, newEntities), set(selectionOrder, []))(s);
 };
@@ -208,7 +207,7 @@ export const bindProperties = curry((propertyIds, state) => {
     const target = P.target(property);
     const targetClass = view(classById(target), acc);
     const varName = E.varName(targetClass);
-    return pipe(updateProperty('bound', id, true), updateProperty('varName', id, varName))(acc);
+    return updateProperty('varName', id, varName)(acc);
   }, state);
 });
 

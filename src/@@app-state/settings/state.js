@@ -4,7 +4,7 @@ export const initial = {
   language: navigator.language,
   labelsLoadingProgress: 0,
   showHumanReadable: true,
-  limitEnabled: false,
+  limitEnabled: true,
   limit: 100,
   lastSave: 0,
   loaded: false,
