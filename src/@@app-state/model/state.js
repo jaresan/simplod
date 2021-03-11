@@ -17,7 +17,9 @@ import {
   pick,
   over,
   omit,
-  propEq
+  propEq,
+  mapObjIndexed,
+  values
 } from 'ramda';
 import { entityTypes } from '@@model/entity-types';
 
@@ -58,13 +60,16 @@ const defaultEntityProps = {
 const E = {
   selected: prop('selected'),
   varName: prop('varName'),
-  propertyIds: prop('propertyIds')
+  propertyIds: prop('propertyIds'),
+  hidden: prop('hidden')
 };
 
 const P = {
   target: prop('target'),
   id: prop('id'),
-  dataProperty: prop('dataProperty')
+  dataProperty: prop('dataProperty'),
+  selected: prop('selected'),
+  source: prop('source')
 }
 
 const root = 'model';
@@ -149,6 +154,7 @@ const byTypeAndIds = curry((type, ids) => compose(entitiesByType[type], lens(pic
 export const propertiesByIds = byTypeAndIds(entityTypes.property);
 export const propertyById = byTypeAndId(entityTypes.property);
 export const propertyTargetById = id => compose(propertyById(id), lensProp('target'));
+const getSelectedProperties = pipe(view(properties), filter(P.selected), values);
 export const classById = byTypeAndId(entityTypes.class);
 
 export const getSelectedClasses = pipe(view(classes), filter(E.selected));
@@ -291,3 +297,16 @@ export const createNewPropertyTarget = curry((id, s) => {
 
   return pipe(registerNewTarget, changeTarget)(state);
 });
+
+export const showAll = over(classes, map(assoc('hidden', false)));
+
+export const hideUnselected = s => {
+  const toKeepShown = getSelectedProperties(s).reduce((acc, p) => Object.assign(acc, {
+    [P.target(p)]: true,
+    [P.source(p)]: true
+  }), {});
+
+  console.log(toKeepShown, getSelectedProperties(s));
+
+  return over(classes, mapObjIndexed((c, id) => assoc('hidden', !E.selected(c) && !toKeepShown[id] , c)), s);
+}

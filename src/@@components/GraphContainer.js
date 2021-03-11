@@ -2,11 +2,18 @@ import React from 'react';
 import G6 from '@antv/g6';
 import {Graph} from '@@graph';
 import styled from '@emotion/styled';
-import { Space } from 'antd';
+import { Space, Tooltip } from 'antd';
 import { dispatch } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
-import { PlayCircleFilled, FullscreenExitOutlined, StopOutlined } from '@ant-design/icons';
+import {
+  PlayCircleFilled,
+  FullscreenExitOutlined,
+  StopOutlined,
+  EyeInvisibleOutlined,
+  EyeOutlined
+} from '@ant-design/icons';
 import { openYasguiModal } from '@@components/Yasgui';
+import { translated } from '@@localization';
 
 // const minimap = new G6.Minimap({
 //   size: [300, 300],
@@ -91,14 +98,29 @@ export class GraphContainer extends React.Component {
   fitView = () => this.graph.fitView();
   clearSelection = () => dispatch(ModelState.deselectAll);
 
+  showAll = () => dispatch(ModelState.showAll);
+  hideUnselected = () => dispatch(ModelState.hideUnselected);
+
   render() {
     return <Container ref={ref => this.containerNode = ref}>
       <GraphMountContainer ref={ref => this.mountNode = ref}>
         <GraphControlsContainer>
           <Space>
-            <FullscreenExitOutlined title="Fit to view" onClick={this.fitView}/>
-            <StopOutlined title="Clear selection" onClick={this.clearSelection}/>
-            <PlayCircleFilled onClick={() => openYasguiModal({runQuery: true})} />
+            <Tooltip title={translated('Show all entities')}>
+              <EyeOutlined onClick={this.showAll}/>
+            </Tooltip>
+            <Tooltip title={translated('Hide not selected entities')}>
+              <EyeInvisibleOutlined onClick={this.hideUnselected}/>
+            </Tooltip>
+            <Tooltip title={translated('Fit to view')}>
+              <FullscreenExitOutlined onClick={this.fitView}/>
+            </Tooltip>
+            <Tooltip title={translated('Clear selection')}>
+              <StopOutlined onClick={this.clearSelection}/>
+            </Tooltip>
+            <Tooltip title={translated('Execute SPARQL Query')}>
+              <PlayCircleFilled onClick={() => openYasguiModal({runQuery: true})} />
+            </Tooltip>
           </Space>
         </GraphControlsContainer>
       </GraphMountContainer>
