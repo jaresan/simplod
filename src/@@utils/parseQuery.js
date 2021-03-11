@@ -1,49 +1,44 @@
-import { groupBy, path, prop, map, partition, pipe, pick, uniq, flatten, head } from 'ramda';
+import { groupBy, path, prop, map, partition, pipe, pick, uniq, head, identity, keys, values } from 'ramda';
 import { sanitizeVarName } from '@@utils/sanitizeVarName';
 
-const getDefaultEntityVarNames = types => {
-  if (!types.length) return '';
-
-  const nameCount = {};
-
-  return types.reduce((acc, t) => {
-    const stripped = t.replace('<', '').replace('>', '');
-    const suffix = stripped.match(/([^/#:]+)$/)
-    let varName;
-    if (suffix && suffix[1]) {
-      varName = sanitizeVarName(suffix[1]);
-    }
-    if (varName && !nameCount[varName]) {
-      nameCount[varName] = 1;
-    } else {
-      varName = sanitizeVarName(`${varName}${nameCount[varName]}`);
-      nameCount[varName]++;
-    }
-    return Object.assign(acc, {[t]: varName});
-  }, {});
-};
-
-const getProperties = (prefixToIRI, getEntityVariable, propertiesBySource, classes) => {
-  const getProperty = ({asVariable, varName, predicate, source, optional, target, position}) => {
-    const targetVarName = sanitizeVarName(getEntityVariable(target) || varName); // Use existing queried entity if available to prevent cartesian products
+const getPropertiesBySource = (prefixToIRI, getEntityVariable, properties) => {
+  const getProperty = ({asVariable, varName, predicate, source, optional, target}) => {
+    const sourceVarName = getEntityVariable(source); // Use existing queried entity if available to prevent cartesian products
+    const targetVarName = getEntityVariable(target) || varName; // Use existing queried entity if available to prevent cartesian products
 
     return {
-      predicate, asVariable, position, optional, source,
-      varName: asVariable ? `?${targetVarName}` : '[]'
+      predicate,
+      asVariable,
+      optional,
+      source,
+      target,
+      targetVarName,
+      sourceVarName,
+      variable: asVariable ? `?${targetVarName}` : '[]'
     };
   };
 
-  return Object.entries(propertiesBySource).reduce((acc, [source, properties]) => {
-    const [optional, required] = partition(prop('optional'), properties.map(getProperty));
+  const bySource = groupBy(prop('source'), values(properties).map(getProperty));
+
+  return values(bySource).reduce((acc, properties) => {
+    const [optional, required] = partition(prop('optional'), properties);
     return Object.assign(acc, {
-      [source]: {optional, required, type: path([source, 'type'], classes) || source}
+      [properties[0].source]: {
+        optional,
+        required,
+        properties
+      }
     });
   }, {});
 };
 
 const getSelectVariables = (selectionOrder, selectedObjects) => selectionOrder
-  .filter(id => path([id, 'asVariable'], selectedObjects) && !path([id, 'bound'], selectedObjects))
-  .map(id => `?${sanitizeVarName(selectedObjects[id].varName)}`);
+  .filter(id => path([id, 'asVariable'], selectedObjects))
+  .map(id => {
+    const target = path([id, 'target'], selectedObjects);
+    const variable = path([target, 'varName'], selectedObjects) || selectedObjects[id].varName;
+    return `?${sanitizeVarName(variable)}`;
+  });
 
 const getSelectText = pipe(getSelectVariables, uniq, vars => vars.join(' ') || '*');
 
@@ -53,12 +48,6 @@ const getPrefix = iri => {
   const prefixMatch = iri.match(/(^\w+):/);
   return prefixMatch && prefixMatch[1];
 };
-
-const getPropertiesBySource = (selectedProperties, selectedEntities) => {
-  const entityToPropertiesInitial = map(() => [], selectedEntities);
-  const propertyArr = Object.values(selectedProperties);
-  return Object.assign(entityToPropertiesInitial, groupBy(prop('source'), propertyArr));
-}
 
 const getUsedPrefixes = (selectedProperties, selectedEntities) => {
   const entityIRIs = Object.keys(selectedEntities);
@@ -76,38 +65,49 @@ const getUsedPrefixes = (selectedProperties, selectedEntities) => {
 
 
 export const parseSPARQLQuery = ({selectedProperties, selectedClasses, classes, prefixes, selectionOrder, limit, limitEnabled}) => {
-  const propertiesBySource = getPropertiesBySource(selectedProperties, selectedClasses);
+  const classesByVarName = groupBy(prop('varName'), values(classes));
+  const varNameToTypes = map(map(prop('type')), classesByVarName);
 
-  const entityVarNames = getDefaultEntityVarNames(Object.keys(propertiesBySource));
+  const getEntityVariable = id => sanitizeVarName(path([id, 'varName'], classes));
 
-  const getEntityVariable = id => path([id, 'varName'], classes) || entityVarNames[id];
+  const propertiesBySource = getPropertiesBySource(prefixes, getEntityVariable, selectedProperties);
 
-  const properties = getProperties(prefixes, getEntityVariable, propertiesBySource, classes);
+  const getPropertyRow = ({predicate, variable}, i, arr) => `${predicate} ${variable}${i === arr.length - 1 ? '.' : ';'}`;
 
-  const getPropertyRow = ({predicate, varName}, i, arr) => `${predicate} ${varName}${i === arr.length - 1 ? '.' : ';'}`
-  const propertiesByVar = groupBy(pipe(head, getEntityVariable, sanitizeVarName), Object.entries(properties));
-  const rows = Object.entries(propertiesByVar).map(([entityVar, data]) => {
-    const required = flatten(data.map(d => d[1].required));
-    const optional = flatten(data.map(d => d[1].optional));
-    const types = uniq(flatten(data.map(d => d[1].type)));
-    const type = types.join('; a ');
+  const rows = Object.entries(propertiesBySource)
+    .map(([source, {required, optional}]) => {
+      let res = '';
+      if (required.length) {
+        res = `?${getEntityVariable(source)} ${required.map(getPropertyRow).join('\n')}`;
+      }
+      if (optional.length) {
+        res += `\n\tOPTIONAL { ?${getEntityVariable(source)} ${optional.map(getPropertyRow).join('\n')} }`;
+      }
+      return res;
+    })
+    .filter(identity);
 
-    let res = `?${entityVar} a ${type}.`;
-    if (required.length) {
-      res = `?${entityVar} a ${type};${required.map(getPropertyRow).join('\n')}`;
-    }
-    if (optional.length) {
-      res += `\n\tOPTIONAL { ?${entityVar} ${optional.map(getPropertyRow).join('\n')} }`;
-    }
-    return res;
-  });
+  const usedVariables = values(propertiesBySource)
+    .map(prop('properties'))
+    .flat()
+    .reduce((acc, p) => Object.assign(acc, {
+      [p.sourceVarName]: true,
+      [p.targetVarName]: true
+    }), {});
 
-  const selected = Object.assign({}, selectedProperties, selectedClasses);
+  const typeRows = keys(usedVariables)
+    .filter(name => varNameToTypes[name])
+    .map(varName => `?${varName} a ${varNameToTypes[varName].join(',')}.`)
+    .join('\n');
+
+  const selected = Object.assign({}, selectedProperties, classes);
 
   const usedPrefixes = getUsedPrefixes(selectedProperties, selectedClasses);
   const usedPrefixesToIRI = pick(usedPrefixes, prefixes);
+
   return `${getPrefixDefinitions(usedPrefixesToIRI)}
     SELECT DISTINCT ${getSelectText(selectionOrder, selected)} WHERE {
+    ${typeRows}
     ${rows.join('\n')}
     }
     ${limitEnabled && limit ? `LIMIT ${limit}` : ''} 

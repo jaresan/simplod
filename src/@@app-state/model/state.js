@@ -306,7 +306,5 @@ export const hideUnselected = s => {
     [P.source(p)]: true
   }), {});
 
-  console.log(toKeepShown, getSelectedProperties(s));
-
   return over(classes, mapObjIndexed((c, id) => assoc('hidden', !E.selected(c) && !toKeepShown[id] , c)), s);
 }
