@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { Space } from 'antd';
 import { dispatch } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
-import { PlayCircleFilled, FullscreenExitOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlayCircleFilled, FullscreenExitOutlined, StopOutlined } from '@ant-design/icons';
 import { openYasguiModal } from '@@components/Yasgui';
 
 // const minimap = new G6.Minimap({
@@ -97,7 +97,7 @@ export class GraphContainer extends React.Component {
         <GraphControlsContainer>
           <Space>
             <FullscreenExitOutlined title="Fit to view" onClick={this.fitView}/>
-            <DeleteOutlined title="Clear selection" onClick={this.clearSelection}/>
+            <StopOutlined title="Clear selection" onClick={this.clearSelection}/>
             <PlayCircleFilled onClick={() => openYasguiModal({runQuery: true})} />
           </Space>
         </GraphControlsContainer>

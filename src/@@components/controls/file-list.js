@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { message, Button, Input, Tree, Space, Popover } from 'antd';
+import { message, Button, Input, Tree, Space, Popover, Modal } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { curry } from 'ramda';
 import path from 'path';
@@ -23,9 +23,15 @@ class FileList extends Component {
 
   fileFetchMap = {};
 
-  saveNewView = async key => saveViewByUri(await getFileUrl(key), this.props.permissions);
+  saveNewView = async key => {
+    saveViewByUri(await getFileUrl(key), this.props.permissions)
+      .then(() => Modal.destroyAll());
+  }
 
-  onLoadView = async uri => loadGraphFromURL({modelURL: await getFileUrl(uri)});
+  onLoadView = async uri => {
+    loadGraphFromURL({modelURL: await getFileUrl(uri)})
+      .then(() => Modal.destroyAll());
+  }
 
   onDeleteFile = uri => deleteFile(uri);
 
