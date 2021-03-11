@@ -35,7 +35,7 @@ const Properties = ({description, dataSchemaURL, endpointURL, title, prefixes, c
       description={description}
     />
     <Space direction="vertical" style={{marginTop: 8}}>
-      <h4>{translated('Custom prefixes')} <InfoIcon title={translated('Allows you to override provided prefixes with your own')} /></h4>
+      <h4>{translated('Rename prefixes')} <InfoIcon title={translated('Allows you to override provided prefixes with your own name')} /></h4>
       {
         Object.values(customPrefixes).map(p => <CustomPrefixRow onDeletePrefix={dispatchProps.deletePrefix} key={p} value={p} onChangeName={dispatchProps.renamePrefix} prefixes={prefixes} customPrefixes={customPrefixes} />)
       }

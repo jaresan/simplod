@@ -5,7 +5,7 @@ import { fromEvent } from '@@data/utils';
 
 const labels = {
   dataSchema: ['Data schema URL:', 'URL from which the data schema should be retrieved'],
-  endpoint: ['Endpoint:', 'URL of the SPARQL endpoint against which the query is run'],
+  endpoint: ['SPARQL endpoint:', 'URL of the SPARQL endpoint against which the query is run'],
   title: ['Title:', 'Title of the project'],
   description: ['Description:', 'Text description of what this project represents']
 };
