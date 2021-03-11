@@ -12,6 +12,7 @@ import styled from '@emotion/styled';
 import { openSettingsModal } from '@@components/controls/settings';
 import { FileMenu } from '@@components/menu/file-menu';
 import { translated } from '@@localization';
+import { saveData } from '@@actions/save-load';
 
 const FilenameInput = styled(Input)`
   border: none;
@@ -22,7 +23,7 @@ const getSaveIcons = (modelFileLocation, isDirty) => {
   const localProps = isDirty ? {color: 'orange', text: translated('Changes not saved in the browser')} : {color: 'green', text: translated('Changes saved in the browser')};
   const cloudProps = isDirty ? {color: 'orange', text: translated('Last changes not saved remotely')} : {color: 'green', text: translated(`File saved at ${modelFileLocation}`)};
 
-  return <div style={{display: 'flex', alignItems: 'center'}}>
+  return <div style={{display: 'flex', alignItems: 'center'}} onClick={saveData}>
     {!modelFileLocation && <DesktopOutlined style={{color: localProps.color, fontSize: 16}}/>}
     {!modelFileLocation && localProps.text}
     {modelFileLocation && <CloudUploadOutlined onClick={openSaveDialogModal} style={{color: cloudProps.color, fontSize: 16}}/>}
