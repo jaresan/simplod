@@ -94,7 +94,6 @@ class GroupController {
         p.onToggleSelect(selected);
       }
     })
-    this.toggleExpanded(selected);
   }
 
   toggleExpanded(expand) {

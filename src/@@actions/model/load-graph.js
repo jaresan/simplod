@@ -1,7 +1,7 @@
 import { onDataLoaded } from '@@actions/lifecycle';
 import { Graph } from '@@graph';
 import { fetchDataSchema } from '@@actions/model/fetch-data-schema';
-import { dispatchSet } from '@@app-state';
+import { dispatch, dispatchSet, getState } from '@@app-state';
 import * as YasguiState from '@@app-state/yasgui/state';
 import { invertObj, view } from 'ramda';
 import * as ModelState from '@@app-state/model/state';
@@ -15,6 +15,7 @@ import { message, Modal } from 'antd';
 import { isLoggedIn } from '@@actions/solid/auth';
 import {notification} from 'antd';
 import LoadingLabelsFeedback from '@@components/controls/loading-labels-feedback';
+import { applyCustomPrefixes } from '@@actions/custom-prefix';
 
 const loadGraph = async url => {
   const {prefixes, schemaData} = await withLoadingP('Fetching RDF Schema...')(fetchDataSchema(url));
@@ -74,6 +75,7 @@ export const loadGraphFromURL = async ({modelURL, dataSchemaURL, endpointURL}) =
     }
   }
   dispatchSet(SettingsState.loaded, true);
+  dispatch(applyCustomPrefixes(view(ModelState.customPrefixes, getState())));
 };
 
 export const loadGraphFromJSON = async json => {

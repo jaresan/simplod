@@ -43,10 +43,22 @@ export const deletePrefix = curry((name, s) => {
   )(s);
 });
 
-export const applyCustomPrefixes = curry((customPrefixes, s) => {
+export const loadCustomPrefixes = curry((customPrefixes, s) => {
   const updated =
     Object.entries(customPrefixes)
-    .reduce((acc, [newName, oldName]) => set(YasguiState.prefixById(newName), view(YasguiState.prefixById(oldName), s), acc), s);
+    .reduce((acc, [newName, oldName]) => {
+      if (!view(YasguiState.prefixById(newName), s)) {
+        return set(YasguiState.prefixById(newName), view(YasguiState.prefixById(oldName), s), acc)
+      }
+       return s;
+    }, s);
 
   return over(YasguiState.prefixes, omit(Object.values(customPrefixes)), updated);
 })
+
+export const applyCustomPrefixes = curry((customPrefixes, s) => {
+  s = Object.entries(customPrefixes)
+    .reduce((acc, [newName, oldName]) => renamePrefix(oldName, newName, acc), s);
+
+  return loadCustomPrefixes(customPrefixes, s);
+});

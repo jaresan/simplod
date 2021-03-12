@@ -12,7 +12,7 @@ import { Graph } from '@@graph';
 import { saveFile } from '@@actions/solid/files';
 import { message } from 'antd';
 import { openSaveOverwritePrompt } from '@@components/controls/save-overwrite-modal';
-import { applyCustomPrefixes } from '@@actions/custom-prefix';
+import { loadCustomPrefixes } from '@@actions/custom-prefix';
 import { loadGraphFromURL } from '@@actions/model/load-graph';
 import { withLoading } from '@@utils/with-loading';
 
@@ -98,7 +98,7 @@ export const saveDataLocally = () => {
 export const loadModel = json => {
   const newData = getModelData(json);
   dispatchSet(ModelState.rootLens, newData);
-  dispatch(applyCustomPrefixes(view(ModelState.customPrefixes, getState())));
+  dispatch(loadCustomPrefixes(view(ModelState.customPrefixes, getState())));
   Graph.updatePositions(view(ModelState.classes, getState()));
 }
 
