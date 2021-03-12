@@ -13,6 +13,7 @@ import { saveFile } from '@@actions/solid/files';
 import { message } from 'antd';
 import { openSaveOverwritePrompt } from '@@components/controls/save-overwrite-modal';
 import { applyCustomPrefixes } from '@@actions/custom-prefix';
+import { loadGraphFromURL } from '@@actions/model/load-graph';
 
 export const generateSaveData = () => {
   const bBoxesById = Graph.getBBoxesById();
@@ -102,5 +103,8 @@ export const loadModel = json => {
 
 export const loadLocalData = async () => {
   const state = getLastLocalState();
+  if (view(ModelState.dataSchemaURL, state) !== view(ModelState.dataSchemaURL, getState())) {
+    await loadGraphFromURL({dataSchemaURL: view(ModelState.dataSchemaURL, state)})
+  }
   loadModel(state);
 };
