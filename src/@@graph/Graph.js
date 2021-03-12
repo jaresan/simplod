@@ -74,6 +74,7 @@ export class Graph {
   }
 
   static initialize(data) {
+    data = data || this.data;
     console.time('this.@@graph.clear();')
     this.instance.clear();
     console.timeEnd('this.@@graph.clear();')
@@ -93,6 +94,7 @@ export class Graph {
     console.time('this.render();')
     this.render();
     console.timeEnd('this.render();')
+    this.data = data;
   }
 
   static registerBehaviours() {

@@ -14,6 +14,7 @@ import { message } from 'antd';
 import { openSaveOverwritePrompt } from '@@components/controls/save-overwrite-modal';
 import { applyCustomPrefixes } from '@@actions/custom-prefix';
 import { loadGraphFromURL } from '@@actions/model/load-graph';
+import { withLoading } from '@@utils/with-loading';
 
 export const generateSaveData = () => {
   const bBoxesById = Graph.getBBoxesById();
@@ -106,5 +107,7 @@ export const loadLocalData = async () => {
   if (view(ModelState.dataSchemaURL, state) !== view(ModelState.dataSchemaURL, getState())) {
     await loadGraphFromURL({dataSchemaURL: view(ModelState.dataSchemaURL, state)})
   }
+  Graph.clear();
+  withLoading('Initializing graph...')(Graph.initialize());
   loadModel(state);
 };
