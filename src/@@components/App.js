@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {GraphContainer} from './GraphContainer';
-import { Layout } from 'antd';
+import { Alert, Layout } from 'antd';
 import { getContainerStyle, getGraphContainerStyle, getMenuStyle } from './App.styled';
 import { EntityList } from './entityList/EntityList';
 import styled from '@emotion/styled';
@@ -11,8 +11,9 @@ import {onAppStart} from '@@actions/lifecycle';
 import 'antd/dist/antd.compact.css';
 import { Menu } from '@@components/menu/menu';
 import { loadGraphFromURL } from '@@actions/model/load-graph';
-import { getHorizontalLayout } from '@@selectors';
+import { getCartesianProduct, getHorizontalLayout } from '@@selectors';
 import { connect } from 'react-redux';
+import { translated } from '@@localization';
 
 const {TabPane} = Tabs;
 const {Content, Footer} = Layout;
@@ -69,7 +70,7 @@ class App extends Component {
   updateTabKey = tabKey => this.setState({tabKey});
 
   render() {
-    const {horizontalLayout} = this.props;
+    const {horizontalLayout, cartesianProduct} = this.props;
 
     return (
       <Layout>
@@ -80,6 +81,7 @@ class App extends Component {
               <GraphContainer />
             </div>
             <div style={getMenuStyle(horizontalLayout)}>
+              {cartesianProduct && <Alert message={translated('Current selection is not a connected graph and will result in querying a cartesian product.')} banner />}
               <Tabs style={{width: '100%'}} onChange={this.updateTabKey}>
                 <TabPane tab="Available" key="available">
                   <EntityListContainer>
@@ -103,7 +105,8 @@ class App extends Component {
 }
 
 const mapStateToProps = appState => ({
-  horizontalLayout: getHorizontalLayout(appState)
+  horizontalLayout: getHorizontalLayout(appState),
+  cartesianProduct: getCartesianProduct(appState)
 });
 
 export default connect(mapStateToProps, null)(App);

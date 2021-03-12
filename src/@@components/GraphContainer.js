@@ -85,7 +85,7 @@ export class GraphContainer extends React.Component {
     Graph.setInstance(graph);
   }
 
-  onContainerResize = e => {
+  onContainerResize = () => {
     if (this.mountNode) {
       this.graph.changeSize(this.mountNode.clientWidth - 12, this.mountNode.clientHeight - 12);
     }

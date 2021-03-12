@@ -19,6 +19,8 @@ export const getConnectedEntities = (p, edgesByEntity) => {
 };
 
 export const isConnected = ({properties, entityIds}) => {
+  if (!properties.length) return true;
+
   const appearingEntities = entityIds.reduce((acc, id) => Object.assign(acc, {[id]: true}), {});
   properties.reduce((acc, p) => Object.assign(acc, {
     [p.target]: true,

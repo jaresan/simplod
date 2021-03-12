@@ -33,7 +33,8 @@ export const initial = {
   endpoint: '',
   dataSchemaURL: '',
   filename: 'Untitled',
-  description: ''
+  description: '',
+  cartesianProduct: false
 };
 
 const defaultEntityProps = {
@@ -86,6 +87,7 @@ export const dataSchemaURL = forKey('dataSchemaURL');
 export const filename = forKey('filename');
 export const description = forKey('description');
 export const customPrefixes = forKey('customPrefixes');
+export const cartesianProduct = forKey('cartesianProduct');
 export const customPrefixById = id => compose(customPrefixes, lensProp(id));
 
 const entitiesByType = {
@@ -154,7 +156,7 @@ const byTypeAndIds = curry((type, ids) => compose(entitiesByType[type], lens(pic
 export const propertiesByIds = byTypeAndIds(entityTypes.property);
 export const propertyById = byTypeAndId(entityTypes.property);
 export const propertyTargetById = id => compose(propertyById(id), lensProp('target'));
-const getSelectedProperties = pipe(view(properties), filter(P.selected), values);
+export const getSelectedProperties = pipe(view(properties), filter(P.selected), values);
 export const classById = byTypeAndId(entityTypes.class);
 
 export const getSelectedClasses = pipe(view(classes), filter(E.selected));
