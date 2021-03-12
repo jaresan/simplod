@@ -102,7 +102,7 @@ const updateProperty = update(entityTypes.property);
 const updateClass = update(entityTypes.class);
 
 export const togglePropertyOptional = updateProperty('optional');
-export const togglePropertyAsVariable = updateProperty('asVariable');
+export const togglePropertyAsVariable = updateProperty('asVariable'); // FIXME: Change selection order --> if no asVariable is specified for the given name, it shouldn't be shown at all
 export const savePropertyName = updateProperty('varName');
 export const toggleClassHidden = updateClass('hidden');
 export const toggleClassExpanded = updateClass('expanded');

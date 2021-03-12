@@ -1,7 +1,13 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import { Avatar, Menu, Input, Affix, Button, Space } from 'antd';
-import { UserOutlined, ShareAltOutlined, CloudUploadOutlined, DesktopOutlined } from '@ant-design/icons';
+import {
+  UserOutlined,
+  ShareAltOutlined,
+  CloudUploadOutlined,
+  DesktopOutlined,
+  PlaySquareOutlined
+} from '@ant-design/icons';
 import { getAvatar, getLastSave, getSessionValid, getModelFileLocation, getFilename, getDirty } from '@@selectors';
 import { openShareModal } from '@@components/menu/share-menu';
 import { openSaveDialogModal } from '@@components/controls/file-dialog';
@@ -13,6 +19,7 @@ import { openSettingsModal } from '@@components/controls/settings';
 import { FileMenu } from '@@components/menu/file-menu';
 import { translated } from '@@localization';
 import { saveData } from '@@actions/save-load';
+import { openYasguiModal } from '@@components/Yasgui';
 
 const FilenameInput = styled(Input)`
   border: none;
@@ -51,6 +58,7 @@ const MenuComponent = ({avatar, lastLocalSave, loggedIn, modelFileLocation, isDi
         }
       </Menu.SubMenu>
       <Menu.Item style={{position: 'absolute', top: 12, right: 84}}><Button onClick={openShareModal} type="primary"><ShareAltOutlined />Share</Button></Menu.Item>
+      <Menu.Item style={{position: 'absolute', top: 12, right: 176}}><Button onClick={() => openYasguiModal({runQuery: true})} type="primary"><PlaySquareOutlined />Run SPARQL Query</Button></Menu.Item>
     </Menu>
   </Affix>;
 
