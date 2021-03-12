@@ -39,6 +39,15 @@ class EntityListComponent extends React.Component {
 	getIds() {
 		const {searchText} = this.props;
 		let entities = this.props.entities;
+
+		if (this.props.onlySelected && this.didRecalculate) {
+			const searchTerms = mapObjIndexed((val, id) => getSearchTerm([id, val]), entities);
+
+			return this.ids
+				.sort()
+				.filter(id => searchTerms[id].includes(searchText.toLowerCase()));
+		}
+
 		if (this.props.onlySelected && !this.didRecalculate) {
 			// FIXME: @reference don't use e.selected e.propertyIds, 'selected'
 			entities = filter(e => e.selected || any(pId => path([pId, 'selected'], this.props.properties), e.propertyIds), entities);
@@ -46,9 +55,11 @@ class EntityListComponent extends React.Component {
 		}
 
 		const searchTerms = mapObjIndexed((val, id) => getSearchTerm([id, val]), entities);
-		return Object.keys(entities)
+		this.ids = Object.keys(entities)
 			.sort()
 			.filter(id => searchTerms[id].includes(searchText.toLowerCase()));
+
+		return this.ids;
 	}
 
 	render() {
