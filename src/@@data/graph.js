@@ -1,4 +1,4 @@
-import {keys, all, map, always} from 'ramda';
+import {keys, all, prop, groupBy, mergeWith, concat} from 'ramda';
 
 export const getConnectedEntities = (p, edgesByEntity) => {
   const stack = [p];
@@ -18,3 +18,18 @@ export const getConnectedEntities = (p, edgesByEntity) => {
   return appearingEntities;
 };
 
+export const isConnected = ({properties, entityIds}) => {
+  const appearingEntities = entityIds.reduce((acc, id) => Object.assign(acc, {[id]: true}), {});
+  properties.reduce((acc, p) => Object.assign(acc, {
+    [p.target]: true,
+    [p.source]: true
+  }), appearingEntities);
+
+
+  const edgesBySource = groupBy(prop('source'), properties);
+  const edgesByTarget = groupBy(prop('target'), properties);
+  const edgesByEntity = mergeWith(concat, edgesBySource, edgesByTarget);
+
+  const subGraph = getConnectedEntities(properties[0], edgesByEntity);
+  return all(k => subGraph[k], keys(appearingEntities))
+};
