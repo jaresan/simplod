@@ -36,5 +36,14 @@ describe('@@data/graph', () => {
       const entityIds = ['a', 'b', 'c'];
       isConnected({properties, entityIds}).should.eql(true);
     });
+    it('should consider graph not connected when only entities are being selected', () => {
+      isConnected({properties: [], entityIds: ['a', 'b']}).should.eql(false);
+    });
+    it('should not take data properties into account as edges connecting the graph', () => {
+      isConnected({properties: [
+          {source: 'a', target: 'b', dataProperty: true},
+          {source: 'c', target: 'b', dataProperty: true}
+        ], entityIds: []}).should.eql(false);
+    });
   });
 });

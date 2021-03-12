@@ -6,11 +6,11 @@ export const getConnectedEntities = (p, edgesByEntity) => {
   while (stack.length) {
     const {target, source} = stack.pop();
     if (!appearingEntities[source]) {
-      stack.push(...edgesByEntity[source]);
+      stack.push(...(edgesByEntity[source] || []));
       appearingEntities[source] = true;
     }
     if (!appearingEntities[target]) {
-      stack.push(...edgesByEntity[target]);
+      stack.push(...(edgesByEntity[target] || []));
       appearingEntities[target] = true;
     }
   }
@@ -19,17 +19,22 @@ export const getConnectedEntities = (p, edgesByEntity) => {
 };
 
 export const isConnected = ({properties, entityIds}) => {
-  if (!properties.length) return true;
+  if (!properties.length) {
+    return !entityIds.length;
+  }
 
   const appearingEntities = entityIds.reduce((acc, id) => Object.assign(acc, {[id]: true}), {});
-  properties.reduce((acc, p) => Object.assign(acc, {
-    [p.target]: true,
-    [p.source]: true
-  }), appearingEntities);
+  properties.reduce((acc, p) => {
+    if (!p.dataProperty) {
+      acc[p.target] = true;
+    }
+    acc[p.source] = true;
+    return acc;
+  }, appearingEntities);
 
 
   const edgesBySource = groupBy(prop('source'), properties);
-  const edgesByTarget = groupBy(prop('target'), properties);
+  const edgesByTarget = groupBy(prop('target'), properties.filter(p => !p.dataProperty));
   const edgesByEntity = mergeWith(concat, edgesBySource, edgesByTarget);
 
   const subGraph = getConnectedEntities(properties[0], edgesByEntity);
