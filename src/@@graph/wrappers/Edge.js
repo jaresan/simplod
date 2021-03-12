@@ -109,4 +109,10 @@ export class Edge extends Wrapper {
       this.edge.show();
     }
   }
+
+  onHover() {
+    this.setState({hover: true});
+    this.sourceGroup.updateHighlight(true);
+    this.targetGroup.updateHighlight(true);
+  }
 }

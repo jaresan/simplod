@@ -1,4 +1,4 @@
-import { pick, assocPath, path, identity, map, filter, prop } from 'ramda';
+import { pick, assocPath, path, identity, map, filter, prop, forEachObjIndexed } from 'ramda';
 import {Property, Method} from '@@graph/wrappers/index';
 import { Handler } from '@@graph/handlers/Handler';
 import { measureText, PROP_LINE_HEIGHT } from '@@graph/Node';
@@ -72,23 +72,19 @@ class GroupController {
   }
 
   onBlur(target) {
-    if (!this.propertyWrappers[target.get('name')]) {
-      this.state.hover = false;
-      this.updateHighlight(false);
-      this.getEdges().forEach(e => e.onBlur());
-    }
+    this.state.hover = false;
+    this.updateHighlight(false);
+    this.getEdges().forEach(e => e.onBlur());
     return propagate(target, 'onBlur');
   }
 
-  updateHighlight() {
-    this.state.selected = Object.values(this.childrenWrappers).some(w => w.state.selected) || this.getEdges().some(e => e.state.selected);
-    const shouldHighlight = this.state.selected || this.state.hover;
-
+  updateHighlight(shouldHighlight) {
     const nodesAffected = ['node-container', 'property-container', 'select-all-container', 'expand-icon-container', 'hide-icon-container'];
     const updateStyle = shouldHighlight ? this.applyStyle.bind(this) : this.cancelStyle.bind(this);
     nodesAffected.forEach(name => updateStyle(this.children[name], ['titleOutline']));
     if (shouldHighlight) {
       this.group.toFront();
+      forEachObjIndexed(this.propertyWrappers, p => p.toFront());
     }
   }
 

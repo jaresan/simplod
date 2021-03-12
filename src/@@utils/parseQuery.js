@@ -1,4 +1,4 @@
-import { groupBy, path, prop, map, partition, pipe, pick, uniq, head, identity, keys, values } from 'ramda';
+import { groupBy, path, prop, map, partition, pipe, pick, uniq, identity, keys, values } from 'ramda';
 import { sanitizeVarName } from '@@utils/sanitizeVarName';
 
 const getPropertiesBySource = (prefixToIRI, getEntityVariable, properties) => {
