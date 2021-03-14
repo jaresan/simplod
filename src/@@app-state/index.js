@@ -36,11 +36,15 @@ export const dispatchSet = curry((ln, v) => dispatch(set(ln, v)));
 export const getState = () => store.getState();
 
 if (process.env.NODE_ENV === 'development') {
+	const ModelState = require('./model/state');
 	Object.assign(window,
 		{
 			dispatch,
 			dispatchSet,
-			ModelState: require('./model/state'),
+			ModelState,
+			simplod: {
+				registerCube: () => dispatch(ModelState.registerNewClass('cube:Observation')),
+			},
 			SettingsState: require('./settings/state'),
 			YasguiState: require('./yasgui/state'),
 			getState,

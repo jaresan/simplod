@@ -1,6 +1,7 @@
 import {Wrapper} from '@@graph/wrappers/Wrapper';
 import {Property as PropertyHandler} from '@@graph/handlers';
 import { measureText, PROP_LINE_HEIGHT } from '@@graph/Node';
+import { prop } from 'ramda';
 
 // FIXME: Add this to @@graph/node
 const defaultStyle = {
@@ -49,8 +50,8 @@ export class Property extends Wrapper {
     // FIXME: Update edge as well
   }
 
-  updatePredicate({predicate, targetType}) {
-    const text = `${predicate}: ${targetType}`;
+  updateText({predicate, targetType, varName}) {
+    const text = `${predicate}: ${targetType} --> ?${varName}`;
     const {width} = measureText(this.node, text);
     this.node.setAttr('width', width + 8);
     this.node.setAttr('text', text);
@@ -58,8 +59,9 @@ export class Property extends Wrapper {
   }
 
   setState(newState) {
-    if (newState.predicate && (newState.predicate !== this.state.predicate || newState.targetType !== this.state.targetType)) {
-      this.updatePredicate(newState);
+    const shouldUpdateText = newState.predicate && [prop('predicate'), prop('targetType'), prop('varName')].some(p => p(newState) !== p(this.state));
+    if (shouldUpdateText) {
+      this.updateText(newState);
     }
     super.setState(newState);
   }
