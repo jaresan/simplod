@@ -2,7 +2,7 @@ import G6 from '@antv/g6';
 import { flatten } from 'ramda';
 import E from '@@graph/ElementCreators';
 import Group from '@@graph/wrappers/Group';
-const NODE_TYPE = 'graphNode';
+export const NODE_TYPE = 'graphNode';
 
 export const PROP_LINE_HEIGHT = 12;
 const blue = '#49b2e7';
@@ -50,6 +50,7 @@ const getSuffix = iri => iri.match(/([^/#:]+)$/)[1];
 
 const NodeImplementation = {
   draw(cfg, group) {
+    console.log(cfg);
     const {data, id} = cfg;
     const ctx = group.get('canvas').get('context');
     ctx.save();
@@ -109,13 +110,14 @@ const NodeImplementation = {
     };
 
     group.set('objectProperties', objectProperties);
+    group.set('data', data);
     group.entityId = id;
     const result = E.create(group, [
       E.Node({id, attrs: containerAttrs, name: 'node-container', data: {varName: getSuffix(id), type: id} }),
       E.Rect({id: `node_${id}-copy-node-container`, name: 'copy-node-container', attrs: {x: -16, y: -16, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}}),
       E.Image({id: `node_${id}-copy-node-icon`, name: 'copy-node-icon', attrs: copyNodeIconAttrs}),
       E.Rect({id: `node_${id}-varName-container`, attrs: {x: 0, y: -16, width: 32, height: 16, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'node-varName-container'}),
-      E.Text({id: `node_${id}-varName`, attrs: {...attrs['node-title'](width, cfg.label), y: -14, textAlign: 'left', x: 2}, name: 'node-varName'}),
+      E.Text({id: `node_${id}-varName`, attrs: {...attrs['node-title'](width, cfg.varName || cfg.label), y: -14, textAlign: 'left', x: 2}, name: 'node-varName'}),
       E.Text({id: `node_${id}-title`, attrs: attrs['node-title'](width, cfg.label), name: 'node-title'}),
       E.Rect({id: `node_${id}-select-all-container`, attrs: {x: -16, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'select-all-container'}),
       E.Image({id: `node_${id}-select-all-icon`, name: 'select-all-icon', attrs: selectAllIconAttrs}),

@@ -224,13 +224,12 @@ const suffixId = curry((getterFn, state, id) => {
 });
 
 const registerProperties = curry((source, propertyIds, s) => {
-  const getNewId = suffixId(propertyById, s);
   const {ids, state} = propertyIds.reduce(({ids, state}, id) => {
     const property = mergeRight(view(propertyById(id), state), defaultEntityProps[entityTypes.property]);
     Object.assign(property, {
       source
     });
-    const newId = getNewId(id);
+    const newId = `property_${source}-${property.predicate}-${property.target}`;
 
     return {
       ids: ids.concat(newId),
@@ -270,6 +269,12 @@ const createNewClassInstance = (id, s) => {
 export const registerNewClass = curry((id, s) => {
   const {newId, instance, state} = createNewClassInstance(id, s);
 
+  return set(classById(newId), instance, state);
+});
+
+export const registerNewClassWithCallback = curry((id, callback, s) => {
+  const {newId, instance, state} = createNewClassInstance(id, s);
+  callback({newId, instance});
   return set(classById(newId), instance, state);
 });
 

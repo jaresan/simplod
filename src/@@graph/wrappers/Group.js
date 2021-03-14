@@ -3,6 +3,7 @@ import {Property, Method, Node} from '@@graph/wrappers/index';
 import { Handler } from '@@graph/handlers/Handler';
 import { measureText, PROP_LINE_HEIGHT } from '@@graph/Node';
 import { entityTypes } from '@@model/entity-types';
+import { Graph } from '@@graph/Graph';
 
 const getWrapper = target => target.get('wrapper');
 function propagate(target, key) {
@@ -34,6 +35,14 @@ class GroupController {
     this.propertyWrappers = filter(w => (w instanceof Property) || (w instanceof Method), this.childrenWrappers);
     this.propertyContainer = this.children['property-container'];
     this.defaultChildAttrs = {};
+    Object.assign(window, {
+      Group: {
+        instance: this,
+        group: this.group,
+      },
+      Graph
+    });
+    window.graph = Graph.instance;
   }
 
   getEdges() {
@@ -166,6 +175,8 @@ class GroupController {
       this.selectAllProperties();
     } else if (name.includes('hide')) {
       this.handler.toggleEntityHidden(this.entityId, !this.state.hidden);
+    } else if (name.includes('copy')) {
+      Graph.copyNode(this.group);
     } else {
       propagate(target, 'onClick');
     }

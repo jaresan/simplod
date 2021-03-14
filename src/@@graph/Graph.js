@@ -2,8 +2,10 @@ import { curry, fromPairs, path } from 'ramda';
 import {Canvas as CanvasWrapper} from '@@graph/wrappers';
 import {Property, Node, Edge} from '@@graph/handlers';
 import { Handler } from '@@graph/handlers/Handler';
-import { getNodes } from '@@graph/Node';
+import { getNodes, NODE_TYPE } from '@@graph/Node';
 import { getEdges } from '@@graph/Edge';
+import { dispatch } from '@@app-state';
+import { registerNewClassWithCallback } from '@@app-state/model/state';
 
 const getWrapper = n => {
   if (!n) return;
@@ -125,5 +127,17 @@ export class Graph {
 
   static destroy() {
     this.instance.destroy();
+  }
+
+  static copyNode({cfg}) {
+    dispatch(registerNewClassWithCallback(cfg.id, ({newId: id, instance}) => {
+      this.instance.addItem('node', {
+        id,
+        varName: instance.varName,
+        label: instance.type,
+        data: cfg.data,
+        type: NODE_TYPE
+      });
+    }))
   }
 }
