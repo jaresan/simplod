@@ -1,5 +1,5 @@
 import { pick, assocPath, path, identity, map, filter, prop, forEachObjIndexed } from 'ramda';
-import {Property, Method} from '@@graph/wrappers/index';
+import {Property, Method, Node} from '@@graph/wrappers/index';
 import { Handler } from '@@graph/handlers/Handler';
 import { measureText, PROP_LINE_HEIGHT } from '@@graph/Node';
 import { entityTypes } from '@@model/entity-types';
@@ -79,7 +79,7 @@ class GroupController {
   }
 
   updateHighlight(shouldHighlight) {
-    const nodesAffected = ['copy-node-container', 'node-container', 'property-container', 'select-all-container', 'expand-icon-container', 'hide-icon-container'];
+    const nodesAffected = ['node-varName-container', 'copy-node-container', 'node-container', 'property-container', 'select-all-container', 'expand-icon-container', 'hide-icon-container'];
     const updateStyle = shouldHighlight ? this.applyStyle.bind(this) : this.cancelStyle.bind(this);
     nodesAffected.forEach(name => updateStyle(this.children[name], ['titleOutline']));
     if (shouldHighlight) {
@@ -160,7 +160,7 @@ class GroupController {
   onClick(target) {
     const name = target.get('name');
 
-    if (['node-container', 'expand-icon-container', 'node-title', 'expand-icon'].includes(name)) {
+    if (['node-varName', 'node-container', 'node-title', 'expand-icon'].some(t => name.includes(t))) {
       this.toggleExpanded(!this.state.expanded);
     } else if (name.includes('select-all')) {
       this.selectAllProperties();
@@ -173,8 +173,6 @@ class GroupController {
   }
 
   updateClassType(type) {
-    // this.children['node-container'].get('fns').updateTitle(type);
-    // this.children['node-title'].get('fns').updateTitle(type);
     const container = this.children['node-container'];
     const title = this.children['node-title'];
     const expandContainer = this.children['expand-icon-container'];
@@ -185,6 +183,20 @@ class GroupController {
     title.setAttr('text', type);
     expandContainer.setAttr('x', width);
     expandIcon.setAttr('x', width + 3);
+  }
+
+  updateVarName(varName) {
+    const title = this.children['node-varName'];
+    const container = this.children['node-varName-container'];
+    const width = measureText(container, varName).width + 12;
+    container.setAttr('width', width);
+    title.setAttr('text', `?${varName}`);
+
+    // Force redraw
+    container.hide();
+    container.show();
+    title.hide();
+    title.show();
   }
 
   stateChanged({target, state, lastState}) {
@@ -198,8 +210,14 @@ class GroupController {
     if (state.expanded !== lastState.expanded) {
       this.toggleExpanded(state.expanded);
     }
-    if (state.type && state.type !== lastState.type) {
-      this.updateClassType(state.type);
+
+    if (target instanceof Node) {
+      if (state.type && state.type !== lastState.type) {
+        this.updateClassType(state.type);
+      }
+      if (state.varName && state.varName !== lastState.varName) {
+        this.updateVarName(state.varName);
+      }
     }
   }
 }

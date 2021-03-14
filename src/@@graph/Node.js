@@ -112,9 +112,10 @@ const NodeImplementation = {
     group.entityId = id;
     const result = E.create(group, [
       E.Node({id, attrs: containerAttrs, name: 'node-container', data: {varName: getSuffix(id), type: id} }),
-      // E.Text({id: `node_${id}-varName`, attrs: attrs['node-title'](width, cfg.label), name: 'node-varName'}),
       E.Rect({id: `node_${id}-copy-node-container`, name: 'copy-node-container', attrs: {x: -16, y: -16, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}}),
       E.Image({id: `node_${id}-copy-node-icon`, name: 'copy-node-icon', attrs: copyNodeIconAttrs}),
+      E.Rect({id: `node_${id}-varName-container`, attrs: {x: 0, y: -16, width: 32, height: 16, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'node-varName-container'}),
+      E.Text({id: `node_${id}-varName`, attrs: {...attrs['node-title'](width, cfg.label), y: -14, textAlign: 'left', x: 2}, name: 'node-varName'}),
       E.Text({id: `node_${id}-title`, attrs: attrs['node-title'](width, cfg.label), name: 'node-title'}),
       E.Rect({id: `node_${id}-select-all-container`, attrs: {x: -16, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'select-all-container'}),
       E.Image({id: `node_${id}-select-all-icon`, name: 'select-all-icon', attrs: selectAllIconAttrs}),
