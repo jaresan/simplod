@@ -50,7 +50,6 @@ const getSuffix = iri => iri.match(/([^/#:]+)$/)[1];
 
 const NodeImplementation = {
   draw(cfg, group) {
-    console.log(cfg);
     const {data, id} = cfg;
     const ctx = group.get('canvas').get('context');
     ctx.save();

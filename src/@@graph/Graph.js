@@ -3,7 +3,7 @@ import {Canvas as CanvasWrapper} from '@@graph/wrappers';
 import {Property, Node, Edge} from '@@graph/handlers';
 import { Handler } from '@@graph/handlers/Handler';
 import { getNodes, NODE_TYPE } from '@@graph/Node';
-import { getEdges } from '@@graph/Edge';
+import { getEdges, Edge as GraphEdge } from '@@graph/Edge';
 import { dispatch } from '@@app-state';
 import { registerNewClassWithCallback } from '@@app-state/model/state';
 
@@ -130,7 +130,7 @@ export class Graph {
   }
 
   static copyNode({cfg}) {
-    dispatch(registerNewClassWithCallback(cfg.id, ({newId: id, instance}) => {
+    dispatch(registerNewClassWithCallback(cfg.id, ({newId: id, instance, properties}) => {
       this.instance.addItem('node', {
         id,
         varName: instance.varName,
@@ -138,6 +138,17 @@ export class Graph {
         data: cfg.data,
         type: NODE_TYPE
       });
+
+      properties
+        .filter(p => !p.dataProperty)
+        .forEach(({source, target}) => {
+          this.instance.addItem('edge', GraphEdge({
+            source, target,
+            data: {
+              source, target
+            }
+          }))
+        })
     }))
   }
 }

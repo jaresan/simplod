@@ -274,7 +274,10 @@ export const registerNewClass = curry((id, s) => {
 
 export const registerNewClassWithCallback = curry((id, callback, s) => {
   const {newId, instance, state} = createNewClassInstance(id, s);
-  callback({newId, instance});
+  const propertiesOfWhichTarget = values(getPropertiesByTarget(id, state)).map(assoc('target', newId));
+  const propertiesOfWhichSource = values(view(propertiesByIds(instance.propertyIds), state));
+  const properties = propertiesOfWhichSource.concat(propertiesOfWhichTarget);
+  callback({newId, instance, properties});
   return set(classById(newId), instance, state);
 });
 
