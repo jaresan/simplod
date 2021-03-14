@@ -141,7 +141,9 @@ export class Graph {
 
       properties
         .filter(p => !p.dataProperty)
-        .forEach(({source, target}) => {
+        .forEach(p => {
+          const {source, target} = p;
+          Handler.recipients[source].getGroupController().group.get('addProperty')(p)
           this.instance.addItem('edge', GraphEdge({
             source, target,
             data: {

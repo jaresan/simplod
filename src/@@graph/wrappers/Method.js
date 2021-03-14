@@ -1,6 +1,7 @@
 import {Wrapper} from '@@graph/wrappers/Wrapper';
 import {Property as PropertyHandler} from '@@graph/handlers';
 import { measureText, PROP_LINE_HEIGHT } from '@@graph/Node';
+import { prop } from 'ramda';
 
 const defaultStyle = {
   opacity: 1,
@@ -82,8 +83,8 @@ export class Method extends Wrapper {
     this.node.hide();
   }
 
-  updatePredicate({predicate, targetType}) {
-    const text = `${predicate}: ${targetType}`;
+  updateText({predicate, targetType, varName}) {
+    const text = `${predicate}: ${targetType} --> ?${varName}`;
     const {width} = measureText(this.node, text);
     this.node.setAttr('width', width + 8);
     this.node.setAttr('text', text);
@@ -91,8 +92,9 @@ export class Method extends Wrapper {
   }
 
   setState(newState) {
-    if (newState.predicate && (newState.predicate !== this.state.predicate || newState.targetType !== this.state.targetType)) {
-      this.updatePredicate(newState);
+    const shouldUpdateText = newState.predicate && [prop('predicate'), prop('targetType'), prop('varName')].some(p => p(newState) !== p(this.state));
+    if (shouldUpdateText) {
+      this.updateText(newState);
     }
     super.setState(newState);
   }

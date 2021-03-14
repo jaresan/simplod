@@ -19,7 +19,10 @@ import {
   omit,
   propEq,
   mapObjIndexed,
-  values
+  values,
+  groupBy,
+  uniqBy,
+  mergeLeft
 } from 'ramda';
 import { entityTypes } from '@@model/entity-types';
 
@@ -107,7 +110,11 @@ export const savePropertyName = updateProperty('varName');
 export const toggleClassHidden = updateClass('hidden');
 export const toggleClassExpanded = updateClass('expanded');
 export const toggleClassAsVariable = updateClass('asVariable');
-export const updateClassName = updateClass('varName');
+export const updateClassName = curry((id, newName, s) => {
+  const updated = map(assoc('varName', newName), getPropertiesByTarget(id, s))
+  s = over(properties, mergeLeft(updated), s);
+  return updateClass('varName', id, newName)(s);
+});
 
 const updateSelected = curry((type, id, selected, s) => {
   s = update(type, 'selected', id, selected)(s);
@@ -158,6 +165,7 @@ export const propertyById = byTypeAndId(entityTypes.property);
 export const propertyTargetById = id => compose(propertyById(id), lensProp('target'));
 export const getSelectedProperties = pipe(view(properties), filter(P.selected), values);
 export const classById = byTypeAndId(entityTypes.class);
+const propertyIdsByClassId = id => compose(classById(id), lensProp('propertyIds'));
 
 export const getSelectedClasses = pipe(view(classes), filter(E.selected));
 export const getSelectedEntities = pipe(view(entities), map(filter(E.selected)));
@@ -240,19 +248,40 @@ const registerProperties = curry((source, propertyIds, s) => {
   return {ids, state};
 });
 
+const createNewPropertiesForTargetType = curry(({type: targetType, id: target, varName}, s) => {
+  const properties = getPropertiesByTargetType(targetType, s);
+  const propertiesBySource = map(pipe(values, uniqBy(prop('predicate'))), groupBy(P.source, values(properties)))
+
+  return Object.entries(propertiesBySource).reduce((acc, [source, properties]) => {
+    const pIds = view(classById(source), s).propertyIds;
+    s = values(properties).reduce((acc, p) => {
+      const property = mergeRight(p, defaultEntityProps[entityTypes.property])
+      const newId = `property_${source}-${property.predicate}-${target}`;
+      property.target = target;
+      property.varName = varName;
+      pIds.push(newId);
+      return set(propertyById(newId), property, acc);
+    }, s);
+
+    return set(propertyIdsByClassId(source), pIds, s);
+  }, s);
+});
+
 const assignPropertyTargets = curry((newTarget, propertyIds, s) =>
   propertyIds.reduce((acc, id) => set(propertyTargetById(id), newTarget, acc), s));
 
 const createNewClassInstance = (id, s) => {
   const entity = view(classById(id), s);
-
-  // Keep info intact
-  const toRegister = Object.assign({}, entity, defaultEntityProps[entityTypes.class], {info: entity.info});
   const newId = suffixId(classById, s, entity.type || id);
-  const {ids: propertyIds, state} = registerProperties(newId, entity.propertyIds, s);
 
   const typeCount = Object.keys(filter(propEq('type', entity.type), view(classes, s))).length;
   const varName = `${entity.type.replace(/.*:/, '')}_${typeCount}`;
+
+  s = createNewPropertiesForTargetType({type: entity.type, id: newId, varName}, s)
+
+  // Keep info intact
+  const toRegister = Object.assign({}, entity, defaultEntityProps[entityTypes.class], {info: entity.info});
+  const {ids: propertyIds, state} = registerProperties(newId, entity.propertyIds, s);
 
   return {
     newId,
@@ -274,7 +303,7 @@ export const registerNewClass = curry((id, s) => {
 
 export const registerNewClassWithCallback = curry((id, callback, s) => {
   const {newId, instance, state} = createNewClassInstance(id, s);
-  const propertiesOfWhichTarget = values(getPropertiesByTarget(id, state)).map(assoc('target', newId));
+  const propertiesOfWhichTarget = values(getPropertiesByTarget(newId, state));
   const propertiesOfWhichSource = values(view(propertiesByIds(instance.propertyIds), state));
   const properties = propertiesOfWhichSource.concat(propertiesOfWhichTarget);
   callback({newId, instance, properties});
@@ -282,6 +311,7 @@ export const registerNewClassWithCallback = curry((id, callback, s) => {
 });
 
 export const getPropertiesByTarget = curry((id, s) => filter(propEq('target', id), view(properties, s)));
+const getPropertiesByTargetType = curry((id, s) => filter(propEq('targetType', id), view(properties, s)));
 
 export const deleteClass = curry((id, s) => {
   const entity = view(classById(id), s);

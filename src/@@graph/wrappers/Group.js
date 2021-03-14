@@ -40,6 +40,7 @@ class GroupController {
         instance: this,
         group: this.group,
       },
+      group: this.group,
       Graph
     });
     window.graph = Graph.instance;

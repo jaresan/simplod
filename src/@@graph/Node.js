@@ -130,6 +130,7 @@ const NodeImplementation = {
 
     group.set('objectProperties', objectProperties);
     group.set('data', data);
+    group.set('addProperty', getAddPropertyFn(group, ctx, attrs));
     group.entityId = id;
     const result = E.create(group, [
       E.Node({id, attrs: containerAttrs, name: 'node-container', data: {varName: getSuffix(id), type: id} }),
