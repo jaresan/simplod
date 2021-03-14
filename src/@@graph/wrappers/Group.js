@@ -79,7 +79,7 @@ class GroupController {
   }
 
   updateHighlight(shouldHighlight) {
-    const nodesAffected = ['node-container', 'property-container', 'select-all-container', 'expand-icon-container', 'hide-icon-container'];
+    const nodesAffected = ['copy-node-container', 'node-container', 'property-container', 'select-all-container', 'expand-icon-container', 'hide-icon-container'];
     const updateStyle = shouldHighlight ? this.applyStyle.bind(this) : this.cancelStyle.bind(this);
     nodesAffected.forEach(name => updateStyle(this.children[name], ['titleOutline']));
     if (shouldHighlight) {

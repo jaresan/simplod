@@ -84,30 +84,41 @@ const NodeImplementation = {
       height: 10
     };
 
+    const copyNodeIconAttrs = {
+      x: -14,
+      y: -14,
+      img: 'images/copy-icon.png',
+      width: 12,
+      height: 12
+    };
+
     const selectAllIconAttrs = {
-      x: -16,
-      y: 2,
+      x: -15,
+      y: 3,
       img: 'images/plus.png',
-      width: 16,
-      height: 16
+      width: 14,
+      height: 14
     };
 
     const hideIconAttrs = {
-      x: -32,
-      y: 2,
+      x: -30,
+      y: 4,
       img: 'images/eye-invisible.png',
-      width: 16,
-      height: 16
+      width: 12,
+      height: 12
     };
 
     group.set('objectProperties', objectProperties);
     group.entityId = id;
     const result = E.create(group, [
       E.Node({id, attrs: containerAttrs, name: 'node-container', data: {varName: getSuffix(id), type: id} }),
+      // E.Text({id: `node_${id}-varName`, attrs: attrs['node-title'](width, cfg.label), name: 'node-varName'}),
+      E.Rect({id: `node_${id}-copy-node-container`, name: 'copy-node-container', attrs: {x: -16, y: -16, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}}),
+      E.Image({id: `node_${id}-copy-node-icon`, name: 'copy-node-icon', attrs: copyNodeIconAttrs}),
       E.Text({id: `node_${id}-title`, attrs: attrs['node-title'](width, cfg.label), name: 'node-title'}),
       E.Rect({id: `node_${id}-select-all-container`, attrs: {x: -16, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'select-all-container'}),
       E.Image({id: `node_${id}-select-all-icon`, name: 'select-all-icon', attrs: selectAllIconAttrs}),
-      E.Rect({id: `node_${id}-hide-icon-container`, attrs: {x: hideIconAttrs.x, width: hideIconAttrs.width, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'hide-icon-container'}),
+      E.Rect({id: `node_${id}-hide-icon-container`, attrs: {x: hideIconAttrs.x - 2, width: hideIconAttrs.width + 4, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'hide-icon-container'}),
       E.Image({id: `node_${id}-hide-icon`, name: 'hide-icon', attrs: hideIconAttrs}),
       E.Rect({id: `node_${id}-expand-icon-container`, attrs: {x: width, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'expand-icon-container'}),
       E.Image({id: `node_${id}-expand-icon`, name: 'expand-icon', attrs: expandIconAttrs}),
