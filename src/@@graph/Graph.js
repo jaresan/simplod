@@ -147,7 +147,8 @@ export class Graph {
             data: {
               source, target
             }
-          }))
+          }));
+          // FIXME: Hide edges if target items hidden
         })
     }))
   }

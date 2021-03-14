@@ -1,5 +1,5 @@
 import G6 from '@antv/g6';
-import { flatten } from 'ramda';
+import { flatten, last } from 'ramda';
 import E from '@@graph/ElementCreators';
 import Group from '@@graph/wrappers/Group';
 export const NODE_TYPE = 'graphNode';
@@ -47,6 +47,26 @@ const getAttrs = ctx => ({
 });
 
 const getSuffix = iri => iri.match(/([^/#:]+)$/)[1];
+
+const getAddPropertyFn = (group, ctx, attrs) => ({source, predicate, target, targetType, varName, dataProperty}) => {
+  const propertyCount = Object.values(group.get('wrapper').propertyWrappers).length;
+  group.addShape(E.ObjectProperty({
+    id: `property_${source}-${predicate}-${target}`,
+    attrs: attrs.property({predicate, type: target, i: propertyCount, ctx}),
+    name: `property#${propertyCount}`,
+    data: {target, source, predicate, targetType, varName: varName || getSuffix(predicate), dataProperty}
+  }));
+  const node = last(group.getChildren());
+  const wrapper = node.get('wrapper');
+  if (wrapper) {
+    wrapper.setNode(node)
+
+    const containerNode = group.get('item');
+    node.set('containerNode', containerNode);
+    wrapper.setContainerNode(containerNode);
+  }
+  group.get('wrapper').registerProperty(node);
+}
 
 const NodeImplementation = {
   draw(cfg, group) {

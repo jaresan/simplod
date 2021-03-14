@@ -1,4 +1,4 @@
-import { pick, assocPath, path, identity, map, filter, prop, forEachObjIndexed } from 'ramda';
+import { pick, assocPath, path, identity, map, filter, prop, forEachObjIndexed, sortBy } from 'ramda';
 import {Property, Method, Node} from '@@graph/wrappers/index';
 import { Handler } from '@@graph/handlers/Handler';
 import { measureText, PROP_LINE_HEIGHT } from '@@graph/Node';
@@ -114,14 +114,22 @@ class GroupController {
     this.handler.toggleEntityExpanded(this.entityId, this.state.expanded);
   }
 
+  registerProperty(p) {
+    this.propertyWrappers[p.get('name')] = p.get('wrapper');
+    if (!this.state.expanded) {
+      p.get('wrapper').hide();
+    }
+    this.updatePropertyContainer();
+  }
+
   updatePropertyContainer() {
     let i = 0;
     let maxWidth = 0;
-    Object.values(this.propertyWrappers)
+    sortBy(path(['node', 'attrs', 'text']), Object.values(this.propertyWrappers))
       .forEach(wrapper => {
         if (this.state.expanded || wrapper.state.selected) {
-          wrapper.show();
           wrapper.setIndex(i++);
+          wrapper.show();
           maxWidth = Math.max(maxWidth, wrapper.node.attr('width'));
         } else {
           wrapper.hide();
