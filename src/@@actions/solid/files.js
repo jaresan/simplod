@@ -17,7 +17,7 @@ const notifyUnauthorized = async () => {
 }
 
 export const fetchFile = async url => {
-  const res = await auth.fetch(url, {headers: {'Accept': 'application/json'}});
+  const res = await auth.fetch(url);
 
   if (res.status === 401) {
     await notifyUnauthorized();
@@ -36,7 +36,6 @@ export const saveFile = async ({uri, data}) => {
   try {
     const res = await auth.fetch(uri, {
       method: 'PUT',
-      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(data)
     });
 
@@ -131,7 +130,7 @@ export const hasPermissions = async (uri, write) => {
   try {
     const json = await auth.fetch(uri).then(a => a.json());
     if (!write) return true;
-    return auth.fetch(uri, {method: 'PUT', body: JSON.stringify(json), headers: {'Content-Type': 'application/json'}}).then(({status}) => status >= 200 && status < 300);
+    return auth.fetch(uri, {method: 'PUT', body: JSON.stringify(json)}).then(({status}) => status >= 200 && status < 300);
   } catch (e) {
     return false;
   }
