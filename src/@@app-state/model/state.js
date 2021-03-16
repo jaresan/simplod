@@ -22,7 +22,8 @@ import {
   values,
   groupBy,
   uniqBy,
-  mergeLeft
+  mergeLeft,
+  without
 } from 'ramda';
 import { entityTypes } from '@@model/entity-types';
 
@@ -314,14 +315,20 @@ export const getPropertiesByTarget = curry((id, s) => filter(propEq('target', id
 const getPropertiesByTargetType = curry((id, s) => filter(propEq('targetType', id), view(properties, s)));
 
 export const deleteClass = curry((id, s) => {
-  const entity = view(classById(id), s);
-  const propertyIds = E.propertyIds(entity);
-  const newTarget = keys(filter(e => e !== entity && e.type === entity.type, view(classes, s)))[0];
-  const propertyIdsToReassign = keys(getPropertiesByTarget(id, s));
+  const propertiesWithTarget = getPropertiesByTarget(id, s);
+  const propertyIdsToRemove = keys(propertiesWithTarget).concat(view(propertyIdsByClassId(id), s));
+  const sourceIds = uniq(values(propertiesWithTarget).map(P.source));
+
+  const newClasses = sourceIds.reduce((acc, sourceId) => {
+    const entity = view(classById(sourceId), s);
+    return Object.assign(acc, {
+      [sourceId]: assoc('propertyIds', without(propertyIdsToRemove, entity.propertyIds), entity)
+    })
+  }, {});
 
   return pipe(
-    assignPropertyTargets(newTarget, propertyIdsToReassign),
-    over(properties, omit(propertyIds)),
+    over(properties, omit(propertyIdsToRemove)),
+    over(classes, mergeLeft(newClasses)),
     over(classes, omit([id]))
   )(s);
 });

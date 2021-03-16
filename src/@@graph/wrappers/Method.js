@@ -83,6 +83,10 @@ export class Method extends Wrapper {
     this.node.hide();
   }
 
+  remove() {
+    this.node.remove();
+  }
+
   updateText({predicate, targetType, varName}) {
     const text = `${predicate}: ${targetType} --> ?${varName}`;
     const {width} = measureText(this.node, text);

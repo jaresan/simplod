@@ -69,7 +69,7 @@ export class Edge extends Wrapper {
         const style = Object
           .entries(this.state)
           .reduce((acc, [key, value]) =>
-            Object.assign(acc, value ? path([key, name], this.styles) : {}),
+              Object.assign(acc, value ? path([key, name], this.styles) : {}),
             {...this.defaultStyle[name]}
           );
         shape.attr(style);
@@ -108,6 +108,12 @@ export class Edge extends Wrapper {
     if (this.sourceGroup.isVisible() && this.targetGroup.isVisible()) {
       this.edge.show();
     }
+  }
+
+  remove() {
+    this.edge.destroy();
+    this.sourceGroup.recalculateEdges();
+    this.targetGroup.recalculateEdges();
   }
 
   onHover() {

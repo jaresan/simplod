@@ -33,6 +33,10 @@ export class Wrapper {
     return this.node;
   }
 
+  getData() {
+    return this.getNode().get('data');
+  }
+
   /**
    * Sets container node --> properties & other wrappers can reference the container they are a part of.
    * @param containerNode

@@ -133,6 +133,10 @@ export class Graph {
     this.copyNode(Handler.recipients[id].getGroupController().group);
   }
 
+  static onDeleteEntity(id) {
+    Handler.recipients[id].getGroupController().remove();
+  }
+
   static copyNode({cfg}) {
     dispatch(registerNewClassWithCallback(cfg.id, ({newId: id, instance, properties}) => {
       this.instance.addItem('node', {

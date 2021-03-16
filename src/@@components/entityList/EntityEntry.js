@@ -11,6 +11,7 @@ import * as Controls from './Controls';
 import * as ModelState from '@@app-state/model/state';
 import { dispatch } from '@@app-state';
 import { VarNameContainer } from '@@components/controls/var-name-container';
+import { Graph } from '@@graph';
 
 const ExpandIconContainer = styled.div`
   display: inline-block;
@@ -82,24 +83,20 @@ class EntityEntryComponent extends React.Component {
               checked={selected}
             />
           </Tooltip>
-          {
-            dummy ?
-              <Controls.Toggle
-                flag={true}
-                tooltipTextOn="Delete entity"
-                onClick={() => deleteClass(id)}
-                OnIcon={DeleteOutlined}
-              />
-              :
-              <Controls.Toggle
-                flag={!hidden}
-                tooltipTextOn="Hide entity in the graph"
-                tooltipTextOff="Show entity in the graph"
-                onClick={() => toggleHidden(id, !hidden)}
-                OnIcon={EyeOutlined}
-                OffIcon={EyeInvisibleOutlined}
-              />
-          }
+          <Controls.Toggle
+            flag={true}
+            tooltipTextOn="Delete entity"
+            onClick={() => deleteClass(id)}
+            OnIcon={DeleteOutlined}
+          />
+          <Controls.Toggle
+            flag={!hidden}
+            tooltipTextOn="Hide entity in the graph"
+            tooltipTextOff="Show entity in the graph"
+            onClick={() => toggleHidden(id, !hidden)}
+            OnIcon={EyeOutlined}
+            OffIcon={EyeInvisibleOutlined}
+          />
         </Space>
       </ControlsContainer>
     );
@@ -157,7 +154,10 @@ const dispatchProps = {
   toggleHidden: pipe(ModelState.toggleClassHidden, dispatch),
   toggleSelected: pipe(ModelState.toggleClassSelected, dispatch),
   updateName: pipe(ModelState.updateClassName, dispatch),
-  deleteClass: pipe(ModelState.deleteClass, dispatch)
+  deleteClass: id => {
+    Graph.onDeleteEntity(id);
+    dispatch(ModelState.deleteClass(id));
+  }
 };
 
 export const EntityEntry = connect(mapStateToProps, null)(EntityEntryComponent);
