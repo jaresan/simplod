@@ -11,7 +11,11 @@ import { changePermissions } from '@@actions/solid/files';
 const {Paragraph, Title, Text} = Typography;
 const {Option} = Select;
 
-const CopyableField = ({text, title}) => <Paragraph><Text copyable={{text}}>{title}</Text><Text ellipsis style={{maxWidth: '100%'}} code>{text}</Text></Paragraph>;
+const CopyableField = ({text, title}) => <Paragraph>
+  <Text copyable={{text}}>{title}</Text>
+  <br/>
+  <Text ellipsis style={{maxWidth: '100%', textOverflow: 'unset', overflow: 'auto'}} code>{text}</Text>
+</Paragraph>;
 
 const getAppLinks = modelFileLocation => <>
   <CopyableField title="Direct application URL" text={getCurrentFileShareableUrl()} />
