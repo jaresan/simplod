@@ -18,6 +18,7 @@ const reorder = (list, startIndex, endIndex) => {
 
 const getItems = (items, selectionOrder) => selectionOrder
   .filter(id => path([id, 'selected'], items))
+  .filter(id => path([id, 'asVariable'], items))
   .map(id => ({
     id,
     content: `${path([id, 'varName'], items)}`
