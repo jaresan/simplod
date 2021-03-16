@@ -135,7 +135,7 @@ export class Graph {
   }
 
   static onDeleteEntity(id) {
-    Handler.recipients[id].getGroupController().remove();
+    Handler.remove(id);
     dispatch(ModelState.deleteClass(id));
   }
 

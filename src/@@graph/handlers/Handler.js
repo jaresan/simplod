@@ -4,7 +4,7 @@
  * handles the changes by itself.
  */
 import {store, dispatch} from '@@app-state';
-import { fromPairs, path } from 'ramda';
+import { fromPairs, path, omit } from 'ramda';
 import * as ModelState from '@@app-state/model/state';
 
 export class Handler {
@@ -51,6 +51,11 @@ export class Handler {
 
   static toggleEntityExpanded(id, expanded) {
     dispatch(ModelState.toggleClassExpanded(id, expanded))
+  }
+
+  static remove(id) {
+    const toOmit = this.recipients[id].getGroupController().remove();
+    this.recipients = omit([id, ...toOmit], this.recipients);
   }
 
   /**

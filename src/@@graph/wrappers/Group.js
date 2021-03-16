@@ -1,4 +1,4 @@
-import { pick, assocPath, path, identity, map, filter, prop, forEachObjIndexed, sortBy, is, omit, keys } from 'ramda';
+import { pick, assocPath, path, identity, map, filter, prop, forEachObjIndexed, sortBy, is, omit, keys, values } from 'ramda';
 import {Property, Method, Node} from '@@graph/wrappers/index';
 import { Handler } from '@@graph/handlers/Handler';
 import { measureText, PROP_LINE_HEIGHT } from '@@graph/Node';
@@ -94,14 +94,17 @@ class GroupController {
   }
 
   remove() {
-    this.getEdges().forEach(e => {
+    const edges = this.getEdges();
+    let propertyIds = values(map(prop('id'), this.childrenWrappers));
+    edges.forEach(e => {
       e.remove();
-      e.sourceGroup.removeProperty(e.model.target);
-      e.targetGroup.removeProperty(e.model.source);
+      propertyIds = propertyIds.concat(e.sourceGroup.removeProperty(e.model.target));
+      propertyIds = propertyIds.concat(e.targetGroup.removeProperty(e.model.source));
       e.sourceGroup.updateHighlight();
       e.targetGroup.updateHighlight();
     });
     this.group.remove();
+    return edges.map(prop('id')).concat(propertyIds);
   }
 
   removeProperty(id) {
@@ -110,11 +113,13 @@ class GroupController {
       return is(Method, w) && (id === target || id === source);
     }, this.childrenWrappers);
     const affectedIds = keys(objectPropertiesAffected);
+    const affectedEntityIds = values(map(prop('id'), objectPropertiesAffected));
     forEachObjIndexed(w => w.remove(), objectPropertiesAffected);
 
     this.childrenWrappers = omit(affectedIds, this.childrenWrappers);
     this.propertyWrappers = omit(affectedIds, this.propertyWrappers);
     this.updatePropertyContainer();
+    return affectedEntityIds;
   }
 
   updateHighlight(shouldHighlight) {
