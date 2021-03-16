@@ -164,7 +164,6 @@ const dispatchProps = {
   onSetOptional: pipe(ModelState.togglePropertyOptional, dispatch),
   onChangePropertyTarget: pipe(ModelState.changePropertyTarget, dispatch),
   onCreateNewPropertyTarget: (propertyId, target) => {
-    // dispatch(ModelState.createNewPropertyTarget(propertyId));
     Graph.onCreateNewEntity(target);
   },
 };

@@ -4,7 +4,15 @@ import { List, Card, Space, Checkbox, Tooltip, Input } from 'antd';
 import {connect} from 'react-redux';
 import {PropertyEntry} from './PropertyEntry';
 import {PrefixedText} from './PrefixedText';
-import {RightOutlined, DownOutlined, EyeInvisibleOutlined, EyeOutlined, InfoCircleOutlined, DeleteOutlined} from '@ant-design/icons';
+import {
+  RightOutlined,
+  DownOutlined,
+  EyeInvisibleOutlined,
+  EyeOutlined,
+  InfoCircleOutlined,
+  DeleteOutlined,
+  CopyOutlined
+} from '@ant-design/icons';
 import styled from '@emotion/styled';
 import { getClassById, getShowHumanReadable } from '@@selectors';
 import * as Controls from './Controls';
@@ -61,7 +69,7 @@ class EntityEntryComponent extends React.Component {
 
   getControls = () => {
     const {id, entity} = this.props;
-    const {toggleSelected, toggleHidden, updateName, deleteClass} = dispatchProps;
+    const {toggleSelected, toggleHidden, updateName, deleteClass, onCopyEntity} = dispatchProps;
     const {selected, hidden, dummy} = entity;
     const {varName} = this.state;
     return (
@@ -83,6 +91,12 @@ class EntityEntryComponent extends React.Component {
               checked={selected}
             />
           </Tooltip>
+          <Controls.Toggle
+            flag={true}
+            tooltipTextOn="Copy entity"
+            onClick={() => onCopyEntity(id)}
+            OnIcon={CopyOutlined}
+          />
           <Controls.Toggle
             flag={true}
             tooltipTextOn="Delete entity"
@@ -154,9 +168,11 @@ const dispatchProps = {
   toggleHidden: pipe(ModelState.toggleClassHidden, dispatch),
   toggleSelected: pipe(ModelState.toggleClassSelected, dispatch),
   updateName: pipe(ModelState.updateClassName, dispatch),
+  onCopyEntity: id => {
+    Graph.onCreateNewEntity(id);
+  },
   deleteClass: id => {
     Graph.onDeleteEntity(id);
-    dispatch(ModelState.deleteClass(id));
   }
 };
 

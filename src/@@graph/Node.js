@@ -112,6 +112,14 @@ const NodeImplementation = {
       height: 12
     };
 
+    const deleteNodeIconAttrs = {
+      x: -30,
+      y: -14,
+      img: 'images/delete-icon.png',
+      width: 12,
+      height: 12
+    };
+
     const selectAllIconAttrs = {
       x: -15,
       y: 3,
@@ -134,6 +142,8 @@ const NodeImplementation = {
     group.entityId = id;
     const result = E.create(group, [
       E.Node({id, attrs: containerAttrs, name: 'node-container', data: {varName: getSuffix(id), type: id} }),
+      E.Rect({id: `node_${id}-delete-node-container`, name: 'delete-node-container', attrs: {x: -32, y: -16, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}}),
+      E.Image({id: `node_${id}-delete-node-icon`, name: 'delete-node-icon', attrs: deleteNodeIconAttrs}),
       E.Rect({id: `node_${id}-copy-node-container`, name: 'copy-node-container', attrs: {x: -16, y: -16, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}}),
       E.Image({id: `node_${id}-copy-node-icon`, name: 'copy-node-icon', attrs: copyNodeIconAttrs}),
       E.Rect({id: `node_${id}-varName-container`, attrs: {x: 0, y: -16, width: 32, height: 16, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'node-varName-container'}),

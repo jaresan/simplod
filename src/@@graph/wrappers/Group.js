@@ -88,7 +88,7 @@ class GroupController {
 
   onBlur(target) {
     this.state.hover = false;
-    this.updateHighlight(false);
+    this.updateHighlight(this.state.selected);
     this.getEdges().forEach(e => e.onBlur());
     return propagate(target, 'onBlur');
   }
@@ -98,6 +98,8 @@ class GroupController {
       e.remove();
       e.sourceGroup.removeProperty(e.model.target);
       e.targetGroup.removeProperty(e.model.source);
+      e.sourceGroup.updateHighlight();
+      e.targetGroup.updateHighlight();
     });
     this.group.remove();
   }
@@ -116,7 +118,10 @@ class GroupController {
   }
 
   updateHighlight(shouldHighlight) {
-    const nodesAffected = ['node-varName-container', 'copy-node-container', 'node-container', 'property-container', 'select-all-container', 'expand-icon-container', 'hide-icon-container'];
+    if (typeof shouldHighlight === 'undefined') {
+      shouldHighlight = this.state.selected;
+    }
+    const nodesAffected = ['delete-node-container', 'node-varName-container', 'copy-node-container', 'node-container', 'property-container', 'select-all-container', 'expand-icon-container', 'hide-icon-container'];
     const updateStyle = shouldHighlight ? this.applyStyle.bind(this) : this.cancelStyle.bind(this);
     nodesAffected.forEach(name => updateStyle(this.children[name], ['titleOutline']));
     if (shouldHighlight) {
@@ -199,7 +204,6 @@ class GroupController {
     this.handler.batchSelect(entityTypes.property, Object.values(this.propertyWrappers).map(prop('id')));
     // FIXME: Select edges as well / select them through properties? / add the highlight logic in edge wrappers directly? --> check any property selected
     this.updatePropertyContainer();
-    this.toggleExpanded(true);
   }
 
   onClick(target) {
@@ -211,6 +215,8 @@ class GroupController {
       this.selectAllProperties();
     } else if (name.includes('hide')) {
       this.handler.toggleEntityHidden(this.entityId, !this.state.hidden);
+    } else if (name.includes('delete')) {
+      Graph.onDeleteEntity(this.entityId);
     } else if (name.includes('copy')) {
       Graph.copyNode(this.group);
     } else {
@@ -248,6 +254,7 @@ class GroupController {
 
   stateChanged({target, state, lastState}) {
     if (state.selected !== lastState.selected) {
+      this.state.selected = state.selected;
       this.updateHighlight(state.selected);
       this.updatePropertyContainer();
     }

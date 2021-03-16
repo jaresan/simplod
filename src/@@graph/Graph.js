@@ -6,6 +6,7 @@ import { getNodes, NODE_TYPE } from '@@graph/Node';
 import { getEdges, Edge as GraphEdge } from '@@graph/Edge';
 import { dispatch } from '@@app-state';
 import { registerNewClassWithCallback } from '@@app-state/model/state';
+import * as ModelState from '@@app-state/model/state';
 
 const getWrapper = n => {
   if (!n) return;
@@ -135,6 +136,7 @@ export class Graph {
 
   static onDeleteEntity(id) {
     Handler.recipients[id].getGroupController().remove();
+    dispatch(ModelState.deleteClass(id));
   }
 
   static copyNode({cfg}) {
