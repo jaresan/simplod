@@ -15,8 +15,13 @@ import { getClasses, getPropertyById } from '@@selectors';
 import { connect } from 'react-redux';
 import * as ModelState from '@@app-state/model/state';
 import {dispatch} from '@@app-state';
-import { PropertyTargetSelect } from '@@components/entityList/PropertyTargetSelect';
 import { VarNameContainer } from '@@components/controls/var-name-container';
+import { Graph } from '@@graph';
+import { translated } from '@@localization';
+
+const StyledInput = styled(Input)`	
+	width: 128px;	
+`;
 
 const RowContainer = styled(List.Item)`
   display: flex;
@@ -64,8 +69,7 @@ class PropertyEntryComponent extends React.Component {
 
     if (dataProperty) {
       return <VarNameContainer>
-        <Input
-          style={{width: 128}}
+        <StyledInput
           type="text"
           disabled={!asVariable}
           value={varName}
@@ -76,15 +80,30 @@ class PropertyEntryComponent extends React.Component {
       </VarNameContainer>;
     }
 
-    return <VarNameContainer>
-      <PropertyTargetSelect
-        target={target}
-        targetType={targetType}
-        possibleTargets={pickBy(propEq('type', targetType), classes)}
-        onChangeTarget={t => dispatchProps.onChangePropertyTarget(id, t)}
-        onCreateNew={() => dispatchProps.onCreateNewPropertyTarget(id)}
-      />
-    </VarNameContainer>;
+    // If not a data property, it's bound to an already existing entity
+    if (!property.dataProperty) {
+      return <Tooltip
+        title={translated('This variable can\'t be renamed because it is bound to an existing entity. To change its name, rename the target entity.')}
+      >
+        <div>
+          <StyledInput
+            type="text"
+            disabled
+            value={property.varName}
+          />
+        </div>
+      </Tooltip>;
+    }
+
+    // return <VarNameContainer>
+    //   <PropertyTargetSelect
+    //     target={target}
+    //     targetType={targetType}
+    //     possibleTargets={pickBy(propEq('type', targetType), classes)}
+    //     onChangeTarget={t => dispatchProps.onChangePropertyTarget(id, t)}
+    //     onCreateNew={() => dispatchProps.onCreateNewPropertyTarget(id, target)}
+    //   />
+    // </VarNameContainer>;
   };
 
   render() {
@@ -144,7 +163,10 @@ const dispatchProps = {
   onSetName: pipe(ModelState.savePropertyName, dispatch),
   onSetOptional: pipe(ModelState.togglePropertyOptional, dispatch),
   onChangePropertyTarget: pipe(ModelState.changePropertyTarget, dispatch),
-  onCreateNewPropertyTarget: pipe(ModelState.createNewPropertyTarget, dispatch),
+  onCreateNewPropertyTarget: (propertyId, target) => {
+    // dispatch(ModelState.createNewPropertyTarget(propertyId));
+    Graph.onCreateNewEntity(target);
+  },
 };
 
 export const PropertyEntry = connect(mapStateToProps, null)(PropertyEntryComponent);

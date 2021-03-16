@@ -55,6 +55,11 @@ class GroupController {
     return this.edges;
   }
 
+  recalculateEdges() {
+    const container = this.childrenWrappers['node-container'].getContainerNode();
+    this.edges = container.getOutEdges().concat(container.getInEdges()).map(e => e.get('wrapper'));
+  }
+
   // FIXME: Apply styles as an array so that multiple different effects can take place at once and cancelling them
   // wouldn't mess up styles applied later
   applyStyle(target, stylePath) {

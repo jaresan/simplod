@@ -129,6 +129,10 @@ export class Graph {
     this.instance.destroy();
   }
 
+  static onCreateNewEntity(id) {
+    this.copyNode(Handler.recipients[id].getGroupController().group);
+  }
+
   static copyNode({cfg}) {
     dispatch(registerNewClassWithCallback(cfg.id, ({newId: id, instance, properties}) => {
       this.instance.addItem('node', {
@@ -143,14 +147,27 @@ export class Graph {
         .filter(p => !p.dataProperty)
         .forEach(p => {
           const {source, target} = p;
-          Handler.recipients[source].getGroupController().group.get('addProperty')(p)
-          this.instance.addItem('edge', GraphEdge({
+
+          if (target === id) {
+            Handler.recipients[source].getGroupController().group.get('addProperty')(p);
+          }
+
+          const edge = this.instance.addItem('edge', GraphEdge({
             source, target,
             data: {
               source, target
             }
           }));
-          // FIXME: Hide edges if target items hidden
+
+          if (
+            path(['recipients', target, 'state', 'hidden'], Handler)
+            || path(['recipients', source, 'state', 'hidden'], Handler)
+          ) {
+            edge.hide();
+          }
+
+          Handler.recipients[source].getGroupController().recalculateEdges();
+          Handler.recipients[target].getGroupController().recalculateEdges();
         })
     }))
   }
