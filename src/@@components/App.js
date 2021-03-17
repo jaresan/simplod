@@ -91,7 +91,7 @@ class App extends Component {
               <GraphContainer />
             </div>
             <div style={getMenuStyle(horizontalLayout)}>
-              {cartesianProduct && <Alert message={translated('Current selection is not a connected graph and will result in querying a cartesian product.')} banner />}
+              {cartesianProduct && <Alert message={translated('Current selection is not a connected graph and might result in querying a cartesian product.')} banner />}
               <Tabs className={TabHeight} style={{width: '100%', height: '90vh'}} onChange={this.updateTabKey}>
                 <TabPane tab="Available" key="available">
                   <EntityListContainer>

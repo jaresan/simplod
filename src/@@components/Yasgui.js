@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect, Provider } from 'react-redux';
-import { getQuery, getEndpoint, getLimit, getLimitEnabled, getInstance } from '@@selectors';
+import { getQuery, getEndpoint, getLimit, getLimitEnabled, getInstance, getCartesianProduct } from '@@selectors';
 import styled from '@emotion/styled';
 import YASGUI from '@triply/yasgui';
 import * as YasguiState from '@@app-state/yasgui/state';
-import "@triply/yasgui/build/yasgui.min.css";
 import { dispatchSet, getState, store } from '@@app-state';
-import { InputNumber, Modal, Switch } from 'antd';
+import { Alert, InputNumber, Modal, Switch, Space } from 'antd';
 import * as SettingsState from '@@app-state/settings/state';
+import { translated } from '@@localization';
+import "@triply/yasgui/build/yasgui.min.css";
 
 const YasguiContainer = styled.div`
 	width: fit-content;
@@ -64,10 +65,18 @@ class Yasgui extends Component {
 	};
 
 	render() {
-		const {limit, limitEnabled} = this.props;
+		const {limit, limitEnabled, cartesianProduct} = this.props;
 		return <>
-			<span>Maximum number of results (limit): <InputNumber value={limit} onChange={this.updateLimit} />Use limit: <Switch checked={limitEnabled} onChange={this.toggleLimit}/></span>
-			<YasguiContainer ref={ref => this.yasguiContainer = ref}/>
+			{cartesianProduct &&
+				<div style={{margin: '-12px 0 12px 0'}}>
+					<Alert message={translated('Current selection is not a connected graph and might result in querying a cartesian product.')} banner />
+				</div>
+			}
+			<Space direction="vertical">
+				<div>Maximum number of results (limit): <InputNumber value={limit} onChange={this.updateLimit} /></div>
+				<div>Use limit: <Switch checked={limitEnabled} onChange={this.toggleLimit}/></div>
+				<YasguiContainer ref={ref => this.yasguiContainer = ref}/>
+			</Space>
 		</>;
 	}
 }
@@ -76,7 +85,8 @@ const mapStateToProps = appState => ({
 	query: getQuery(appState),
 	endpoint: getEndpoint(appState),
 	limit: getLimit(appState),
-	limitEnabled: getLimitEnabled(appState)
+	limitEnabled: getLimitEnabled(appState),
+	cartesianProduct: getCartesianProduct(appState)
 });
 
 const dispatchProps = {
