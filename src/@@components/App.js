@@ -14,15 +14,25 @@ import { loadGraphFromURL } from '@@actions/model/load-graph';
 import { getCartesianProduct, getHorizontalLayout } from '@@selectors';
 import { connect } from 'react-redux';
 import { translated } from '@@localization';
+import {css} from '@emotion/css';
 
-const {TabPane} = Tabs;
 const {Content, Footer} = Layout;
+
+const TabHeight = css`
+  .ant-tabs-content {
+    height: 100%;
+  }
+`;
+
+const TabPane = styled(Tabs.TabPane)`
+  height: 100%;
+`;
 
 const EntityListContainer = styled.div`
   border: solid 1px black;
   overflow: auto;
   width: 100%;
-  height: 512px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -82,7 +92,7 @@ class App extends Component {
             </div>
             <div style={getMenuStyle(horizontalLayout)}>
               {cartesianProduct && <Alert message={translated('Current selection is not a connected graph and will result in querying a cartesian product.')} banner />}
-              <Tabs style={{width: '100%'}} onChange={this.updateTabKey}>
+              <Tabs className={TabHeight} style={{width: '100%', height: '90vh'}} onChange={this.updateTabKey}>
                 <TabPane tab="Available" key="available">
                   <EntityListContainer>
                     <EntityList />
