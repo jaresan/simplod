@@ -173,15 +173,22 @@ export class Graph {
     dispatch(ModelState.deleteClass(id));
   }
 
-  static copyNode({cfg}) {
+  static copyNode(node) {
+    const {cfg} = node;
+
+    const {x, y, width, height} = node.get('item').getBBox();
     dispatch(registerNewClassWithCallback(cfg.id, ({newId: id, instance, properties}) => {
-      this.instance.addItem('node', {
+      const node = this.instance.addItem('node', {
         id,
         varName: instance.varName,
         label: instance.type,
         data: cfg.data,
-        type: NODE_TYPE
+        type: NODE_TYPE,
+        x: x + width / 2,
+        y: y + 2*height
       });
+
+      node.toFront();
 
       properties
         .filter(p => !p.dataProperty)
