@@ -1,11 +1,11 @@
-import { curry, fromPairs, path } from 'ramda';
+import { curry, fromPairs, path, view } from 'ramda';
 import {Canvas as CanvasWrapper} from '@@graph/wrappers';
 import {Property, Node, Edge} from '@@graph/handlers';
 import { Handler } from '@@graph/handlers/Handler';
 import { getNodes, NODE_TYPE } from '@@graph/Node';
 import { getEdges, Edge as GraphEdge } from '@@graph/Edge';
 import { dispatch } from '@@app-state';
-import { registerNewClassWithCallback } from '@@app-state/model/state';
+import { registerNewClassWithCallback, properties } from '@@app-state/model/state';
 import * as ModelState from '@@app-state/model/state';
 
 const getWrapper = n => {
@@ -39,6 +39,33 @@ export class Graph {
     this.instance = graph;
   }
 
+  static transformModelToGraphData(state) {
+    const props = view(properties, state);
+
+    return Object.values(props)
+      .reduce((acc, {dataProperty, source, target, predicate}) => {
+        acc[source] = acc[source] || {
+          dataProperties: {},
+          objectProperties: {}
+        };
+
+        if (dataProperty) {
+          acc[source].dataProperties[predicate] = acc[source].dataProperties[predicate] || [];
+          acc[source].dataProperties[predicate].push(target);
+        } else {
+          acc[source].objectProperties[predicate] = acc[source].objectProperties[predicate] || [];
+          acc[source].objectProperties[predicate].push(target);
+        }
+
+        return acc;
+      }, {});
+  }
+
+  static loadDataFromState(state) {
+    const data = this.transformModelToGraphData(state);
+    this.loadData(data);
+  }
+
   static loadData(data) {
     console.time('getNodes')
     const nodes = getNodes(data);
@@ -50,7 +77,10 @@ export class Graph {
   }
 
   static getBBoxesById() {
-    return fromPairs(this.instance.getNodes().map(n => [n.get('id'), {bbox: n.getBBox()}]));
+    return fromPairs(this.instance
+      .getNodes()
+      .filter(n => !n.getContainer().destroyed)
+      .map(n => [n.get('id'), {bbox: n.getBBox()}]));
   }
 
   static updatePositions(dataById) {
@@ -91,7 +121,11 @@ export class Graph {
     console.timeEnd('this.registerBehaviours();')
 
     console.time('this.graph.data();')
-    this.loadData(data);
+    if (view(ModelState.rootLens, data)) {
+      this.loadDataFromState(data);
+    } else {
+      this.loadData(data);
+    }
     console.timeEnd('this.graph.data();')
 
     console.time('this.render();')
