@@ -211,23 +211,25 @@ export class Graph {
             }
           });
 
-          const edge = this.instance.addItem('edge', GraphEdge({
-            source, target,
-            propertyIds,
-            data: {
-              source, target
+          if (source !== target) {  // There should be no loop edges
+            const edge = this.instance.addItem('edge', GraphEdge({
+              source, target,
+              propertyIds,
+              data: {
+                source, target
+              }
+            }));
+
+            if (
+              path(['recipients', target, 'state', 'hidden'], Handler)
+              || path(['recipients', source, 'state', 'hidden'], Handler)
+            ) {
+              edge.hide();
             }
-          }));
 
-          if (
-            path(['recipients', target, 'state', 'hidden'], Handler)
-            || path(['recipients', source, 'state', 'hidden'], Handler)
-          ) {
-            edge.hide();
+            Handler.recipients[source].getGroupController().recalculateEdges();
+            Handler.recipients[target].getGroupController().recalculateEdges();
           }
-
-          Handler.recipients[source].getGroupController().recalculateEdges();
-          Handler.recipients[target].getGroupController().recalculateEdges();
         })
     }))
   }
