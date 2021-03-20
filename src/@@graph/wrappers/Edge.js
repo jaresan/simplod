@@ -7,7 +7,15 @@ const styles = {
     'edge-shape': {
       lineWidth: 3,
       opacity: 0.8
-    }
+    },
+    position: 0 // Determines style overriding priorities
+  },
+  highlighted: {
+    'edge-shape': {
+      stroke: '#15d03f',
+      opacity: 0.5
+    },
+    position: 1
   },
   selected: {
     'edge-shape': {
@@ -18,7 +26,8 @@ const styles = {
     'text-shape': {
       stroke: 'black',
       opacity: 1
-    }
+    },
+    position: 2
   }
 };
 
@@ -69,6 +78,7 @@ export class Edge extends Wrapper {
         const name = shape.get('name');
         const style = Object
           .entries(this.state)
+          .sort(([key1], [key2]) => this.styles[key2].position - this.styles[key1].position)
           .reduce((acc, [key, value]) =>
               Object.assign(acc, value ? path([key, name], this.styles) : {}),
             {...this.defaultStyle[name]}
@@ -80,10 +90,11 @@ export class Edge extends Wrapper {
   setState(state) {
     const {selected} = this.state;
     Object.assign(this.state, state);
+
     if (selected !== state.selected) {
-      this.updateNodeHighlights();
-      this.updateStyles();
+      // this.updateNodeHighlights();
     }
+    // this.updateStyles();
   };
 
   updateNodeHighlights() {

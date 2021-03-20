@@ -1,4 +1,4 @@
-import { pick, assocPath, path, identity, map, filter, prop, forEachObjIndexed, sortBy, is, omit, keys, values } from 'ramda';
+import { pick, assocPath, path, identity, map, filter, prop, forEachObjIndexed, sortBy, is, omit, keys, values, uniq } from 'ramda';
 import {Property, Method, Node} from '@@graph/wrappers/index';
 import { Handler } from '@@graph/handlers/Handler';
 import { measureText, PROP_LINE_HEIGHT } from '@@graph/Node';
@@ -49,7 +49,7 @@ class GroupController {
   getEdges() {
     if (!this.edges) {
       const container = this.childrenWrappers['node-container'].getContainerNode();
-      this.edges = container.getOutEdges().concat(container.getInEdges()).map(e => e.get('wrapper'));
+      this.edges = uniq(container.getOutEdges().concat(container.getInEdges()).map(e => e.get('wrapper')));
     }
 
     return this.edges;

@@ -17,7 +17,7 @@ import { translated } from '@@localization';
 import { getSelectedEdgePropertyIds, getProperties, getClasses } from '@@selectors';
 import {connect} from 'react-redux';
 import { PropertyList } from '@@components/entityList/property-list';
-import { pick, values } from 'ramda';
+import { isEmpty, pick, values } from 'ramda';
 
 // const minimap = new G6.Minimap({
 //   size: [300, 300],
@@ -117,7 +117,7 @@ class GraphContainerComponent extends React.Component {
   hideUnselected = () => dispatch(ModelState.hideUnselected);
 
   render() {
-    const {selectedEdgePropertyIds, entities} = this.props;
+    const {properties, entities} = this.props;
     return <Container ref={ref => this.containerNode = ref}>
       <GraphMountContainer ref={ref => this.mountNode = ref}>
         <GraphControlsContainer>
@@ -139,8 +139,8 @@ class GraphContainerComponent extends React.Component {
             </Tooltip>
           </Space>
           {
-            !!selectedEdgePropertyIds.length && <PropertyListContainer>
-              <PropertyList propertyIds={selectedEdgePropertyIds} entities={values(entities)} />
+            !!properties && <PropertyListContainer>
+              <PropertyList properties={properties} entities={entities} />
             </PropertyListContainer>
           }
         </GraphControlsContainer>
@@ -152,10 +152,18 @@ class GraphContainerComponent extends React.Component {
 const mapStateToProps = appState => {
   const selectedEdgePropertyIds = getSelectedEdgePropertyIds(appState);
   if (selectedEdgePropertyIds.length) {
-    const property = getProperties(appState)[selectedEdgePropertyIds[0]];
-    const entities = pick([property.target, property.source], getClasses(appState));
+    const properties = pick(selectedEdgePropertyIds, getProperties(appState));
+
+    if (isEmpty(properties)) {
+      return {
+        properties: null
+      };
+    }
+
+    const {source, target} = values(properties)[0];
+    const entities = pick([source, target], getClasses(appState));
     return {
-      selectedEdgePropertyIds,
+      properties,
       entities
     }
   }
