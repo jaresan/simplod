@@ -1,4 +1,4 @@
-import { pick, assocPath, path, identity, map, filter, prop, forEachObjIndexed, sortBy, is, omit, keys, values } from 'ramda';
+import { pick, assocPath, path, identity, map, filter, prop, forEachObjIndexed, sortBy, is, omit, keys, values, uniq, any } from 'ramda';
 import {Property, Method, Node} from '@@graph/wrappers/index';
 import { Handler } from '@@graph/handlers/Handler';
 import { measureText, PROP_LINE_HEIGHT } from '@@graph/Node';
@@ -49,10 +49,14 @@ class GroupController {
   getEdges() {
     if (!this.edges) {
       const container = this.childrenWrappers['node-container'].getContainerNode();
-      this.edges = container.getOutEdges().concat(container.getInEdges()).map(e => e.get('wrapper'));
+      this.edges = uniq(container.getOutEdges().concat(container.getInEdges()).map(e => e.get('wrapper')));
     }
 
     return this.edges;
+  }
+
+  hasSelectedEdges() {
+    return this.getEdges().some(path(['state', 'selected']));
   }
 
   recalculateEdges() {
@@ -122,10 +126,12 @@ class GroupController {
     return affectedEntityIds;
   }
 
+  hasSelectedProperties() {
+    return any(prop('selected'), values(filter(is(Method), this.propertyWrappers)));
+  }
+
   updateHighlight(shouldHighlight) {
-    if (typeof shouldHighlight === 'undefined') {
-      shouldHighlight = this.state.selected;
-    }
+    shouldHighlight = this.hasSelectedEdges() || this.state.selected || shouldHighlight;
     const nodesAffected = ['delete-node-container', 'node-varName-container', 'copy-node-container', 'node-container', 'property-container', 'select-all-container', 'expand-icon-container', 'hide-icon-container'];
     const updateStyle = shouldHighlight ? this.applyStyle.bind(this) : this.cancelStyle.bind(this);
     nodesAffected.forEach(name => updateStyle(this.children[name], ['titleOutline']));

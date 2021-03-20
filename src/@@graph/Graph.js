@@ -1,11 +1,11 @@
-import { curry, fromPairs, path } from 'ramda';
+import { curry, fromPairs, path, view, groupBy, head, prop } from 'ramda';
 import {Canvas as CanvasWrapper} from '@@graph/wrappers';
 import {Property, Node, Edge} from '@@graph/handlers';
 import { Handler } from '@@graph/handlers/Handler';
 import { getNodes, NODE_TYPE } from '@@graph/Node';
 import { getEdges, Edge as GraphEdge } from '@@graph/Edge';
 import { dispatch } from '@@app-state';
-import { registerNewClassWithCallback } from '@@app-state/model/state';
+import { registerNewClassWithCallback, properties } from '@@app-state/model/state';
 import * as ModelState from '@@app-state/model/state';
 
 const getWrapper = n => {
@@ -39,6 +39,33 @@ export class Graph {
     this.instance = graph;
   }
 
+  static transformModelToGraphData(state) {
+    const props = view(properties, state);
+
+    return Object.values(props)
+      .reduce((acc, {dataProperty, source, target, predicate}) => {
+        acc[source] = acc[source] || {
+          dataProperties: {},
+          objectProperties: {}
+        };
+
+        if (dataProperty) {
+          acc[source].dataProperties[predicate] = acc[source].dataProperties[predicate] || [];
+          acc[source].dataProperties[predicate].push(target);
+        } else {
+          acc[source].objectProperties[predicate] = acc[source].objectProperties[predicate] || [];
+          acc[source].objectProperties[predicate].push(target);
+        }
+
+        return acc;
+      }, {});
+  }
+
+  static loadDataFromState(state) {
+    const data = this.transformModelToGraphData(state);
+    this.loadData(data);
+  }
+
   static loadData(data) {
     console.time('getNodes')
     const nodes = getNodes(data);
@@ -50,7 +77,10 @@ export class Graph {
   }
 
   static getBBoxesById() {
-    return fromPairs(this.instance.getNodes().map(n => [n.get('id'), {bbox: n.getBBox()}]));
+    return fromPairs(this.instance
+      .getNodes()
+      .filter(n => !n.getContainer().destroyed)
+      .map(n => [n.get('id'), {bbox: n.getBBox()}]));
   }
 
   static updatePositions(dataById) {
@@ -91,7 +121,11 @@ export class Graph {
     console.timeEnd('this.registerBehaviours();')
 
     console.time('this.graph.data();')
-    this.loadData(data);
+    if (view(ModelState.rootLens, data)) {
+      this.loadDataFromState(data);
+    } else {
+      this.loadData(data);
+    }
     console.timeEnd('this.graph.data();')
 
     console.time('this.render();')
@@ -136,44 +170,66 @@ export class Graph {
 
   static onDeleteEntity(id) {
     Handler.remove(id);
+    this.instance.removeItem(id);
     dispatch(ModelState.deleteClass(id));
   }
 
-  static copyNode({cfg}) {
+  static copyNode(node) {
+    const {cfg} = node;
+
+    const {x, y, width, height} = node.get('item').getBBox();
     dispatch(registerNewClassWithCallback(cfg.id, ({newId: id, instance, properties}) => {
-      this.instance.addItem('node', {
+      const node = this.instance.addItem('node', {
         id,
         varName: instance.varName,
         label: instance.type,
         data: cfg.data,
-        type: NODE_TYPE
+        type: NODE_TYPE,
+        x: x + width / 2,
+        y: y - 2*height
       });
 
-      properties
-        .filter(p => !p.dataProperty)
-        .forEach(p => {
-          const {source, target} = p;
+      node.toFront();
 
-          if (target === id) {
-            Handler.recipients[source].getGroupController().group.get('addProperty')(p);
-          }
+      const groupedProperties =
+        groupBy(
+          ([id, p]) => [p.target, p.source].sort().join('-'),
+          Object.entries(properties).filter(([id, p]) => !p.dataProperty)
+        );
 
-          const edge = this.instance.addItem('edge', GraphEdge({
-            source, target,
-            data: {
-              source, target
+
+      // Create edges for target/source pair
+      Object.values(groupedProperties)
+        .forEach(propertiesForGivenPair => {
+          const propertyIds = propertiesForGivenPair.map(head);
+          const properties = propertiesForGivenPair.flatMap(prop(1));
+          const {source, target} = properties[0];
+
+          properties.forEach(p => {
+            if (p.target === id) {
+              Handler.recipients[p.source].getGroupController().group.get('addProperty')(p);
             }
-          }));
+          });
 
-          if (
-            path(['recipients', target, 'state', 'hidden'], Handler)
-            || path(['recipients', source, 'state', 'hidden'], Handler)
-          ) {
-            edge.hide();
+          if (source !== target) {  // There should be no loop edges
+            const edge = this.instance.addItem('edge', GraphEdge({
+              source, target,
+              propertyIds,
+              data: {
+                source, target
+              }
+            }));
+
+            if (
+              path(['recipients', target, 'state', 'hidden'], Handler)
+              || path(['recipients', source, 'state', 'hidden'], Handler)
+            ) {
+              edge.hide();
+            }
+
+            Handler.recipients[source].getGroupController().recalculateEdges();
+            Handler.recipients[target].getGroupController().recalculateEdges();
           }
-
-          Handler.recipients[source].getGroupController().recalculateEdges();
-          Handler.recipients[target].getGroupController().recalculateEdges();
         })
     }))
   }

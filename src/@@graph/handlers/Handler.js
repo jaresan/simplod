@@ -64,7 +64,6 @@ export class Handler {
   static onStateChange(state) {
     if (state === this.lastState) return;
 
-    this.lastState = state;
     Object.values(this.recipients)
       .forEach(recipient => {
         // FIXME: @reference don't use 'entities'
@@ -74,6 +73,7 @@ export class Handler {
           // e.g. stateToStyle = {selected: {selected: true}} and then react to the child keys
         recipient.onStateChanged(subState);
       });
+    this.lastState = state;
   };
 }
 

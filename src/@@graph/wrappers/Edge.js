@@ -1,13 +1,23 @@
 import {Wrapper} from '@@graph/wrappers/Wrapper';
-import {path} from 'ramda';
+import {path, view, filter, prop, isEmpty} from 'ramda';
 import {Edge as EdgeHandler} from '@@graph/handlers';
+import { propertiesByIds } from '@@app-state/model/state';
+import { getState } from '@@app-state';
 
 const styles = {
   hover: {
     'edge-shape': {
       lineWidth: 3,
       opacity: 0.8
-    }
+    },
+    position: 0 // Determines style overriding priorities
+  },
+  highlighted: {
+    'edge-shape': {
+      stroke: '#15d03f',
+      opacity: 0.5
+    },
+    position: 1
   },
   selected: {
     'edge-shape': {
@@ -18,7 +28,8 @@ const styles = {
     'text-shape': {
       stroke: 'black',
       opacity: 1
-    }
+    },
+    position: 2
   }
 };
 
@@ -41,7 +52,7 @@ export class Edge extends Wrapper {
   handler = EdgeHandler;
 
   constructor(edge) {
-    const {source, target} = edge.getModel();
+    const {source, target, propertyIds} = edge.getModel();
     const id = `edge_${source}-${target}`;
 
     super(id);
@@ -52,7 +63,8 @@ export class Edge extends Wrapper {
       targetGroup: edge.getTarget().getContainer().get('wrapper'),
       model: {
         source,
-        target
+        target,
+        propertyIds
       },
     });
 
@@ -68,6 +80,7 @@ export class Edge extends Wrapper {
         const name = shape.get('name');
         const style = Object
           .entries(this.state)
+          .sort(([key1], [key2]) => this.styles[key2].position - this.styles[key1].position)
           .reduce((acc, [key, value]) =>
               Object.assign(acc, value ? path([key, name], this.styles) : {}),
             {...this.defaultStyle[name]}
@@ -76,19 +89,26 @@ export class Edge extends Wrapper {
       });
   };
 
-  togglePropertiesSelected(flag) {
-    this.sourceGroup.togglePropertiesSelected(this.model.target, flag);
-    this.targetGroup.togglePropertiesSelected(this.model.source, flag);
-  }
-
   setState(state) {
     const {selected} = this.state;
     Object.assign(this.state, state);
-    if (selected !== state.selected) {
+
+    this.state.selected = this.isSelected();
+    if (selected !== this.state.selected) {
       this.updateNodeHighlights();
-      this.updateStyles();
     }
+    this.updateStyles();
   };
+
+  isSelected() {
+    return !isEmpty(filter(prop('selected'), view(propertiesByIds(this.model.propertyIds), getState())));
+  }
+
+  updateSelected() {
+    this.setState({
+      selected: this.isSelected()
+    });
+  }
 
   updateNodeHighlights() {
     this.sourceGroup.updateHighlight();
@@ -96,8 +116,7 @@ export class Edge extends Wrapper {
   }
 
   onClick() {
-    this.onToggleSelect();
-    this.togglePropertiesSelected(this.state.selected);
+    this.handler.onClick(this);
   };
 
   hide() {
@@ -114,6 +133,12 @@ export class Edge extends Wrapper {
     this.edge.destroy();
     this.sourceGroup.recalculateEdges();
     this.targetGroup.recalculateEdges();
+  }
+
+  onBlur() {
+    this.setState({hover: false});
+    this.sourceGroup.updateHighlight(false);
+    this.targetGroup.updateHighlight(false);
   }
 
   onHover() {

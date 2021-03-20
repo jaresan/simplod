@@ -14,6 +14,10 @@ import {
 } from '@ant-design/icons';
 import { openYasguiModal } from '@@components/Yasgui';
 import { translated } from '@@localization';
+import { getSelectedEdgePropertyIds, getProperties, getClasses } from '@@selectors';
+import {connect} from 'react-redux';
+import { PropertyList } from '@@components/entityList/property-list';
+import { isEmpty, pick, values } from 'ramda';
 
 // const minimap = new G6.Minimap({
 //   size: [300, 300],
@@ -23,7 +27,7 @@ import { translated } from '@@localization';
 
 const Container = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 90vh;
 `;
 
 const GraphMountContainer = styled.div`
@@ -38,9 +42,20 @@ const GraphControlsContainer = styled.div`
   right: 16px;
   top: 8px;
   font-size: 32px;
+  padding: 4px 12px;
+  border: solid 1px black;
+  border-radius: 3%;
+  background: white;
 `;
 
-export class GraphContainer extends React.Component {
+const PropertyListContainer = styled.div`
+  position: absolute;
+  right: 0;
+  top: calc(100% + 16px);
+  border: solid 1px black;
+`;
+
+class GraphContainerComponent extends React.Component {
   componentDidMount() {
     this.instantiateGraph();
     this.resizeObserver = new ResizeObserver(this.onContainerResize);
@@ -102,6 +117,7 @@ export class GraphContainer extends React.Component {
   hideUnselected = () => dispatch(ModelState.hideUnselected);
 
   render() {
+    const {properties, entities} = this.props;
     return <Container ref={ref => this.containerNode = ref}>
       <GraphMountContainer ref={ref => this.mountNode = ref}>
         <GraphControlsContainer>
@@ -122,9 +138,40 @@ export class GraphContainer extends React.Component {
               <PlayCircleFilled onClick={() => openYasguiModal({runQuery: true})} />
             </Tooltip>
           </Space>
+          {
+            !!properties && <PropertyListContainer>
+              <PropertyList properties={properties} entities={entities} />
+            </PropertyListContainer>
+          }
         </GraphControlsContainer>
       </GraphMountContainer>
     </Container>;
   }
 }
+
+const mapStateToProps = appState => {
+  const selectedEdgePropertyIds = getSelectedEdgePropertyIds(appState);
+  if (selectedEdgePropertyIds.length) {
+    const properties = pick(selectedEdgePropertyIds, getProperties(appState));
+
+    if (isEmpty(properties)) {
+      return {
+        properties: null
+      };
+    }
+
+    const {source, target} = values(properties)[0];
+    const entities = pick([source, target], getClasses(appState));
+    return {
+      properties,
+      entities
+    }
+  }
+
+  return {
+    selectedEdgePropertyIds
+  }
+};
+
+export const GraphContainer = connect(mapStateToProps, null)(GraphContainerComponent);
 

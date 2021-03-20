@@ -58,6 +58,9 @@ const defaultEntityProps = {
     propertyIds: [],
     hidden: false,
     expanded: false
+  },
+  [entityTypes.edge]: {
+    selected: false
   }
 };
 
@@ -83,9 +86,20 @@ const forKey = k => compose(rootLens, lensProp(k));
 
 export const dirty = forKey('dirty');
 export const entities = forKey('entities');
+
 export const classes = compose(entities, lensProp(entityTypes.class));
 export const properties = compose(entities, lensProp(entityTypes.property));
 export const edges = compose(entities, lensProp(entityTypes.edge));
+const byTypeAndId = curry((type, id) => compose(entitiesByType[type], lensProp(id)));
+const byTypeAndIds = curry((type, ids) => compose(entitiesByType[type], lens(pick(ids), (val, obj) => ids.reduce((acc, id) => Object.assign({}, acc, {[id]: val}), obj))));
+export const propertiesByIds = byTypeAndIds(entityTypes.property);
+export const propertyById = byTypeAndId(entityTypes.property);
+export const propertyTargetById = id => compose(propertyById(id), lensProp('target'));
+export const classById = byTypeAndId(entityTypes.class);
+export const edgeById = byTypeAndId(entityTypes.edge);
+const propertyIdsByClassId = id => compose(classById(id), lensProp('propertyIds'));
+
+
 export const endpoint = forKey('endpoint');
 export const dataSchemaURL = forKey('dataSchemaURL');
 export const filename = forKey('filename');
@@ -104,13 +118,18 @@ export const selectionOrder = forKey('selectionOrder');
 const update = curry((type, key, id, value) => set(compose(byTypeAndId(type, id), lensProp(key)), value));
 const updateProperty = update(entityTypes.property);
 const updateClass = update(entityTypes.class);
+const updateEdge = update(entityTypes.edge);
 
 export const togglePropertyOptional = updateProperty('optional');
-export const togglePropertyAsVariable = updateProperty('asVariable'); // FIXME: Change selection order --> if no asVariable is specified for the given name, it shouldn't be shown at all
+export const togglePropertyAsVariable = updateProperty('asVariable');
 export const savePropertyName = updateProperty('varName');
 export const toggleClassHidden = updateClass('hidden');
 export const toggleClassExpanded = updateClass('expanded');
 export const toggleClassAsVariable = updateClass('asVariable');
+export const toggleEdgeHighlighted = updateEdge('highlighted');
+export const unhighlightEdges = over(edges, map(assoc('highlighted', false)));
+
+
 export const updateClassName = curry((id, newName, s) => {
   const updated = map(assoc('varName', newName), getPropertiesByTarget(id, s))
   s = over(properties, mergeLeft(updated), s);
@@ -159,15 +178,7 @@ export const toggleSelected = (type, ...args) => {
   }
 }
 
-const byTypeAndId = curry((type, id) => compose(entitiesByType[type], lensProp(id)));
-const byTypeAndIds = curry((type, ids) => compose(entitiesByType[type], lens(pick(ids), (val, obj) => ids.reduce((acc, id) => Object.assign({}, acc, {[id]: val}), obj))));
-export const propertiesByIds = byTypeAndIds(entityTypes.property);
-export const propertyById = byTypeAndId(entityTypes.property);
-export const propertyTargetById = id => compose(propertyById(id), lensProp('target'));
 export const getSelectedProperties = pipe(view(properties), filter(P.selected), values);
-export const classById = byTypeAndId(entityTypes.class);
-const propertyIdsByClassId = id => compose(classById(id), lensProp('propertyIds'));
-
 export const getSelectedClasses = pipe(view(classes), filter(E.selected));
 export const getSelectedEntities = pipe(view(entities), map(filter(E.selected)));
 export const clearData = set(rootLens, initial);
@@ -304,9 +315,9 @@ export const registerNewClass = curry((id, s) => {
 
 export const registerNewClassWithCallback = curry((id, callback, s) => {
   const {newId, instance, state} = createNewClassInstance(id, s);
-  const propertiesOfWhichTarget = values(getPropertiesByTarget(newId, state));
-  const propertiesOfWhichSource = values(view(propertiesByIds(instance.propertyIds), state));
-  const properties = propertiesOfWhichSource.concat(propertiesOfWhichTarget);
+  const propertiesOfWhichTarget = getPropertiesByTarget(newId, state);
+  const propertiesOfWhichSource = view(propertiesByIds(instance.propertyIds), state);
+  const properties = Object.assign(propertiesOfWhichSource, propertiesOfWhichTarget);
   callback({newId, instance, properties});
   return set(classById(newId), instance, state);
 });

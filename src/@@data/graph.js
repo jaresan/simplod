@@ -24,17 +24,18 @@ export const isConnected = ({properties, entityIds}) => {
   }
 
   const appearingEntities = entityIds.reduce((acc, id) => Object.assign(acc, {[id]: true}), {});
-  properties.reduce((acc, p) => {
-    if (!p.dataProperty) {
-      acc[p.target] = true;
-    }
-    acc[p.source] = true;
-    return acc;
-  }, appearingEntities);
+  properties
+    .reduce((acc, p) => {
+      if (!p.dataProperty) {
+        acc[p.target] = true;
+      }
+      acc[p.source] = true;
+      return acc;
+    }, appearingEntities);
 
 
   const edgesBySource = groupBy(prop('source'), properties);
-  const edgesByTarget = groupBy(prop('target'), properties.filter(p => !p.dataProperty));
+  const edgesByTarget = groupBy(prop('target'), properties.filter(p => !p.dataProperty && !p.optional));
   const edgesByEntity = mergeWith(concat, edgesBySource, edgesByTarget);
 
   const subGraph = getConnectedEntities(properties[0], edgesByEntity);

@@ -38,9 +38,9 @@ export class Method extends Wrapper {
       .filter(m => m.data.target === target)
   }
 
-  findEdge() {
+  getEdge() {
     if (this.edge) {
-      return;
+      return this.edge && this.edge.get('wrapper');
     }
 
     const model = this.getNode().get('data');
@@ -52,12 +52,8 @@ export class Method extends Wrapper {
         // Edges are bidirectional
         return (model.target === target && model.source === source) || (model.source === target && model.target === source);
       })
-  }
 
-  toggleSelectOutgoingEdge(select) {
-    if (this.edge) {
-      this.edge.get('wrapper').onToggleSelect(select)
-    }
+    return this.edge && this.edge.get('wrapper');
   }
 
   onToggleSelect(selected) {
@@ -65,10 +61,6 @@ export class Method extends Wrapper {
     this.handler.onToggleSelect(this.id, this.state.selected);
     const groupController = this.getGroupController();
     groupController.updatePropertyContainer()
-
-    this.findEdge();
-    const similarProps = this.getSameTargetProperties();
-    this.toggleSelectOutgoingEdge(similarProps.some(p => p.wrapper.state.selected));
   }
 
   setIndex = i => {
@@ -101,5 +93,8 @@ export class Method extends Wrapper {
       this.updateText(newState);
     }
     super.setState(newState);
+    if (this.getEdge()) {
+      this.getEdge().updateSelected();
+    }
   }
 }

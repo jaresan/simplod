@@ -24,6 +24,13 @@ import { openYasguiModal } from '@@components/Yasgui';
 const FilenameInput = styled(Input)`
   border: none;
   font-size: 16px;
+  max-width: 512px;
+`;
+
+const HiddenSpan = styled.span`
+  font-size: 16px;
+  position: absolute;
+  top: -100px
 `;
 
 const getSaveIcons = (modelFileLocation, isDirty) => {
@@ -40,27 +47,57 @@ const getSaveIcons = (modelFileLocation, isDirty) => {
 
 const iconStyle = {height: 48, width: 48};
 
-const MenuComponent = ({avatar, lastLocalSave, loggedIn, modelFileLocation, isDirty, filename}) =>
-  <Affix>
-    <Menu selectable={false} mode="horizontal" style={{marginTop: -8, paddingLeft: 8}}>
-      <Menu.Item style={{marginLeft: 4, padding: 0, marginBottom: -8, border: 'none'}}>
-        <Space>
-          <FilenameInput value={filename} onPressEnter={e => e.target.blur()} onChange={e => dispatchProps.updateFilename(e.target.value)}/>
-          {getSaveIcons(modelFileLocation, isDirty)}
-        </Space>
-      </Menu.Item>
-      <br/>
-      {FileMenu({modelFileLocation, lastLocalSave, loggedIn})}
-      <Menu.Item title="Settings" onClick={openSettingsModal}>Settings</Menu.Item>
-      <Menu.SubMenu style={{height: 64, width: 64, position: 'absolute', top: 8, right: 0}} icon={<Avatar style={iconStyle} size="large" src={avatar} icon={<UserOutlined style={iconStyle} />} />}>
-        {
-          loggedIn ? <Menu.Item onClick={logoutSolid}>Logout</Menu.Item> : <Menu.Item onClick={loginToSolid}>Login</Menu.Item>
-        }
-      </Menu.SubMenu>
-      <Menu.Item style={{position: 'absolute', top: 12, right: 84}}><Button onClick={openShareModal} type="primary"><ShareAltOutlined />Share</Button></Menu.Item>
-      <Menu.Item style={{position: 'absolute', top: 12, right: 176}}><Button onClick={() => openYasguiModal({runQuery: true})} type="primary"><PlaySquareOutlined />Run SPARQL Query</Button></Menu.Item>
-    </Menu>
-  </Affix>;
+class MenuComponent extends React.Component {
+  state = {
+    inputWidth: 0
+  };
+
+  constructor() {
+    super();
+    this.hiddenTitleRef = React.createRef();
+  }
+
+  componentDidMount() {
+    this.setState({
+      inputWidth: this.hiddenTitleRef.current.offsetWidth + 24 + 'px'
+    })
+  }
+
+  render() {
+    const {avatar, lastLocalSave, loggedIn, modelFileLocation, isDirty, filename} = this.props;
+
+    return <Affix>
+      <Menu selectable={false} mode="horizontal" style={{marginTop: -8, paddingLeft: 8}}>
+        <Menu.Item style={{marginLeft: 4, padding: 0, marginBottom: -8, border: 'none'}}>
+          <Space>
+            <HiddenSpan ref={this.hiddenTitleRef}>{filename}</HiddenSpan>
+            <FilenameInput style={{width: this.state.inputWidth}} value={filename} onPressEnter={e => e.target.blur()} onChange={e => {
+              this.hiddenTitleRef.current.textContent = e.target.value;
+              e.target.style.width = this.hiddenTitleRef.current.offsetWidth + 24 + 'px';
+              dispatchProps.updateFilename(e.target.value)
+            }}/>
+            {getSaveIcons(modelFileLocation, isDirty)}
+          </Space>
+        </Menu.Item>
+        <br/>
+        {FileMenu({modelFileLocation, lastLocalSave, loggedIn})}
+        <Menu.Item title="Settings" onClick={openSettingsModal}>Settings</Menu.Item>
+        <Menu.SubMenu style={{height: 64, width: 64, position: 'absolute', top: 8, right: 0}}
+                      icon={<Avatar style={iconStyle} size="large" src={avatar}
+                                    icon={<UserOutlined style={iconStyle}/>}/>}>
+          {
+            loggedIn ? <Menu.Item onClick={logoutSolid}>Logout</Menu.Item> :
+              <Menu.Item onClick={loginToSolid}>Login</Menu.Item>
+          }
+        </Menu.SubMenu>
+        <Menu.Item style={{position: 'absolute', top: 12, right: 84}}><Button onClick={openShareModal}
+                                                                              type="primary"><ShareAltOutlined/>Share</Button></Menu.Item>
+        <Menu.Item style={{position: 'absolute', top: 12, right: 176}}><Button
+          onClick={() => openYasguiModal({runQuery: true})} type="primary"><PlaySquareOutlined/>Run SPARQL Query</Button></Menu.Item>
+      </Menu>
+    </Affix>;
+  }
+}
 
 const mapStateToProps = appState => ({
   avatar: getAvatar(appState),

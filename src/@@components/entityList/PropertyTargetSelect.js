@@ -1,10 +1,16 @@
 import React from 'react';
 import { Select } from 'antd';
 import { cond, isNil, T } from 'ramda';
-import './property-target-select.css';
+import {css} from '@emotion/css';
+
+const dropDownCss = css`
+  .ant-select-selector {
+    padding-left: 16px !important;
+  }
+`;
 
 export const PropertyTargetSelect = ({target, targetType, possibleTargets, onChangeTarget, onCreateNew}) =>
-  <Select className="property-target-select" onChange={cond([
+  <Select className={dropDownCss} onChange={cond([
     [isNil, onCreateNew],
     [T, onChangeTarget]
   ])} dropdownMatchSelectWidth={false} value={target}>

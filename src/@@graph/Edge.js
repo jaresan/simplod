@@ -1,5 +1,5 @@
 import G6 from '@antv/g6';
-import {flatten, values, concat} from 'ramda';
+import { flatten, values, concat, path } from 'ramda';
 import {entityTypes} from '@@model/entity-types';
 import {Edge as EdgeWrapper} from '@@graph/wrappers';
 const EDGE_TYPE = 'graphEdge';
@@ -8,6 +8,13 @@ export const Edge = data => ({
   ...data,
   type: EDGE_TYPE
 });
+
+const getPropertyIds = ({sourceId, targetId}, objProperties = {}) => Object.entries(objProperties)
+  .reduce((acc, [predicate, targets]) =>
+      acc.concat(targets
+        .filter(t => t === targetId)
+        .map(target => `property_${sourceId}-${predicate}-${target}`)
+      ), []);
 
 export const getEdges = data => {
   const existingEdges = {};
@@ -19,11 +26,13 @@ export const getEdges = data => {
       if (sourceId === targetId || existingEdges[sourceId] === targetId || existingEdges[targetId] === sourceId) {
         return acc;
       }
+
       existingEdges[sourceId] = targetId;
       return Object.assign(acc, {
         [targetId]: Edge({
           source: sourceId,
           target: targetId,
+          propertyIds: getPropertyIds({sourceId, targetId}, objectProperties).concat(getPropertyIds({sourceId: targetId, targetId: sourceId}, path([targetId, 'objectProperties'], data))),
           data: {
             source: sourceId,
             target: targetId,

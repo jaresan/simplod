@@ -24,18 +24,19 @@ const loadGraph = async url => {
   withLoading('Initializing graph...')(Graph.initialize(schemaData));
 };
 
-const loadLabels = () => {
+export const loadLabels = () => {
   const key = 'loading-labels-notification';
   notification.info({key, message: 'Loading labels', duration: 0, description: LoadingLabelsFeedback()});
   loadHumanReadableData().finally(() => notification.close(key));
-}
+};
 
 const loadDataFromFile = async modelURL => {
   try {
     const json = await withLoadingP('Fetching file...')(fetchFile(modelURL).then(data => data.json()));
     const dataSchemaURL = view(ModelState.dataSchemaURL, json);
 
-    await loadGraph(dataSchemaURL);
+    const {prefixes} = await withLoadingP('Fetching RDF Schema...')(fetchDataSchema(dataSchemaURL));
+    dispatchSet(YasguiState.prefixes, invertObj(prefixes));
     loadModel(json);
     loadLabels();
     Modal.destroyAll();
