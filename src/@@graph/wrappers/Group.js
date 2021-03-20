@@ -55,6 +55,10 @@ class GroupController {
     return this.edges;
   }
 
+  hasSelectedEdges() {
+    return this.getEdges().some(path(['state', 'selected']));
+  }
+
   recalculateEdges() {
     const container = this.childrenWrappers['node-container'].getContainerNode();
     this.edges = container.getOutEdges().concat(container.getInEdges()).map(e => e.get('wrapper'));
@@ -127,9 +131,7 @@ class GroupController {
   }
 
   updateHighlight(shouldHighlight) {
-    if (typeof shouldHighlight === 'undefined') {
-      shouldHighlight = this.state.selected;
-    }
+    shouldHighlight = this.hasSelectedEdges() || this.state.selected || shouldHighlight;
     const nodesAffected = ['delete-node-container', 'node-varName-container', 'copy-node-container', 'node-container', 'property-container', 'select-all-container', 'expand-icon-container', 'hide-icon-container'];
     const updateStyle = shouldHighlight ? this.applyStyle.bind(this) : this.cancelStyle.bind(this);
     nodesAffected.forEach(name => updateStyle(this.children[name], ['titleOutline']));

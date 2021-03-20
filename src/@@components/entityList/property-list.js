@@ -24,8 +24,12 @@ export const PropertyList = ({properties, entities}) => {
   return <Card title={<span>Properties: {sourceVar} &larr;&rarr; {targetVar}</span>} extra={<CloseOutlined onClick={dispatchProps.deselectEdge} />}>
     <GroupHeader>{sourceVar} &rarr; {targetVar}</GroupHeader>
     {pIdsBySource[source].map(id => <PropertyEntry key={id} id={id} />)}
-    <GroupHeader>{targetVar} &rarr; {sourceVar}</GroupHeader>
-    {pIdsBySource[target].map(id => <PropertyEntry key={id} id={id} />)}
+    {
+      pIdsBySource[target] && <>
+        <GroupHeader>{targetVar} &rarr; {sourceVar}</GroupHeader>
+        {pIdsBySource[target].map(id => <PropertyEntry key={id} id={id} />)}
+      </>
+    }
   </Card>
 }
 

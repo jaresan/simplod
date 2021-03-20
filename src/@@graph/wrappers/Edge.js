@@ -93,10 +93,10 @@ export class Edge extends Wrapper {
     const {selected} = this.state;
     Object.assign(this.state, state);
 
-    if (selected !== state.selected) {
+    this.state.selected = this.isSelected();
+    if (selected !== this.state.selected) {
       this.updateNodeHighlights();
     }
-    this.state.selected = this.isSelected();
     this.updateStyles();
   };
 
@@ -133,6 +133,12 @@ export class Edge extends Wrapper {
     this.edge.destroy();
     this.sourceGroup.recalculateEdges();
     this.targetGroup.recalculateEdges();
+  }
+
+  onBlur() {
+    this.setState({hover: false});
+    this.sourceGroup.updateHighlight(false);
+    this.targetGroup.updateHighlight(false);
   }
 
   onHover() {

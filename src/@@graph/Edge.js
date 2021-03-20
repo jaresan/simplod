@@ -9,10 +9,10 @@ export const Edge = data => ({
   type: EDGE_TYPE
 });
 
-const getPropertyIds = (sourceId, objProperties = {}) => Object.entries(objProperties)
+const getPropertyIds = ({sourceId, targetId}, objProperties = {}) => Object.entries(objProperties)
   .reduce((acc, [predicate, targets]) =>
       acc.concat(targets
-        .filter(t => t !== sourceId)
+        .filter(t => t === targetId)
         .map(target => `property_${sourceId}-${predicate}-${target}`)
       ), []);
 
@@ -32,7 +32,7 @@ export const getEdges = data => {
         [targetId]: Edge({
           source: sourceId,
           target: targetId,
-          propertyIds: getPropertyIds(sourceId, objectProperties).concat(getPropertyIds(targetId, path([targetId, 'objectProperties'], data))),
+          propertyIds: getPropertyIds({sourceId, targetId}, objectProperties).concat(getPropertyIds({sourceId: targetId, targetId: sourceId}, path([targetId, 'objectProperties'], data))),
           data: {
             source: sourceId,
             target: targetId,
