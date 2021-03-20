@@ -304,9 +304,9 @@ export const registerNewClass = curry((id, s) => {
 
 export const registerNewClassWithCallback = curry((id, callback, s) => {
   const {newId, instance, state} = createNewClassInstance(id, s);
-  const propertiesOfWhichTarget = values(getPropertiesByTarget(newId, state));
-  const propertiesOfWhichSource = values(view(propertiesByIds(instance.propertyIds), state));
-  const properties = propertiesOfWhichSource.concat(propertiesOfWhichTarget);
+  const propertiesOfWhichTarget = getPropertiesByTarget(newId, state);
+  const propertiesOfWhichSource = view(propertiesByIds(instance.propertyIds), state);
+  const properties = Object.assign(propertiesOfWhichSource, propertiesOfWhichTarget);
   callback({newId, instance, properties});
   return set(classById(newId), instance, state);
 });

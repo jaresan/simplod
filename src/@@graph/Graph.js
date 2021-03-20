@@ -1,4 +1,4 @@
-import { curry, fromPairs, path, view } from 'ramda';
+import { curry, fromPairs, path, view, groupBy, head, prop } from 'ramda';
 import {Canvas as CanvasWrapper} from '@@graph/wrappers';
 import {Property, Node, Edge} from '@@graph/handlers';
 import { Handler } from '@@graph/handlers/Handler';
@@ -170,6 +170,7 @@ export class Graph {
 
   static onDeleteEntity(id) {
     Handler.remove(id);
+    this.instance.removeItem(id);
     dispatch(ModelState.deleteClass(id));
   }
 
@@ -185,22 +186,34 @@ export class Graph {
         data: cfg.data,
         type: NODE_TYPE,
         x: x + width / 2,
-        y: y + 2*height
+        y: y - 2*height
       });
 
       node.toFront();
 
-      properties
-        .filter(p => !p.dataProperty)
-        .forEach(p => {
-          const {source, target} = p;
+      const groupedProperties =
+        groupBy(
+          ([id, p]) => [p.target, p.source].sort().join('-'),
+          Object.entries(properties).filter(([id, p]) => !p.dataProperty)
+        );
 
-          if (target === id) {
-            Handler.recipients[source].getGroupController().group.get('addProperty')(p);
-          }
+
+      // Create edges for target/source pair
+      Object.values(groupedProperties)
+        .forEach(propertiesForGivenPair => {
+          const propertyIds = propertiesForGivenPair.map(head);
+          const properties = propertiesForGivenPair.flatMap(prop(1));
+          const {source, target} = properties[0];
+
+          properties.forEach(p => {
+            if (p.target === id) {
+              Handler.recipients[p.source].getGroupController().group.get('addProperty')(p);
+            }
+          });
 
           const edge = this.instance.addItem('edge', GraphEdge({
             source, target,
+            propertyIds,
             data: {
               source, target
             }

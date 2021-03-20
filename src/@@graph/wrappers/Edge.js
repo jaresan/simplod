@@ -41,7 +41,7 @@ export class Edge extends Wrapper {
   handler = EdgeHandler;
 
   constructor(edge) {
-    const {source, target} = edge.getModel();
+    const {source, target, propertyIds} = edge.getModel();
     const id = `edge_${source}-${target}`;
 
     super(id);
@@ -52,7 +52,8 @@ export class Edge extends Wrapper {
       targetGroup: edge.getTarget().getContainer().get('wrapper'),
       model: {
         source,
-        target
+        target,
+        propertyIds
       },
     });
 
