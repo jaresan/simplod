@@ -2,7 +2,7 @@ import React from 'react';
 import { Checkbox, Space, List, Tooltip, Input } from 'antd';
 import { PrefixedText } from './PrefixedText';
 import styled from '@emotion/styled';
-import { pickBy, pipe, propEq } from 'ramda';
+import { pipe } from 'ramda';
 import * as Controls from './Controls';
 import {
   EyeInvisibleOutlined,
@@ -16,7 +16,6 @@ import { connect } from 'react-redux';
 import * as ModelState from '@@app-state/model/state';
 import {dispatch} from '@@app-state';
 import { VarNameContainer } from '@@components/controls/var-name-container';
-import { Graph } from '@@graph';
 import { translated } from '@@localization';
 
 const StyledInput = styled(Input)`	
@@ -61,10 +60,10 @@ class PropertyEntryComponent extends React.Component {
   onNameChange = e => this.setState({varName: e.target.value});
 
   getNameInput = () => {
-    const {classes, property, id} = this.props;
+    const {property, id} = this.props;
     const {onSetName} = dispatchProps;
 
-    const {asVariable, target, dataProperty, targetType} = property;
+    const {asVariable, dataProperty} = property;
     const {varName} = this.state;
 
     if (dataProperty) {
@@ -94,16 +93,6 @@ class PropertyEntryComponent extends React.Component {
         </div>
       </Tooltip>;
     }
-
-    // return <VarNameContainer>
-    //   <PropertyTargetSelect
-    //     target={target}
-    //     targetType={targetType}
-    //     possibleTargets={pickBy(propEq('type', targetType), classes)}
-    //     onChangeTarget={t => dispatchProps.onChangePropertyTarget(id, t)}
-    //     onCreateNew={() => dispatchProps.onCreateNewPropertyTarget(id, target)}
-    //   />
-    // </VarNameContainer>;
   };
 
   render() {
@@ -120,7 +109,7 @@ class PropertyEntryComponent extends React.Component {
           checked={selected}
         />
         <DataContainer>
-          <Space>
+          <Space style={{width: 'max-content'}}>
             {getIcon(dataProperty)}
             <PrefixedText title={predicate}/>
             -->
@@ -161,11 +150,7 @@ const dispatchProps = {
   onSelect: pipe(ModelState.togglePropertySelected, dispatch),
   onSetAsVariable: pipe(ModelState.togglePropertyAsVariable, dispatch),
   onSetName: pipe(ModelState.savePropertyName, dispatch),
-  onSetOptional: pipe(ModelState.togglePropertyOptional, dispatch),
-  onChangePropertyTarget: pipe(ModelState.changePropertyTarget, dispatch),
-  onCreateNewPropertyTarget: (propertyId, target) => {
-    Graph.onCreateNewEntity(target);
-  },
+  onSetOptional: pipe(ModelState.togglePropertyOptional, dispatch)
 };
 
 export const PropertyEntry = connect(mapStateToProps, null)(PropertyEntryComponent);

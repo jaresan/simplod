@@ -2,6 +2,7 @@ import * as YasguiState from '@@app-state/yasgui/state';
 import * as SolidState from '@@app-state/solid/state';
 import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
+import * as ControlState from '@@app-state/controls/state';
 import { path, view, pipe } from 'ramda';
 
 export const getPropertyById = (id, s) => view(ModelState.propertyById(id), s);
@@ -43,3 +44,5 @@ export const getModelFileLocation = view(SolidState.modelFileLocation);
 export const getQuery = view(YasguiState.query);
 export const getPrefixes = view(YasguiState.prefixes);
 export const getInstance = view(YasguiState.instance);
+
+export const getSelectedEdgePropertyIds = view(ControlState.selectedEdgePropertyIds);

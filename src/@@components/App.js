@@ -15,6 +15,7 @@ import { getCartesianProduct, getHorizontalLayout } from '@@selectors';
 import { connect } from 'react-redux';
 import { translated } from '@@localization';
 import {css} from '@emotion/css';
+import { loadLocalData } from '@@actions/save-load';
 
 const {Content, Footer} = Layout;
 
@@ -71,9 +72,10 @@ class App extends Component {
   componentDidMount() {
     onAppStart()
       .then(() => {
-        if (this.schemaURL || this.modelURL) {
-          loadGraphFromURL({dataSchemaURL: this.schemaURL, endpointURL: this.endpointURL, modelURL: this.modelURL})
-        }
+        loadLocalData();
+        // if (this.schemaURL || this.modelURL) {
+        //   loadGraphFromURL({dataSchemaURL: this.schemaURL, endpointURL: this.endpointURL, modelURL: this.modelURL})
+        // }
       });
   }
 

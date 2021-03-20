@@ -77,11 +77,6 @@ export class Edge extends Wrapper {
       });
   };
 
-  togglePropertiesSelected(flag) {
-    this.sourceGroup.togglePropertiesSelected(this.model.target, flag);
-    this.targetGroup.togglePropertiesSelected(this.model.source, flag);
-  }
-
   setState(state) {
     const {selected} = this.state;
     Object.assign(this.state, state);
@@ -97,8 +92,7 @@ export class Edge extends Wrapper {
   }
 
   onClick() {
-    this.onToggleSelect();
-    this.togglePropertiesSelected(this.state.selected);
+    this.handler.onClick(this);
   };
 
   hide() {
