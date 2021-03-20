@@ -5,7 +5,7 @@ import { dispatch, dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
 import * as SolidState from '@@app-state/solid/state';
-import { view, mergeDeepRight, prop, isEmpty } from 'ramda';
+import { view, mergeDeepRight, isEmpty, invertObj } from 'ramda';
 import {getEndpoint, getDataSchemaURL, getFilename} from '@@selectors';
 import { getLastLocalState, saveLocalState } from '@@storage';
 import { Graph } from '@@graph';
@@ -13,8 +13,11 @@ import { saveFile } from '@@actions/solid/files';
 import { message } from 'antd';
 import { openSaveOverwritePrompt } from '@@components/controls/save-overwrite-modal';
 import { loadCustomPrefixes } from '@@actions/custom-prefix';
-import { withLoading } from '@@utils/with-loading';
+import { withLoading, withLoadingP } from '@@utils/with-loading';
 import { loadLabels } from '@@actions/model/load-graph';
+import { fetchDataSchema } from '@@actions/model/fetch-data-schema';
+import * as YasguiState from '@@app-state/yasgui/state';
+import { translated } from '@@localization';
 
 export const generateSaveData = () => {
   const bBoxesById = Graph.getBBoxesById();
@@ -105,5 +108,9 @@ export const loadModel = json => {
 export const loadLocalData = async () => {
   const state = getLastLocalState();
   loadModel(state);
+  const dataSchemaURL = view(ModelState.dataSchemaURL, getState());
+  withLoadingP('Fetching RDF Schema...')(fetchDataSchema(dataSchemaURL))
+    .then(({prefixes}) => dispatchSet(YasguiState.prefixes, invertObj(prefixes)))
+    .catch(() => message.error(translated('There was a problem downloading prefixes for this file.')));
   loadLabels();
 };
