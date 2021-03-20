@@ -1,4 +1,4 @@
-import { pick, assocPath, path, identity, map, filter, prop, forEachObjIndexed, sortBy, is, omit, keys, values, uniq } from 'ramda';
+import { pick, assocPath, path, identity, map, filter, prop, forEachObjIndexed, sortBy, is, omit, keys, values, uniq, any } from 'ramda';
 import {Property, Method, Node} from '@@graph/wrappers/index';
 import { Handler } from '@@graph/handlers/Handler';
 import { measureText, PROP_LINE_HEIGHT } from '@@graph/Node';
@@ -120,6 +120,10 @@ class GroupController {
     this.propertyWrappers = omit(affectedIds, this.propertyWrappers);
     this.updatePropertyContainer();
     return affectedEntityIds;
+  }
+
+  hasSelectedProperties() {
+    return any(prop('selected'), values(filter(is(Method), this.propertyWrappers)));
   }
 
   updateHighlight(shouldHighlight) {

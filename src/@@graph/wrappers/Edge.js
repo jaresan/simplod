@@ -1,6 +1,8 @@
 import {Wrapper} from '@@graph/wrappers/Wrapper';
-import {path} from 'ramda';
+import {path, view, filter, prop, isEmpty} from 'ramda';
 import {Edge as EdgeHandler} from '@@graph/handlers';
+import { propertiesByIds } from '@@app-state/model/state';
+import { getState } from '@@app-state';
 
 const styles = {
   hover: {
@@ -92,10 +94,21 @@ export class Edge extends Wrapper {
     Object.assign(this.state, state);
 
     if (selected !== state.selected) {
-      // this.updateNodeHighlights();
+      this.updateNodeHighlights();
     }
-    // this.updateStyles();
+    this.state.selected = this.isSelected();
+    this.updateStyles();
   };
+
+  isSelected() {
+    return !isEmpty(filter(prop('selected'), view(propertiesByIds(this.model.propertyIds), getState())));
+  }
+
+  updateSelected() {
+    this.setState({
+      selected: this.isSelected()
+    });
+  }
 
   updateNodeHighlights() {
     this.sourceGroup.updateHighlight();

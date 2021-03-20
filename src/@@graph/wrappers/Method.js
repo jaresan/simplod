@@ -40,7 +40,7 @@ export class Method extends Wrapper {
 
   getEdge() {
     if (this.edge) {
-      return this.edge;
+      return this.edge && this.edge.get('wrapper');
     }
 
     const model = this.getNode().get('data');
@@ -53,11 +53,7 @@ export class Method extends Wrapper {
         return (model.target === target && model.source === source) || (model.source === target && model.target === source);
       })
 
-    return this.edge;
-  }
-
-  toggleSelectOutgoingEdge(select) {
-    // this.getEdge().get('wrapper').onToggleSelect(select);
+    return this.edge && this.edge.get('wrapper');
   }
 
   onToggleSelect(selected) {
@@ -65,9 +61,6 @@ export class Method extends Wrapper {
     this.handler.onToggleSelect(this.id, this.state.selected);
     const groupController = this.getGroupController();
     groupController.updatePropertyContainer()
-
-    const similarProps = this.getSameTargetProperties();
-    this.toggleSelectOutgoingEdge(similarProps.some(p => p.wrapper.state.selected));
   }
 
   setIndex = i => {
@@ -95,14 +88,13 @@ export class Method extends Wrapper {
   }
 
   setState(newState) {
-    const oldState = this.state;
     const shouldUpdateText = newState.predicate && [prop('predicate'), prop('targetType'), prop('varName')].some(p => p(newState) !== p(this.state));
     if (shouldUpdateText) {
       this.updateText(newState);
     }
     super.setState(newState);
-    if (newState.selected !== oldState.selected) {
-      this.onToggleSelect(newState.selected);
+    if (this.getEdge()) {
+      this.getEdge().updateSelected();
     }
   }
 }
