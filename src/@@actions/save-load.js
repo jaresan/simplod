@@ -110,6 +110,7 @@ export const loadLocalData = async () => {
   const dataSchemaURL = view(ModelState.dataSchemaURL, getState());
   withLoadingP('Fetching RDF Schema...')(fetchDataSchema(dataSchemaURL))
     .then(({prefixes}) => dispatchSet(YasguiState.prefixes, invertObj(prefixes)))
-    .catch(() => message.error(translated('There was a problem downloading prefixes for this file.')));
-  loadLabels();
+    .catch(() => message.error(translated('There was a problem downloading prefixes for this file.')))
+    .finally(loadLabels);
+  dispatchSet(ModelState.dirty, false);
 };
