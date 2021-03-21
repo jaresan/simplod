@@ -50,10 +50,11 @@ const getSuffix = iri => iri.match(/([^/#:]+)$/)[1];
 
 const getAddPropertyFn = (group, ctx, attrs) => ({source, predicate, target, targetType, varName, dataProperty}) => {
   const propertyCount = Object.values(group.get('wrapper').propertyWrappers).length;
+  const id = `property_${source}-${predicate}-${target}`;
   group.addShape(E.ObjectProperty({
-    id: `property_${source}-${predicate}-${target}`,
+    id,
     attrs: attrs.property({predicate, type: target, i: propertyCount, ctx}),
-    name: `property#${propertyCount}`,
+    name: id,
     data: {target, source, predicate, targetType, varName: varName || getSuffix(predicate), dataProperty}
   }));
   const node = last(group.getChildren());
@@ -78,21 +79,27 @@ const NodeImplementation = {
     const dataPropertyCount = Object.keys(data.dataProperties).length;
     const containerAttrs = attrs['node-container']({label: cfg.label});
     const {width, height} = containerAttrs;
-    const dataProperties = Object.entries(data.dataProperties).map(([predicate, objects], i)=> E.DataProperty({
-      id: `property_${id}-${predicate}-${objects[0]}`,
-      attrs: attrs.property({predicate, type: objects[0], i, ctx}),
-      name: `property#${i}`,
-      data: {target: objects[0], targetType: objects[0], source: id, predicate, varName: getSuffix(predicate), dataProperty: true}
-    }));
+    const dataProperties = Object.entries(data.dataProperties).map(([predicate, objects], i)=> {
+      const propId = `property_${id}-${predicate}-${objects[0]}`;
+      return E.DataProperty({
+        id: propId,
+        attrs: attrs.property({predicate, type: objects[0], i, ctx}),
+        name: propId,
+        data: {target: objects[0], targetType: objects[0], source: id, predicate, varName: getSuffix(predicate), dataProperty: true}
+      })
+    });
 
     let i = 0;
     const objectProperties = flatten(Object.entries(data.objectProperties).map(([predicate, objects]) =>
-      objects.map(target => E.ObjectProperty({
-        id: `property_${id}-${predicate}-${target}`,
-        attrs: attrs.property({predicate, type: target, i: i + dataPropertyCount, ctx}),
-        name: `property#${i++ + dataPropertyCount}`,
-        data: {target, source: id, predicate, targetType: target, varName: getSuffix(predicate)}
-      }))
+      objects.map(target => {
+        const propId = `property_${id}-${predicate}-${target}`;
+        return E.ObjectProperty({
+          id: propId,
+          attrs: attrs.property({predicate, type: target, i: i + dataPropertyCount, ctx}),
+          name: propId,
+          data: {target, source: id, predicate, targetType: target, varName: getSuffix(predicate)}
+        })
+      })
     ));
 
     const propertyContainerAttrs = attrs['property-container'](dataProperties.concat(objectProperties));

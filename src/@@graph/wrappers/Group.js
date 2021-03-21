@@ -160,6 +160,7 @@ class GroupController {
 
   registerProperty(p) {
     this.propertyWrappers[p.get('name')] = p.get('wrapper');
+    this.childrenWrappers[p.get('name')] = p.get('wrapper');
     if (!this.state.expanded) {
       p.get('wrapper').hide();
     }
