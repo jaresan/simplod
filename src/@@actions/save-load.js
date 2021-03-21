@@ -44,8 +44,7 @@ export const saveData = () => {
   const remoteFileURL = view(SolidState.modelFileLocation, state);
 
   if (remoteFileURL) {
-    return saveFile({uri: remoteFileURL, data: generateSaveData(), webId: view(SolidState.webId, state)})
-      .then(() => dispatchSet(ModelState.dirty, false));
+    return saveFile({uri: remoteFileURL, data: generateSaveData(), webId: view(SolidState.webId, state)});
   } else {
     return saveDataLocally();
   }
@@ -111,6 +110,7 @@ export const loadLocalData = async () => {
   const dataSchemaURL = view(ModelState.dataSchemaURL, getState());
   withLoadingP('Fetching RDF Schema...')(fetchDataSchema(dataSchemaURL))
     .then(({prefixes}) => dispatchSet(YasguiState.prefixes, invertObj(prefixes)))
-    .catch(() => message.error(translated('There was a problem downloading prefixes for this file.')));
-  loadLabels();
+    .catch(() => message.error(translated('There was a problem downloading prefixes for this file.')))
+    .finally(loadLabels);
+  dispatchSet(ModelState.dirty, false);
 };

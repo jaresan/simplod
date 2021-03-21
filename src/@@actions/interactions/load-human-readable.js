@@ -1,6 +1,6 @@
 import { dispatch, dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
-import { invertObj, map, view } from 'ramda';
+import { invertObj, isEmpty, map, view } from 'ramda';
 import * as YasguiState from '@@app-state/yasgui/state';
 import * as SettingsState from '@@app-state/settings/state';
 import { getHumanReadableDataPromises } from '@@api';
@@ -25,13 +25,17 @@ export const loadHumanReadableData = () => {
         const classes = view(ModelState.classes, getState());
         const newClasses = Object.keys(data)
           .filter(id => classes.hasOwnProperty(id))
+          .filter(id => data[id])
+          .filter(id => JSON.stringify(classes[id].info.byLanguage) !== JSON.stringify(data[id]))
           .reduce((acc, id) => Object.assign(acc, {[id]: {
               ...classes[id],
               info: {byLanguage: (data[id] || {})}
             }}), {});
 
         // FIXME: Aggregate into one dispatch
-        dispatch(ModelState.updateClasses(map(updateLanguageInfo(language), newClasses)));
+        if (!isEmpty(newClasses)) {
+          dispatch(ModelState.updateClasses(map(updateLanguageInfo(language), newClasses)));
+        }
       })
         .catch(() => {})
         .finally(() => {
