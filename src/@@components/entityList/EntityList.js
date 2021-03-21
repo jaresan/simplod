@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import { getAppLoaded, getClasses, getProperties } from '@@selectors';
 import {EntityEntry} from './EntityEntry';
 import {List, Empty, Spin} from 'antd';
-import {filter, mapObjIndexed, path, any} from 'ramda';
+import { filter, mapObjIndexed, path, any, mergeRight } from 'ramda';
 import {withSearch} from '../withSearch';
 import styled from '@emotion/styled';
 
@@ -43,7 +43,11 @@ class EntityListComponent extends React.Component {
 		if (this.props.onlySelected && !this.didRecalculate) {
 			// FIXME: @reference don't use e.selected e.propertyIds, 'selected'
 			entities = filter(e => e.selected || any(pId => path([pId, 'selected'], this.props.properties), e.propertyIds), entities);
+			this.oldEntities = entities;
 			this.didRecalculate = true;
+		} else if (this.props.onlySelected && this.didRecalculate) {
+			entities = mergeRight(filter(e => e.selected || any(pId => path([pId, 'selected'], this.props.properties), e.propertyIds), entities), this.oldEntities);
+			this.oldEntities = entities;
 		}
 
 		const searchTerms = mapObjIndexed((val, id) => getSearchTerm([id, val]), entities);

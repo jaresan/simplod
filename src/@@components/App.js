@@ -72,10 +72,11 @@ class App extends Component {
   componentDidMount() {
     onAppStart()
       .then(() => {
-        loadLocalData();
-        // if (this.schemaURL || this.modelURL) {
-        //   loadGraphFromURL({dataSchemaURL: this.schemaURL, endpointURL: this.endpointURL, modelURL: this.modelURL})
-        // }
+        if (process.env.NODE_ENV === 'development') {
+          loadLocalData();
+        } else if (this.schemaURL || this.modelURL) {
+          loadGraphFromURL({dataSchemaURL: this.schemaURL, endpointURL: this.endpointURL, modelURL: this.modelURL})
+        }
       });
   }
 

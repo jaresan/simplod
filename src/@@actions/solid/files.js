@@ -11,11 +11,11 @@ import { WithRetry } from '@@components/controls/with-retry';
 
 const notifyUnauthorized = async () => {
   const {webId} = await getSession();
-  const logStatus = webId ? `You are logged in as ${webId}.` : 'You are not logged in.';
+  const logStatus = webId ? translated(`You are logged in as ${webId}.`) : translated('You are not logged in.');
   notification.error({
     message: 'Unauthorized',
     description: `${logStatus}
-      Either you don't have access to the requested resource or the permissions on it are not set up correctly.`,
+      ${translated('Either you don\'t have access to the requested resource or the permissions on it are not set up correctly.')}`,
     duration: 8
   });
 }
@@ -141,15 +141,15 @@ export const deleteFile = async uri  => {
     const res = await auth.fetch(uri, {method: 'DELETE'});
 
     if (res.status < 200 || res.status >= 300) {
-      message.error('An error occured while trying to delete the view.')
+      message.error(translated('An error occured while trying to delete the view.'));
     } else {
-      message.success(`${uri} deleted.`);
+      message.success(translated(`${uri} deleted.`));
       const filePath = ['/'].concat(uri.replace(origin, '').split('/')).filter(identity);
       dispatch(SolidState.deleteFile(filePath));
     }
   } catch (e) {
     console.error(e);
-    message.error('An error occured while trying to delete the view.')
+    message.error(translated('An error occured while trying to delete the view.'));
   } finally {
     loading();
   }

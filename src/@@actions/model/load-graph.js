@@ -16,6 +16,7 @@ import { isLoggedIn } from '@@actions/solid/auth';
 import {notification} from 'antd';
 import LoadingLabelsFeedback from '@@components/controls/loading-labels-feedback';
 import { applyCustomPrefixes } from '@@actions/custom-prefix';
+import { translated } from '@@localization';
 
 const loadGraph = async url => {
   const {prefixes, schemaData} = await withLoadingP('Fetching RDF Schema...')(fetchDataSchema(url));
@@ -43,7 +44,7 @@ const loadDataFromFile = async modelURL => {
 
     if (await hasPermissions(modelURL, true) && await isLoggedIn()) {
       setTimeout(() => {
-        Modal.confirm({maskClosable: true, title: `Do you want to set ${modelURL} as your current working file?`, onOk: () => {
+        Modal.confirm({maskClosable: true, title: translated(`Do you want to set ${modelURL} as your current working file?`), onOk: () => {
             dispatchSet(SolidState.modelFileLocation, modelURL)
           }})
       }, 500);
