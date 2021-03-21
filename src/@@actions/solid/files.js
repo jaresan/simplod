@@ -1,11 +1,12 @@
+import React from 'react';
 import { message, notification } from 'antd';
 import auth from 'solid-auth-client';
 import { dispatch, dispatchSet } from '@@app-state';
+import * as ModelState from '@@app-state/model/state';
 import * as SolidState from '@@app-state/solid/state';
 import { getSession, getSessionOrLogin } from '@@actions/solid/auth';
-import { identity } from 'ramda';
+import { identity, tap } from 'ramda';
 import { translated } from '@@localization';
-import React from 'react';
 import { WithRetry } from '@@components/controls/with-retry';
 
 const notifyUnauthorized = async () => {
@@ -44,10 +45,7 @@ const notifyAboutFailure = ({retryFn, uri}) => {
       retryFn={retryFn}
       retryTime={4000}
       maxRetries={3}
-      onSuccess={() => {
-        closeNotification();
-        notification.success({message: translated(`Saved to ${uri}!`)});
-      }}
+      onSuccess={closeNotification}
       onFail={() => {
         closeNotification();
         notification.error({message: translated(`Saving to ${uri} failed`)});
@@ -64,7 +62,11 @@ export const saveFile = async ({uri, data}) => {
   const trySave = () => auth.fetch(uri, {
     method: 'PUT',
     body: JSON.stringify(data)
-  });
+  }).then(tap(() => {
+    notification.success({message: translated(`Saved to ${uri}!`)});
+    dispatchSet(SolidState.modelFileLocation, uri);
+    dispatchSet(ModelState.dirty, false);
+  }));
   try {
     const res = await trySave();
 
@@ -72,11 +74,9 @@ export const saveFile = async ({uri, data}) => {
       await notifyUnauthorized();
     } else if (res.status < 200 || res.status >= 300) {
       notifyAboutFailure({retryFn: trySave, uri})
-    } else {
-      notification.success({message: translated(`Saved to ${uri}!`)});
-      dispatchSet(SolidState.modelFileLocation, uri);
     }
   } catch (e) {
+    console.error(e);
     notifyAboutFailure({retryFn: trySave, uri})
   } finally {
     loading();

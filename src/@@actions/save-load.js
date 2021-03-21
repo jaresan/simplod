@@ -44,8 +44,7 @@ export const saveData = () => {
   const remoteFileURL = view(SolidState.modelFileLocation, state);
 
   if (remoteFileURL) {
-    return saveFile({uri: remoteFileURL, data: generateSaveData(), webId: view(SolidState.webId, state)})
-      .then(() => dispatchSet(ModelState.dirty, false));
+    return saveFile({uri: remoteFileURL, data: generateSaveData(), webId: view(SolidState.webId, state)});
   } else {
     return saveDataLocally();
   }
