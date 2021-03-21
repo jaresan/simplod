@@ -4,6 +4,9 @@ import { dispatch, dispatchSet } from '@@app-state';
 import * as SolidState from '@@app-state/solid/state';
 import { getSession, getSessionOrLogin } from '@@actions/solid/auth';
 import { identity } from 'ramda';
+import { translated } from '@@localization';
+import React from 'react';
+import { WithRetry } from '@@components/controls/with-retry';
 
 const notifyUnauthorized = async () => {
   const {webId} = await getSession();
@@ -30,25 +33,51 @@ export const fetchFile = async url => {
   return res;
 }
 
+const notifyAboutFailure = ({retryFn, uri}) => {
+  const notificationKey = 'solid-fail-notification';
+  const closeNotification = () => notification.close(notificationKey);
+  notification.error({
+    duration: 0,
+    key: notificationKey,
+    message: 'File save failed',
+    description: <WithRetry
+      retryFn={retryFn}
+      retryTime={4000}
+      maxRetries={3}
+      onSuccess={() => {
+        closeNotification();
+        notification.success({message: translated(`Saved to ${uri}!`)});
+      }}
+      onFail={() => {
+        closeNotification();
+        notification.error({message: translated(`Saving to ${uri} failed`)});
+      }}
+      onCancel={closeNotification}
+    >
+      <div>Saving the file to {uri} failed, retrying...</div>
+    </WithRetry>
+  });
+};
+
 export const saveFile = async ({uri, data}) => {
   const loading = message.loading('Saving view...');
-  const errMsg = 'An error occurred while trying to save the view.';
+  const trySave = () => auth.fetch(uri, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
   try {
-    const res = await auth.fetch(uri, {
-      method: 'PUT',
-      body: JSON.stringify(data)
-    });
+    const res = await trySave();
 
     if (res.status === 401) {
       await notifyUnauthorized();
     } else if (res.status < 200 || res.status >= 300) {
-      message.error(errMsg)
+      notifyAboutFailure({retryFn: trySave, uri})
     } else {
-      message.success(`Saved to ${uri}!`);
+      notification.success({message: translated(`Saved to ${uri}!`)});
       dispatchSet(SolidState.modelFileLocation, uri);
     }
   } catch (e) {
-    message.error(errMsg)
+    notifyAboutFailure({retryFn: trySave, uri})
   } finally {
     loading();
   }
