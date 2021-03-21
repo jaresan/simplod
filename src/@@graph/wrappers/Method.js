@@ -64,7 +64,7 @@ export class Method extends Wrapper {
   }
 
   setIndex = i => {
-    this.node.setAttr('y', PROP_LINE_HEIGHT * (i+1) + PROP_LINE_HEIGHT - 2);
+    this.node.attr('y', PROP_LINE_HEIGHT * (i+1) + PROP_LINE_HEIGHT - 2);
   };
 
   show() {
@@ -82,8 +82,8 @@ export class Method extends Wrapper {
   updateText({predicate, targetType, varName}) {
     const text = `${predicate}: ${targetType} --> ?${varName}`;
     const {width} = measureText(this.node, text);
-    this.node.setAttr('width', width + 8);
-    this.node.setAttr('text', text);
+    this.node.attr('width', width + 8);
+    this.node.attr('text', text);
     this.getGroupController().updatePropertyContainer();
   }
 

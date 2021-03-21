@@ -174,6 +174,10 @@ export class Graph {
     dispatch(ModelState.deleteClass(id));
   }
 
+  static removeItem(item) {
+    this.instance.removeItem(item);
+  }
+
   static copyNode(node) {
     const {cfg} = node;
 

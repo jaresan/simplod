@@ -3,6 +3,7 @@ import {path, view, filter, prop, isEmpty} from 'ramda';
 import {Edge as EdgeHandler} from '@@graph/handlers';
 import { propertiesByIds } from '@@app-state/model/state';
 import { getState } from '@@app-state';
+import {Graph} from '@@graph/Graph';
 
 const styles = {
   hover: {
@@ -130,7 +131,7 @@ export class Edge extends Wrapper {
   }
 
   remove() {
-    this.edge.destroy();
+    Graph.removeItem(this.edge);
     this.sourceGroup.recalculateEdges();
     this.targetGroup.recalculateEdges();
   }

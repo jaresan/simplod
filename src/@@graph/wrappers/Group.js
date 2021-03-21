@@ -123,6 +123,9 @@ class GroupController {
     this.childrenWrappers = omit(affectedIds, this.childrenWrappers);
     this.propertyWrappers = omit(affectedIds, this.propertyWrappers);
     this.updatePropertyContainer();
+    if (this.entityId === 'prov:Entity') {
+      window.prop = this.propertyWrappers['property_prov:Entity-void:vocabulary-owl:Thing'];
+    }
     return affectedEntityIds;
   }
 
@@ -182,8 +185,8 @@ class GroupController {
       });
 
     if (i) {
-      this.propertyContainer.setAttr('height', i * PROP_LINE_HEIGHT + 6);
-      this.propertyContainer.setAttr('width', maxWidth);
+      this.propertyContainer.attr('height', i * PROP_LINE_HEIGHT + 6);
+      this.propertyContainer.attr('width', maxWidth);
       this.propertyContainer.show();
     } else {
       this.propertyContainer.hide();
@@ -243,19 +246,19 @@ class GroupController {
     const expandContainer = this.children['expand-icon-container'];
     const expandIcon = this.children['expand-icon'];
     const width = measureText(container, type).width + 8;
-    container.setAttr('width', width);
-    title.setAttr('x', width / 2);
-    title.setAttr('text', type);
-    expandContainer.setAttr('x', width);
-    expandIcon.setAttr('x', width + 3);
+    container.attr('width', width);
+    title.attr('x', width / 2);
+    title.attr('text', type);
+    expandContainer.attr('x', width);
+    expandIcon.attr('x', width + 3);
   }
 
   updateVarName(varName) {
     const title = this.children['node-varName'];
     const container = this.children['node-varName-container'];
     const width = measureText(container, varName).width + 12;
-    container.setAttr('width', width);
-    title.setAttr('text', `?${varName}`);
+    container.attr('width', width);
+    title.attr('text', `?${varName}`);
 
     // Force redraw
     container.hide();
