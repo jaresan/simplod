@@ -23,7 +23,11 @@ import {
   groupBy,
   uniqBy,
   mergeLeft,
-  without
+  without,
+  cond,
+  T,
+  identity,
+  any
 } from 'ramda';
 import { entityTypes } from '@@model/entity-types';
 
@@ -127,8 +131,10 @@ export const toggleClassHidden = updateClass('hidden');
 export const toggleClassExpanded = updateClass('expanded');
 export const toggleClassAsVariable = updateClass('asVariable');
 export const toggleEdgeHighlighted = updateEdge('highlighted');
-export const unhighlightEdges = over(edges, map(assoc('highlighted', false)));
-
+export const unhighlightEdges = cond([
+  [pipe(view(edges), values, any(prop('highlighted'))), over(edges, map(assoc('highlighted', false)))],
+  [T, identity]
+]);
 
 export const updateClassName = curry((id, newName, s) => {
   const updated = map(assoc('varName', newName), getPropertiesByTarget(id, s))

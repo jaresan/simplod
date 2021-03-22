@@ -67,7 +67,7 @@ export const saveDataLocally = () => {
   const toCheck = [getDataSchemaURL, getFilename, getEndpoint];
 
   const oldSave = getLastLocalState();
-  const promptOverwrite = !isEmpty(oldSave) && toCheck.some(s => s(saveData)) && toCheck.some(selector => selector(saveData) !== selector(oldSave));
+  const promptOverwrite = !isEmpty(oldSave) && toCheck.some(s => s(oldSave)) && toCheck.some(s => s(saveData)) && toCheck.some(selector => selector(saveData) !== selector(oldSave));
   const onOk = () => {
     saveLocalState(saveData);
     dispatchSet(ModelState.dirty, false);
