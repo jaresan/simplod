@@ -78,6 +78,7 @@ export const loadGraphFromURL = async ({modelURL, dataSchemaURL, endpointURL}) =
   }
   dispatchSet(SettingsState.loaded, true);
   dispatch(applyCustomPrefixes(view(ModelState.customPrefixes, getState())));
+  dispatchSet(ModelState.dirty, false);
 };
 
 export const loadGraphFromJSON = async json => {

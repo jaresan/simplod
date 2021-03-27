@@ -35,7 +35,7 @@ const HiddenSpan = styled.span`
 
 const getSaveIcons = (modelFileLocation, isDirty) => {
   const localProps = isDirty ? {color: 'orange', text: translated('Changes not saved')} : {color: 'green', text: translated('Changes saved')};
-  const cloudProps = isDirty ? {color: 'orange', text: translated('Changes not saved')} : {color: 'green', text: translated(`File saved at ${modelFileLocation}`)};
+  const cloudProps = isDirty ? {color: 'orange', text: translated(`Latest changes not saved to ${modelFileLocation}`)} : {color: 'green', text: translated(`File saved at ${modelFileLocation}`)};
 
   return <div style={{display: 'flex', alignItems: 'center'}} onClick={saveData}>
     {!modelFileLocation && <DesktopOutlined style={{color: localProps.color, fontSize: 16}}/>}

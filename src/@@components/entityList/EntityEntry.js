@@ -70,7 +70,7 @@ class EntityEntryComponent extends React.Component {
   getControls = () => {
     const {id, entity} = this.props;
     const {toggleSelected, toggleHidden, updateName, deleteClass, onCopyEntity} = dispatchProps;
-    const {selected, hidden, dummy} = entity;
+    const {selected, hidden} = entity;
     const {varName} = this.state;
     return (
       <ControlsContainer>
