@@ -42,7 +42,8 @@ export const initial = {
   dataSchemaURL: '',
   filename: 'Untitled',
   description: '',
-  cartesianProduct: false
+  cartesianProduct: false,
+  propertyLanguages: []
 };
 
 const defaultEntityProps = {
@@ -102,6 +103,7 @@ export const propertyTargetById = id => compose(propertyById(id), lensProp('targ
 export const classById = byTypeAndId(entityTypes.class);
 export const edgeById = byTypeAndId(entityTypes.edge);
 const propertyIdsByClassId = id => compose(classById(id), lensProp('propertyIds'));
+export const propertyLanguages = forKey('propertyLanguages');
 
 
 export const endpoint = forKey('endpoint');

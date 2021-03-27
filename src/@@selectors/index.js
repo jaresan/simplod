@@ -23,6 +23,7 @@ export const getDataSchemaURL = view(ModelState.dataSchemaURL);
 export const getDescription = view(ModelState.description);
 export const getCustomPrefixes = view(ModelState.customPrefixes);
 export const getCartesianProduct = view(ModelState.cartesianProduct);
+export const getPropertyLanguages = view(ModelState.propertyLanguages);
 
 export const getLanguage = view(SettingsState.language);
 export const getLabelLanguage = view(SettingsState.labelLanguage);
