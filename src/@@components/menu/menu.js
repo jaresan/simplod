@@ -8,7 +8,7 @@ import {
   DesktopOutlined,
   PlaySquareOutlined
 } from '@ant-design/icons';
-import { getAvatar, getLastSave, getSessionValid, getModelFileLocation, getFilename, getDirty } from '@@selectors';
+import { getAvatar, getSessionValid, getModelFileLocation, getFilename, getDirty } from '@@selectors';
 import { openShareModal } from '@@components/menu/share-menu';
 import { openSaveDialogModal } from '@@components/controls/file-dialog';
 import { loginToSolid, logoutSolid } from '@@actions/solid/auth';
@@ -64,7 +64,7 @@ class MenuComponent extends React.Component {
   }
 
   render() {
-    const {avatar, lastLocalSave, loggedIn, modelFileLocation, isDirty, filename} = this.props;
+    const {avatar, loggedIn, modelFileLocation, isDirty, filename} = this.props;
 
     return <Affix>
       <Menu selectable={false} mode="horizontal" style={{marginTop: -8, paddingLeft: 8}}>
@@ -80,7 +80,7 @@ class MenuComponent extends React.Component {
           </Space>
         </Menu.Item>
         <br/>
-        {FileMenu({modelFileLocation, lastLocalSave, loggedIn})}
+        {FileMenu({modelFileLocation, loggedIn})}
         <Menu.Item title="Settings" onClick={openSettingsModal}>Settings</Menu.Item>
         <Menu.SubMenu style={{height: 64, width: 64, position: 'absolute', top: 8, right: 0}}
                       icon={<Avatar style={iconStyle} size="large" src={avatar}
@@ -101,7 +101,6 @@ class MenuComponent extends React.Component {
 
 const mapStateToProps = appState => ({
   avatar: getAvatar(appState),
-  lastLocalSave: getLastSave(appState),
   loggedIn: getSessionValid(appState),
   modelFileLocation: getModelFileLocation(appState),
   filename: getFilename(appState),
