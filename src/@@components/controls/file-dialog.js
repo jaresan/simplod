@@ -15,6 +15,7 @@ import { path, pipe } from 'ramda';
 import { connect, Provider } from 'react-redux';
 import { getLastLocalState } from '@@storage';
 import { DesktopOutlined, UploadOutlined, DownloadOutlined } from '@ant-design/icons';
+import { openFileOptionsInfoModal } from '@@components/controls/modal-info-edit-file';
 
 const {TabPane} = Tabs;
 
@@ -63,7 +64,11 @@ const TabContents = ({canSave, canLoad, lastLocalSave, localFilename}) => {
             canSave && <Button danger onClick={() => saveViewByUri(inputRef.current.input.value)}>Overwrite</Button>
           }
           {
-            canLoad && <Button onClick={() => loadGraphFromURL({modelURL: inputRef.current.input.value})}>Load</Button>
+            canLoad && <Button onClick={() => loadGraphFromURL({modelURL: inputRef.current.input.value})
+              .then(({modelURL, hasPermissions}) => {
+                Modal.destroyAll();
+                openFileOptionsInfoModal({modelURL, hasPermissions})
+              })}>Load</Button>
           }
         </Space>
       </TabPane>

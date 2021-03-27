@@ -5,18 +5,15 @@ import { dispatch, dispatchSet, getState } from '@@app-state';
 import * as YasguiState from '@@app-state/yasgui/state';
 import { invertObj, view } from 'ramda';
 import * as ModelState from '@@app-state/model/state';
-import * as SolidState from '@@app-state/solid/state';
 import * as SettingsState from '@@app-state/settings/state';
 import { fetchFile, hasPermissions } from '@@actions/solid/files';
 import { loadModel } from '@@actions/save-load';
 import { withLoadingP, withLoading } from '@@utils/with-loading';
 import { loadHumanReadableData } from '@@actions/interactions/load-human-readable';
 import { message, Modal } from 'antd';
-import { isLoggedIn } from '@@actions/solid/auth';
 import {notification} from 'antd';
 import LoadingLabelsFeedback from '@@components/controls/loading-labels-feedback';
 import { applyCustomPrefixes } from '@@actions/custom-prefix';
-import { translated } from '@@localization';
 
 const loadGraph = async url => {
   const {prefixes, schemaData} = await withLoadingP('Fetching RDF Schema...')(fetchDataSchema(url));
@@ -42,13 +39,7 @@ const loadDataFromFile = async modelURL => {
     loadLabels();
     Modal.destroyAll();
 
-    if (await hasPermissions(modelURL, true) && await isLoggedIn()) {
-      setTimeout(() => {
-        Modal.confirm({maskClosable: true, title: translated(`Do you want to set ${modelURL} as your current working file?`), onOk: () => {
-            dispatchSet(SolidState.modelFileLocation, modelURL)
-          }})
-      }, 500);
-    }
+    return await hasPermissions(modelURL, true);
   } catch (e) {
     console.error(e);
   }
@@ -67,8 +58,9 @@ const loadNewGraph = async dataSchemaURL => {
 
 export const loadGraphFromURL = async ({modelURL, dataSchemaURL, endpointURL}) => {
   dispatchSet(SettingsState.loaded, false);
+  let hasPermissions = false;
   if (modelURL) {
-    await loadDataFromFile(modelURL);
+    hasPermissions = await loadDataFromFile(modelURL);
   } else {
     await loadNewGraph(dataSchemaURL);
     dispatchSet(ModelState.dataSchemaURL, dataSchemaURL);
@@ -79,6 +71,8 @@ export const loadGraphFromURL = async ({modelURL, dataSchemaURL, endpointURL}) =
   dispatchSet(SettingsState.loaded, true);
   dispatch(applyCustomPrefixes(view(ModelState.customPrefixes, getState())));
   dispatchSet(ModelState.dirty, false);
+
+  return {modelURL, hasPermissions};
 };
 
 export const loadGraphFromJSON = async json => {
