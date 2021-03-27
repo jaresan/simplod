@@ -43,7 +43,8 @@ export const initial = {
   filename: 'Untitled',
   description: '',
   cartesianProduct: false,
-  propertyLanguages: []
+  propertyLanguages: [],
+  prefixes: {}
 };
 
 const defaultEntityProps = {
@@ -92,6 +93,8 @@ const forKey = k => compose(rootLens, lensProp(k));
 export const dirty = forKey('dirty');
 export const entities = forKey('entities');
 
+export const prefixes = forKey('prefixes');
+export const prefixById = id => compose(prefixes, lensProp(id));
 export const classes = compose(entities, lensProp(entityTypes.class));
 export const properties = compose(entities, lensProp(entityTypes.property));
 export const edges = compose(entities, lensProp(entityTypes.edge));

@@ -24,6 +24,7 @@ export const getDescription = view(ModelState.description);
 export const getCustomPrefixes = view(ModelState.customPrefixes);
 export const getCartesianProduct = view(ModelState.cartesianProduct);
 export const getPropertyLanguages = view(ModelState.propertyLanguages);
+export const getPrefixes = view(ModelState.prefixes);
 
 export const getLanguage = view(SettingsState.language);
 export const getLabelLanguage = view(SettingsState.labelLanguage);
@@ -44,7 +45,6 @@ export const getFolderUri = view(SolidState.folderUri);
 export const getModelFileLocation = view(SolidState.modelFileLocation);
 
 export const getQuery = view(YasguiState.query);
-export const getPrefixes = view(YasguiState.prefixes);
 export const getInstance = view(YasguiState.instance);
 
 export const getSelectedEdgePropertyIds = view(ControlState.selectedEdgePropertyIds);

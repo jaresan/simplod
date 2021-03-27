@@ -17,7 +17,7 @@ import { applyCustomPrefixes } from '@@actions/custom-prefix';
 
 const loadGraph = async url => {
   const {prefixes, schemaData} = await withLoadingP('Fetching RDF Schema...')(fetchDataSchema(url));
-  dispatchSet(YasguiState.prefixes, invertObj(prefixes));
+  dispatchSet(ModelState.prefixes, invertObj(prefixes));
   Graph.clear();
   withLoading('Initializing graph...')(Graph.initialize(schemaData));
 };
@@ -34,7 +34,7 @@ const loadDataFromFile = async modelURL => {
     const dataSchemaURL = view(ModelState.dataSchemaURL, json);
 
     const {prefixes} = await withLoadingP('Fetching RDF Schema...')(fetchDataSchema(dataSchemaURL));
-    dispatchSet(YasguiState.prefixes, invertObj(prefixes));
+    dispatchSet(ModelState.prefixes, invertObj(prefixes));
     loadModel(json);
     loadLabels();
     Modal.destroyAll();

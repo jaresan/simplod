@@ -37,7 +37,7 @@ export const instance = forKey('instance');
  */
 export const updateQuery = state => {
   const customPrefixes = view(ModelState.customPrefixes, state);
-  const usedPrefixes = view(prefixes, state);
+  const usedPrefixes = view(ModelState.prefixes, state);
   const overriddenPrefixes = Object.assign(omit(values(customPrefixes), usedPrefixes), mapObjIndexed((p, key) => usedPrefixes[key], customPrefixes));
   const selectedProperties = filter(E.selected, view(ModelState.properties, state));
   const classes = view(ModelState.classes, state);
@@ -45,9 +45,19 @@ export const updateQuery = state => {
   const limit = view(SettingsState.limit, state);
   const limitEnabled = view(SettingsState.limitEnabled, state);
   const selectionOrder = view(ModelState.selectionOrder, state);
+  const propertyLanguages = view(ModelState.propertyLanguages, state);
   const prefixToIRI = Object.assign({}, usedPrefixes, invertObj(overriddenPrefixes));
 
-  return set(query, parseSPARQLQuery({selectedProperties, selectedClasses, classes, prefixes: prefixToIRI, limit, limitEnabled, selectionOrder}), state);
+  return set(query, parseSPARQLQuery({
+    selectedProperties,
+    selectedClasses,
+    classes,
+    prefixes: prefixToIRI,
+    limit,
+    limitEnabled,
+    selectionOrder,
+    propertyLanguages
+  }), state);
 }
 
 export const middleware = curry((oldState, newState) => {
@@ -56,6 +66,7 @@ export const middleware = curry((oldState, newState) => {
     ModelState.classes,
     ModelState.selectionOrder,
     ModelState.customPrefixes,
+    ModelState.propertyLanguages,
     SettingsState.limitEnabled,
     SettingsState.limit
   ].some(complement(compare(oldState, newState)))

@@ -1,13 +1,12 @@
 import { curry, omit, over, set, view, pipe, map, assoc, invertObj } from 'ramda';
-import * as YasguiState from '@@app-state/yasgui/state';
 import * as ModelState from '@@app-state/model/state';
 
 export const renamePrefix = curry((oldName, newName, s) => {
   const existingKey = invertObj(view(ModelState.customPrefixes, s))[oldName];
-  const iri = view(YasguiState.prefixById(existingKey), s) || view(YasguiState.prefixById(oldName), s);
+  const iri = view(ModelState.prefixById(existingKey), s);
 
   return pipe(
-    over(YasguiState.prefixes, omit([oldName, existingKey])),
+    over(ModelState.prefixes, omit([oldName, existingKey])),
     over(ModelState.properties, map(p => {
       const [predicatePrefix, predicateSuffix] = p.predicate.split(':');
       const [typePrefix, typeSuffix] = p.targetType.split(':');
@@ -25,7 +24,7 @@ export const renamePrefix = curry((oldName, newName, s) => {
         assoc('type', `${newName}:${typeSuffix}`, c)
         : c;
     })),
-    set(YasguiState.prefixById(newName), iri),
+    set(ModelState.prefixById(newName), iri),
     over(ModelState.customPrefixes, omit([existingKey])),
     set(ModelState.customPrefixById(newName), oldName)
   )(s);
@@ -47,13 +46,13 @@ export const loadCustomPrefixes = curry((customPrefixes, s) => {
   const updated =
     Object.entries(customPrefixes)
     .reduce((acc, [newName, oldName]) => {
-      if (!view(YasguiState.prefixById(newName), s)) {
-        return set(YasguiState.prefixById(newName), view(YasguiState.prefixById(oldName), s), acc)
+      if (!view(ModelState.prefixById(newName), s)) {
+        return set(ModelState.prefixById(newName), view(ModelState.prefixById(oldName), s), acc)
       }
        return s;
     }, s);
 
-  return over(YasguiState.prefixes, omit(Object.values(customPrefixes)), updated);
+  return over(ModelState.prefixes, omit(Object.values(customPrefixes)), updated);
 })
 
 export const applyCustomPrefixes = curry((customPrefixes, s) => {

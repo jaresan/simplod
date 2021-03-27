@@ -12,7 +12,7 @@ import { updateLanguageInfo } from '@@model/class-entity';
 export const loadHumanReadableData = () => {
   dispatchSet(SettingsState.labelsLoadingProgress, 0);
   const state = getState();
-  const prefixes = view(YasguiState.prefixes, state);
+  const prefixes = view(ModelState.prefixes, state);
   const language = view(SettingsState.language, state);
   const prefixToIri = prefixes;
   const iriToPrefix = invertObj(prefixes);

@@ -1,5 +1,7 @@
-import { groupBy, path, prop, map, partition, pipe, pick, uniq, identity, keys, values } from 'ramda';
+import { groupBy, path, prop, map, partition, pipe, pick, uniq, identity, keys, values, curry } from 'ramda';
 import { sanitizeVarName } from '@@utils/sanitizeVarName';
+
+const langStringType = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString';
 
 const getPropertiesBySource = (prefixToIRI, getEntityVariable, properties) => {
   const getProperty = ({asVariable, varName, predicate, source, optional, target}) => {
@@ -64,7 +66,39 @@ const getUsedPrefixes = (selectedProperties, selectedEntities) => {
 }
 
 
-export const parseSPARQLQuery = ({selectedProperties, selectedClasses, classes, prefixes, selectionOrder, limit, limitEnabled}) => {
+const isLangString = curry((prefixes, {target}) => {
+  const prefix = prop(1, /(\w+):/.exec(target));
+  return target.replace(`${prefix}:`, prefixes[prefix]) === langStringType;
+});
+
+const getPropertyRow = ({predicate, variable}, i, arr) => `${predicate} ${variable}${i === arr.length - 1 ? '.' : ';'}`;
+
+const getPropertyRows = ({propertiesBySource, getEntityVariable, prefixes, shouldAddFilter, getFilterString}) => Object.entries(propertiesBySource)
+  .map(([source, {required, optional}]) => {
+    let res = '';
+    if (required.length) {
+      res = `?${getEntityVariable(source)} ${required.map(getPropertyRow).join('\n')}`;
+    }
+    if (optional.length) {
+      res += `\n\tOPTIONAL {
+      ?${getEntityVariable(source)} ${optional.map(getPropertyRow).join('\n')}
+      ${shouldAddFilter ? optional.filter(isLangString(prefixes)).map(pipe(prop('variable'), getFilterString)) : ''}
+      }`;
+    }
+    return res;
+  })
+  .filter(identity);
+
+export const parseSPARQLQuery = ({
+  selectedProperties,
+  selectedClasses,
+  classes,
+  prefixes,
+  selectionOrder,
+  limit,
+  limitEnabled,
+  propertyLanguages
+}) => {
   const classesByVarName = groupBy(prop('varName'), values(classes));
   const varNameToTypes = map(map(prop('type')), classesByVarName);
 
@@ -72,20 +106,9 @@ export const parseSPARQLQuery = ({selectedProperties, selectedClasses, classes, 
 
   const propertiesBySource = getPropertiesBySource(prefixes, getEntityVariable, selectedProperties);
 
-  const getPropertyRow = ({predicate, variable}, i, arr) => `${predicate} ${variable}${i === arr.length - 1 ? '.' : ';'}`;
-
-  const rows = Object.entries(propertiesBySource)
-    .map(([source, {required, optional}]) => {
-      let res = '';
-      if (required.length) {
-        res = `?${getEntityVariable(source)} ${required.map(getPropertyRow).join('\n')}`;
-      }
-      if (optional.length) {
-        res += `\n\tOPTIONAL { ?${getEntityVariable(source)} ${optional.map(getPropertyRow).join('\n')} }`;
-      }
-      return res;
-    })
-    .filter(identity);
+  const shouldAddFilter = !!propertyLanguages.length;
+  const getFilterString = variable => `filter (lang(${variable}) in (${propertyLanguages.map(a => `'${a}'`).join(',')})).`;
+  const rows = getPropertyRows({propertiesBySource, getEntityVariable, prefixes, shouldAddFilter, getFilterString});
 
   const usedVariables = values(propertiesBySource)
     .map(prop('properties'))
@@ -105,10 +128,15 @@ export const parseSPARQLQuery = ({selectedProperties, selectedClasses, classes, 
   const usedPrefixes = getUsedPrefixes(selectedProperties, selectedClasses);
   const usedPrefixesToIRI = pick(usedPrefixes, prefixes);
 
+  const requiredProperties = Object.values(propertiesBySource)
+    .flatMap(prop('required'))
+    .filter(isLangString(prefixes));
+
   return `${getPrefixDefinitions(usedPrefixesToIRI)}
     SELECT DISTINCT ${getSelectText(selectionOrder, selected)} WHERE {
     ${typeRows}
     ${rows.join('\n')}
+    ${shouldAddFilter && requiredProperties.map(pipe(prop('variable'), getFilterString)).join('\n')}
     }
     ${limitEnabled && limit ? `LIMIT ${limit}` : ''} 
   `;
