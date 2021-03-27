@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Input, Space, Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { fromEvent } from '@@data/utils';
+import { withInfoIcon } from '@@components/controls/with-info-icon';
 
 const labels = {
   dataSchema: ['Data schema URL:', 'URL from which the data schema should be retrieved'],
@@ -9,13 +10,6 @@ const labels = {
   title: ['Title:', 'Title of the project'],
   description: ['Description:', 'Text description of what this project represents']
 };
-
-const getField = arr => <Space>
-  {arr[0]}
-  <Tooltip title={arr[1]}>
-    <InfoCircleOutlined />
-  </Tooltip>
-</Space>;
 
 export const FilePropertyFields = ({
   onSchemaReload,
@@ -26,7 +20,7 @@ export const FilePropertyFields = ({
   schemaURL, endpointURL, title, description
 }) =>
   <Space direction="vertical" style={{width: '100%'}}>
-    {getField(labels.dataSchema)}
+    {withInfoIcon(labels.dataSchema)}
     <Input
       type="text"
       value={schemaURL}
@@ -38,21 +32,21 @@ export const FilePropertyFields = ({
         Reload schema
       </Button>
     }
-    {getField(labels.endpoint)}
+    {withInfoIcon(labels.endpoint)}
     <Input
       type="text"
       value={endpointURL}
       onChange={fromEvent(onEndpointChange)}
       placeholder="Endpoint URL"
     />
-    {getField(labels.title)}
+    {withInfoIcon(labels.title)}
     <Input
       type="text"
       onChange={fromEvent(onTitleChange)}
       value={title}
       placeholder="Project title"
     />
-    {getField(labels.description)}
+    {withInfoIcon(labels.description)}
     <Input.TextArea
       type="text"
       onChange={fromEvent(onDescriptionChange)}

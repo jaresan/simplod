@@ -1,5 +1,5 @@
 import React from 'react';
-import { pick, pipe } from 'ramda';
+import { path, pipe } from 'ramda';
 import { List, Card, Space, Checkbox, Tooltip, Input } from 'antd';
 import {connect} from 'react-redux';
 import {PropertyEntry} from './PropertyEntry';
@@ -14,7 +14,7 @@ import {
   CopyOutlined
 } from '@ant-design/icons';
 import styled from '@emotion/styled';
-import { getClassById, getShowHumanReadable } from '@@selectors';
+import { getClassById, getLabelLanguage, getShowHumanReadable } from '@@selectors';
 import * as Controls from './Controls';
 import * as ModelState from '@@app-state/model/state';
 import { dispatch } from '@@app-state';
@@ -125,14 +125,14 @@ class EntityEntryComponent extends React.Component {
   >{label}</Tooltip> : <PrefixedText title={this.props.entity.type}/>;
 
   render() {
-    const {entity, showHumanReadable} = this.props;
+    const {entity, showHumanReadable, labelLanguage} = this.props;
     const {propertyIds, info} = entity;
 
-    // FIXME: @reference to entity fields
-    let toShow = pick(['label', 'description'], info);
+    let toShow = path(['byLanguage', labelLanguage], info) || path(['byLanguage', 'default'], info) || {}
     if (!showHumanReadable) {
       toShow = {};
     }
+    const {label, description} = toShow;
 
     return (
       <Container
@@ -140,8 +140,8 @@ class EntityEntryComponent extends React.Component {
         title={<ExpandIconContainer onClick={this.toggleExpanded}>
           <Space>
             {this.getToggleIcon()}
-            {this.getTitle(toShow.label)}
-            {this.getInfoIcon(toShow.description)}
+            {this.getTitle(label)}
+            {this.getInfoIcon(description)}
           </Space>
         </ExpandIconContainer>}
         size="small"
@@ -160,7 +160,8 @@ class EntityEntryComponent extends React.Component {
 
 const mapStateToProps = (appState, {id}) => ({
   entity: getClassById(id, appState),
-  showHumanReadable: getShowHumanReadable(appState)
+  showHumanReadable: getShowHumanReadable(appState),
+  labelLanguage: getLabelLanguage(appState)
 });
 
 // TODO: @dispatch rewrite

@@ -2,6 +2,7 @@ import { assoc, compose, lens, lensProp, prop } from 'ramda';
 
 export const initial = {
   language: navigator.language,
+  labelLanguage: navigator.language,
   labelsLoadingProgress: 0,
   showHumanReadable: true,
   limitEnabled: true,
@@ -30,5 +31,6 @@ export const limit = withAutoSave('limit');
 export const limitEnabled = withAutoSave('limitEnabled');
 export const showHumanReadable = withAutoSave('showHumanReadable');
 export const language = withAutoSave('language');
+export const labelLanguage = withAutoSave('labelLanguage');
 export const loaded = forKey('loaded');
 export const horizontalLayout = withAutoSave('horizontalLayout');

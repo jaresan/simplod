@@ -25,6 +25,7 @@ export const getCustomPrefixes = view(ModelState.customPrefixes);
 export const getCartesianProduct = view(ModelState.cartesianProduct);
 
 export const getLanguage = view(SettingsState.language);
+export const getLabelLanguage = view(SettingsState.labelLanguage);
 export const getLoadingHumanReadable = view(SettingsState.labelsLoadingProgress);
 export const getLimit = view(SettingsState.limit);
 export const getLimitEnabled = view(SettingsState.limitEnabled);
