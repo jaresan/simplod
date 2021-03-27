@@ -130,13 +130,14 @@ export const parseSPARQLQuery = ({
 
   const requiredProperties = Object.values(propertiesBySource)
     .flatMap(prop('required'))
-    .filter(isLangString(prefixes));
+    .filter(isLangString(prefixes))
+    .reduce((acc, p) => Object.assign(acc, {[p.variable]: true}), {});
 
   return `${getPrefixDefinitions(usedPrefixesToIRI)}
     SELECT DISTINCT ${getSelectText(selectionOrder, selected)} WHERE {
     ${typeRows}
     ${rows.join('\n')}
-    ${shouldAddFilter && requiredProperties.map(pipe(prop('variable'), getFilterString)).join('\n')}
+    ${shouldAddFilter ? keys(requiredProperties).map(getFilterString).join('\n') : ''}
     }
     ${limitEnabled && limit ? `LIMIT ${limit}` : ''} 
   `;
