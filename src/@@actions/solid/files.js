@@ -1,5 +1,5 @@
 import React from 'react';
-import { message, notification } from 'antd';
+import { Button, message, notification, Space } from 'antd';
 import auth from 'solid-auth-client';
 import { dispatch, dispatchSet } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
@@ -8,6 +8,7 @@ import { getSession, getSessionOrLogin } from '@@actions/solid/auth';
 import { identity, tap } from 'ramda';
 import { translated } from '@@localization';
 import { WithRetry } from '@@components/controls/with-retry';
+import { downloadData } from '@@actions/save-load';
 
 const notifyUnauthorized = async () => {
   const {webId} = await getSession();
@@ -34,26 +35,35 @@ export const fetchFile = async url => {
   return res;
 }
 
-const notifyAboutFailure = ({retryFn, uri}) => {
+const notifyAboutFailureWithRetry = ({retryFn, uri}) => {
   const notificationKey = 'solid-fail-notification';
   const closeNotification = () => notification.close(notificationKey);
-  notification.error({
-    duration: 0,
-    key: notificationKey,
-    message: 'File save failed',
-    description: <WithRetry
-      retryFn={retryFn}
-      retryTime={4000}
-      maxRetries={3}
-      onSuccess={closeNotification}
-      onFail={() => {
-        closeNotification();
-        notification.error({message: translated(`Saving to ${uri} failed`)});
-      }}
-      onCancel={closeNotification}
-    >
-      <div>Saving the file to {uri} failed, retrying...</div>
-    </WithRetry>
+
+  return new Promise((res, rej) => {
+    notification.error({
+      duration: 0,
+      key: notificationKey,
+      message: 'File save failed',
+      description: <WithRetry
+        retryFn={retryFn}
+        retryTime={4000}
+        maxRetries={3}
+        onSuccess={d => {
+          closeNotification();
+          res(d);
+        }}
+        onFail={e => {
+          closeNotification();
+          rej(e);
+        }}
+        onCancel={() => {
+          closeNotification();
+          res(null);
+        }}
+      >
+        <div>Saving the file to {uri} failed, retrying...</div>
+      </WithRetry>
+    });
   });
 };
 
@@ -67,20 +77,41 @@ export const saveFile = async ({uri, data}) => {
     dispatchSet(SolidState.modelFileLocation, uri);
     dispatchSet(ModelState.dirty, false);
   }));
-  try {
-    const res = await trySave();
 
-    if (res.status === 401) {
-      await notifyUnauthorized();
-    } else if (res.status < 200 || res.status >= 300) {
-      notifyAboutFailure({retryFn: trySave, uri})
-    }
-  } catch (e) {
-    console.error(e);
-    notifyAboutFailure({retryFn: trySave, uri})
-  } finally {
-    loading();
+  const onFail = () => {
+    const key = 'save-failed-final-notification';
+    notification.error({
+      message: translated(`Saving to ${uri} failed`),
+      key,
+      description: <>
+        <Space>
+          <Button onClick={() => {
+            notification.close(key);
+            saveFile({uri, data});
+          }}>Try again</Button>
+          <Button onClick={() => {
+            downloadData();
+            notification.close(key);
+          }}>Download file</Button>
+        </Space>
+      </>
+    });
   }
+
+  trySave()
+    .then(({status}) => {
+      loading();
+      if (status === 401) {
+        notifyUnauthorized();
+      } else if (status < 200 || status >= 300) {
+        return Promise.reject('Something went wrong.');
+      }
+    })
+    .catch(() => {
+      loading();
+      return notifyAboutFailureWithRetry({retryFn: trySave, uri});
+    })
+    .catch(() => onFail());
 };
 
 export const changePermissions = async ({uri, permissions}) => {
