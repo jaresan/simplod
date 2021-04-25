@@ -13,14 +13,14 @@ const defaultStyle = {
   fontFamily: "sans-serif",
   textAlign: "left",
   textBaseline: "top",
-  fill: "#000",
+  fill: '#000',
   stroke: 'transparent',
   font: "normal normal normal 12px sans-serif"
 };
 
 const styles = {
-  'hover': {stroke: 'white', lineWidth: 1},
-  'selected': {fill: 'cyan'},
+  'hover': {stroke: 'black', lineWidth: 1},
+  'selected': {fill: 'orange'},
 };
 
 export class Method extends Wrapper {
