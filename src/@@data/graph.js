@@ -1,7 +1,7 @@
 import {keys, all, prop, groupBy, mergeWith, concat} from 'ramda';
 
-export const getConnectedEntities = (p, edgesByEntity) => {
-  const stack = [p];
+export const getConnectedEntities = (properties, edgesByEntity) => {
+  const stack = properties;
   let appearingEntities = {};
   while (stack.length) {
     const {target, source, dataProperty, optional} = stack.pop();
@@ -41,6 +41,6 @@ export const isConnected = ({properties, entityIds}) => {
   const edgesByTarget = groupBy(prop('target'), properties);
   const edgesByEntity = mergeWith(concat, edgesBySource, edgesByTarget);
 
-  const subGraph = getConnectedEntities(properties[0], edgesByEntity);
+  const subGraph = getConnectedEntities(properties, edgesByEntity);
   return all(k => subGraph[k], keys(appearingEntities))
 };
