@@ -13,7 +13,7 @@ function propagate(target, key) {
 
 const styles = {
   titleOutline: {
-    stroke: 'cyan',
+    fill: '#4ab8e5',
     lineWidth: 3
   }
 }
