@@ -1,6 +1,5 @@
 import React from 'react';
-import { Button, Input, Space, Tooltip } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { Button, Input, Space } from 'antd';
 import { fromEvent } from '@@data/utils';
 import { withInfoIcon } from '@@components/controls/with-info-icon';
 

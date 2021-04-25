@@ -5,7 +5,7 @@ import Group from '@@graph/wrappers/Group';
 export const NODE_TYPE = 'graphNode';
 
 export const PROP_LINE_HEIGHT = 12;
-const blue = '#49b2e7';
+const blue = '#96dcff';
 const textColor = 'black';
 const getAttrs = ctx => ({
   'node-container': ({label}) => ({

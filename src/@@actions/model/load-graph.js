@@ -2,7 +2,6 @@ import { onDataLoaded } from '@@actions/lifecycle';
 import { Graph } from '@@graph';
 import { fetchDataSchema } from '@@actions/model/fetch-data-schema';
 import { dispatch, dispatchSet, getState } from '@@app-state';
-import * as YasguiState from '@@app-state/yasgui/state';
 import { invertObj, view } from 'ramda';
 import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';

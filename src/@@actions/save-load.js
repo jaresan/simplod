@@ -16,7 +16,6 @@ import { loadCustomPrefixes } from '@@actions/custom-prefix';
 import { withLoading, withLoadingP } from '@@utils/with-loading';
 import { loadLabels } from '@@actions/model/load-graph';
 import { fetchDataSchema } from '@@actions/model/fetch-data-schema';
-import * as YasguiState from '@@app-state/yasgui/state';
 import { translated } from '@@localization';
 
 export const generateSaveData = () => {

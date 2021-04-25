@@ -1,7 +1,6 @@
 import { dispatch, dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import { invertObj, isEmpty, map, view } from 'ramda';
-import * as YasguiState from '@@app-state/yasgui/state';
 import * as SettingsState from '@@app-state/settings/state';
 import { getHumanReadableDataPromises } from '@@api';
 import { updateLanguageInfo } from '@@model/class-entity';

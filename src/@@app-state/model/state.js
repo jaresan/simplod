@@ -290,9 +290,6 @@ const createNewPropertiesForTargetType = curry(({type: targetType, id: target, v
   }, s);
 });
 
-const assignPropertyTargets = curry((newTarget, propertyIds, s) =>
-  propertyIds.reduce((acc, id) => set(propertyTargetById(id), newTarget, acc), s));
-
 const createNewClassInstance = (id, s) => {
   const entity = view(classById(id), s);
   const newId = suffixId(classById, s, entity.type || id);

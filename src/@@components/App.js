@@ -15,7 +15,8 @@ import { getCartesianProduct, getHorizontalLayout } from '@@selectors';
 import { connect } from 'react-redux';
 import { translated } from '@@localization';
 import {css} from '@emotion/css';
-import { loadLocalData } from '@@actions/save-load';
+// import { loadLocalData } from '@@actions/save-load';
+// import configs from '../dev_examples';
 
 const {Content, Footer} = Layout;
 
@@ -60,21 +61,26 @@ class App extends Component {
     // this.ukEndpointURL = 'http://data.open.ac.uk/query';
     // // this.beefURL = '/samples/http---nl.dbpedia.org-sparql.ttl';
     // // this.endpointURL = 'http://nl.dbpedia.org/sparql';
+    // const examples = [
+    //   ['/samples/http---www.imagesnippets.com-sparql-images.ttl', 'https://imagesnippets.com/sparql/images']
+    // ];
+    // this.schemaURL = ;
+    // this.endpointURL = ;
     if (process.env.NODE_ENV === 'development') {
       this.schemaURL = this.courtExampleURL;
       // this.schemaURL = this.schemaURL || this.applicantsURL;
       // this.schemaURL = this.govURL;
       // this.schemaURL = this.beefURL;
-      this.endpointURL = "https://data.gov.cz/sparql";
+      this.endpointURL = 'https://data.gov.cz/sparql';
+      this.schemaURL = '/samples/http---data.nobelprize.org-sparql.ttl';
+      this.endpointURL = 'http://data.nobelprize.org/sparql';
     }
   }
 
   componentDidMount() {
     onAppStart()
       .then(() => {
-        if (process.env.NODE_ENV === 'development') {
-          loadLocalData();
-        } else if (this.schemaURL || this.modelURL) {
+        if (this.schemaURL || this.modelURL) {
           loadGraphFromURL({dataSchemaURL: this.schemaURL, endpointURL: this.endpointURL, modelURL: this.modelURL})
         }
       });
@@ -93,6 +99,11 @@ class App extends Component {
             <div style={getGraphContainerStyle(horizontalLayout)}>
               <GraphContainer />
             </div>
+            {/*{*/}
+            {/*  configs.map(([file, endpoint]) =>*/}
+            {/*    <Button onClick={() => loadGraphFromURL({dataSchemaURL: file, endpointURL: endpoint})}>{file}</Button>*/}
+            {/*  )*/}
+            {/*}*/}
             <div style={getMenuStyle(horizontalLayout)}>
               {cartesianProduct && <Alert message={translated('Current selection is not a connected graph and might result in querying a cartesian product.')} banner />}
               <Tabs className={TabHeight} style={{width: '100%', height: '90vh'}} onChange={this.updateTabKey}>
