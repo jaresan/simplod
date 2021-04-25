@@ -14,7 +14,7 @@ function propagate(target, key) {
 const styles = {
   titleOutline: {
     fill: '#4ab8e5',
-    lineWidth: 3
+    lineWidth: 2
   }
 }
 

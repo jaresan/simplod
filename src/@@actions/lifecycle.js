@@ -5,7 +5,7 @@ import hotkeys from 'hotkeys-js';
 import { dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import { mapObjIndexed, view } from 'ramda';
-import { loadLocalSettings, saveData } from '@@actions/save-load';
+import { loadLocalData, loadLocalSettings, saveData } from '@@actions/save-load';
 import { onSolidStart } from '@@actions/solid/lifecycle';
 
 /**
@@ -15,6 +15,11 @@ export const onAppStart = () => {
   hotkeys('command+s,ctrl+s', e => {
     e.preventDefault()
     saveData();
+  });
+
+  hotkeys('command+l,ctrl+l', e => {
+    e.preventDefault()
+    loadLocalData();
   });
 
   loadLocalSettings();

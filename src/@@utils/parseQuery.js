@@ -16,7 +16,7 @@ const getPropertiesBySource = (prefixToIRI, getEntityVariable, properties) => {
       target,
       targetVarName,
       sourceVarName,
-      variable: asVariable ? `?${targetVarName}` : '[]'
+      variable: `?${targetVarName}`
     };
   };
 
