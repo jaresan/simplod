@@ -6,6 +6,11 @@ import { getState } from '@@app-state';
 import {Graph} from '@@graph/Graph';
 
 const styles = {
+  optional: {
+    'edge-shape': {
+      lineDash: [3]
+    }
+  },
   hover: {
     'edge-shape': {
       lineWidth: 3,
@@ -38,13 +43,14 @@ const defaultStyle = {
   'edge-shape': {
     stroke: '#666',
     lineWidth: 3,
-    opacity: 0.2
+    opacity: 0.2,
+    lineDash: null
   },
   'text-shape': {
     opacity: 0.4,
     lineWidth: 1,
     stroke: '#666'
-  }
+  },
 };
 
 export class Edge extends Wrapper {
@@ -98,11 +104,20 @@ export class Edge extends Wrapper {
     if (selected !== this.state.selected) {
       this.updateNodeHighlights();
     }
+    this.state.optional = this.isOptional();
     this.updateStyles();
   };
 
+  getProperties() {
+    return view(propertiesByIds(this.model.propertyIds), getState());
+  }
+
+  isOptional() {
+    return !isEmpty(filter(p => p.selected && p.optional, this.getProperties()));
+  }
+
   isSelected() {
-    return !isEmpty(filter(prop('selected'), view(propertiesByIds(this.model.propertyIds), getState())));
+    return !isEmpty(filter(prop('selected'), this.getProperties()));
   }
 
   updateSelected() {
