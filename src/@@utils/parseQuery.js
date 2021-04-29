@@ -73,21 +73,20 @@ const isLangString = curry((prefixes, {target}) => {
 
 const getPropertyRow = ({predicate, variable}, i, arr) => `${predicate} ${variable}${i === arr.length - 1 ? '.' : ';'}`;
 
-const getPropertyRows = ({propertiesBySource, getEntityVariable, prefixes, shouldAddFilter, getFilterString}) => Object.entries(propertiesBySource)
-  .map(([source, {required, optional}]) => {
-    let res = '';
+const getPropertyRows = ({propertiesBySource, getEntityVariable, prefixes, shouldAddFilter, getFilterString}) =>
+  Object.entries(propertiesBySource)
+  .reduce((acc, [source, {required, optional}]) => {
     if (required.length) {
-      res = `?${getEntityVariable(source)} ${required.map(getPropertyRow).join('\n')}`;
+      acc.required.push(`?${getEntityVariable(source)} ${required.map(getPropertyRow).join('\n')}`);
     }
     if (optional.length) {
-      res += `\n\tOPTIONAL {
-      ?${getEntityVariable(source)} ${optional.map(getPropertyRow).join('\n')}
-      ${shouldAddFilter ? optional.filter(isLangString(prefixes)).map(pipe(prop('variable'), getFilterString)) : ''}
-      }`;
+      acc.optional.push(`
+        ?${getEntityVariable(source)} ${optional.map(getPropertyRow).join('\n')}
+        ${shouldAddFilter ? optional.filter(isLangString(prefixes)).map(pipe(prop('variable'), getFilterString)) : ''}
+      `);
     }
-    return res;
-  })
-  .filter(identity);
+    return acc;
+  }, {required: [], optional: []});
 
 export const parseSPARQLQuery = ({
   selectedProperties,
@@ -108,7 +107,6 @@ export const parseSPARQLQuery = ({
 
   const shouldAddFilter = !!propertyLanguages.length;
   const getFilterString = variable => `filter (lang(${variable}) in (${propertyLanguages.map(a => `'${a}'`).join(',')})).`;
-  const rows = getPropertyRows({propertiesBySource, getEntityVariable, prefixes, shouldAddFilter, getFilterString});
 
   const usedVariables = values(propertiesBySource)
     .map(prop('properties'))
@@ -133,10 +131,14 @@ export const parseSPARQLQuery = ({
     .filter(isLangString(prefixes))
     .reduce((acc, p) => Object.assign(acc, {[p.variable]: true}), {});
 
+  const {optional, required} = getPropertyRows({propertiesBySource, getEntityVariable, prefixes, shouldAddFilter, getFilterString});
   return `${getPrefixDefinitions(usedPrefixesToIRI)}
     SELECT DISTINCT ${getSelectText(selectionOrder, selected)} WHERE {
     ${typeRows}
-    ${rows.join('\n')}
+    ${required.join('\n')}
+    OPTIONAL {
+      ${optional.join('\n')}
+    }
     ${shouldAddFilter ? keys(requiredProperties).map(getFilterString).join('\n') : ''}
     }
     ${limitEnabled && limit ? `LIMIT ${limit}` : ''} 
