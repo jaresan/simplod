@@ -16,12 +16,18 @@ const defaultStyle = {
   textBaseline: 'top',
   fill: '#000',
   stroke: 'transparent',
-  font: "normal normal normal 12px sans-serif"
+  font: "normal normal normal 12px sans-serif",
+  shadowOffsetX: 1,
+  shadowOffsetY: 1,
+  shadowColor: 'transparent',
+  shadowBlur: 1
 };
 
 const styles = {
-  'hover': {fontSize: 14},
-  'selected': {fill: '#FF9B64', stroke: 'black', lineWidth: 2},
+  'hover': {
+    shadowColor: '#00F'
+  },
+  'selected': {fill: '#88d300', stroke: 'black', lineWidth: 2, shadowColor: '#000'},
 };
 
 export class Property extends Wrapper {
