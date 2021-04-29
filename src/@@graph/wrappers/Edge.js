@@ -1,5 +1,5 @@
 import {Wrapper} from '@@graph/wrappers/Wrapper';
-import {path, view, filter, prop, isEmpty} from 'ramda';
+import {path, view, filter, prop, isEmpty, all} from 'ramda';
 import {Edge as EdgeHandler} from '@@graph/handlers';
 import { propertiesByIds } from '@@app-state/model/state';
 import { getState } from '@@app-state';
@@ -113,7 +113,8 @@ export class Edge extends Wrapper {
   }
 
   isOptional() {
-    return !isEmpty(filter(p => p.selected && p.optional, this.getProperties()));
+    const selectedProperties = filter(prop('selected'), this.getProperties());
+    return !isEmpty(selectedProperties) && all(prop('optional'), Object.values(selectedProperties));
   }
 
   isSelected() {

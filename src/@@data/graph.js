@@ -1,24 +1,24 @@
-import {keys, all, prop, groupBy, mergeWith, concat} from 'ramda';
+import {keys, all, prop, groupBy, mergeWith, concat, filter, map, complement} from 'ramda';
 
-export const getConnectedEntities = (properties, edgesByEntity) => {
-  const stack = properties;
-  let appearingEntities = {};
+export const getConnectedEntities = (p, edgesByNode) => {
+  const stack = p;
+  let reachableNodes = {};
   while (stack.length) {
     const {target, source, dataProperty, optional} = stack.pop();
     if (optional) {
       continue;
     }
-    if (!appearingEntities[source]) {
-      stack.push(...(edgesByEntity[source] || []));
-      appearingEntities[source] = true;
+    if (!reachableNodes[source]) {
+      stack.push(...(edgesByNode[source] || []));
+      reachableNodes[source] = true;
     }
-    if (!appearingEntities[target] && !dataProperty) {
-      stack.push(...(edgesByEntity[target] || []));
-      appearingEntities[target] = true;
+    if (!reachableNodes[target] && !dataProperty) {
+      stack.push(...(edgesByNode[target] || []));
+      reachableNodes[target] = true;
     }
   }
 
-  return appearingEntities;
+  return reachableNodes;
 };
 
 export const isConnected = ({properties, entityIds}) => {
@@ -26,21 +26,20 @@ export const isConnected = ({properties, entityIds}) => {
     return entityIds.length <= 1;
   }
 
-  const appearingEntities = entityIds.reduce((acc, id) => Object.assign(acc, {[id]: true}), {});
+  const queriedEntities = entityIds.reduce((acc, id) => Object.assign(acc, {[id]: true}), {});
   properties
-    .reduce((acc, p) => {
+    .forEach(p => {
       if (!p.dataProperty) {
-        acc[p.target] = true;
+        queriedEntities[p.target] = true;
       }
-      acc[p.source] = true;
-      return acc;
-    }, appearingEntities);
+      queriedEntities[p.source] = true;
+    });
 
 
   const edgesBySource = groupBy(prop('source'), properties);
   const edgesByTarget = groupBy(prop('target'), properties);
   const edgesByEntity = mergeWith(concat, edgesBySource, edgesByTarget);
 
-  const subGraph = getConnectedEntities(properties, edgesByEntity);
-  return all(k => subGraph[k], keys(appearingEntities))
+  const subGraph = getConnectedEntities(Object.values(edgesByEntity)[0], edgesByEntity);
+  return all(k => subGraph[k], keys(queriedEntities))
 };

@@ -15,8 +15,8 @@ describe('@@data/graph', () => {
     }
 
     it('should return connected component for provided property', () => {
-      getConnectedEntities({source: 'a', target: 'b'}, edges).should.eql({a: true, b: true, c: true});
-      getConnectedEntities({source: 'd', target: 'e'}, edges).should.eql({d: true, e: true});
+      getConnectedEntities([{source: 'a', target: 'b'}], edges).should.eql({a: true, b: true, c: true});
+      getConnectedEntities([{source: 'd', target: 'e'}], edges).should.eql({d: true, e: true});
     });
   });
 
@@ -57,22 +57,30 @@ describe('@@data/graph', () => {
         ], entityIds: []}).should.eql(false);
     });
 
-    it('should graph mark as not connected when using optional properties', () => {
+    it('should consider graph connected when an edge has at least one required property', () => {
+      isConnected({properties: [
+          {source: 'a', target: 'b', optional: true},
+          {source: 'a', target: 'b'},
+          {source: 'b', target: 'string', dataProperty: true}
+        ], entityIds: []}).should.be.true;
+    });
+
+    it('should graph mark as not connected when using optional property', () => {
       const data = {
         'properties': [
           {
-            'target': 'owl:Ontology',
             'source': 'prov:Entity',
+            'target': 'owl:Ontology',
             'optional': true
           },
           {
-            'target': 'rdf:langString',
             'source': 'owl:Ontology',
+            'target': 'rdf:langString',
             'dataProperty': true
           },
           {
-            'target': 'lex:Court_1',
             'source': 'prov:Entity',
+            'target': 'lex:Court_1',
             'varName': 'Court_1'
           }
         ],
@@ -82,13 +90,15 @@ describe('@@data/graph', () => {
         ]
       };
       isConnected(data).should.eql(false);
+    });
+    it('should mark graph as not connected when using a single optional property and data property of the target', () => {
       isConnected({
         properties: [
           {source: 'b', target: 'a'},
           {source: 'b', target: 'c', optional: true},
           {source: 'c', target: 'xsd:string', dataProperty: true}
         ],
-        entityIds: ['b', 'c']
+        entityIds: []
       }).should.eql(false);
     });
   });
