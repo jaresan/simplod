@@ -1,10 +1,10 @@
-import {Property, Method, Node, Edge} from '@@graph/wrappers';
+import {DataProperty, ObjectProperty, Node, Edge} from '@@graph/wrappers';
 
 const create = (group, elements = []) => elements.map(el => group.addShape(el));
 
 const wrappers = {
-  dataProperty: Property,
-  objectProperty: Method,
+  dataProperty: DataProperty,
+  objectProperty: ObjectProperty,
   node: Node,
   edge: Edge
 };

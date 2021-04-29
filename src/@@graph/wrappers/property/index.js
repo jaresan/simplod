@@ -11,17 +11,17 @@ const defaultStyle = {
   strokeOpacity: 1,
   fillOpacity: 1,
   fontSize: 12,
-  fontFamily: "sans-serif",
-  textAlign: "left",
-  textBaseline: "top",
+  fontFamily: 'sans-serif',
+  textAlign: 'left',
+  textBaseline: 'top',
   fill: '#000',
   stroke: 'transparent',
   font: "normal normal normal 12px sans-serif"
 };
 
 const styles = {
-  'hover': {stroke: 'black', lineWidth: 1},
-  'selected': {fill: 'orange'},
+  'hover': {fontSize: 14},
+  'selected': {fill: '#FF9B64', stroke: 'black', lineWidth: 2},
 };
 
 export class Property extends Wrapper {
@@ -47,7 +47,6 @@ export class Property extends Wrapper {
     this.handler.onToggleSelect(this.id, this.state.selected);
     const groupController = this.getGroupController();
     groupController.updatePropertyContainer()
-    // FIXME: Update edge as well
   }
 
   updateText({predicate, targetType, varName}) {

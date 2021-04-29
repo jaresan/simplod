@@ -5,14 +5,14 @@ import Group from '@@graph/wrappers/Group';
 export const NODE_TYPE = 'graphNode';
 
 export const PROP_LINE_HEIGHT = 12;
-const blue = '#96dcff';
+const nodeContainerColor = 'lightgrey';
 const textColor = 'black';
 const getAttrs = ctx => ({
   'node-container': ({label}) => ({
     width: ctx.measureText(label).width + 8,
     height: 20,
     stroke: textColor, // Apply the color to the stroke. For filling, use fill: cfg.color instead
-    fill: blue,
+    fill: nodeContainerColor,
     opacity: 1
   }),
   'node-title': (width, text) => ({
@@ -41,7 +41,7 @@ const getAttrs = ctx => ({
     width: Math.max(...propArr.map(p => p.attrs.width)),
     height: propArr.length * PROP_LINE_HEIGHT + 6,
     stroke: 'black',
-    fill: blue,
+    fill: nodeContainerColor,
     opacity: 1
   })
 });

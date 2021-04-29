@@ -1,5 +1,5 @@
 import { pick, assocPath, path, identity, map, filter, prop, forEachObjIndexed, sortBy, is, omit, keys, values, uniq, any } from 'ramda';
-import {Property, Method, Node} from '@@graph/wrappers/index';
+import {ObjectProperty, Property, Node} from '@@graph/wrappers/index';
 import { Handler } from '@@graph/handlers/Handler';
 import { measureText, PROP_LINE_HEIGHT } from '@@graph/Node';
 import { entityTypes } from '@@model/entity-types';
@@ -13,7 +13,7 @@ function propagate(target, key) {
 
 const styles = {
   titleOutline: {
-    fill: '#4ab8e5',
+    fill: '#64c8ff',
     lineWidth: 2
   }
 }
@@ -32,7 +32,7 @@ class GroupController {
     this.entityId = entityId;
     this.children = group.getChildren().reduce((acc, ch) => Object.assign(acc, {[ch.get('name')]: ch}), {});
     this.childrenWrappers = filter(identity, map(ch => ch.get('wrapper'), this.children));
-    this.propertyWrappers = filter(w => (w instanceof Property) || (w instanceof Method), this.childrenWrappers);
+    this.propertyWrappers = filter(w => w instanceof Property, this.childrenWrappers);
     this.propertyContainer = this.children['property-container'];
     this.defaultChildAttrs = {};
     Object.assign(window, {
@@ -114,7 +114,7 @@ class GroupController {
   removeProperty(id) {
     const objectPropertiesAffected = filter(w => {
       const {target, source} = w.getData();
-      return is(Method, w) && (id === target || id === source);
+      return is(ObjectProperty, w) && (id === target || id === source);
     }, this.childrenWrappers);
     const affectedIds = keys(objectPropertiesAffected);
     const affectedEntityIds = values(map(prop('id'), objectPropertiesAffected));
@@ -130,7 +130,7 @@ class GroupController {
   }
 
   hasSelectedProperties() {
-    return any(prop('selected'), values(filter(is(Method), this.propertyWrappers)));
+    return any(prop('selected'), values(filter(is(ObjectProperty), this.propertyWrappers)));
   }
 
   updateHighlight(shouldHighlight) {
