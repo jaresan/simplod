@@ -17,17 +17,18 @@ const defaultStyle = {
   fill: '#000',
   stroke: 'transparent',
   font: "normal normal normal 12px sans-serif",
-  shadowOffsetX: 1,
-  shadowOffsetY: 1,
+  shadowOffsetX: 0.5,
+  shadowOffsetY: 0.5,
   shadowColor: 'transparent',
-  shadowBlur: 1
+  shadowBlur: 0
 };
 
 const styles = {
   'hover': {
-    shadowColor: '#00F'
+    shadowColor: '#000',
+    fontSize: 14
   },
-  'selected': {fill: '#88d300', stroke: 'black', lineWidth: 2, shadowColor: '#000'},
+  'selected': {fill: '#9aee06', stroke: 'black', lineWidth: 2},
 };
 
 export class Property extends Wrapper {
@@ -46,6 +47,10 @@ export class Property extends Wrapper {
 
   hide() {
     this.node.hide();
+  }
+
+  remove() {
+    this.node.remove();
   }
 
   onToggleSelect(selected) {
