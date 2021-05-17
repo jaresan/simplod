@@ -13,8 +13,9 @@ const styles = {
   },
   hover: {
     'edge-shape': {
-      lineWidth: 3,
-      opacity: 0.8
+      lineWidth: 4,
+      opacity: 1,
+      stroke: '#2d82a2'
     },
     position: 0 // Determines style overriding priorities
   },

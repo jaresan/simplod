@@ -61,7 +61,7 @@ const TabContents = ({canSave, canLoad, lastLocalSave, localFilename}) => {
         <Space direction="horizontal">
           <Input ref={inputRef} />
           {
-            canSave && <Button danger onClick={() => saveViewByUri(inputRef.current.input.value)}>Overwrite</Button>
+            canSave && <Button danger onClick={() => saveViewByUri(inputRef.current.input.value)}>Save</Button>
           }
           {
             canLoad && <Button onClick={() => loadGraphFromURL({modelURL: inputRef.current.input.value})

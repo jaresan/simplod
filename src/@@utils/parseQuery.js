@@ -136,9 +136,9 @@ export const parseSPARQLQuery = ({
     SELECT DISTINCT ${getSelectText(selectionOrder, selected)} WHERE {
     ${typeRows}
     ${required.join('\n')}
-    OPTIONAL {
+    ${optional.length ? 'OPTIONAL {' : ''}
       ${optional.join('\n')}
-    }
+    ${optional.length ? '}' : ''}
     ${shouldAddFilter ? keys(requiredProperties).map(getFilterString).join('\n') : ''}
     }
     ${limitEnabled && limit ? `LIMIT ${limit}` : ''} 
