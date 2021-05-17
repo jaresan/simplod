@@ -1,4 +1,4 @@
-import { groupBy, path, prop, map, partition, pipe, pick, uniq, identity, keys, values, curry } from 'ramda';
+import { groupBy, path, prop, map, partition, pipe, pick, uniq, clone, keys, values, curry } from 'ramda';
 import { sanitizeVarName } from '@@utils/sanitizeVarName';
 
 const langStringType = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString';
@@ -108,13 +108,16 @@ export const parseSPARQLQuery = ({
   const shouldAddFilter = !!propertyLanguages.length;
   const getFilterString = variable => `filter (lang(${variable}) in (${propertyLanguages.map(a => `'${a}'`).join(',')})).`;
 
+  const selectedClassVarNames = values(selectedClasses).reduce((acc, {varName}) => Object.assign(acc, {[varName]: true}), {});
+
   const usedVariables = values(propertiesBySource)
     .map(prop('properties'))
     .flat()
+    .concat(selectedClassVarNames)
     .reduce((acc, p) => Object.assign(acc, {
       [p.sourceVarName]: true,
       [p.targetVarName]: true
-    }), {});
+    }), clone(selectedClassVarNames));
 
   const typeRows = keys(usedVariables)
     .filter(name => varNameToTypes[name])
