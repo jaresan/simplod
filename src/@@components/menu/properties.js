@@ -25,17 +25,15 @@ const {Option} = Select;
 
 const languageOptions = sortBy(prop('code'), labelLanguages).map(({code}) => <Option key={code} value={code}>{code}</Option>);
 
-const Properties = ({description, dataSchemaURL, endpointURL, title, prefixes, customPrefixes, propertyLanguages}) => {
-  const [schemaURL, setSchemaURL] = useState(dataSchemaURL);
-
-  return <div>
+const Properties = ({description, dataSchemaURL, endpointURL, title, prefixes, customPrefixes, propertyLanguages}) =>
+  <div>
     <FilePropertyFields
-      onSchemaReload={() => loadGraphFromURL({dataSchemaURL: schemaURL, endpointURL})}
+      onSchemaReload={() => loadGraphFromURL({dataSchemaURL, endpointURL})}
       onTitleChange={dispatchProps.updateFilename}
       onEndpointChange={dispatchProps.updateEndpoint}
-      onSchemaChange={setSchemaURL}
+      onSchemaChange={dispatchProps.updateDataSchemaURL}
       onDescriptionChange={dispatchProps.updateDescription}
-      schemaURL={schemaURL}
+      schemaURL={dataSchemaURL}
       endpointURL={endpointURL}
       title={title}
       description={description}
@@ -54,7 +52,6 @@ const Properties = ({description, dataSchemaURL, endpointURL, title, prefixes, c
       <CustomPrefixRow onDeletePrefix={dispatchProps.deletePrefix} onChangeName={dispatchProps.renamePrefix} value={null} prefixes={prefixes} customPrefixes={customPrefixes} />
     </Space>
   </div>;
-}
 
   // FIXME: Add filename edit
 const mapStateToProps = appState => ({
@@ -71,6 +68,7 @@ const dispatchProps = {
   updateFilename: dispatchSet(ModelState.filename),
   updateDescription: dispatchSet(ModelState.description),
   updateEndpoint: dispatchSet(ModelState.endpoint),
+  updateDataSchemaURL: dispatchSet(ModelState.dataSchemaURL),
   renamePrefix: pipe(renamePrefix, dispatch),
   deletePrefix: pipe(deletePrefix, dispatch),
   updatePropertyLanguages: dispatchSet(ModelState.propertyLanguages)
