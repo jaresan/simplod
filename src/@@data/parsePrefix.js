@@ -14,3 +14,5 @@ export const prefix = (prefixes, iri) => {
   const {alias, suffix} = parsePrefix(prefixes, iri);
   return `${alias}:${suffix}`;
 }
+
+export const getSuffix = iri => iri.match(/([^/#:]+)$/)[1];

@@ -2,6 +2,7 @@ import G6 from '@antv/g6';
 import { flatten, last } from 'ramda';
 import E from '@@graph/ElementCreators';
 import Group from '@@graph/wrappers/Group';
+import { getSuffix } from '@@data/parsePrefix';
 export const NODE_TYPE = 'graphNode';
 
 export const PROP_LINE_HEIGHT = 12;
@@ -45,8 +46,6 @@ const getAttrs = ctx => ({
     opacity: 1
   })
 });
-
-const getSuffix = iri => iri.match(/([^/#:]+)$/)[1];
 
 const registeredNames = {};
 const getVarName = (iri, sourceId) => {

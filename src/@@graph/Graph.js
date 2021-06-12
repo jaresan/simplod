@@ -197,8 +197,8 @@ export class Graph {
 
       const groupedProperties =
         groupBy(
-          ([id, p]) => [p.target, p.source].sort().join('-'),
-          Object.entries(properties).filter(([id, p]) => !p.dataProperty)
+          ([, p]) => [p.target, p.source].sort().join('-'),
+          Object.entries(properties).filter(([, p]) => !p.dataProperty)
         );
 
 

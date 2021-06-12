@@ -30,6 +30,7 @@ import {
   any
 } from 'ramda';
 import { entityTypes } from '@@model/entity-types';
+import { getSuffix } from '@@data/parsePrefix';
 
 export const initial = {
   entities: {
@@ -255,10 +256,14 @@ const suffixId = curry((getterFn, state, id) => {
 });
 
 const registerProperties = curry((source, propertyIds, s) => {
-  const {ids, state} = propertyIds.reduce(({ids, state}, id) => {
-    const property = mergeRight(view(propertyById(id), state), defaultEntityProps[entityTypes.property]);
+  const {ids, state} = propertyIds.reduce(({ids, state}, propertyId) => {
+    const property = mergeRight(view(propertyById(propertyId), state), defaultEntityProps[entityTypes.property]);
+    const propSuffix = getSuffix(property.predicate);
+    const entitySuffix = getSuffix(source)
+
     Object.assign(property, {
-      source
+      source,
+      varName: `${entitySuffix}_${propSuffix}` // Since the property is duplicate, prefix it with the varName
     });
     const newId = `property_${source}-${property.predicate}-${property.target}`;
 
