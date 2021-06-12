@@ -15,8 +15,9 @@ import { getCartesianProduct, getHorizontalLayout } from '@@selectors';
 import { connect } from 'react-redux';
 import { translated } from '@@localization';
 import {css} from '@emotion/css';
-// import { loadLocalData } from '@@actions/save-load';
-// import configs from '../dev_examples';
+import { loadLocalData } from '@@actions/save-load';
+import configs from '../dev_examples';
+import {Button} from 'antd';
 
 const {Content, Footer} = Layout;
 
@@ -99,12 +100,12 @@ class App extends Component {
             <div style={getGraphContainerStyle(horizontalLayout)}>
               <GraphContainer />
             </div>
-            {/*{*/}
-            {/*  configs.map(([file, endpoint]) =>*/}
-            {/*    <Button onClick={() => loadGraphFromURL({dataSchemaURL: file, endpointURL: endpoint})}>{file}</Button>*/}
-            {/*  )*/}
-            {/*}*/}
             <div style={getMenuStyle(horizontalLayout)}>
+              {/*{*/}
+              {/*  configs.map(([file, endpoint]) =>*/}
+              {/*    <Button onClick={() => loadGraphFromURL({dataSchemaURL: file, endpointURL: endpoint})}>{file}</Button>*/}
+              {/*  )*/}
+              {/*}*/}
               {cartesianProduct && <Alert message={translated('Current selection is not a connected graph and might result in querying a cartesian product.')} banner />}
               <Tabs className={TabHeight} style={{width: '100%', height: '90vh'}} onChange={this.updateTabKey}>
                 <TabPane tab="Available" key="available">

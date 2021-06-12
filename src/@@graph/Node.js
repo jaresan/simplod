@@ -48,6 +48,19 @@ const getAttrs = ctx => ({
 
 const getSuffix = iri => iri.match(/([^/#:]+)$/)[1];
 
+const registeredNames = {};
+const getVarName = (iri, sourceId) => {
+  const propSuffix = getSuffix(iri);
+  const entitySuffix = getSuffix(sourceId)
+
+  if (registeredNames[propSuffix]) {
+    return `${entitySuffix}_${propSuffix}`;
+  } else {
+    registeredNames[propSuffix] = true;
+    return propSuffix;
+  }
+};
+
 const getAddPropertyFn = (group, ctx, attrs) => ({source, predicate, target, targetType, varName, dataProperty}) => {
   const propertyCount = Object.values(group.get('wrapper').propertyWrappers).length;
   const id = `property_${source}-${predicate}-${target}`;
@@ -55,7 +68,7 @@ const getAddPropertyFn = (group, ctx, attrs) => ({source, predicate, target, tar
     id,
     attrs: attrs.property({predicate, type: target, i: propertyCount, ctx}),
     name: id,
-    data: {target, source, predicate, targetType, varName: varName || getSuffix(predicate), dataProperty}
+    data: {target, source, predicate, targetType, varName: varName || getVarName(predicate, source), dataProperty}
   }));
   const node = last(group.getChildren());
   const wrapper = node.get('wrapper');
@@ -85,7 +98,7 @@ const NodeImplementation = {
         id: propId,
         attrs: attrs.property({predicate, type: objects[0], i, ctx}),
         name: propId,
-        data: {target: objects[0], targetType: objects[0], source: id, predicate, varName: getSuffix(predicate), dataProperty: true}
+        data: {target: objects[0], targetType: objects[0], source: id, predicate, varName: getVarName(predicate, id), dataProperty: true}
       })
     });
 
@@ -97,7 +110,7 @@ const NodeImplementation = {
           id: propId,
           attrs: attrs.property({predicate, type: target, i: i + dataPropertyCount, ctx}),
           name: propId,
-          data: {target, source: id, predicate, targetType: target, varName: getSuffix(predicate)}
+          data: {target, source: id, predicate, targetType: target, varName: getVarName(predicate, id)}
         })
       })
     ));
