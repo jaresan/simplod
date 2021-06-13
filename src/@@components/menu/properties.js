@@ -53,7 +53,6 @@ const Properties = ({description, dataSchemaURL, endpointURL, title, prefixes, c
     </Space>
   </div>;
 
-  // FIXME: Add filename edit
 const mapStateToProps = appState => ({
   description: getDescription(appState),
   endpointURL: getEndpoint(appState),
