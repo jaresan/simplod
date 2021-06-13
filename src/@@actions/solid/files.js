@@ -98,7 +98,7 @@ export const saveFile = async ({uri, data}) => {
     });
   }
 
-  trySave()
+  return trySave()
     .then(({status}) => {
       loading();
       if (status === 401) {
