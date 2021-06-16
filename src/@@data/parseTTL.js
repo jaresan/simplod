@@ -1,4 +1,4 @@
-import {Parser} from 'n3';
+import { Parser } from 'n3';
 import { invertObj } from 'ramda';
 import possiblePrefixes from '@@constants/possible-prefixes';
 import { parsePrefix } from './parsePrefix';
@@ -9,7 +9,7 @@ export const parseTTL = ttlString => new Promise((res, err) => {
       const {data, usedPrefixes} = parseQuads(quads, Object.assign(possiblePrefixes, invertObj(prefixes)));
       res({
         data,
-        __prefixes__: usedPrefixes
+        __prefixes__: Object.assign(usedPrefixes, invertObj(prefixes))
       });
     });
 });
@@ -19,6 +19,7 @@ const getQuads = ttlString => new Promise((res, err) => {
   const quads = [];
 
   parser.parse(ttlString, (error, quad, prefixes) => {
+    error && err(error);
     if (quad) {
       quads.push(quad);
     } else if (!error) {
@@ -97,7 +98,7 @@ const parseQuads = (quads, prefixes) => {
       Object.assign(acc[predicateId], {[key]: value});
 
       return acc;
-    }, { })
+    }, {})
   );
 
   const existingEdges = {};
@@ -134,7 +135,7 @@ const parseQuads = (quads, prefixes) => {
       }
 
       return acc;
-  }, {});
+    }, {});
 
   return {data, usedPrefixes};
 };
