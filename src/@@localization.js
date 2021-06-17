@@ -103,7 +103,7 @@ const texts = {
 
 export const translated = t => {
   const language = view(SettingsState.language, getState());
-  return path([language, t], texts);
+  return path([language, t], texts) || t;
 }
 
 Object.entries(texts).forEach(([ lang, dict]) => {
