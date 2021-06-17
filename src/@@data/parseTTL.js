@@ -3,16 +3,15 @@ import { invertObj } from 'ramda';
 import possiblePrefixes from '@@constants/possible-prefixes';
 import { parsePrefix } from './parsePrefix';
 
-export const parseTTL = ttlString => new Promise((res, err) => {
+export const parseTTL = ttlString =>
   getQuads(ttlString)
     .then(({quads, prefixes}) => {
       const {data, usedPrefixes} = parseQuads(quads, Object.assign(possiblePrefixes, invertObj(prefixes)));
-      res({
+      return {
         data,
         __prefixes__: Object.assign(usedPrefixes, invertObj(prefixes))
-      });
+      };
     });
-});
 
 const getQuads = ttlString => new Promise((res, err) => {
   const parser = new Parser();
