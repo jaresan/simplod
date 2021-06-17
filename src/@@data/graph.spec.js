@@ -1,7 +1,8 @@
-import {getConnectedEntities, isConnected} from '@@data/graph';
-import chai from 'chai';
+const {getConnectedEntities, isConnected, expandRoot} = require('@@data/graph');
+const {fromPairs} = require('ramda');
+const {should} = require('chai');
 
-chai.should();
+should();
 
 describe('@@data/graph', () => {
   describe('getConnectedEntities()', () => {
@@ -80,5 +81,143 @@ describe('@@data/graph', () => {
           {source: 'b', target: 'string', dataProperty: true}
         ], entityIds: []}).should.be.true;
     });
+  });
+
+  describe('expandNode()', () => {
+    const n = id => ({
+      id,
+      varName: `${id}_varName`,
+      type: `${id}_type`
+    });
+
+    // Data property
+    const dP = (predicate) => ({
+      predicate,
+      target: 'str',
+      dataProperty: true
+    });
+
+    // Object property
+    const oP = (predicate, target, optional) => ({
+      predicate,
+      target,
+      optional
+    });
+
+    const nodeA = n('a');
+    const nodeC = n('c');
+
+    const props = {
+      n: nodeA,
+      propertiesBySource: {
+        a: {
+          x: dP('aX'),
+          'a->b': oP('aY', 'b')
+        },
+        b: {
+          x: dP('bX'),
+          'b->c': oP('bY', 'c', true)
+        },
+        c: {
+          d1: dP('d1'),
+          d2: dP('d2'),
+          d3: dP('d3'),
+          'c->a': oP('o1', 'a')
+        }
+      },
+      classes: fromPairs(['a', 'b', 'c'].map(id => [id, n(id)]))
+    };
+
+    it('should expand from a', () => {
+      expandRoot(props).should.eql({
+        nodes: {
+          a: {
+            id: 'a',
+            type: 'a_type',
+            varName: 'a_varName',
+            dataProperties: {x: dP('aX')},
+            edges: {'a->b': oP('aY', 'b')}
+          },
+          b: {
+            id: 'b',
+            type: 'b_type',
+            varName: 'b_varName',
+            dataProperties: {x: dP('bX')},
+            edges: {'b->c': oP('bY', 'c', true)}
+          },
+          c: {
+            id: 'c',
+            type: 'c_type',
+            varName: 'c_varName',
+            dataProperties: {
+              d1: dP('d1'),
+              d2: dP('d2'),
+              d3: dP('d3')
+            },
+            edges: {
+              'c->a': {
+                ...oP('o1', 'a'),
+                shouldExpand: false
+              }
+            }
+          }
+        },
+        root: {
+          ...nodeA,
+          dataProperties: {x: dP('aX')},
+          edges: {'a->b': oP('aY', 'b')}
+        }
+      });
+    });
+
+    it('should expand from c', () => {
+      expandRoot({...props, n: nodeC}).should.eql({
+        nodes: {
+          a: {
+            id: 'a',
+            type: 'a_type',
+            varName: 'a_varName',
+            dataProperties: {x: dP('aX')},
+            edges: {'a->b': oP('aY', 'b')}
+          },
+          b: {
+            id: 'b',
+            type: 'b_type',
+            varName: 'b_varName',
+            dataProperties: {x: dP('bX')},
+            edges: {
+              'b->c': {
+                ...oP('bY', 'c', true),
+                shouldExpand: false
+              }
+            }
+          },
+          c: {
+            id: 'c',
+            type: 'c_type',
+            varName: 'c_varName',
+            dataProperties: {
+              d1: dP('d1'),
+              d2: dP('d2'),
+              d3: dP('d3')
+            },
+            edges: {
+              'c->a': oP('o1', 'a')
+            }
+          }
+        },
+        root: {
+          ...nodeC,
+          dataProperties: {
+            d1: dP('d1'),
+            d2: dP('d2'),
+            d3: dP('d3')
+          },
+          edges: {
+            'c->a': oP('o1', 'a')
+          }
+        }
+      });
+    })
   });
 });
