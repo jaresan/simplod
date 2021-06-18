@@ -41,6 +41,6 @@ export const onDataLoaded = () => {
   }, {});
 
   // FIXME: @reference to set propertyIds
-  const newClasses = mapObjIndexed((c, id) => Object.assign(c, {propertyIds: propsById[id]}), view(ModelState.classes, state));
+  const newClasses = mapObjIndexed((c, id) => Object.assign(c, {propertyIds: propsById[id], id}), view(ModelState.classes, state));
   dispatchSet(ModelState.classes, newClasses);
 }
