@@ -83,7 +83,7 @@ describe('@@data/graph', () => {
     });
   });
 
-  describe('expandNode()', () => {
+  describe('expandRoot()', () => {
     const n = id => ({
       id,
       varName: `${id}_varName`,
@@ -101,7 +101,8 @@ describe('@@data/graph', () => {
     const oP = (predicate, target, optional) => ({
       predicate,
       target,
-      optional
+      optional,
+      shouldExpand: true
     });
 
     const nodeA = n('a');
@@ -143,7 +144,9 @@ describe('@@data/graph', () => {
             type: 'b_type',
             varName: 'b_varName',
             dataProperties: {x: dP('bX')},
-            edges: {'b->c': oP('bY', 'c', true)}
+            edges: {
+              'b->c': oP('bY', 'c', true)
+            }
           },
           c: {
             id: 'c',

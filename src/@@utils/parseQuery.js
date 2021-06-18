@@ -1,37 +1,77 @@
-import { groupBy, path, prop, map, partition, pipe, pick, uniq, clone, keys, values, curry } from 'ramda';
+import { groupBy, path, prop, map, indexBy, pipe, uniq, keys, values, reduce, mergeRight, omit } from 'ramda';
 import { sanitizeVarName } from '@@utils/sanitizeVarName';
+import { expandRoot } from '@@data/graph';
+import { getPrefix } from '@@data/parsePrefix';
 
-const langStringType = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString';
+const typeWithLangs = 'langString';
 
-const getPropertiesBySource = (prefixToIRI, getEntityVariable, properties) => {
-  const getProperty = ({asVariable, varName, predicate, source, optional, target}) => {
-    const sourceVarName = getEntityVariable(source); // Use existing queried entity if available to prevent cartesian products
-    const targetVarName = getEntityVariable(target) || varName; // Use existing queried entity if available to prevent cartesian products
+const getPropertiesBySource = (getEntityVariable, properties) => {
+  const getProperty = ([id, data]) => {
+    const sourceVarName = getEntityVariable(data.source); // Use existing queried entity if available to prevent cartesian products
+    const targetVarName = getEntityVariable(data.target) || data.varName; // Use existing queried entity if available to prevent cartesian products
 
     return {
-      predicate,
-      asVariable,
-      optional,
-      source,
-      target,
-      targetVarName,
+      ...data,
+      id,
       sourceVarName,
+      targetVarName,
       variable: `?${targetVarName}`
     };
   };
 
-  const bySource = groupBy(prop('source'), values(properties).map(getProperty));
 
-  return values(bySource).reduce((acc, properties) => {
-    const [optional, required] = partition(prop('optional'), properties);
-    return Object.assign(acc, {
-      [properties[0].source]: {
-        optional,
-        required,
-        properties
-      }
-    });
-  }, {});
+  const bySource = groupBy(prop('source'), Object.entries(properties).map(getProperty));
+  return map(indexBy(prop('id')), bySource);
+};
+
+const getFilterString = (variable, languages) => `filter (lang(${variable}) in (${languages.map(a => `'${a}'`).join(',')})).`;
+
+const wrapOptional = (optional, s) => {
+  if (optional) {
+    return `OPTIONAL {
+      ${s}
+    }`
+  }
+  return s;
+}
+
+const getPropertyRow = ({predicate, sourceVarName, variable, targetType, optional}, propertyLanguages) => {
+  const filterRow = (propertyLanguages.length && targetType.replace(/.*:/, '') === typeWithLangs) ? `\n${getFilterString(variable, propertyLanguages)}` : '';
+  return wrapOptional(optional, `?${sourceVarName} ${predicate} ${variable}.${filterRow}`);
+}
+
+const getObjectPropertyEntry = ({predicate, sourceVarName, target, targetVarName, shouldExpand, optional}, nodes, languages) => {
+  let definition = `?${sourceVarName} ${predicate} ?${targetVarName}.`;
+  if (shouldExpand) {
+    definition += `\n${getNodeEntry(nodes[target], nodes, languages)}`;
+  }
+
+  return wrapOptional(optional, definition);
+};
+
+const getDataPropertyRows = (dataProperties, propertyLanguages) => values(dataProperties)
+  .sort(a => a.optional ? 1 : -1)
+  .map(p => getPropertyRow(p, propertyLanguages));
+
+const getObjectPropertyRows = (edges, nodes, languages) => values(edges)
+  .sort(a => a.optional ? 1 : -1)
+  .map(e => getObjectPropertyEntry(e, nodes, languages));
+
+const getNodeEntry = (n, nodes, languages) => {
+  const {type, varName, dataProperties, edges} = n;
+  const typeRow = `?${varName} a ${type}.`;
+
+  const dataPropertyRows = getDataPropertyRows(dataProperties, languages);
+  const objectPropertyRows = getObjectPropertyRows(edges, nodes, languages);
+
+  let res = typeRow;
+  if (dataPropertyRows.length) {
+    res += '\n' + dataPropertyRows.join('\n');
+  }
+  if (objectPropertyRows.length) {
+    res += '\n' + objectPropertyRows.join('\n');
+  }
+  return res;
 };
 
 const getSelectVariables = (selectionOrder, selectedObjects) => selectionOrder
@@ -42,108 +82,46 @@ const getSelectVariables = (selectionOrder, selectedObjects) => selectionOrder
     return `?${sanitizeVarName(variable)}`;
   });
 
-const getSelectText = pipe(getSelectVariables, uniq, vars => vars.join(' ') || '*');
+const getUsedPrefixes = (properties, classes) => values(properties)
+  .reduce((acc, {target, source, predicate}) =>
+      acc.add(getPrefix(target)).add(getPrefix(source)).add(getPrefix(predicate)),
+    new Set(keys(classes).map(getPrefix))
+  );
 
-const getPrefixDefinitions = usedPrefixes => Object.entries(usedPrefixes).map(([name, iri]) => `PREFIX ${name}: <${iri}>`).join('\n');
-
-const getPrefix = iri => {
-  const prefixMatch = iri.match(/(^\w+):/);
-  return prefixMatch && prefixMatch[1];
-};
-
-const getUsedPrefixes = (selectedProperties, selectedEntities) => {
-  const entityIRIs = Object.keys(selectedEntities);
-
-  const entityPrefixes = entityIRIs.reduce((acc, iri) => acc.add(getPrefix(iri)), new Set());
-  const propertyPrefixes = Object.values(selectedProperties).reduce((acc, {predicate, source, target}) =>
-    acc
-    .add(getPrefix(predicate))
-    .add(getPrefix(source))
-    .add(getPrefix(target)),
-  new Set());
-
-  return [...entityPrefixes.values(), ...propertyPrefixes.values()];
-}
-
-
-const isLangString = curry((prefixes, {target}) => {
-  const prefix = prop(1, /(\w+):/.exec(target));
-  return target.replace(`${prefix}:`, prefixes[prefix]) === langStringType;
-});
-
-const getPropertyRow = ({predicate, variable}, i, arr) => `${predicate} ${variable}${i === arr.length - 1 ? '.' : ';'}`;
-
-const getPropertyRows = ({propertiesBySource, getEntityVariable, prefixes, shouldAddFilter, getFilterString}) =>
-  Object.entries(propertiesBySource)
-  .reduce((acc, [source, {required, optional}]) => {
-    if (required.length) {
-      acc.required.push(`?${getEntityVariable(source)} ${required.map(getPropertyRow).join('\n')}`);
-    }
-    if (optional.length) {
-      acc.optional.push(`
-        ?${getEntityVariable(source)} ${optional.map(getPropertyRow).join('\n')}
-        ${shouldAddFilter ? optional.filter(isLangString(prefixes)).map(pipe(prop('variable'), getFilterString)) : ''}
-      `);
-    }
-    return acc;
-  }, {required: [], optional: []});
+const getPrefixDefinition = (properties, classes, prefixes) =>
+  Array.from(getUsedPrefixes(properties, classes)).map(s => `PREFIX ${s}: <${prefixes[s]}>`).join('\n');
 
 export const parseSPARQLQuery = ({
-  selectedProperties,
-  selectedClasses,
-  classes,
-  prefixes,
-  selectionOrder,
-  limit,
-  limitEnabled,
-  propertyLanguages
+ selectedProperties,
+ selectedClasses,
+ classes,
+ prefixes,
+ selectionOrder,
+ limit,
+ limitEnabled,
+ propertyLanguages = []
 }) => {
-  const classesByVarName = groupBy(prop('varName'), values(classes));
-  const varNameToTypes = map(map(prop('type')), classesByVarName);
-
   const getEntityVariable = id => sanitizeVarName(path([id, 'varName'], classes));
 
-  const propertiesBySource = getPropertiesBySource(prefixes, getEntityVariable, selectedProperties);
+  const propertiesBySource = getPropertiesBySource(getEntityVariable, selectedProperties);
+  const queriedIds = keys(Object.assign({}, propertiesBySource, selectedClasses));
 
-  const shouldAddFilter = !!propertyLanguages.length;
-  const getFilterString = variable => `filter (lang(${variable}) in (${propertyLanguages.map(a => `'${a}'`).join(',')})).`;
+  const nodes = queriedIds.reduce(
+    (acc, id) => acc[id] ? acc : Object.assign(acc, expandRoot({n: Object.assign(classes[id], {id}), propertiesBySource, classes, expandedNodes: acc}).nodes),
+    {});
 
-  const selectedClassVarNames = values(selectedClasses).reduce((acc, {varName}) => Object.assign(acc, {[varName]: true}), {});
+  const edges = pipe(values, map(prop('edges')), reduce(mergeRight, {}))(nodes);
+  const withIncomingEdges = values(edges).reduce((acc, {target, shouldExpand}) => shouldExpand ? Object.assign(acc, {[target]: true}) : acc, {});
+  const withoutIncomingEdges = omit(keys(withIncomingEdges), nodes);
 
-  const usedVariables = values(propertiesBySource)
-    .map(prop('properties'))
-    .flat()
-    .concat(selectedClassVarNames)
-    .reduce((acc, p) => Object.assign(acc, {
-      [p.sourceVarName]: true,
-      [p.targetVarName]: true
-    }), clone(selectedClassVarNames));
+  const query = keys(withoutIncomingEdges).map(id => getNodeEntry(nodes[id], nodes, propertyLanguages)).join('\n');
 
-  const typeRows = keys(usedVariables)
-    .filter(name => varNameToTypes[name])
-    .map(varName => `?${varName} a ${varNameToTypes[varName].join(',')}.`)
-    .join('\n');
+  const selectText = uniq(getSelectVariables(selectionOrder, mergeRight(selectedProperties, selectedClasses))).join(' ') || '*';
 
-  const selected = Object.assign({}, selectedProperties, classes);
-
-  const usedPrefixes = getUsedPrefixes(selectedProperties, selectedClasses);
-  const usedPrefixesToIRI = pick(usedPrefixes, prefixes);
-
-  const requiredProperties = Object.values(propertiesBySource)
-    .flatMap(prop('required'))
-    .filter(isLangString(prefixes))
-    .reduce((acc, p) => Object.assign(acc, {[p.variable]: true}), {});
-
-  const {optional, required} = getPropertyRows({propertiesBySource, getEntityVariable, prefixes, shouldAddFilter, getFilterString});
-  return `${getPrefixDefinitions(usedPrefixesToIRI)}
-    SELECT DISTINCT ${getSelectText(selectionOrder, selected)} WHERE {
-    ${typeRows}
-    ${required.join('\n')}
-    ${optional.length ? 'OPTIONAL {' : ''}
-      ${optional.join('\n')}
-    ${optional.length ? '}' : ''}
-    ${shouldAddFilter ? keys(requiredProperties).map(getFilterString).join('\n') : ''}
+  return `${getPrefixDefinition(selectedProperties, selectedClasses, prefixes)}
+    SELECT DISTINCT ${selectText} WHERE {
+     ${query}
     }
-    ${limitEnabled && limit ? `LIMIT ${limit}` : ''} 
+    ${limitEnabled ? `LIMIT ${limit}` : ''} 
   `;
 };

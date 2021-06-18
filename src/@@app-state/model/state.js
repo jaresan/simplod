@@ -314,7 +314,8 @@ const createNewClassInstance = (id, s) => {
       dummy: true,
       type: entity.type,
       propertyIds,
-      varName
+      varName,
+      id: newId
     }),
     state
   }

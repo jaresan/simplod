@@ -15,4 +15,12 @@ export const prefix = (prefixes, iri) => {
   return `${alias}:${suffix}`;
 }
 
-export const getSuffix = iri => iri.match(/([^/#:]+)$/)[1];
+export const getSuffix = iri => {
+  const suffixMatch = iri.match(/([^/#:]+)$/);
+  return suffixMatch && suffixMatch[1];
+}
+
+export const getPrefix = iri => {
+  const prefixMatch = iri.match(/(^\w+):/);
+  return prefixMatch && prefixMatch[1];
+};
