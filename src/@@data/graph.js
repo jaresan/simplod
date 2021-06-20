@@ -56,6 +56,10 @@ export const isConnected = ({properties, entityIds}) => {
   const edgesByTarget = groupBy(prop('target'), objectProperties);
   const edgesByEntity = mergeWith(concat, edgesBySource, edgesByTarget);
 
+  if (keys(queriedEntities).length === 1) {
+    return true;
+  }
+
   const subGraph = objectProperties.length ? getConnectedEntities(Object.values(edgesByEntity)[0], edgesByEntity) : {[entityIds[0]]: true};
   return all(k => subGraph[k], keys(queriedEntities))
 };

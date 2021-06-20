@@ -34,6 +34,12 @@ describe('@@data/graph', () => {
       isConnected({properties, entityIds}).should.eql(true);
     });
 
+    it('should consider graph connected with only a single data property', () => {
+      const properties = [{source: 'a', target: 'b', dataProperty: true}];
+      const entityIds = [];
+      isConnected({properties, entityIds}).should.eql(true);
+    });
+
     it('should consider graph not connected with two data properties on different entities', () => {
       const properties = [{source: 'a', target: 'str', dataProperty: true}, {source: 'b', target: 'str', dataProperty: true}];
       const entityIds = ['a'];
