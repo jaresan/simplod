@@ -9,6 +9,7 @@ import { Alert, InputNumber, Modal, Switch, Space } from 'antd';
 import * as SettingsState from '@@app-state/settings/state';
 import { translated } from '@@localization';
 import "@triply/yasgui/build/yasgui.min.css";
+import { sparqlProxy } from '@@constants/api';
 
 const YasguiContainer = styled.div`
 	width: fit-content;
@@ -22,12 +23,12 @@ const YasguiContainer = styled.div`
 const yasguiRoot = document.createElement('div');
 const yasgui = new YASGUI(yasguiRoot, {
 	requestConfig: {
-		// endpoint: this.props.endpointURL,
 		// headers: () => ({
 		// 	Accept: 'application/sparql-results+json'
 		// }),
 		// method: 'GET',
-	}
+	},
+	corsProxy: sparqlProxy
 });
 // Force usage of cors
 YASGUI.__defineGetter__('corsEnabled', () => ({}))
