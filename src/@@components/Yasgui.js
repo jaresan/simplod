@@ -30,8 +30,7 @@ const yasgui = new YASGUI(yasguiRoot, {
 	},
 	corsProxy: sparqlProxy
 });
-// Force usage of cors
-YASGUI.__defineGetter__('corsEnabled', () => ({}))
+
 dispatchSet(YasguiState.instance, yasgui);
 localStorage.removeItem('yagui__config') // Remove old saved data -- "yagui" instead of "yasgui" is on purpose
 
