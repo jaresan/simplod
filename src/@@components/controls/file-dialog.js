@@ -2,7 +2,7 @@ import React, {createRef, useState} from 'react';
 import { Space, Button, Modal, Tabs, Input, Upload } from 'antd';
 import FileList from '@@components/controls/file-list';
 import { saveViewByUri } from '@@actions/solid';
-import { loadGraphFromJSON, loadGraphFromURL } from '@@actions/model/load-graph';
+import { loadGraphFromURL } from '@@actions/model/load-graph';
 import { loginToSolid } from '@@actions/solid/auth';
 import {
   getFilename,
@@ -10,7 +10,7 @@ import {
   getUser
 } from '@@selectors';
 import { getState, store } from '@@app-state';
-import { downloadData, loadLocalData, saveDataLocally } from '@@actions/save-load';
+import { downloadData, loadLocalData, loadModel, saveDataLocally } from '@@actions/save-load';
 import { path, pipe } from 'ramda';
 import { connect, Provider } from 'react-redux';
 import { getLastLocalState } from '@@storage';
@@ -19,10 +19,10 @@ import { openFileOptionsInfoModal } from '@@components/controls/modal-info-edit-
 
 const {TabPane} = Tabs;
 
-const loadUploadedFile = (file, onLoad) => {
+const loadUploadedFile = file => {
   const reader = new FileReader();
 
-  reader.onload = pipe(path(['target', 'result']), JSON.parse, loadGraphFromJSON, onLoad);
+  reader.onload = pipe(path(['target', 'result']), JSON.parse, loadModel);
   reader.readAsText(file);
 
   // Prevent upload
@@ -34,16 +34,18 @@ const TabContents = ({canSave, canLoad, lastLocalSave, localFilename}) => {
   const [loggedIn, setLoggedIn] = useState(getUser(getState()))
   return <Space direction="vertical">
     {canSave && <Button onClick={downloadData}>Download file<DownloadOutlined/></Button>}
-    {canLoad && <Button>
-        <Upload style={{display: 'none'}} accept=".json" beforeUpload={f => {
-          Modal.destroyAll();
-          loadUploadedFile(f)
-        }}>Upload file<UploadOutlined/></Upload>
-      </Button>
+    {canLoad && <Upload
+      accept=".json"
+      beforeUpload={f => {
+        Modal.destroyAll();
+        return loadUploadedFile(f);
+      }}>
+        <Button>Upload file<UploadOutlined/></Button>
+      </Upload>
     }
     {canSave && <Button onClick={saveDataLocally}>Save to browser storage <DesktopOutlined/></Button>}
     {canLoad && <Button onClick={loadLocalData}>Load from browser storage <DesktopOutlined/></Button>}
-    {(canSave || canLoad) && lastLocalSave && <div>Last file: {localFilename} @{new Date(lastLocalSave).toLocaleString()}</div>}
+    {((canSave || canLoad) && lastLocalSave) ? <div>Last file: {localFilename} @{new Date(lastLocalSave).toLocaleString()}</div> : null}
     <Tabs>
       <TabPane tab="Solid pod" key="1">
         {

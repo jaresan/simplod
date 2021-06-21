@@ -95,6 +95,7 @@ export const saveDataLocally = () => {
 }
 
 export const loadModel = json => {
+  console.log(json);
   const newData = view(ModelState.rootLens, json);
   Graph.clear();
   withLoading('Initializing graph...')(Graph.initialize(json));

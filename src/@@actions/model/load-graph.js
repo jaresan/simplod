@@ -30,10 +30,7 @@ export const loadLabels = () => {
 const loadDataFromFile = async modelURL => {
   try {
     const json = await withLoadingP('Fetching file...')(fetchFile(modelURL).then(data => data.json()));
-    const dataSchemaURL = view(ModelState.dataSchemaURL, json);
 
-    const {prefixes} = await withLoadingP('Fetching RDF Schema...')(fetchDataSchema(dataSchemaURL));
-    dispatchSet(ModelState.prefixes, invertObj(prefixes));
     loadModel(json);
     loadLabels();
     Modal.destroyAll();
@@ -73,9 +70,3 @@ export const loadGraphFromURL = async ({modelURL, dataSchemaURL, endpointURL}) =
 
   return {modelURL, hasPermissions};
 };
-
-export const loadGraphFromJSON = async json => {
-  const dataSchemaURL = view(ModelState.dataSchemaURL, json);
-  await loadGraph(dataSchemaURL);
-  loadModel(json);
-}
