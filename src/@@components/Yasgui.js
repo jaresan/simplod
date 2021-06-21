@@ -22,17 +22,11 @@ const YasguiContainer = styled.div`
 
 const yasguiRoot = document.createElement('div');
 const yasgui = new YASGUI(yasguiRoot, {
-	requestConfig: {
-		// headers: () => ({
-		// 	Accept: 'application/sparql-results+json'
-		// }),
-		// method: 'GET',
-	},
 	corsProxy: sparqlProxy
 });
 
 dispatchSet(YasguiState.instance, yasgui);
-localStorage.removeItem('yagui__config') // Remove old saved data -- "yagui" instead of "yasgui" is on purpose
+// localStorage.removeItem('yagui__config') // Remove old saved data -- "yagui" instead of "yasgui" is on purpose
 
 class Yasgui extends Component {
 	constructor(props) {
