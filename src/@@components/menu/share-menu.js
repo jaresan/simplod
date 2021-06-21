@@ -7,12 +7,13 @@ import { getModelFileLocation } from '@@selectors';
 import { connect, Provider } from 'react-redux';
 import { store } from '@@app-state';
 import { changePermissions } from '@@actions/solid/files';
+import { PlayCircleOutlined } from '@ant-design/icons';
 
 const {Paragraph, Title, Text} = Typography;
 const {Option} = Select;
 
-const CopyableField = ({text, title}) => <Paragraph>
-  <Text copyable={{text}}>{title}</Text>
+const CopyableField = ({text, title, openable}) => <Paragraph>
+  <Text copyable={{text}}>{title}</Text>{openable && <PlayCircleOutlined onClick={() => window.open(text)} style={{color: '#1890ff'}} />}
   <br/>
   <Text ellipsis style={{maxWidth: '100%', textOverflow: 'unset', overflow: 'auto'}} code>{text}</Text>
 </Paragraph>;
@@ -50,7 +51,7 @@ const AppShareMenu = (modelFileLocation) => {
 const ShareMenuComponent = ({modelFileLocation}) =>
   <>
     <Title level={3}>Data fetching links</Title>
-    <CopyableField title="YASGUI Query Tool" text={getYasguiShareUrl()} />
+    <CopyableField title="YASGUI Query Tool" text={getYasguiShareUrl()} openable />
     <CopyableField title="Direct Web URL" text={getDirectFetchUrl()}/>
     <CopyableField title="cURL POST Request" text={getCurlFetchString()} />
     <Title level={3}>App links</Title>
