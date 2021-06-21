@@ -107,11 +107,11 @@ export const parseSPARQLQuery = ({
   const queriedIds = keys(Object.assign({}, propertiesBySource, selectedClasses));
 
   const nodes = queriedIds.reduce(
-    (acc, id) => acc[id] ? acc : Object.assign(acc, expandRoot({n: Object.assign(classes[id], {id}), propertiesBySource, classes, expandedNodes: acc}).nodes),
+    (acc, id) => acc[id] ? acc : Object.assign(acc, expandRoot({n: Object.assign(classes[id], {id}), propertiesBySource, classes, expandedNodes: acc, ancestors: {[id]: true}}).nodes),
     {});
 
   const edges = pipe(values, map(prop('edges')), reduce(mergeRight, {}))(nodes);
-  const withIncomingEdges = values(edges).reduce((acc, {target, shouldExpand}) => shouldExpand ? Object.assign(acc, {[target]: true}) : acc, {});
+  const withIncomingEdges = values(edges).reduce((acc, {target, source, shouldExpand}) => shouldExpand && (target !== source) ? Object.assign(acc, {[target]: true}) : acc, {});
   const withoutIncomingEdges = omit(keys(withIncomingEdges), nodes);
 
   const query = keys(withoutIncomingEdges).map(id => getNodeEntry(nodes[id], nodes, propertyLanguages)).join('\n');
