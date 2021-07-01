@@ -103,8 +103,8 @@ class App extends Component {
             </div>
             <div style={getMenuStyle(horizontalLayout)}>
               {/*{*/}
-              {/*  configs.map(([file, endpoint]) =>*/}
-              {/*    <Button onClick={() => loadGraphFromURL({dataSchemaURL: file, endpointURL: endpoint})}>{file}</Button>*/}
+              {/*  configs.map(([file, endpoint, size, name]) =>*/}
+              {/*    <Button onClick={() => loadGraphFromURL({dataSchemaURL: file, endpointURL: endpoint})}>{size} - {name}</Button>*/}
               {/*  )*/}
               {/*}*/}
               {cartesianProduct && <Alert message={translated('Current selection is not a connected graph and might result in querying a cartesian product.')} banner />}

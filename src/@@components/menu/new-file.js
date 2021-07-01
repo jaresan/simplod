@@ -8,9 +8,9 @@ import { connect, Provider } from 'react-redux';
 import { FilePropertyFields } from '@@components/menu/file-property-fields';
 import { examples } from '@@constants/examples';
 
-const NewFile = ({schemaURL, endpointURL}) => {
-  const [schemaUrl, setSchemaUrl] = useState(schemaURL);
-  const [endpoint, setEndpoint] = useState(endpointURL);
+const NewFile = ({schemaURL: stateSchemaUrl, endpointURL: stateEndpointUrl}) => {
+  const [schemaUrl, setSchemaUrl] = useState(stateSchemaUrl);
+  const [endpoint, setEndpoint] = useState(stateEndpointUrl);
   const [title, setTitle] = useState('Untitled');
   const [description, setDescription] = useState('');
 
@@ -21,8 +21,8 @@ const NewFile = ({schemaURL, endpointURL}) => {
         onEndpointChange={setEndpoint}
         onSchemaChange={setSchemaUrl}
         onDescriptionChange={setDescription}
-        schemaURL={schemaURL}
-        endpointURL={endpointURL}
+        schemaURL={schemaUrl}
+        endpointURL={endpoint}
         title={title}
         description={description}
       />

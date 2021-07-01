@@ -47,14 +47,12 @@ class EntityEntryComponent extends React.Component {
 
     this.state = {
       expanded: false,
-      // FIXME: @reference
-      varName: props.entity.varName
+      varName: path(['entity', 'varName'], props)
     };
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    // FIXME: @reference
-    const varName = this.props.entity.varName;
+    const varName = path(['entity', 'varName'], this.props);
 
     if (varName !== prevState.varName && (prevState.varName === this.state.varName)) {
       this.setState({varName});
