@@ -168,15 +168,23 @@ const updateSelected = curry((type, id, selected, s) => {
 
 export const togglePropertySelected = curry((id, selected, s) => {
   const property = view(propertyById(id), s);
-  const source = P.source(property);
+  const {source, target} = property;
   const propertyIds = E.propertyIds(view(classById(source), s));
   const selectedPropertiesCount = values(view(propertiesByIds(propertyIds), s)).filter(P.selected).length;
 
-  // Select/deselect entity if the property is the first/last one being changed
+  // Select/deselect source entity if the property is the first/last one being changed
   if (selectedPropertiesCount === 0 && selected) {
     s = toggleClassSelected(source, true, s);
   } else if (selectedPropertiesCount === 1 && !selected) {
     s = toggleClassSelected(source, false, s);
+  }
+
+  const sameTargetPropsSelectedCount = keys(filter(prop('selected'), getPropertiesByTarget(target, s))).length;
+  // Select/deselect target entity if the property is the first/last one being changed
+  if (sameTargetPropsSelectedCount === 0 && selected) {
+    s = toggleClassSelected(target, true, s);
+  } else if (sameTargetPropsSelectedCount === 1 && !selected) {
+    s = toggleClassSelected(target, false, s);
   }
 
   return updateSelected(entityTypes.property, id, selected, s);
