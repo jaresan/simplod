@@ -2,7 +2,7 @@ import React from 'react';
 import { Checkbox, Space, List, Tooltip, Input } from 'antd';
 import { PrefixedText } from './PrefixedText';
 import styled from '@emotion/styled';
-import { pipe } from 'ramda';
+import { pipe, path } from 'ramda';
 import * as Controls from './Controls';
 import {
   EyeInvisibleOutlined,
@@ -44,13 +44,11 @@ class PropertyEntryComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // FIXME: @reference
-      varName: props.property.varName
+      varName: path(['property', 'varName'], props)
     }
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
-    // FIXME: @reference
-    const varName = this.props.property.varName;
+    const varName = path(['property', 'varName'], this.props);
 
     if (varName !== prevState.varName && (prevState.varName === this.state.varName)) {
       this.setState({varName});
@@ -145,7 +143,6 @@ const mapStateToProps = (appState, {id}) => ({
   classes: getClasses(appState)
 });
 
-// TODO: @dispatch rewrite
 const dispatchProps = {
   onSelect: pipe(ModelState.togglePropertySelected, dispatch),
   onSetAsVariable: pipe(ModelState.togglePropertyAsVariable, dispatch),

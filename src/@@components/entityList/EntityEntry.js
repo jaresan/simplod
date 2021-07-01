@@ -118,9 +118,10 @@ class EntityEntryComponent extends React.Component {
     <InfoCircleOutlined />
   </Tooltip>;
 
-  getTitle = label => label ? <Tooltip
-    title={<PrefixedText.Unwrapped title={this.props.entity.type}/>}
-  >{label}</Tooltip> : <PrefixedText title={this.props.entity.type}/>;
+  getTitle = label => label ?
+    <Tooltip
+      title={<PrefixedText.Unwrapped title={this.props.entity.type}/>}
+    >{label}</Tooltip> : <PrefixedText title={this.props.entity.type}/>;
 
   render() {
     const {entity, showHumanReadable, labelLanguage} = this.props;
@@ -162,7 +163,6 @@ const mapStateToProps = (appState, {id}) => ({
   labelLanguage: getLabelLanguage(appState)
 });
 
-// TODO: @dispatch rewrite
 const dispatchProps = {
   toggleHidden: pipe(ModelState.toggleClassHidden, dispatch),
   toggleSelected: pipe(ModelState.toggleClassSelected, dispatch),

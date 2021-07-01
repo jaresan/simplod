@@ -109,7 +109,6 @@ export const edgeById = byTypeAndId(entityTypes.edge);
 const propertyIdsByClassId = id => compose(classById(id), lensProp('propertyIds'));
 export const propertyLanguages = forKey('propertyLanguages');
 
-
 export const endpoint = forKey('endpoint');
 export const dataSchemaURL = forKey('dataSchemaURL');
 export const filename = forKey('filename');
@@ -125,13 +124,21 @@ const entitiesByType = {
 };
 export const selectionOrder = forKey('selectionOrder');
 
-const update = curry((type, key, id, value) => set(compose(byTypeAndId(type, id), lensProp(key)), value));
+const update = curry((type, key, id, value, s) => set(compose(byTypeAndId(type, id), lensProp(key)), value, s));
 const updateProperty = update(entityTypes.property);
 const updateClass = update(entityTypes.class);
 const updateEdge = update(entityTypes.edge);
 
 export const togglePropertyOptional = updateProperty('optional');
-export const togglePropertyAsVariable = updateProperty('asVariable');
+export const togglePropertyAsVariable = curry((id, asVariable, s) => {
+  const {target, dataProperty} = view(propertyById(id), s);
+
+  if (dataProperty) {
+    return updateProperty('asVariable', id, asVariable, s);
+  } else {
+    return toggleClassSelected(target, asVariable, s);
+  }
+});
 export const savePropertyName = updateProperty('varName');
 export const toggleClassHidden = updateClass('hidden');
 export const toggleClassExpanded = updateClass('expanded');
@@ -175,7 +182,12 @@ export const togglePropertySelected = curry((id, selected, s) => {
   return updateSelected(entityTypes.property, id, selected, s);
 });
 
-export const toggleClassSelected = updateSelected(entityTypes.class);
+export const toggleClassSelected = curry((id, selected, s) => {
+  const properties = getPropertiesByTarget(id, s);
+
+  const withUpdatedClass = updateSelected(entityTypes.class, id, selected, s);
+  return keys(properties).reduce((acc, id) => updateProperty('asVariable', id, selected, acc), withUpdatedClass);
+});
 
 export const toggleSelected = (type, ...args) => {
   if (type === entityTypes.property) {
