@@ -207,7 +207,6 @@ export const toggleSelected = (type, ...args) => {
     return toggleClassSelected(...args)
   }
   if (type === entityTypes.edge) {
-    // @reference don't use 'selected'
     return update(entityTypes.edge, 'selected', ...args);
   }
 }
