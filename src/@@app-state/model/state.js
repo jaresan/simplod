@@ -192,9 +192,10 @@ export const togglePropertySelected = curry((id, selected, s) => {
   const selectedPropertiesCount = values(view(propertiesByIds(propertyIds), s)).filter(P.selected).length;
 
   // Select/deselect source entity if the property is the first/last one being changed
+  const propertiesTargetingSourceCount = keys(filter(prop('selected'), getPropertiesByTarget(source, s))).length;
   if (selectedPropertiesCount === 0 && selected) {
     s = toggleClassSelected(source, true, s);
-  } else if (selectedPropertiesCount === 1 && !selected) {
+  } else if (selectedPropertiesCount === 1 && !selected && propertiesTargetingSourceCount === 0) {
     s = toggleClassSelected(source, false, s);
   }
 
