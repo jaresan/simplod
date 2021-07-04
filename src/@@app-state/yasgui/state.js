@@ -1,5 +1,4 @@
 import {
-  complement,
   compose,
   filter,
   invertObj,
@@ -10,9 +9,9 @@ import {
   omit,
   values,
   mapObjIndexed,
-  prop
+  prop,
+  pipe
 } from 'ramda';
-import { compare } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
 import { parseSPARQLQuery } from '@@utils/parseQuery';
@@ -35,7 +34,7 @@ export const instance = forKey('instance');
 /**
  * Updates the generated SPARQL query.
  */
-export const updateQuery = state => {
+export const getQuery = state => {
   const customPrefixes = view(ModelState.customPrefixes, state);
   const usedPrefixes = view(ModelState.prefixes, state);
   const overriddenPrefixes = Object.assign(omit(values(customPrefixes), usedPrefixes), mapObjIndexed((p, key) => usedPrefixes[key], customPrefixes));
@@ -48,7 +47,7 @@ export const updateQuery = state => {
   const propertyLanguages = view(ModelState.propertyLanguages, state);
   const prefixToIRI = Object.assign({}, usedPrefixes, invertObj(overriddenPrefixes));
 
-  return set(query, parseSPARQLQuery({
+  return parseSPARQLQuery({
     selectedProperties,
     selectedClasses,
     classes,
@@ -57,22 +56,18 @@ export const updateQuery = state => {
     limitEnabled,
     selectionOrder,
     propertyLanguages
-  }), state);
+  });
 }
 
 export const middleware = curry((oldState, newState) => {
-  const changesMade = [
-    ModelState.properties,
-    ModelState.classes,
-    ModelState.selectionOrder,
-    ModelState.customPrefixes,
-    ModelState.propertyLanguages,
-    SettingsState.limitEnabled,
-    SettingsState.limit
-  ].some(complement(compare(oldState, newState)))
+  const oldQuery = getQuery(oldState);
+  const newQuery = getQuery(newState);
 
-  if (changesMade) {
-    return updateQuery(newState);
+  if (oldQuery !== newQuery) {
+    return pipe(
+      set(query, newQuery),
+      set(ModelState.query, '')
+    )(newState);
   }
 
   return newState;

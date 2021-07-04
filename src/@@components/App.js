@@ -11,13 +11,10 @@ import {onAppStart} from '@@actions/lifecycle';
 import 'antd/dist/antd.compact.css';
 import { Menu } from '@@components/menu/menu';
 import { loadGraphFromURL } from '@@actions/model/load-graph';
-import { getCartesianProduct, getHorizontalLayout } from '@@selectors';
+import { getCartesianProduct, getHorizontalLayout, getModelQuery } from '@@selectors';
 import { connect } from 'react-redux';
 import { translated } from '@@localization';
 import {css} from '@emotion/css';
-import { loadLocalData } from '@@actions/save-load';
-import configs from '../dev_examples';
-import {Button} from 'antd';
 
 const {Content, Footer} = Layout;
 
@@ -91,7 +88,7 @@ class App extends Component {
   updateTabKey = tabKey => this.setState({tabKey});
 
   render() {
-    const {horizontalLayout, cartesianProduct} = this.props;
+    const {horizontalLayout, cartesianProduct, modelQuery} = this.props;
 
     return (
       <Layout>
@@ -107,6 +104,7 @@ class App extends Component {
               {/*    <Button onClick={() => loadGraphFromURL({dataSchemaURL: file, endpointURL: endpoint})}>{size} - {name}</Button>*/}
               {/*  )*/}
               {/*}*/}
+              {modelQuery && <Alert type='error' showIcon={false} message={translated('Current SPARQL Query has been manually edited, making any changes in the application will remove these edits.')} banner />}
               {cartesianProduct && <Alert message={translated('Current selection is not a connected graph and might result in querying a cartesian product.')} banner />}
               <Tabs className={TabHeight} style={{width: '100%', height: '90vh'}} onChange={this.updateTabKey}>
                 <TabPane tab="Available" key="available">
@@ -132,7 +130,8 @@ class App extends Component {
 
 const mapStateToProps = appState => ({
   horizontalLayout: getHorizontalLayout(appState),
-  cartesianProduct: getCartesianProduct(appState)
+  cartesianProduct: getCartesianProduct(appState),
+  modelQuery: getModelQuery(appState)
 });
 
 export default connect(mapStateToProps, null)(App);

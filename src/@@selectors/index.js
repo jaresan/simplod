@@ -25,6 +25,7 @@ export const getCustomPrefixes = view(ModelState.customPrefixes);
 export const getCartesianProduct = view(ModelState.cartesianProduct);
 export const getPropertyLanguages = view(ModelState.propertyLanguages);
 export const getPrefixes = view(ModelState.prefixes);
+export const getModelQuery = view(ModelState.query);
 
 export const getLanguage = view(SettingsState.language);
 export const getLabelLanguage = view(SettingsState.labelLanguage);

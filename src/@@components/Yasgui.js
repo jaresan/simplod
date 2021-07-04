@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 import { connect, Provider } from 'react-redux';
-import { getQuery, getEndpoint, getLimit, getLimitEnabled, getInstance, getCartesianProduct } from '@@selectors';
+import {
+	getQuery,
+	getEndpoint,
+	getLimit,
+	getLimitEnabled,
+	getInstance,
+	getCartesianProduct,
+	getModelQuery
+} from '@@selectors';
 import styled from '@emotion/styled';
 import YASGUI from '@triply/yasgui';
 import * as ModelState from '@@app-state/model/state';
@@ -70,9 +78,16 @@ class Yasgui extends Component {
 	};
 
 	render() {
-		const {limit, limitEnabled, cartesianProduct} = this.props;
+		const {limit, limitEnabled, cartesianProduct, modelQuery} = this.props;
 		return <>
-			{cartesianProduct &&
+			{
+				modelQuery &&
+				<div style={{margin: '-12px 0 12px 0'}}>
+					<Alert type='error' showIcon={false} message={translated('Current SPARQL Query has been manually edited, making any changes in the application will remove these edits.')} banner />
+				</div>
+			}
+			{
+				cartesianProduct &&
 				<div style={{margin: '-12px 0 12px 0'}}>
 					<Alert message={translated('Current selection is not a connected graph and might result in querying a cartesian product.')} banner />
 				</div>
@@ -91,7 +106,8 @@ const mapStateToProps = appState => ({
 	endpoint: getEndpoint(appState),
 	limit: getLimit(appState),
 	limitEnabled: getLimitEnabled(appState),
-	cartesianProduct: getCartesianProduct(appState)
+	cartesianProduct: getCartesianProduct(appState),
+	modelQuery: getModelQuery(appState)
 });
 
 const dispatchProps = {
