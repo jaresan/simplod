@@ -115,6 +115,7 @@ export const filename = forKey('filename');
 export const description = forKey('description');
 export const customPrefixes = forKey('customPrefixes');
 export const cartesianProduct = forKey('cartesianProduct');
+export const query = forKey('query');
 export const customPrefixById = id => compose(customPrefixes, lensProp(id));
 
 const entitiesByType = {

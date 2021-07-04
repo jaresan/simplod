@@ -1,5 +1,6 @@
 /**
  * Contains actions to be invoked during app lifecycle, e.g. startup, exit, when data is changed.
+ * @module lifecycle
  **/
 import hotkeys from 'hotkeys-js';
 import { dispatchSet, getState } from '@@app-state';
@@ -33,14 +34,12 @@ export const onDataLoaded = () => {
   const state = getState();
   const properties = view(ModelState.properties, state);
   const propsById = Object.entries(properties).reduce((acc, [id, p]) => {
-    // FIXME: @reference p.source
     const subjectId = p.source;
     const existing = acc[subjectId] || [];
 
     return Object.assign(acc, {[subjectId]: existing.concat(id)});
   }, {});
 
-  // FIXME: @reference to set propertyIds
   const newClasses = mapObjIndexed((c, id) => Object.assign(c, {propertyIds: propsById[id], id}), view(ModelState.classes, state));
   dispatchSet(ModelState.classes, newClasses);
 }

@@ -3,6 +3,7 @@ import { connect, Provider } from 'react-redux';
 import { getQuery, getEndpoint, getLimit, getLimitEnabled, getInstance, getCartesianProduct } from '@@selectors';
 import styled from '@emotion/styled';
 import YASGUI from '@triply/yasgui';
+import * as ModelState from '@@app-state/model/state';
 import * as YasguiState from '@@app-state/yasgui/state';
 import { dispatchSet, getState, store } from '@@app-state';
 import { Alert, InputNumber, Modal, Switch, Space } from 'antd';
@@ -34,20 +35,30 @@ class Yasgui extends Component {
 		this.yasgui = yasgui;
 	}
 
-	componentDidUpdate(prevProps, prevState, snapshot) {
-		this.update();
+	update() {
+		this.tab().setQuery(this.props.query);
+		this.tab().setEndpoint(this.props.endpoint);
+		this.tab().yasqe.autoformat();
 	}
 
-	update() {
-		const tab = this.yasgui.getTab();
-		tab.setQuery(this.props.query);
-		setTimeout(() => tab.yasqe.autoformat(), 1);
-		tab.setEndpoint(this.props.endpoint);
+	tab() {
+		return this.yasgui.getTab();
+	}
+
+	onQueryChange = (_, {origin}) => {
+		if (origin !== 'setValue') {
+			dispatchSet(ModelState.query, this.tab().getQuery());
+		}
 	}
 
 	componentDidMount() {
-		this.update();
 		this.yasguiContainer.appendChild(yasguiRoot);
+		this.update();
+		this.tab().getYasqe().on('change', this.onQueryChange);
+	}
+
+	componentWillUnmount() {
+		this.tab().getYasqe().off('change', this.onQueryChange);
 	}
 
 	updateLimit = limit => {

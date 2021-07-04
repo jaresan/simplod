@@ -44,7 +44,7 @@ export const getAvatar = view(SolidState.avatar);
 export const getFolderUri = view(SolidState.folderUri);
 export const getModelFileLocation = view(SolidState.modelFileLocation);
 
-export const getQuery = view(YasguiState.query);
+export const getQuery = s => view(ModelState.query, s) || view(YasguiState.query, s);
 export const getInstance = view(YasguiState.instance);
 
 export const getSelectedEdgePropertyIds = view(ControlState.selectedEdgePropertyIds);
