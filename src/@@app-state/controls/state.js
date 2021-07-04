@@ -1,7 +1,9 @@
 import { compose, lensProp } from 'ramda';
 
 export const initial = {
-  selectedEdgePropertyIds: []
+  selectedEdgePropertyIds: [],
+  selectedEdge: null,
+  loadingModel: false
 };
 
 const root = 'controls';
@@ -11,3 +13,4 @@ const forKey = k => compose(rootLens, lensProp(k));
 
 export const selectedEdgePropertyIds = forKey('selectedEdgePropertyIds');
 export const selectedEdge = forKey('selectedEdge');
+export const loadingModel = forKey('loadingModel');

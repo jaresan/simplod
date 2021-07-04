@@ -10,10 +10,12 @@ import {
   values,
   mapObjIndexed,
   prop,
-  pipe
+  pipe,
+  identity
 } from 'ramda';
 import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
+import * as ControlsState from '@@app-state/controls/state';
 import { parseSPARQLQuery } from '@@utils/parseQuery';
 
 export const initial = {
@@ -64,9 +66,11 @@ export const middleware = curry((oldState, newState) => {
   const newQuery = getQuery(newState);
 
   if (oldQuery !== newQuery) {
+    const loadingModel = view(ControlsState.loadingModel, newState);
+    const updateModelQuery = loadingModel ? identity : set(ModelState.query, '');
     return pipe(
       set(query, newQuery),
-      set(ModelState.query, '')
+      updateModelQuery
     )(newState);
   }
 

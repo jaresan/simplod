@@ -5,6 +5,7 @@ import { dispatch, dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
 import * as SolidState from '@@app-state/solid/state';
+import * as ControlsState from '@@app-state/controls/state';
 import { view, mergeDeepRight, isEmpty, invertObj } from 'ramda';
 import {getEndpoint, getDataSchemaURL, getFilename} from '@@selectors';
 import { getLastLocalState, saveLocalState } from '@@storage';
@@ -95,13 +96,14 @@ export const saveDataLocally = () => {
 }
 
 export const loadModel = json => {
-  console.log(json);
+  dispatchSet(ControlsState.loadingModel, true);
   const newData = view(ModelState.rootLens, json);
   Graph.clear();
   withLoading('Initializing graph...')(Graph.initialize(json));
   dispatchSet(ModelState.rootLens, newData);
   dispatch(loadCustomPrefixes(view(ModelState.customPrefixes, getState())));
   Graph.updatePositions(view(ModelState.classes, getState()));
+  dispatchSet(ControlsState.loadingModel, false);
 }
 
 export const loadLocalData = async () => {
