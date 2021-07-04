@@ -2,7 +2,7 @@ import { pick, assocPath, path, identity, map, filter, prop, forEachObjIndexed, 
 import {ObjectProperty, Property, Node} from '@@graph/wrappers/index';
 import { Handler } from '@@graph/handlers/Handler';
 import { measureText, PROP_LINE_HEIGHT } from '@@graph/Node';
-import { entityTypes } from '@@model/entity-types';
+import { entityTypes } from '@@constants/entity-types';
 import { Graph } from '@@graph/Graph';
 
 const getWrapper = target => target.get('wrapper');

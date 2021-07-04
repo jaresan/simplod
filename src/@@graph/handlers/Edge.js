@@ -1,5 +1,5 @@
 import {Handler} from '@@graph/handlers/Handler';
-import { entityTypes } from '@@model/entity-types';
+import { entityTypes } from '@@constants/entity-types';
 import { dispatchSet, dispatch } from '@@app-state';
 import { selectedEdgePropertyIds } from '@@app-state/controls/state';
 import { toggleEdgeHighlighted, unhighlightEdges } from '@@app-state/model/state';

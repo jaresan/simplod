@@ -27,9 +27,9 @@ import {
   cond,
   T,
   identity,
-  any
+  any, paths
 } from 'ramda';
-import { entityTypes } from '@@model/entity-types';
+import { entityTypes } from '@@constants/entity-types';
 import { getSuffix } from '@@data/parsePrefix';
 
 export const initial = {
@@ -148,6 +148,25 @@ export const unhighlightEdges = cond([
   [pipe(view(edges), values, any(prop('highlighted'))), over(edges, map(assoc('highlighted', false)))],
   [T, identity]
 ]);
+
+const getLanguageField = (languageOrder, field, data) => paths(languageOrder.map(l => [l, field]), data).find(a => a);
+
+export const updateLanguageInfo = curry((language, e) => {
+  const languageOrder = [language, 'en', 'de', 'default'];
+
+  const info = e.info || {};
+
+  // Object.assign({}, ...) to get a new copy
+  return Object.assign({}, e, {
+    info: {
+      ...info,
+      label: getLanguageField(languageOrder, 'label', e.info.byLanguage),
+      description: getLanguageField(languageOrder, 'description', e.info.byLanguage)
+    }
+  })
+});
+
+export const updateLanguageInfos = curry((language, entities) => updateClasses(map(updateLanguageInfo(language), entities)));
 
 export const updateClassName = curry((id, newName, s) => {
   const updated = map(assoc('varName', newName), getPropertiesByTarget(id, s))

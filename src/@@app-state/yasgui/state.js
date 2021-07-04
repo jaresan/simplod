@@ -9,9 +9,9 @@ import {
   curry,
   omit,
   values,
-  mapObjIndexed
+  mapObjIndexed,
+  prop
 } from 'ramda';
-import E from '@@model/entity';
 import { compare } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
@@ -39,7 +39,7 @@ export const updateQuery = state => {
   const customPrefixes = view(ModelState.customPrefixes, state);
   const usedPrefixes = view(ModelState.prefixes, state);
   const overriddenPrefixes = Object.assign(omit(values(customPrefixes), usedPrefixes), mapObjIndexed((p, key) => usedPrefixes[key], customPrefixes));
-  const selectedProperties = filter(E.selected, view(ModelState.properties, state));
+  const selectedProperties = filter(prop('selected'), view(ModelState.properties, state));
   const classes = view(ModelState.classes, state);
   const selectedClasses = ModelState.getSelectedClasses(state);
   const limit = view(SettingsState.limit, state);

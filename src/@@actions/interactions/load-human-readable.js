@@ -3,7 +3,6 @@ import * as ModelState from '@@app-state/model/state';
 import { invertObj, isEmpty, map, view } from 'ramda';
 import * as SettingsState from '@@app-state/settings/state';
 import { getHumanReadableDataPromises } from '@@api';
-import { updateLanguageInfo } from '@@model/class-entity';
 
 /**
  * Loads labels and comments for the existing entities in the application.
@@ -33,7 +32,7 @@ export const loadHumanReadableData = () => {
 
         // FIXME: Aggregate into one dispatch
         if (!isEmpty(newClasses)) {
-          dispatch(ModelState.updateClasses(map(updateLanguageInfo(language), newClasses)));
+          dispatch(ModelState.updateLanguageInfos(language, newClasses));
         }
       })
         .catch(() => {})
