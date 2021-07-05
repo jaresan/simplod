@@ -1,10 +1,18 @@
 # simplod
 Charles University master thesis for simplifying access to linked data.
 
-
 ## Requirements
 Node version > 10
 Supported browsers: Google Chrome, Mozilla Firefox, Safari
+
+## SPARQL Proxy
+If the endpoint isn't hosted on the same domain as the application, the requests might fail due to CORS or Same-origin policy.
+To prevent that, you can use the [Express proxy](https://github.com/jaresan/sparql-proxy/) and set up the linked [YASGUI](https://yasgui.triply.cc/) tool to use it.
+
+The only steps you need to take to achieve that are as follows:
+
+* Deploy the proxy
+* Change `const root = 'https://simplod.herokuapp.com';` in `@@constants/api.js` to point to your proxy
 
 ## Production deployment
 Since this application is created with [Create React App](https://create-react-app.dev), you can follow the [deployment manual](https://create-react-app.dev/docs/deployment/) directly, or follow the steps below:
