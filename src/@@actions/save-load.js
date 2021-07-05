@@ -1,5 +1,6 @@
 /**
- * File containing logic for saving/loading application data.
+ * @file Save and load functionality
+ * @module @@actions/save-load
  */
 import { dispatch, dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
@@ -15,23 +16,39 @@ import { message } from 'antd';
 import { openSaveOverwritePrompt } from '@@components/controls/save-overwrite-modal';
 import { loadCustomPrefixes } from '@@actions/custom-prefix';
 import { withLoading, withLoadingP } from '@@utils/with-loading';
-import { loadLabels } from '@@actions/model/load-graph';
-import { fetchDataSchema } from '@@actions/model/fetch-data-schema';
+import { loadLabels } from '@@actions/model/load';
+import { fetchDataSchema } from '@@api';
 import { translated } from '@@localization';
 
+/**
+ * Generates JSON save data.
+ * First updates the entities with their respective graph node positions and exports this data.
+ * @function
+ * @returns {{model: (*|(function(*=): (*)))}}
+ */
 export const generateSaveData = () => {
   const bBoxesById = Graph.getBBoxesById();
   dispatch(ModelState.setBoundingBoxes(bBoxesById));
   return {model: view(ModelState.rootLens, getState())};
 }
 
+/**
+ * @function
+ */
 export const clearLocalSettings = () => saveLocalState({settings: {}});
 
+/**
+ * @function
+ * @param update
+ */
 export const updateLocalSettings = update => {
   const {settings} = getLastLocalState();
   saveLocalState({settings: mergeDeepRight(settings, update)});
 }
 
+/**
+ * @function
+ */
 export const loadLocalSettings = () => {
   const settings = getLastLocalState().settings;
   if (settings) {
@@ -39,6 +56,11 @@ export const loadLocalSettings = () => {
   }
 }
 
+/**
+ * Saves data either remotely or locally, based on whether a remote save location is already established.
+ * @function
+ * @returns {void|Promise<*>}
+ */
 export const saveData = () => {
   const state = getState();
   const remoteFileURL = view(SolidState.modelFileLocation, state);
@@ -50,6 +72,10 @@ export const saveData = () => {
   }
 };
 
+/**
+ * Downloads the model data as .json
+ * @function
+ */
 export const downloadData = () => {
   const data = generateSaveData();
   const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
@@ -61,6 +87,10 @@ export const downloadData = () => {
   downloadNode.remove();
 };
 
+/**
+ * Saves data locally, prompting the user if they want to overwrite their current browser data should it change significantly.
+ * @function
+ */
 export const saveDataLocally = () => {
   const saveData = generateSaveData();
   // endpoint/data schema/filename
@@ -95,6 +125,11 @@ export const saveDataLocally = () => {
   }
 }
 
+/**
+ * Loads the model from json and initializes the graph.
+ * @function
+ * @param json
+ */
 export const loadModel = json => {
   dispatchSet(ControlsState.loadingModel, true);
   const newData = view(ModelState.rootLens, json);
@@ -106,6 +141,10 @@ export const loadModel = json => {
   dispatchSet(ControlsState.loadingModel, false);
 }
 
+/**
+ * Loads model data from browser storage.
+ * @returns {Promise<void>}
+ */
 export const loadLocalData = async () => {
   const state = getLastLocalState();
   loadModel(state);

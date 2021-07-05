@@ -11,7 +11,7 @@ import { connect, Provider } from 'react-redux';
 import { store } from '@@app-state';
 import {loadFiles, saveViewByUri, getFileUrl} from '@@actions/solid';
 import {deleteFile} from '@@actions/solid/files';
-import { loadGraphFromURL } from '@@actions/model/load-graph';
+import { loadGraphFromURL } from '@@actions/model/load';
 import { openFileOptionsInfoModal } from '@@components/controls/modal-info-edit-file';
 
 const newViewSuffix = '__newView'; // Used to add a key to the rendered empty node in the same folder so that it doesn't clash with the folder's key itself

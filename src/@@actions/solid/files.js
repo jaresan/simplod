@@ -1,3 +1,7 @@
+/**
+ * @file Handling of Solid pod files interaction. Deletions, saves, feedback on failed permissions etc.
+ * @module @@actions/solid/files
+ */
 import React from 'react';
 import { Button, message, notification, Space } from 'antd';
 import auth from 'solid-auth-client';
@@ -10,31 +14,51 @@ import { translated } from '@@localization';
 import { WithRetry } from '@@components/controls/with-retry';
 import { downloadData } from '@@actions/save-load';
 
+/**
+ * Notifies the user that they are not authorized to use a requested resource.
+ * @function
+ * @returns {Promise<void>}
+ */
 const notifyUnauthorized = async () => {
   const {webId} = await getSession();
   const logStatus = webId ? translated(`You are logged in as ${webId}.`) : translated('You are not logged in.');
   notification.error({
-    message: 'Unauthorized',
+    message: translated('Unauthorized'),
     description: `${logStatus}
       ${translated('Either you don\'t have access to the requested resource or the permissions on it are not set up correctly.')}`,
     duration: 8
   });
 }
 
+/**
+ * Downloads a file using the Solid auth client.
+ * Notifies the user if they're unauthorized.
+ * @function
+ * @param url
+ * @returns {Promise<*>}
+ */
 export const fetchFile = async url => {
   const res = await auth.fetch(url);
 
   if (res.status === 401) {
     await notifyUnauthorized();
-    throw new Error('Unauthenticated');
+    throw new Error(translated('Unauthenticated'));
   } else if (res.status < 200 || res.status >= 300) {
     console.log(res);
-    message.error('An error occured while trying to fetch the file.')
+    message.error(translated('An error occured while trying to fetch the file.'))
   }
 
   return res;
 }
 
+/**
+ * Notifies the user that a save try has failed.
+ * Retries the save command multiple times.
+ * @function
+ * @param retryFn
+ * @param uri
+ * @returns {Promise<unknown>}
+ */
 const notifyAboutFailureWithRetry = ({retryFn, uri}) => {
   const notificationKey = 'solid-fail-notification';
   const closeNotification = () => notification.close(notificationKey);
@@ -43,7 +67,7 @@ const notifyAboutFailureWithRetry = ({retryFn, uri}) => {
     notification.error({
       duration: 0,
       key: notificationKey,
-      message: 'File save failed',
+      message: translated('File save failed'),
       description: <WithRetry
         retryFn={retryFn}
         retryTime={4000}
@@ -61,14 +85,22 @@ const notifyAboutFailureWithRetry = ({retryFn, uri}) => {
           res(null);
         }}
       >
-        <div>Saving the file to {uri} failed, retrying...</div>
+        <div>{translated('Saving the file to {uri} failed, retrying...')}</div>
       </WithRetry>
     });
   });
 };
 
+/**
+ * Saves the file using the Solid auth client to the given uri.
+ * If fail saves, retries a given number of times.
+ * @function
+ * @param uri
+ * @param data
+ * @returns {Promise<*>}
+ */
 export const saveFile = async ({uri, data}) => {
-  const loading = message.loading('Saving view...');
+  const loading = message.loading(translated('Saving view...'));
   const trySave = () => auth.fetch(uri, {
     method: 'PUT',
     body: JSON.stringify(data)
@@ -88,11 +120,11 @@ export const saveFile = async ({uri, data}) => {
           <Button onClick={() => {
             notification.close(key);
             saveFile({uri, data});
-          }}>Try again</Button>
+          }}>{translated('Try again')}</Button>
           <Button onClick={() => {
             downloadData();
             notification.close(key);
-          }}>Download file</Button>
+          }}>{translated('Download file')}</Button>
         </Space>
       </>
     });
@@ -104,7 +136,7 @@ export const saveFile = async ({uri, data}) => {
       if (status === 401) {
         notifyUnauthorized();
       } else if (status < 200 || status >= 300) {
-        return Promise.reject('Something went wrong.');
+        return Promise.reject(translated('Something went wrong.'));
       }
     })
     .catch(() => {
@@ -114,12 +146,18 @@ export const saveFile = async ({uri, data}) => {
     .catch(() => onFail());
 };
 
+/**
+ * Changes the permissions of a file at the given URI by modifying the file's .acl.
+ * @function
+ * @param uri
+ * @param permissions
+ * @returns {Promise<void>}
+ */
 export const changePermissions = async ({uri, permissions}) => {
   const {webId} = await getSessionOrLogin();
-  const loading = message.loading('Setting permissions...');
-  const errMsg = 'An error occurred while trying change the permissions.';
+  const loading = message.loading(translated('Setting permissions...'));
+  const errMsg = translated('An error occurred while trying change the permissions.');
 
-  // TODO: Use RDF graph, not direct string interpolation.
   const publicPermissions = permissions.includes('public/write') ? 'acl:mode acl:Read, acl:Write.' : 'acl:mode acl:Read.';
   const publicPart = permissions.includes('public') ? `
     <#public>
@@ -152,7 +190,7 @@ export const changePermissions = async ({uri, permissions}) => {
     } else if (res.status < 200 || res.status >= 300) {
       message.error(errMsg)
     } else {
-      message.success('Updated permissions!');
+      message.success(translated('Updated permissions!'));
     }
   } catch (e) {
     message.error(errMsg)
@@ -161,9 +199,13 @@ export const changePermissions = async ({uri, permissions}) => {
   }
 };
 
-
+/**
+ * Tries to delete a Solid Pod file hosted at uri.
+ * @param uri
+ * @returns {Promise<void>}
+ */
 export const deleteFile = async uri  => {
-  const loading = message.loading('Deleting view...');
+  const loading = message.loading(translated('Deleting view...'));
   try {
     const {webId} = await getSessionOrLogin();
     const {origin} = new URL(webId);
@@ -186,6 +228,12 @@ export const deleteFile = async uri  => {
   }
 }
 
+/**
+ * Returns whether a user has read/write permissions to the resource under given uri.
+ * @param uri
+ * @param write
+ * @returns {Promise<boolean|*>}
+ */
 export const hasPermissions = async (uri, write) => {
   try {
     const json = await auth.fetch(uri).then(a => a.json());

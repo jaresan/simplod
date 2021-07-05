@@ -10,7 +10,7 @@ import {onAppStart} from '@@actions/lifecycle';
 
 import 'antd/dist/antd.compact.css';
 import { Menu } from '@@components/menu/menu';
-import { loadGraphFromURL } from '@@actions/model/load-graph';
+import { loadGraphFromURL } from '@@actions/model/load';
 import { getCartesianProduct, getHorizontalLayout, getModelQuery } from '@@selectors';
 import { connect } from 'react-redux';
 import { translated } from '@@localization';

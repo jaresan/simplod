@@ -1,11 +1,17 @@
+/**
+ * @file Load human readable data for the entities in the application.
+ * @module @@actions/interactions/load-human-readable.js
+ */
+
 import { dispatch, dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
-import { invertObj, isEmpty, map, view } from 'ramda';
+import { invertObj, isEmpty, view } from 'ramda';
 import * as SettingsState from '@@app-state/settings/state';
 import { getHumanReadableDataPromises } from '@@api';
 
 /**
- * Loads labels and comments for the existing entities in the application.
+ * Loads label and comment information for the existing entities in the application.
+ * @function
  */
 export const loadHumanReadableData = () => {
   dispatchSet(SettingsState.labelsLoadingProgress, 0);
@@ -30,7 +36,6 @@ export const loadHumanReadableData = () => {
               info: {byLanguage: (data[id] || {})}
             }}), {});
 
-        // FIXME: Aggregate into one dispatch
         if (!isEmpty(newClasses)) {
           dispatch(ModelState.updateLanguageInfos(language, newClasses));
         }

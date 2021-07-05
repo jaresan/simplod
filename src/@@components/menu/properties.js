@@ -17,7 +17,7 @@ import {translated} from '@@localization';
 import { CustomPrefixRow } from '@@components/menu/custom-prefix-row';
 import { renamePrefix, deletePrefix } from '@@actions/custom-prefix';
 import { pipe, prop, sortBy } from 'ramda';
-import { loadGraphFromURL } from '@@actions/model/load-graph';
+import { loadGraphFromURL } from '@@actions/model/load';
 import { withInfoIcon } from '@@components/controls/with-info-icon';
 import { labelLanguages } from '@@constants/languages';
 

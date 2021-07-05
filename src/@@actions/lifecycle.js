@@ -1,6 +1,6 @@
 /**
- * Contains actions to be invoked during app lifecycle, e.g. startup, exit, when data is changed.
- * @module lifecycle
+ * @file Actions to be invoked during app lifecycle, e.g. startup, exit, when data is changed.
+ * @module @@actions/lifecycle
  **/
 import hotkeys from 'hotkeys-js';
 import { dispatchSet, getState } from '@@app-state';

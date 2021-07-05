@@ -2,7 +2,7 @@ import React, {createRef, useState} from 'react';
 import { Space, Button, Modal, Tabs, Input, Upload } from 'antd';
 import FileList from '@@components/controls/file-list';
 import { saveViewByUri } from '@@actions/solid';
-import { loadGraphFromURL } from '@@actions/model/load-graph';
+import { loadGraphFromURL } from '@@actions/model/load';
 import { loginToSolid } from '@@actions/solid/auth';
 import {
   getFilename,
