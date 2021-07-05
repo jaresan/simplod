@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 import govExampleResult from './testData/data.gov.cz.sparql.results.json';
-import biboResult from './testData/bibo.result';
+import biboResult from './testData/bibo.result.json';
 
 chai.should();
 

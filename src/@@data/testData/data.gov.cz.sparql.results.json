@@ -1,1 +1,1770 @@
-{"data":{"ns0:DcatLkodSparql":{"properties":[{"predicate":"dcterm:identifier","type":"rdf:Literal"},{"predicate":"dcat:keyword","type":"rdf:Literal"},{"predicate":"dcterm:description","type":"rdf:Literal"},{"predicate":"dcterm:title","type":"rdf:Literal"},{"predicate":"foaf:page","type":"rdf:Literal"},{"predicate":"dcterm:spatial","type":"rdf:Literal"}],"methods":[{"predicate":"dcat:theme","object":"skos:Concept"},{"predicate":"dcterm:publisher","object":"sorg:Organization"},{"predicate":"dcterm:publisher","object":"ns1:OVM"},{"predicate":"dcat:contactPoint","object":"vcard2006:Organization"},{"predicate":"dcterm:accrualPeriodicity","object":"skos:Concept"},{"predicate":"dcterm:publisher","object":"foaf:Agent"},{"predicate":"dcat:distribution","object":"dcat:Distribution"},{"predicate":"dcterm:publisher","object":"cpov:PublicOrganisation"},{"predicate":"dcterm:publisher","object":"gr:BusinessEntity"}]},"skos:Concept":{"properties":[{"predicate":"owl:versionInfo","type":"rdf:Literal"},{"predicate":"skos:altLabel","type":"rdf:Literal"},{"predicate":"euvoc:startDate","type":"rdf:Literal"},{"predicate":"skos:notation","type":"rdf:Literal"},{"predicate":"euvoc:status","type":"rdf:Literal"},{"predicate":"skos:definition","type":"rdf:Literal"},{"predicate":"dcterm:created","type":"rdf:Literal"},{"predicate":"skos:prefLabel","type":"rdf:Literal"}],"methods":[{"predicate":"skos:inScheme","object":"skos:ConceptScheme"},{"predicate":"skos:related","object":"skos:Concept"},{"predicate":"skosxl:altLabel","object":"skosxl:Label"},{"predicate":"euvoc:xlDefinition","object":"euvoc:XlNote"},{"predicate":"skosxl:prefLabel","object":"skosxl:Label"},{"predicate":"skos:broader","object":"skos:Concept"},{"predicate":"euvoc:xlNotation","object":"euvoc:XlNotation"}]},"ns1:OVM":{"properties":[{"predicate":"skos:notation","type":"rdf:Literal"},{"predicate":"rdfs:seeAlso","type":"rdf:Literal"},{"predicate":"owl:sameAs","type":"rdf:Literal"},{"predicate":"gr:legalName","type":"rdf:Literal"},{"predicate":"skos:prefLabel","type":"rdf:Literal"},{"predicate":"sorg:name","type":"rdf:Literal"},{"predicate":"ns1:primárníOvm","type":"rdf:Literal"},{"predicate":"foaf:name","type":"rdf:Literal"}],"methods":[{"predicate":"sorg:contactPoint","object":"sorg:ContactPoint"},{"predicate":"regorg:registration","object":"adms:Identifier"},{"predicate":"ns1:typSubjektu","object":"ns1:TypSubjektu"},{"predicate":"locn:address","object":"sorg:PostalAddress"},{"predicate":"locn:address","object":"locn:Address"},{"predicate":"ns1:právníForma","object":"ns1:PrávníForma"},{"predicate":"ns1:datováSchránka","object":"ns2:DatováSchránka"},{"predicate":"sorg:address","object":"locn:Address"},{"predicate":"ns1:stavSubjektu","object":"ns1:StavSubjektu"},{"predicate":"ns1:typSubjektu","object":"skos:Concept"},{"predicate":"ns1:právníForma","object":"skos:Concept"},{"predicate":"ns1:stavSubjektu","object":"skos:Concept"},{"predicate":"sorg:address","object":"sorg:PostalAddress"}]},"sorg:ContactPoint":{"properties":[{"predicate":"ns1:officialEmail","type":"rdf:Literal"},{"predicate":"sorg:description","type":"rdf:Literal"},{"predicate":"sorg:email","type":"rdf:Literal"}],"methods":[{"predicate":"ns1:typEmailu","object":"skos:Concept"}]},"openlinks:QuadStorage":{"properties":[{"predicate":"openlinks:qsUserMaps","type":"openlinks:array-of-QuadMap"},{"predicate":"openlinks:qsMatchingFlags","type":"rdf:Literal"}],"methods":[{"predicate":"openlinks:qsDefaultMap","object":"openlinks:QuadMap"}]},"gr:TypeAndQuantityNode":{"properties":[{"predicate":"gr:hasUnitOfMeasurement","type":"rdf:Literal"},{"predicate":"gr:amountOfThisGood","type":"rdf:Literal"},{"predicate":"rdfs:comment","type":"rdf:Literal"}],"methods":[{"predicate":"gr:typeOfGood","object":"gr:ProductOrServicesSomeInstancesPlaceholder"},{"predicate":"gr:typeOfGood","object":"eco:C_AKE112003-tax"},{"predicate":"gr:typeOfGood","object":"eco:C_AKJ315005-tax"},{"predicate":"gr:typeOfGood","object":"eco:C_AAB316003-tax"}]},"ns3:Specifikace":{"properties":[{"predicate":"ns3:autorské-dílo","type":"rdf:Literal"},{"predicate":"ns3:databáze-jako-autorské-dílo","type":"rdf:Literal"},{"predicate":"ns3:databáze-chráněná-zvláštními-právy","type":"rdf:Literal"},{"predicate":"ns3:osobní-údaje","type":"rdf:Literal"}],"methods":[]},"cpov:PublicOrganisation":{"properties":[{"predicate":"sorg:name","type":"rdf:Literal"},{"predicate":"skos:notation","type":"rdf:Literal"},{"predicate":"skos:prefLabel","type":"rdf:Literal"},{"predicate":"ns1:primárníOvm","type":"rdf:Literal"},{"predicate":"rdfs:seeAlso","type":"rdf:Literal"},{"predicate":"gr:legalName","type":"rdf:Literal"},{"predicate":"owl:sameAs","type":"rdf:Literal"},{"predicate":"foaf:name","type":"rdf:Literal"}],"methods":[{"predicate":"ns1:typSubjektu","object":"ns1:TypSubjektu"},{"predicate":"ns1:stavSubjektu","object":"ns1:StavSubjektu"},{"predicate":"sorg:address","object":"sorg:PostalAddress"},{"predicate":"locn:address","object":"sorg:PostalAddress"},{"predicate":"ns1:stavSubjektu","object":"skos:Concept"},{"predicate":"ns1:právníForma","object":"skos:Concept"},{"predicate":"sorg:address","object":"locn:Address"},{"predicate":"ns1:datováSchránka","object":"ns2:DatováSchránka"},{"predicate":"regorg:registration","object":"adms:Identifier"},{"predicate":"locn:address","object":"locn:Address"},{"predicate":"sorg:contactPoint","object":"sorg:ContactPoint"},{"predicate":"ns1:právníForma","object":"ns1:PrávníForma"},{"predicate":"ns1:typSubjektu","object":"skos:Concept"}]},"ns1:TypSubjektu":{"properties":[{"predicate":"skos:prefLabel","type":"rdf:Literal"},{"predicate":"skos:notation","type":"rdf:Literal"},{"predicate":"skos:inScheme","type":"rdf:Literal"}],"methods":[]},"owl:NamedIndividual":{"properties":[{"predicate":"rdfs:label","type":"rdf:Literal"},{"predicate":"skos:notation","type":"rdf:Literal"},{"predicate":"skos:prefLabel","type":"rdf:Literal"},{"predicate":"skos:definition","type":"rdf:Literal"}],"methods":[{"predicate":"skos:inScheme","object":"skos:ConceptScheme"},{"predicate":"skos:hasTopConcept","object":"owl:NamedIndividual"},{"predicate":"skos:hasTopConcept","object":"skos:Concept"},{"predicate":"skos:inScheme","object":"owl:NamedIndividual"}]},"owl:Class":{"properties":[{"predicate":"owl:unionOf","type":"rdf:Literal"},{"predicate":"rdfs:label","type":"rdf:Literal"}],"methods":[{"predicate":"owl:complementOf","object":"owl:Class"}]},"dcat:Dataset":{"properties":[{"predicate":"dcterm:title","type":"rdf:Literal"},{"predicate":"dcterm:spatial","type":"rdf:Literal"},{"predicate":"dcterm:description","type":"rdf:Literal"},{"predicate":"dcat:keyword","type":"rdf:Literal"},{"predicate":"dcterm:identifier","type":"rdf:Literal"},{"predicate":"ns4:ruian_type","type":"rdf:Literal"},{"predicate":"ns4:accrualPeriodicity","type":"rdf:Literal"},{"predicate":"ns4:ruian_code","type":"rdf:Literal"}],"methods":[{"predicate":"dcterm:publisher","object":"cpov:PublicOrganisation"},{"predicate":"dcat:contactPoint","object":"vcard2006:Organization"},{"predicate":"dcterm:publisher","object":"foaf:Agent"},{"predicate":"dcterm:publisher","object":"sorg:Organization"},{"predicate":"dcat:distribution","object":"dcat:Distribution"},{"predicate":"dcterm:publisher","object":"gr:BusinessEntity"},{"predicate":"dcterm:temporal","object":"dcterm:PeriodOfTime"},{"predicate":"dcterm:publisher","object":"ns1:OVM"},{"predicate":"dcat:theme","object":"skos:Concept"},{"predicate":"dcterm:accrualPeriodicity","object":"skos:Concept"}]},"ns2:DatováSchránka":{"properties":[{"predicate":"skos:prefLabel","type":"rdf:Literal"},{"predicate":"skos:notation","type":"rdf:Literal"}],"methods":[{"predicate":"ns1:stavDatovéSchránky","object":"skos:Concept"},{"predicate":"ns1:typDatovéSchránky","object":"ns1:TypDatovéSchránky"},{"predicate":"ns1:stavDatovéSchránky","object":"ns1:StavDatovéSchránky"},{"predicate":"ns1:typDatovéSchránky","object":"skos:Concept"}]},"skos:ConceptScheme":{"properties":[{"predicate":"skos:prefLabel","type":"rdf:Literal"},{"predicate":"owl:versionInfo","type":"rdf:Literal"},{"predicate":"ns5:table.version.number","type":"rdf:Literal"},{"predicate":"skos:notation","type":"rdf:Literal"},{"predicate":"rdfs:label","type":"rdf:Literal"},{"predicate":"ns5:table.id","type":"rdf:Literal"},{"predicate":"ns5:prefLabel","type":"rdf:Literal"}],"methods":[{"predicate":"dcterm:isPartOf","object":"skos:ConceptScheme"},{"predicate":"euvoc:xlNotation","object":"euvoc:XlNotation"},{"predicate":"skosxl:prefLabel","object":"skosxl:Label"},{"predicate":"euvoc:domain","object":"skos:Concept"},{"predicate":"dcterm:hasPart","object":"skos:ConceptScheme"}]},"ns0:CkanLkod":{"properties":[{"predicate":"ns4:ruian_type","type":"rdf:Literal"},{"predicate":"dcterm:description","type":"rdf:Literal"},{"predicate":"dcat:keyword","type":"rdf:Literal"},{"predicate":"dcterm:identifier","type":"rdf:Literal"},{"predicate":"dcterm:spatial","type":"rdf:Literal"},{"predicate":"dcterm:title","type":"rdf:Literal"},{"predicate":"ns4:ruian_code","type":"rdf:Literal"},{"predicate":"ns4:accrualPeriodicity","type":"rdf:Literal"}],"methods":[{"predicate":"dcat:distribution","object":"dcat:Distribution"},{"predicate":"dcterm:publisher","object":"foaf:Agent"},{"predicate":"dcterm:publisher","object":"gr:BusinessEntity"},{"predicate":"dcterm:accrualPeriodicity","object":"skos:Concept"},{"predicate":"dcterm:publisher","object":"sorg:Organization"},{"predicate":"dcat:theme","object":"skos:Concept"},{"predicate":"dcterm:publisher","object":"ns1:OVM"},{"predicate":"dcterm:publisher","object":"cpov:PublicOrganisation"},{"predicate":"dcterm:temporal","object":"dcterm:PeriodOfTime"},{"predicate":"dcat:contactPoint","object":"vcard2006:Organization"}]},"skosxl:Label":{"properties":[{"predicate":"dcterm:created","type":"rdf:Literal"},{"predicate":"owl:versionInfo","type":"rdf:Literal"},{"predicate":"skosxl:literalForm","type":"rdf:Literal"},{"predicate":"euvoc:status","type":"rdf:Literal"},{"predicate":"euvoc:startDate","type":"rdf:Literal"},{"predicate":"dcterm:type","type":"rdf:Literal"}],"methods":[]},"openlinks:QuadMapFormat":{"properties":[{"predicate":"openlinks:qmfLanguageOfShortTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfOkForAnySqlvalue","type":"rdf:Literal"},{"predicate":"openlinks:qmfMapsOnlyNullToNull","type":"rdf:Literal"},{"predicate":"openlinks:qmfStrsqlvalOfShortTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfName","type":"rdf:Literal"},{"predicate":"openlinks:qmfIidOfShortTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfShortOfUriTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfExistingShortOfTypedsqlvalTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfExistingShortOfSqlvalTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfTypeminTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfShortOfLongTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfShortTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfIsrefOfShortTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfIsSubformatOfLong","type":"rdf:Literal"},{"predicate":"openlinks:qmfBoolOfShortTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfIsblankOfShortTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfSparqlEbvTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfShortOfSqlvalTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfWrapDistinct","type":"rdf:Literal"},{"predicate":"openlinks:qmfCmpFuncName","type":"rdf:Literal"},{"predicate":"openlinks:qmfLongTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfIsSubformatOfLongWhenRef","type":"rdf:Literal"},{"predicate":"openlinks:qmfSqlvalOfShortTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfValRange-rvrRestrictions","type":"rdf:Literal"},{"predicate":"openlinks:qmfIsuriOfShortTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfDatatypeOfShortTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfSparqlEbvOfShortTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfSqlvalTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfShortOfTypedsqlvalTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfIsStable","type":"rdf:Literal"},{"predicate":"openlinks:noInherit","type":"rdf:Literal"},{"predicate":"openlinks:qmfUriIdOffset","type":"rdf:Literal"},{"predicate":"openlinks:qmfUriOfShortTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfBoolTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfExistingShortOfUriTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfColumnCount","type":"rdf:Literal"},{"predicate":"openlinks:qmfIsBijection","type":"rdf:Literal"},{"predicate":"openlinks:qmfLongOfShortTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfIslitOfShortTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfExistingShortOfLongTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfIsSubformatOfLongWhenEqToSql","type":"rdf:Literal"},{"predicate":"openlinks:qmf01uriOfShortTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmf01blankOfShortTmpl","type":"rdf:Literal"},{"predicate":"openlinks:qmfTypemaxTmpl","type":"rdf:Literal"}],"methods":[{"predicate":"openlinks:inheritFrom","object":"openlinks:QuadMapFormat"},{"predicate":"openlinks:qmfSubFormatForRefs","object":"openlinks:QuadMapFormat"},{"predicate":"openlinks:qmfSuperFormats","object":"openlinks:array-of-QuadMapFormat"}]},"vcard2006:Organization":{"properties":[{"predicate":"vcard2006:hasEmail","type":"rdf:Literal"},{"predicate":"vcard2006:fn","type":"rdf:Literal"}],"methods":[]},"sorg:Organization":{"properties":[],"methods":[{"predicate":"regorg:registration","object":"adms:Identifier"},{"predicate":"adms:identifier","object":"adms:Identifier"}]},"adms:Identifier":{"properties":[{"predicate":"skos:notation","type":"rdf:Literal"},{"predicate":"skos:inScheme","type":"rdf:Literal"},{"predicate":"skos:prefLabel","type":"rdf:Literal"}],"methods":[]},"ns0:Formulář":{"properties":[{"predicate":"dcterm:issued","type":"rdf:Literal"},{"predicate":"dcterm:title","type":"rdf:Literal"},{"predicate":"dcat:keyword","type":"rdf:Literal"},{"predicate":"foaf:page","type":"rdf:Literal"},{"predicate":"dcterm:description","type":"rdf:Literal"},{"predicate":"dcterm:modified","type":"rdf:Literal"},{"predicate":"dcterm:spatial","type":"rdf:Literal"},{"predicate":"dcterm:identifier","type":"rdf:Literal"}],"methods":[{"predicate":"dcat:theme","object":"skos:Concept"},{"predicate":"dcterm:publisher","object":"cpov:PublicOrganisation"},{"predicate":"dcterm:publisher","object":"foaf:Agent"},{"predicate":"dcat:distribution","object":"dcat:Distribution"},{"predicate":"dcat:contactPoint","object":"vcard2006:Organization"},{"predicate":"dcterm:publisher","object":"sorg:Organization"},{"predicate":"dcterm:accrualPeriodicity","object":"skos:Concept"},{"predicate":"dcterm:publisher","object":"gr:BusinessEntity"},{"predicate":"dcterm:temporal","object":"dcterm:PeriodOfTime"},{"predicate":"dcterm:publisher","object":"ns1:OVM"}]},"dcat:CatalogRecord":{"properties":[{"predicate":"dcterm:conformsTo","type":"rdf:Literal"},{"predicate":"dcterm:source","type":"rdf:Literal"}],"methods":[{"predicate":"dcterm:language","object":"skos:Concept"},{"predicate":"foaf:primaryTopic","object":"ns0:CkanLkod"},{"predicate":"foaf:primaryTopic","object":"ns0:LKOD"},{"predicate":"foaf:primaryTopic","object":"dcat:Dataset"}]},"dcat:Catalog":{"properties":[{"predicate":"dcterm:description","type":"rdf:Literal"},{"predicate":"foaf:homepage","type":"rdf:Literal"},{"predicate":"dcterm:title","type":"rdf:Literal"},{"predicate":"dcat:endpointURL","type":"rdf:Literal"},{"predicate":"dcterm:license","type":"rdf:Literal"},{"predicate":"dcterm:spatial","type":"rdf:Literal"},{"predicate":"dcterm:issued","type":"rdf:Literal"}],"methods":[{"predicate":"dcat:dataset","object":"dcat:Dataset"},{"predicate":"dcterm:isPartOf","object":"dcat:Catalog"},{"predicate":"dcat:dataset","object":"ns0:LKOD"},{"predicate":"dcat:contactPoint","object":"vcard2006:Organization"},{"predicate":"dcterm:language","object":"skos:Concept"},{"predicate":"dcat:dataset","object":"ns0:CkanLkod"},{"predicate":"dcterm:publisher","object":"sorg:Organization"},{"predicate":"dcterm:publisher","object":"cpov:PublicOrganisation"},{"predicate":"dcat:dataset","object":"ns0:Formulář"},{"predicate":"dcterm:publisher","object":"foaf:Agent"},{"predicate":"dcat:themeTaxonomy","object":"skos:ConceptScheme"},{"predicate":"dcat:record","object":"dcat:CatalogRecord"},{"predicate":"dcterm:spatial","object":"skos:Concept"},{"predicate":"dcat:dataset","object":"ns0:DcatLkodSparql"}]},"openlinks:QuadMap":{"properties":[{"predicate":"openlinks:qmMatchingFlags","type":"rdf:Literal"},{"predicate":"openlinks:qmTableName","type":"rdf:Literal"}],"methods":[{"predicate":"openlinks:qmSubjectMap","object":"openlinks:QuadMapValue"},{"predicate":"openlinks:qmPredicateMap","object":"openlinks:QuadMapValue"},{"predicate":"openlinks:qmGraphMap","object":"openlinks:QuadMapValue"},{"predicate":"openlinks:qmObjectMap","object":"openlinks:QuadMapValue"}]},"openlinks:QuadMapValue":{"properties":[{"predicate":"openlinks:qmvColumnsFormKey","type":"rdf:Literal"},{"predicate":"openlinks:qmvTableName","type":"rdf:Literal"}],"methods":[{"predicate":"openlinks:qmvATables","object":"openlinks:array-of-QuadMapATable"},{"predicate":"openlinks:qmvGeo","object":"openlinks:QuadMapFText"},{"predicate":"openlinks:qmvColumns","object":"openlinks:array-of-QuadMapColumn"},{"predicate":"openlinks:qmvFormat","object":"openlinks:QuadMapFormat"},{"predicate":"openlinks:qmvFText","object":"openlinks:QuadMapFText"}]},"locn:Address":{"properties":[{"predicate":"locn:addressId","type":"rdf:Literal"},{"predicate":"sorg:postalCode","type":"rdf:Literal"},{"predicate":"sorg:streetAddress","type":"rdf:Literal"},{"predicate":"sorg:addressLocality","type":"rdf:Literal"},{"predicate":"sorg:addressRegion","type":"rdf:Literal"},{"predicate":"locn:postName","type":"rdf:Literal"},{"predicate":"locn:adminUnitL2","type":"rdf:Literal"},{"predicate":"locn:thoroughfare","type":"rdf:Literal"},{"predicate":"locn:locatorDesignator","type":"rdf:Literal"},{"predicate":"ns1:kraj","type":"rdf:Literal"},{"predicate":"ns6:adresní-místo","type":"rdf:Literal"},{"predicate":"locn:postCode","type":"rdf:Literal"}],"methods":[]},"foaf:Agent":{"properties":[{"predicate":"skos:notation","type":"rdf:Literal"},{"predicate":"rdfs:seeAlso","type":"rdf:Literal"},{"predicate":"owl:sameAs","type":"rdf:Literal"},{"predicate":"ns1:primárníOvm","type":"rdf:Literal"},{"predicate":"skos:prefLabel","type":"rdf:Literal"},{"predicate":"foaf:name","type":"rdf:Literal"},{"predicate":"sorg:name","type":"rdf:Literal"},{"predicate":"gr:legalName","type":"rdf:Literal"}],"methods":[{"predicate":"sorg:address","object":"sorg:PostalAddress"},{"predicate":"ns1:datováSchránka","object":"ns2:DatováSchránka"},{"predicate":"ns1:právníForma","object":"ns1:PrávníForma"},{"predicate":"ns1:právníForma","object":"skos:Concept"},{"predicate":"ns1:typSubjektu","object":"ns1:TypSubjektu"},{"predicate":"ns1:stavSubjektu","object":"ns1:StavSubjektu"},{"predicate":"locn:address","object":"sorg:PostalAddress"},{"predicate":"locn:address","object":"locn:Address"},{"predicate":"regorg:registration","object":"adms:Identifier"},{"predicate":"sorg:contactPoint","object":"sorg:ContactPoint"},{"predicate":"ns1:typSubjektu","object":"skos:Concept"},{"predicate":"sorg:address","object":"locn:Address"},{"predicate":"ns1:stavSubjektu","object":"skos:Concept"}]},"ns1:TypDatovéSchránky":{"properties":[{"predicate":"skos:inScheme","type":"rdf:Literal"},{"predicate":"skos:prefLabel","type":"rdf:Literal"},{"predicate":"skos:notation","type":"rdf:Literal"}],"methods":[]},"ns1:PrávníForma":{"properties":[{"predicate":"skos:notation","type":"rdf:Literal"},{"predicate":"skos:prefLabel","type":"rdf:Literal"},{"predicate":"skos:inScheme","type":"rdf:Literal"}],"methods":[]},"openlinks:array-of-QuadMapFormat":{"properties":[],"methods":[{"predicate":"rdf:_1","object":"openlinks:QuadMapFormat"},{"predicate":"rdf:_3","object":"openlinks:QuadMapFormat"},{"predicate":"rdf:_2","object":"openlinks:QuadMapFormat"},{"predicate":"rdf:_4","object":"openlinks:QuadMapFormat"},{"predicate":"rdf:_5","object":"openlinks:QuadMapFormat"}]},"rdfs:Class":{"properties":[{"predicate":"rdfs:subClassOf","type":"rdf:Literal"},{"predicate":"rdfs:label","type":"rdf:Literal"}],"methods":[{"predicate":"rdfs:subClassOf","object":"rdfs:Class"}]},"sorg:PostalAddress":{"properties":[{"predicate":"sorg:addressLocality","type":"rdf:Literal"},{"predicate":"locn:addressId","type":"rdf:Literal"},{"predicate":"locn:thoroughfare","type":"rdf:Literal"},{"predicate":"ns6:adresní-místo","type":"rdf:Literal"},{"predicate":"locn:postCode","type":"rdf:Literal"},{"predicate":"ns1:kraj","type":"rdf:Literal"},{"predicate":"locn:locatorDesignator","type":"rdf:Literal"},{"predicate":"sorg:postalCode","type":"rdf:Literal"},{"predicate":"locn:adminUnitL2","type":"rdf:Literal"},{"predicate":"sorg:streetAddress","type":"rdf:Literal"},{"predicate":"locn:postName","type":"rdf:Literal"},{"predicate":"sorg:addressRegion","type":"rdf:Literal"}],"methods":[]},"dcat:Distribution":{"properties":[{"predicate":"dcat:accessURL","type":"rdf:Literal"},{"predicate":"ns7:typÚložiště","type":"rdf:Literal"},{"predicate":"dcat:downloadURL","type":"rdf:Literal"},{"predicate":"dcterm:description","type":"rdf:Literal"},{"predicate":"ns4:mediaType","type":"rdf:Literal"},{"predicate":"dcterm:title","type":"rdf:Literal"}],"methods":[{"predicate":"ns3:specifikace","object":"ns3:Specifikace"}]},"ns0:LKOD":{"properties":[{"predicate":"ns4:accrualPeriodicity","type":"rdf:Literal"},{"predicate":"dcterm:description","type":"rdf:Literal"},{"predicate":"ns4:ruian_type","type":"rdf:Literal"},{"predicate":"dcterm:spatial","type":"rdf:Literal"},{"predicate":"dcterm:title","type":"rdf:Literal"},{"predicate":"dcat:keyword","type":"rdf:Literal"},{"predicate":"dcterm:identifier","type":"rdf:Literal"},{"predicate":"ns4:ruian_code","type":"rdf:Literal"}],"methods":[{"predicate":"dcterm:accrualPeriodicity","object":"skos:Concept"},{"predicate":"dcat:contactPoint","object":"vcard2006:Organization"},{"predicate":"dcterm:publisher","object":"sorg:Organization"},{"predicate":"dcat:distribution","object":"dcat:Distribution"},{"predicate":"dcterm:publisher","object":"ns1:OVM"},{"predicate":"dcterm:publisher","object":"gr:BusinessEntity"},{"predicate":"dcterm:publisher","object":"foaf:Agent"},{"predicate":"dcterm:publisher","object":"cpov:PublicOrganisation"},{"predicate":"dcat:theme","object":"skos:Concept"},{"predicate":"dcterm:temporal","object":"dcterm:PeriodOfTime"}]},"ns4:CkanApiLkod":{"properties":[{"predicate":"foaf:homepage","type":"rdf:Literal"},{"predicate":"dcterm:title","type":"rdf:Literal"},{"predicate":"dcat:endpointURL","type":"rdf:Literal"}],"methods":[{"predicate":"dcat:contactPoint","object":"vcard2006:Organization"},{"predicate":"dcat:dataset","object":"dcat:Dataset"},{"predicate":"dcterm:isPartOf","object":"dcat:Catalog"},{"predicate":"dcat:dataset","object":"ns0:CkanLkod"},{"predicate":"dcat:dataset","object":"ns0:LKOD"}]},"ns1:StavSubjektu":{"properties":[{"predicate":"skos:prefLabel","type":"rdf:Literal"},{"predicate":"skos:inScheme","type":"rdf:Literal"},{"predicate":"skos:notation","type":"rdf:Literal"}],"methods":[]},"regorg:RegisteredOrganization":{"properties":[],"methods":[{"predicate":"adms:identifier","object":"adms:Identifier"},{"predicate":"regorg:registration","object":"adms:Identifier"}]},"owl:AnnotationProperty":{"properties":[{"predicate":"rdfs:label","type":"rdf:Literal"},{"predicate":"rdfs:subPropertyOf","type":"rdf:Literal"}],"methods":[]},"openlinks:QuadMapATable":{"properties":[{"predicate":"openlinks:qmvaAlias","type":"rdf:Literal"},{"predicate":"openlinks:qmvaTableName","type":"rdf:Literal"}],"methods":[]},"euvoc:XlNote":{"properties":[{"predicate":"owl:versionInfo","type":"rdf:Literal"},{"predicate":"rdf:value","type":"rdf:Literal"},{"predicate":"euvoc:status","type":"rdf:Literal"}],"methods":[]},"gr:Offering":{"properties":[{"predicate":"gr:validThrough","type":"rdf:Literal"},{"predicate":"gr:acceptedPaymentMethods","type":"rdf:Literal"},{"predicate":"gr:availableDeliveryMethods","type":"rdf:Literal"},{"predicate":"rdfs:isDefinedBy","type":"rdf:Literal"},{"predicate":"gr:eligibleCustomerTypes","type":"rdf:Literal"},{"predicate":"gr:hasBusinessFunction","type":"rdf:Literal"},{"predicate":"rdfs:seeAlso","type":"rdf:Literal"},{"predicate":"gr:validFrom","type":"rdf:Literal"},{"predicate":"rdfs:comment","type":"rdf:Literal"},{"predicate":"gr:eligibleRegions","type":"rdf:Literal"}],"methods":[{"predicate":"gr:availableAtOrFrom","object":"gr:LocationOfSalesOrServiceProvisioning"},{"predicate":"gr:includesObject","object":"gr:TypeAndQuantityNode"},{"predicate":"gr:hasPriceSpecification","object":"gr:PriceSpecification"},{"predicate":"gr:includes","object":"gr:ProductOrServiceSomeInstancePlaceholder"},{"predicate":"gr:includes","object":"gr:ActualProductOrServicesInstance"},{"predicate":"gr:includes","object":"rdfs:Class"},{"predicate":"gr:hasPriceSpecification","object":"rdfs:Class"}]},"owl:Ontology":{"properties":[{"predicate":"dcterm:modified","type":"rdf:Literal"},{"predicate":"ccrel:attributionName","type":"rdf:Literal"},{"predicate":"dcterm:description","type":"rdf:Literal"},{"predicate":"owl:versionInfo","type":"rdf:Literal"},{"predicate":"rdfs:comment","type":"rdf:Literal"},{"predicate":"owl:imports","type":"rdf:Literal"},{"predicate":"openlinks:catName","type":"rdf:Literal"},{"predicate":"dcterm:creator","type":"rdf:Literal"},{"predicate":"dcterm:abstract","type":"rdf:Literal"},{"predicate":"openlinks:version","type":"rdf:Literal"},{"predicate":"ccrel:attributionURL","type":"rdf:Literal"},{"predicate":"wdrs:describedby","type":"rdf:Literal"},{"predicate":"foaf:maker","type":"rdf:Literal"},{"predicate":"vann:preferredNamespaceUri","type":"rdf:Literal"},{"predicate":"dcterm:license","type":"rdf:Literal"},{"predicate":"rdfs:label","type":"rdf:Literal"},{"predicate":"vann:preferredNamespacePrefix","type":"rdf:Literal"},{"predicate":"dcterm:rights","type":"rdf:Literal"},{"predicate":"dcterm:conformsTo","type":"rdf:Literal"},{"predicate":"rdfs:isDefinedBy","type":"rdf:Literal"},{"predicate":"owl:priorVersion","type":"rdf:Literal"}],"methods":[{"predicate":"gr:BusinessEntity","object":"gr:BusinessEntity"}]},"euvoc:XlNotation":{"properties":[{"predicate":"owl:versionInfo","type":"rdf:Literal"},{"predicate":"euvoc:status","type":"rdf:Literal"},{"predicate":"dcterm:created","type":"rdf:Literal"},{"predicate":"rdf:value","type":"rdf:Literal"}],"methods":[]},"openlinks:QuadMapColumn":{"properties":[{"predicate":"openlinks:qmvcAlias","type":"rdf:Literal"},{"predicate":"openlinks:qmvcColumnName","type":"rdf:Literal"}],"methods":[]},"gr:BusinessEntity":{"properties":[{"predicate":"foaf:logo","type":"rdf:Literal"},{"predicate":"rdfs:seeAlso","type":"rdf:Literal"},{"predicate":"owl:sameAs","type":"rdf:Literal"},{"predicate":"owl:equivalentClass","type":"rdf:Literal"},{"predicate":"foaf:homepage","type":"rdf:Literal"},{"predicate":"ns8:ADR","type":"rdf:Literal"},{"predicate":"gr:legalName","type":"rdf:Literal"},{"predicate":"rdfs:isDefinedBy","type":"rdf:Literal"},{"predicate":"foaf:maker","type":"rdf:Literal"}],"methods":[{"predicate":"adms:identifier","object":"adms:Identifier"},{"predicate":"regorg:registration","object":"adms:Identifier"},{"predicate":"gr:offers","object":"gr:Offering"}]},"owl:OntologyProperty":{"properties":[{"predicate":"rdfs:label","type":"rdf:Literal"}],"methods":[{"predicate":"rdfs:domain","object":"rdfs:Class"},{"predicate":"rdfs:range","object":"rdfs:Class"}]},"gr:ProductOrServiceSomeInstancePlaceholder":{"properties":[{"predicate":"rdfs:subClassOf","type":"rdf:Literal"},{"predicate":"rdfs:comment","type":"rdf:Literal"},{"predicate":"rdfs:label","type":"rdf:Literal"}],"methods":[]},"ns4:DcatApSparql":{"properties":[{"predicate":"foaf:homepage","type":"rdf:Literal"},{"predicate":"dcat:endpointURL","type":"rdf:Literal"},{"predicate":"dcterm:title","type":"rdf:Literal"}],"methods":[{"predicate":"dcat:dataset","object":"ns0:DcatLkodSparql"},{"predicate":"dcat:contactPoint","object":"vcard2006:Organization"},{"predicate":"dcterm:isPartOf","object":"dcat:Catalog"},{"predicate":"dcat:dataset","object":"dcat:Dataset"}]},"sd:Service":{"properties":[{"predicate":"sd:resultFormat","type":"rdf:Literal"},{"predicate":"sd:supportedLanguage","type":"rdf:Literal"},{"predicate":"sd:feature","type":"rdf:Literal"}],"methods":[{"predicate":"sd:endpoint","object":"sd:Service"},{"predicate":"sd:url","object":"sd:Service"}]},"openlinks:QuadMapFText":{"properties":[{"predicate":"openlinks:qmvftTableName","type":"rdf:Literal"},{"predicate":"openlinks:qmvftColumnName","type":"rdf:Literal"},{"predicate":"openlinks:qmvftConds","type":"openlinks:array-of-string"},{"predicate":"openlinks:qmvftXmlIndex","type":"rdf:Literal"},{"predicate":"openlinks:qmvftAlias","type":"rdf:Literal"}],"methods":[]},"vcard2006:Individual":{"properties":[{"predicate":"vcard2006:hasEmail","type":"rdf:Literal"},{"predicate":"vcard2006:fn","type":"rdf:Literal"}],"methods":[]},"gr:LocationOfSalesOrServiceProvisioning":{"properties":[{"predicate":"rdfs:label","type":"rdf:Literal"},{"predicate":"ns8:ADR","type":"rdf:Literal"},{"predicate":"rdfs:isDefinedBy","type":"rdf:Literal"}],"methods":[]},"openlinks:array-of-QuadMapATable":{"properties":[],"methods":[{"predicate":"rdf:_1","object":"openlinks:QuadMapATable"}]},"ns1:StavDatovéSchránky":{"properties":[{"predicate":"skos:notation","type":"rdf:Literal"},{"predicate":"skos:prefLabel","type":"rdf:Literal"}],"methods":[{"predicate":"skos:topConceptOf","object":"skos:ConceptScheme"},{"predicate":"skos:inScheme","object":"skos:ConceptScheme"}]},"eco:C_AKE112003-tax":{"properties":[{"predicate":"rdfs:seeAlso","type":"rdf:Literal"},{"predicate":"rdfs:comment","type":"rdf:Literal"}],"methods":[]},"rdf:Property":{"properties":[{"predicate":"rdfs:label","type":"rdf:Literal"},{"predicate":"rdfs:subPropertyOf","type":"rdf:Literal"},{"predicate":"rdfs:range","type":"rdf:Literal"}],"methods":[{"predicate":"rdfs:range","object":"rdfs:Class"},{"predicate":"rdfs:domain","object":"rdfs:Class"}]},"openlinks:array-of-QuadMapColumn":{"properties":[],"methods":[{"predicate":"rdf:_1","object":"openlinks:QuadMapColumn"}]},"dcterm:PeriodOfTime":{"properties":[{"predicate":"sorg:endDate","type":"rdf:Literal"},{"predicate":"sorg:startDate","type":"rdf:Literal"}],"methods":[]},"vcard2006:Kind":{"properties":[{"predicate":"vcard2006:fn","type":"rdf:Literal"},{"predicate":"vcard2006:hasEmail","type":"rdf:Literal"}],"methods":[]},"gr:ActualProductOrServicesInstance":{"properties":[{"predicate":"rdfs:subClassOf","type":"rdf:Literal"},{"predicate":"rdfs:comment","type":"rdf:Literal"},{"predicate":"rdfs:label","type":"rdf:Literal"}],"methods":[]},"gr:ProductOrServicesSomeInstancesPlaceholder":{"properties":[{"predicate":"rdfs:comment","type":"rdf:Literal"},{"predicate":"rdfs:seeAlso","type":"rdf:Literal"}],"methods":[]},"gr:PriceSpecification":{"properties":[{"predicate":"rdfs:label","type":"rdf:Literal"},{"predicate":"rdfs:subClassOf","type":"rdf:Literal"},{"predicate":"rdfs:comment","type":"rdf:Literal"}],"methods":[]},"owl:InverseFunctionalProperty":{"properties":[{"predicate":"rdfs:subPropertyOf","type":"rdf:Literal"}],"methods":[]},"eco:C_AKJ315005-tax":{"properties":[{"predicate":"rdfs:comment","type":"rdf:Literal"}],"methods":[]},"gr:Manufacturer":{"properties":[{"predicate":"owl:equivalentClass","type":"rdf:Literal"}],"methods":[]},"eco:C_AAB316003-tax":{"properties":[{"predicate":"rdfs:comment","type":"rdf:Literal"}],"methods":[]}},"__prefixes__":{"http://www.w3.org/1999/02/22-rdf-syntax-ns#":"rdf","http://onto.fel.cvut.cz/ontologies/dataset-descriptor/s-p-o-summary/":"ns","http://www.w3.org/ns/dcat#":"dcat","https://data.gov.cz/slovník/nkod/typ-datové-sady-dle-zdroje/":"ns0","http://www.w3.org/2004/02/skos/core#":"skos","http://purl.org/dc/terms/":"dcterm","http://schema.org/":"sorg","https://data.gov.cz/slovník/ovm/":"ns1","http://www.w3.org/2006/vcard/ns#":"vcard2006","http://xmlns.com/foaf/0.1/":"foaf","http://data.europa.eu/m8g/":"cpov","http://purl.org/goodrelations/v1#":"gr","http://www.w3.org/2002/07/owl#":"owl","http://publications.europa.eu/ontology/euvoc#":"euvoc","http://www.w3.org/2008/05/skos-xl#":"skosxl","http://www.w3.org/ns/regorg#":"regorg","http://www.w3.org/ns/adms#":"adms","http://www.w3.org/ns/locn#":"locn","https://data.gov.cz/slovník/datové-schránky/":"ns2","http://www.w3.org/2000/01/rdf-schema#":"rdfs","http://www.openlinksw.com/schemas/virtrdf#":"openlinks","http://www.ebusiness-unibw.org/ontologies/eclass/5.1.4/#":"eco","https://data.gov.cz/slovník/podmínky-užití/":"ns3","https://data.gov.cz/slovník/nkod/":"ns4","http://publications.europa.eu/ontology/authority/":"ns5","https://data.gov.cz/slovník/ruian/linky/":"ns6","https://data.gov.cz/slovník/nkod/typ-úložiště-datové-sady/":"ns7","http://creativecommons.org/ns#":"ccrel","http://www.w3.org/2007/05/powder-s#":"wdrs","http://purl.org/vocab/vann/":"vann","http://www.w3.org/2001/vcard-rdf/3.0#":"ns8","http://www.w3.org/ns/sparql-service-description#":"sd"}}
+{
+  "data": {
+    "ns_0:DcatLkodSparql": {
+      "dataProperties": {
+        "dcterm:identifier": [
+          "rdf:Literal"
+        ],
+        "dcat:keyword": [
+          "rdf:Literal"
+        ],
+        "dcterm:description": [
+          "rdf:Literal"
+        ],
+        "dcterm:title": [
+          "rdf:Literal"
+        ],
+        "foaf:page": [
+          "rdf:Literal"
+        ],
+        "dcterm:spatial": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "dcat:theme": [
+          "skos:Concept"
+        ],
+        "dcterm:publisher": [
+          "sorg:Organization",
+          "ns_1:OVM",
+          "foaf:Agent",
+          "cpov:PublicOrganisation",
+          "gr:BusinessEntity"
+        ],
+        "dcat:contactPoint": [
+          "vcard2006:Organization"
+        ],
+        "dcterm:accrualPeriodicity": [
+          "skos:Concept"
+        ],
+        "dcat:distribution": [
+          "dcat:Distribution"
+        ]
+      }
+    },
+    "skos:Concept": {
+      "dataProperties": {
+        "owl:versionInfo": [
+          "rdf:Literal"
+        ],
+        "skos:altLabel": [
+          "rdf:Literal"
+        ],
+        "euvoc:startDate": [
+          "rdf:Literal"
+        ],
+        "skos:notation": [
+          "rdf:Literal"
+        ],
+        "euvoc:status": [
+          "rdf:Literal"
+        ],
+        "skos:definition": [
+          "rdf:Literal"
+        ],
+        "dcterm:created": [
+          "rdf:Literal"
+        ],
+        "skos:prefLabel": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "skos:inScheme": [
+          "skos:ConceptScheme"
+        ],
+        "skos:related": [
+          "skos:Concept"
+        ],
+        "skosxl:altLabel": [
+          "skosxl:Label"
+        ],
+        "euvoc:xlDefinition": [
+          "euvoc:XlNote"
+        ],
+        "skosxl:prefLabel": [
+          "skosxl:Label"
+        ],
+        "skos:broader": [
+          "skos:Concept"
+        ],
+        "euvoc:xlNotation": [
+          "euvoc:XlNotation"
+        ]
+      }
+    },
+    "ns_1:OVM": {
+      "dataProperties": {
+        "skos:notation": [
+          "rdf:Literal"
+        ],
+        "rdfs:seeAlso": [
+          "rdf:Literal"
+        ],
+        "owl:sameAs": [
+          "rdf:Literal"
+        ],
+        "gr:legalName": [
+          "rdf:Literal"
+        ],
+        "skos:prefLabel": [
+          "rdf:Literal"
+        ],
+        "sorg:name": [
+          "rdf:Literal"
+        ],
+        "ns_1:primárníOvm": [
+          "rdf:Literal"
+        ],
+        "foaf:name": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "sorg:contactPoint": [
+          "sorg:ContactPoint"
+        ],
+        "regorg:registration": [
+          "adms:Identifier"
+        ],
+        "ns_1:typSubjektu": [
+          "ns_1:TypSubjektu",
+          "skos:Concept"
+        ],
+        "locn:address": [
+          "sorg:PostalAddress",
+          "locn:Address"
+        ],
+        "ns_1:právníForma": [
+          "ns_1:PrávníForma",
+          "skos:Concept"
+        ],
+        "ns_1:datováSchránka": [
+          "ns_2:DatováSchránka"
+        ],
+        "sorg:address": [
+          "locn:Address",
+          "sorg:PostalAddress"
+        ],
+        "ns_1:stavSubjektu": [
+          "ns_1:StavSubjektu",
+          "skos:Concept"
+        ]
+      }
+    },
+    "sorg:ContactPoint": {
+      "dataProperties": {
+        "ns_1:officialEmail": [
+          "rdf:Literal"
+        ],
+        "sorg:description": [
+          "rdf:Literal"
+        ],
+        "sorg:email": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "ns_1:typEmailu": [
+          "skos:Concept"
+        ]
+      }
+    },
+    "openlinks:QuadStorage": {
+      "dataProperties": {
+        "openlinks:qsUserMaps": [
+          "openlinks:array-of-QuadMap"
+        ],
+        "openlinks:qsMatchingFlags": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "openlinks:qsDefaultMap": [
+          "openlinks:QuadMap"
+        ]
+      }
+    },
+    "gr:TypeAndQuantityNode": {
+      "dataProperties": {
+        "gr:hasUnitOfMeasurement": [
+          "rdf:Literal"
+        ],
+        "gr:amountOfThisGood": [
+          "rdf:Literal"
+        ],
+        "rdfs:comment": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "gr:typeOfGood": [
+          "gr:ProductOrServicesSomeInstancesPlaceholder",
+          "eco:C_AKE112003-tax",
+          "eco:C_AKJ315005-tax",
+          "eco:C_AAB316003-tax"
+        ]
+      }
+    },
+    "ns_3:Specifikace": {
+      "dataProperties": {
+        "ns_3:autorské-dílo": [
+          "rdf:Literal"
+        ],
+        "ns_3:databáze-jako-autorské-dílo": [
+          "rdf:Literal"
+        ],
+        "ns_3:databáze-chráněná-zvláštními-právy": [
+          "rdf:Literal"
+        ],
+        "ns_3:osobní-údaje": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "cpov:PublicOrganisation": {
+      "dataProperties": {
+        "sorg:name": [
+          "rdf:Literal"
+        ],
+        "skos:notation": [
+          "rdf:Literal"
+        ],
+        "skos:prefLabel": [
+          "rdf:Literal"
+        ],
+        "ns_1:primárníOvm": [
+          "rdf:Literal"
+        ],
+        "rdfs:seeAlso": [
+          "rdf:Literal"
+        ],
+        "gr:legalName": [
+          "rdf:Literal"
+        ],
+        "owl:sameAs": [
+          "rdf:Literal"
+        ],
+        "foaf:name": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "ns_1:typSubjektu": [
+          "ns_1:TypSubjektu",
+          "skos:Concept"
+        ],
+        "ns_1:stavSubjektu": [
+          "ns_1:StavSubjektu",
+          "skos:Concept"
+        ],
+        "sorg:address": [
+          "sorg:PostalAddress",
+          "locn:Address"
+        ],
+        "locn:address": [
+          "sorg:PostalAddress",
+          "locn:Address"
+        ],
+        "ns_1:právníForma": [
+          "skos:Concept",
+          "ns_1:PrávníForma"
+        ],
+        "ns_1:datováSchránka": [
+          "ns_2:DatováSchránka"
+        ],
+        "regorg:registration": [
+          "adms:Identifier"
+        ],
+        "sorg:contactPoint": [
+          "sorg:ContactPoint"
+        ]
+      }
+    },
+    "ns_1:TypSubjektu": {
+      "dataProperties": {
+        "skos:prefLabel": [
+          "rdf:Literal"
+        ],
+        "skos:notation": [
+          "rdf:Literal"
+        ],
+        "skos:inScheme": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "owl:NamedIndividual": {
+      "dataProperties": {
+        "rdfs:label": [
+          "rdf:Literal"
+        ],
+        "skos:notation": [
+          "rdf:Literal"
+        ],
+        "skos:prefLabel": [
+          "rdf:Literal"
+        ],
+        "skos:definition": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "skos:inScheme": [
+          "skos:ConceptScheme",
+          "owl:NamedIndividual"
+        ],
+        "skos:hasTopConcept": [
+          "owl:NamedIndividual",
+          "skos:Concept"
+        ]
+      }
+    },
+    "owl:Class": {
+      "dataProperties": {
+        "owl:unionOf": [
+          "rdf:Literal"
+        ],
+        "rdfs:label": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "owl:complementOf": [
+          "owl:Class"
+        ]
+      }
+    },
+    "dcat:Dataset": {
+      "dataProperties": {
+        "dcterm:title": [
+          "rdf:Literal"
+        ],
+        "dcterm:spatial": [
+          "rdf:Literal"
+        ],
+        "dcterm:description": [
+          "rdf:Literal"
+        ],
+        "dcat:keyword": [
+          "rdf:Literal"
+        ],
+        "dcterm:identifier": [
+          "rdf:Literal"
+        ],
+        "ns_4:ruian_type": [
+          "rdf:Literal"
+        ],
+        "ns_4:accrualPeriodicity": [
+          "rdf:Literal"
+        ],
+        "ns_4:ruian_code": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "dcterm:publisher": [
+          "cpov:PublicOrganisation",
+          "foaf:Agent",
+          "sorg:Organization",
+          "gr:BusinessEntity",
+          "ns_1:OVM"
+        ],
+        "dcat:contactPoint": [
+          "vcard2006:Organization"
+        ],
+        "dcat:distribution": [
+          "dcat:Distribution"
+        ],
+        "dcterm:temporal": [
+          "dcterm:PeriodOfTime"
+        ],
+        "dcat:theme": [
+          "skos:Concept"
+        ],
+        "dcterm:accrualPeriodicity": [
+          "skos:Concept"
+        ]
+      }
+    },
+    "ns_2:DatováSchránka": {
+      "dataProperties": {
+        "skos:prefLabel": [
+          "rdf:Literal"
+        ],
+        "skos:notation": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "ns_1:stavDatovéSchránky": [
+          "skos:Concept",
+          "ns_1:StavDatovéSchránky"
+        ],
+        "ns_1:typDatovéSchránky": [
+          "ns_1:TypDatovéSchránky",
+          "skos:Concept"
+        ]
+      }
+    },
+    "skos:ConceptScheme": {
+      "dataProperties": {
+        "skos:prefLabel": [
+          "rdf:Literal"
+        ],
+        "owl:versionInfo": [
+          "rdf:Literal"
+        ],
+        "ns_5:table.version.number": [
+          "rdf:Literal"
+        ],
+        "skos:notation": [
+          "rdf:Literal"
+        ],
+        "rdfs:label": [
+          "rdf:Literal"
+        ],
+        "ns_5:table.id": [
+          "rdf:Literal"
+        ],
+        "ns_5:prefLabel": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "dcterm:isPartOf": [
+          "skos:ConceptScheme"
+        ],
+        "euvoc:xlNotation": [
+          "euvoc:XlNotation"
+        ],
+        "skosxl:prefLabel": [
+          "skosxl:Label"
+        ],
+        "euvoc:domain": [
+          "skos:Concept"
+        ],
+        "dcterm:hasPart": [
+          "skos:ConceptScheme"
+        ]
+      }
+    },
+    "ns_0:CkanLkod": {
+      "dataProperties": {
+        "ns_4:ruian_type": [
+          "rdf:Literal"
+        ],
+        "dcterm:description": [
+          "rdf:Literal"
+        ],
+        "dcat:keyword": [
+          "rdf:Literal"
+        ],
+        "dcterm:identifier": [
+          "rdf:Literal"
+        ],
+        "dcterm:spatial": [
+          "rdf:Literal"
+        ],
+        "dcterm:title": [
+          "rdf:Literal"
+        ],
+        "ns_4:ruian_code": [
+          "rdf:Literal"
+        ],
+        "ns_4:accrualPeriodicity": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "dcat:distribution": [
+          "dcat:Distribution"
+        ],
+        "dcterm:publisher": [
+          "foaf:Agent",
+          "gr:BusinessEntity",
+          "sorg:Organization",
+          "ns_1:OVM",
+          "cpov:PublicOrganisation"
+        ],
+        "dcterm:accrualPeriodicity": [
+          "skos:Concept"
+        ],
+        "dcat:theme": [
+          "skos:Concept"
+        ],
+        "dcterm:temporal": [
+          "dcterm:PeriodOfTime"
+        ],
+        "dcat:contactPoint": [
+          "vcard2006:Organization"
+        ]
+      }
+    },
+    "skosxl:Label": {
+      "dataProperties": {
+        "dcterm:created": [
+          "rdf:Literal"
+        ],
+        "owl:versionInfo": [
+          "rdf:Literal"
+        ],
+        "skosxl:literalForm": [
+          "rdf:Literal"
+        ],
+        "euvoc:status": [
+          "rdf:Literal"
+        ],
+        "euvoc:startDate": [
+          "rdf:Literal"
+        ],
+        "dcterm:type": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "openlinks:QuadMapFormat": {
+      "dataProperties": {
+        "openlinks:qmfLanguageOfShortTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfOkForAnySqlvalue": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfMapsOnlyNullToNull": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfStrsqlvalOfShortTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfName": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfIidOfShortTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfShortOfUriTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfExistingShortOfTypedsqlvalTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfExistingShortOfSqlvalTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfTypeminTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfShortOfLongTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfShortTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfIsrefOfShortTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfIsSubformatOfLong": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfBoolOfShortTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfIsblankOfShortTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfSparqlEbvTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfShortOfSqlvalTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfWrapDistinct": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfCmpFuncName": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfLongTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfIsSubformatOfLongWhenRef": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfSqlvalOfShortTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfValRange-rvrRestrictions": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfIsuriOfShortTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfDatatypeOfShortTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfSparqlEbvOfShortTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfSqlvalTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfShortOfTypedsqlvalTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfIsStable": [
+          "rdf:Literal"
+        ],
+        "openlinks:noInherit": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfUriIdOffset": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfUriOfShortTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfBoolTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfExistingShortOfUriTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfColumnCount": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfIsBijection": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfLongOfShortTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfIslitOfShortTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfExistingShortOfLongTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfIsSubformatOfLongWhenEqToSql": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmf01uriOfShortTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmf01blankOfShortTmpl": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmfTypemaxTmpl": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "openlinks:inheritFrom": [
+          "openlinks:QuadMapFormat"
+        ],
+        "openlinks:qmfSubFormatForRefs": [
+          "openlinks:QuadMapFormat"
+        ],
+        "openlinks:qmfSuperFormats": [
+          "openlinks:array-of-QuadMapFormat"
+        ]
+      }
+    },
+    "vcard2006:Organization": {
+      "dataProperties": {
+        "vcard2006:hasEmail": [
+          "rdf:Literal"
+        ],
+        "vcard2006:fn": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "sorg:Organization": {
+      "dataProperties": {},
+      "objectProperties": {
+        "regorg:registration": [
+          "adms:Identifier"
+        ],
+        "adms:identifier": [
+          "adms:Identifier"
+        ]
+      }
+    },
+    "adms:Identifier": {
+      "dataProperties": {
+        "skos:notation": [
+          "rdf:Literal"
+        ],
+        "skos:inScheme": [
+          "rdf:Literal"
+        ],
+        "skos:prefLabel": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "ns_0:Formulář": {
+      "dataProperties": {
+        "dcterm:issued": [
+          "rdf:Literal"
+        ],
+        "dcterm:title": [
+          "rdf:Literal"
+        ],
+        "dcat:keyword": [
+          "rdf:Literal"
+        ],
+        "foaf:page": [
+          "rdf:Literal"
+        ],
+        "dcterm:description": [
+          "rdf:Literal"
+        ],
+        "dcterm:modified": [
+          "rdf:Literal"
+        ],
+        "dcterm:spatial": [
+          "rdf:Literal"
+        ],
+        "dcterm:identifier": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "dcat:theme": [
+          "skos:Concept"
+        ],
+        "dcterm:publisher": [
+          "cpov:PublicOrganisation",
+          "foaf:Agent",
+          "sorg:Organization",
+          "gr:BusinessEntity",
+          "ns_1:OVM"
+        ],
+        "dcat:distribution": [
+          "dcat:Distribution"
+        ],
+        "dcat:contactPoint": [
+          "vcard2006:Organization"
+        ],
+        "dcterm:accrualPeriodicity": [
+          "skos:Concept"
+        ],
+        "dcterm:temporal": [
+          "dcterm:PeriodOfTime"
+        ]
+      }
+    },
+    "dcat:CatalogRecord": {
+      "dataProperties": {
+        "dcterm:conformsTo": [
+          "rdf:Literal"
+        ],
+        "dcterm:source": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "dcterm:language": [
+          "skos:Concept"
+        ],
+        "foaf:primaryTopic": [
+          "ns_0:CkanLkod",
+          "ns_0:LKOD",
+          "dcat:Dataset"
+        ]
+      }
+    },
+    "dcat:Catalog": {
+      "dataProperties": {
+        "dcterm:description": [
+          "rdf:Literal"
+        ],
+        "foaf:homepage": [
+          "rdf:Literal"
+        ],
+        "dcterm:title": [
+          "rdf:Literal"
+        ],
+        "dcat:endpointURL": [
+          "rdf:Literal"
+        ],
+        "dcterm:license": [
+          "rdf:Literal"
+        ],
+        "dcterm:spatial": [
+          "rdf:Literal"
+        ],
+        "dcterm:issued": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "dcat:dataset": [
+          "dcat:Dataset",
+          "ns_0:LKOD",
+          "ns_0:CkanLkod",
+          "ns_0:Formulář",
+          "ns_0:DcatLkodSparql"
+        ],
+        "dcterm:isPartOf": [
+          "dcat:Catalog"
+        ],
+        "dcat:contactPoint": [
+          "vcard2006:Organization"
+        ],
+        "dcterm:language": [
+          "skos:Concept"
+        ],
+        "dcterm:publisher": [
+          "sorg:Organization",
+          "cpov:PublicOrganisation",
+          "foaf:Agent"
+        ],
+        "dcat:themeTaxonomy": [
+          "skos:ConceptScheme"
+        ],
+        "dcat:record": [
+          "dcat:CatalogRecord"
+        ],
+        "dcterm:spatial": [
+          "skos:Concept"
+        ]
+      }
+    },
+    "openlinks:QuadMap": {
+      "dataProperties": {
+        "openlinks:qmMatchingFlags": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmTableName": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "openlinks:qmSubjectMap": [
+          "openlinks:QuadMapValue"
+        ],
+        "openlinks:qmPredicateMap": [
+          "openlinks:QuadMapValue"
+        ],
+        "openlinks:qmGraphMap": [
+          "openlinks:QuadMapValue"
+        ],
+        "openlinks:qmObjectMap": [
+          "openlinks:QuadMapValue"
+        ]
+      }
+    },
+    "openlinks:QuadMapValue": {
+      "dataProperties": {
+        "openlinks:qmvColumnsFormKey": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmvTableName": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "openlinks:qmvATables": [
+          "openlinks:array-of-QuadMapATable"
+        ],
+        "openlinks:qmvGeo": [
+          "openlinks:QuadMapFText"
+        ],
+        "openlinks:qmvColumns": [
+          "openlinks:array-of-QuadMapColumn"
+        ],
+        "openlinks:qmvFormat": [
+          "openlinks:QuadMapFormat"
+        ],
+        "openlinks:qmvFText": [
+          "openlinks:QuadMapFText"
+        ]
+      }
+    },
+    "locn:Address": {
+      "dataProperties": {
+        "locn:addressId": [
+          "rdf:Literal"
+        ],
+        "sorg:postalCode": [
+          "rdf:Literal"
+        ],
+        "sorg:streetAddress": [
+          "rdf:Literal"
+        ],
+        "sorg:addressLocality": [
+          "rdf:Literal"
+        ],
+        "sorg:addressRegion": [
+          "rdf:Literal"
+        ],
+        "locn:postName": [
+          "rdf:Literal"
+        ],
+        "locn:adminUnitL2": [
+          "rdf:Literal"
+        ],
+        "locn:thoroughfare": [
+          "rdf:Literal"
+        ],
+        "locn:locatorDesignator": [
+          "rdf:Literal"
+        ],
+        "ns_1:kraj": [
+          "rdf:Literal"
+        ],
+        "ns_6:adresní-místo": [
+          "rdf:Literal"
+        ],
+        "locn:postCode": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "foaf:Agent": {
+      "dataProperties": {
+        "skos:notation": [
+          "rdf:Literal"
+        ],
+        "rdfs:seeAlso": [
+          "rdf:Literal"
+        ],
+        "owl:sameAs": [
+          "rdf:Literal"
+        ],
+        "ns_1:primárníOvm": [
+          "rdf:Literal"
+        ],
+        "skos:prefLabel": [
+          "rdf:Literal"
+        ],
+        "foaf:name": [
+          "rdf:Literal"
+        ],
+        "sorg:name": [
+          "rdf:Literal"
+        ],
+        "gr:legalName": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "sorg:address": [
+          "sorg:PostalAddress",
+          "locn:Address"
+        ],
+        "ns_1:datováSchránka": [
+          "ns_2:DatováSchránka"
+        ],
+        "ns_1:právníForma": [
+          "ns_1:PrávníForma",
+          "skos:Concept"
+        ],
+        "ns_1:typSubjektu": [
+          "ns_1:TypSubjektu",
+          "skos:Concept"
+        ],
+        "ns_1:stavSubjektu": [
+          "ns_1:StavSubjektu",
+          "skos:Concept"
+        ],
+        "locn:address": [
+          "sorg:PostalAddress",
+          "locn:Address"
+        ],
+        "regorg:registration": [
+          "adms:Identifier"
+        ],
+        "sorg:contactPoint": [
+          "sorg:ContactPoint"
+        ]
+      }
+    },
+    "ns_1:TypDatovéSchránky": {
+      "dataProperties": {
+        "skos:inScheme": [
+          "rdf:Literal"
+        ],
+        "skos:prefLabel": [
+          "rdf:Literal"
+        ],
+        "skos:notation": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "ns_1:PrávníForma": {
+      "dataProperties": {
+        "skos:notation": [
+          "rdf:Literal"
+        ],
+        "skos:prefLabel": [
+          "rdf:Literal"
+        ],
+        "skos:inScheme": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "openlinks:array-of-QuadMapFormat": {
+      "dataProperties": {},
+      "objectProperties": {
+        "rdf:_1": [
+          "openlinks:QuadMapFormat"
+        ],
+        "rdf:_3": [
+          "openlinks:QuadMapFormat"
+        ],
+        "rdf:_2": [
+          "openlinks:QuadMapFormat"
+        ],
+        "rdf:_4": [
+          "openlinks:QuadMapFormat"
+        ],
+        "rdf:_5": [
+          "openlinks:QuadMapFormat"
+        ]
+      }
+    },
+    "rdfs:Class": {
+      "dataProperties": {
+        "rdfs:subClassOf": [
+          "rdf:Literal"
+        ],
+        "rdfs:label": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "rdfs:subClassOf": [
+          "rdfs:Class"
+        ]
+      }
+    },
+    "sorg:PostalAddress": {
+      "dataProperties": {
+        "sorg:addressLocality": [
+          "rdf:Literal"
+        ],
+        "locn:addressId": [
+          "rdf:Literal"
+        ],
+        "locn:thoroughfare": [
+          "rdf:Literal"
+        ],
+        "ns_6:adresní-místo": [
+          "rdf:Literal"
+        ],
+        "locn:postCode": [
+          "rdf:Literal"
+        ],
+        "ns_1:kraj": [
+          "rdf:Literal"
+        ],
+        "locn:locatorDesignator": [
+          "rdf:Literal"
+        ],
+        "sorg:postalCode": [
+          "rdf:Literal"
+        ],
+        "locn:adminUnitL2": [
+          "rdf:Literal"
+        ],
+        "sorg:streetAddress": [
+          "rdf:Literal"
+        ],
+        "locn:postName": [
+          "rdf:Literal"
+        ],
+        "sorg:addressRegion": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "dcat:Distribution": {
+      "dataProperties": {
+        "dcat:accessURL": [
+          "rdf:Literal"
+        ],
+        "ns_7:typÚložiště": [
+          "rdf:Literal"
+        ],
+        "dcat:downloadURL": [
+          "rdf:Literal"
+        ],
+        "dcterm:description": [
+          "rdf:Literal"
+        ],
+        "ns_4:mediaType": [
+          "rdf:Literal"
+        ],
+        "dcterm:title": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "ns_3:specifikace": [
+          "ns_3:Specifikace"
+        ]
+      }
+    },
+    "ns_0:LKOD": {
+      "dataProperties": {
+        "ns_4:accrualPeriodicity": [
+          "rdf:Literal"
+        ],
+        "dcterm:description": [
+          "rdf:Literal"
+        ],
+        "ns_4:ruian_type": [
+          "rdf:Literal"
+        ],
+        "dcterm:spatial": [
+          "rdf:Literal"
+        ],
+        "dcterm:title": [
+          "rdf:Literal"
+        ],
+        "dcat:keyword": [
+          "rdf:Literal"
+        ],
+        "dcterm:identifier": [
+          "rdf:Literal"
+        ],
+        "ns_4:ruian_code": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "dcterm:accrualPeriodicity": [
+          "skos:Concept"
+        ],
+        "dcat:contactPoint": [
+          "vcard2006:Organization"
+        ],
+        "dcterm:publisher": [
+          "sorg:Organization",
+          "ns_1:OVM",
+          "gr:BusinessEntity",
+          "foaf:Agent",
+          "cpov:PublicOrganisation"
+        ],
+        "dcat:distribution": [
+          "dcat:Distribution"
+        ],
+        "dcat:theme": [
+          "skos:Concept"
+        ],
+        "dcterm:temporal": [
+          "dcterm:PeriodOfTime"
+        ]
+      }
+    },
+    "ns_4:CkanApiLkod": {
+      "dataProperties": {
+        "foaf:homepage": [
+          "rdf:Literal"
+        ],
+        "dcterm:title": [
+          "rdf:Literal"
+        ],
+        "dcat:endpointURL": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "dcat:contactPoint": [
+          "vcard2006:Organization"
+        ],
+        "dcat:dataset": [
+          "dcat:Dataset",
+          "ns_0:CkanLkod",
+          "ns_0:LKOD"
+        ],
+        "dcterm:isPartOf": [
+          "dcat:Catalog"
+        ]
+      }
+    },
+    "ns_1:StavSubjektu": {
+      "dataProperties": {
+        "skos:prefLabel": [
+          "rdf:Literal"
+        ],
+        "skos:inScheme": [
+          "rdf:Literal"
+        ],
+        "skos:notation": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "regorg:RegisteredOrganization": {
+      "dataProperties": {},
+      "objectProperties": {
+        "adms:identifier": [
+          "adms:Identifier"
+        ],
+        "regorg:registration": [
+          "adms:Identifier"
+        ]
+      }
+    },
+    "owl:AnnotationProperty": {
+      "dataProperties": {
+        "rdfs:label": [
+          "rdf:Literal"
+        ],
+        "rdfs:subPropertyOf": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "openlinks:QuadMapATable": {
+      "dataProperties": {
+        "openlinks:qmvaAlias": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmvaTableName": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "euvoc:XlNote": {
+      "dataProperties": {
+        "owl:versionInfo": [
+          "rdf:Literal"
+        ],
+        "rdf:value": [
+          "rdf:Literal"
+        ],
+        "euvoc:status": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "gr:Offering": {
+      "dataProperties": {
+        "gr:validThrough": [
+          "rdf:Literal"
+        ],
+        "gr:acceptedPaymentMethods": [
+          "rdf:Literal"
+        ],
+        "gr:availableDeliveryMethods": [
+          "rdf:Literal"
+        ],
+        "rdfs:isDefinedBy": [
+          "rdf:Literal"
+        ],
+        "gr:eligibleCustomerTypes": [
+          "rdf:Literal"
+        ],
+        "gr:hasBusinessFunction": [
+          "rdf:Literal"
+        ],
+        "rdfs:seeAlso": [
+          "rdf:Literal"
+        ],
+        "gr:validFrom": [
+          "rdf:Literal"
+        ],
+        "rdfs:comment": [
+          "rdf:Literal"
+        ],
+        "gr:eligibleRegions": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "gr:availableAtOrFrom": [
+          "gr:LocationOfSalesOrServiceProvisioning"
+        ],
+        "gr:includesObject": [
+          "gr:TypeAndQuantityNode"
+        ],
+        "gr:hasPriceSpecification": [
+          "gr:PriceSpecification",
+          "rdfs:Class"
+        ],
+        "gr:includes": [
+          "gr:ProductOrServiceSomeInstancePlaceholder",
+          "gr:ActualProductOrServicesInstance",
+          "rdfs:Class"
+        ]
+      }
+    },
+    "owl:Ontology": {
+      "dataProperties": {
+        "dcterm:modified": [
+          "rdf:Literal"
+        ],
+        "ccrel:attributionName": [
+          "rdf:Literal"
+        ],
+        "dcterm:description": [
+          "rdf:Literal"
+        ],
+        "owl:versionInfo": [
+          "rdf:Literal"
+        ],
+        "rdfs:comment": [
+          "rdf:Literal"
+        ],
+        "owl:imports": [
+          "rdf:Literal"
+        ],
+        "openlinks:catName": [
+          "rdf:Literal"
+        ],
+        "dcterm:creator": [
+          "rdf:Literal"
+        ],
+        "dcterm:abstract": [
+          "rdf:Literal"
+        ],
+        "openlinks:version": [
+          "rdf:Literal"
+        ],
+        "ccrel:attributionURL": [
+          "rdf:Literal"
+        ],
+        "wdrs:describedby": [
+          "rdf:Literal"
+        ],
+        "foaf:maker": [
+          "rdf:Literal"
+        ],
+        "vann:preferredNamespaceUri": [
+          "rdf:Literal"
+        ],
+        "dcterm:license": [
+          "rdf:Literal"
+        ],
+        "rdfs:label": [
+          "rdf:Literal"
+        ],
+        "vann:preferredNamespacePrefix": [
+          "rdf:Literal"
+        ],
+        "dcterm:rights": [
+          "rdf:Literal"
+        ],
+        "dcterm:conformsTo": [
+          "rdf:Literal"
+        ],
+        "rdfs:isDefinedBy": [
+          "rdf:Literal"
+        ],
+        "owl:priorVersion": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "gr:BusinessEntity": [
+          "gr:BusinessEntity"
+        ]
+      }
+    },
+    "euvoc:XlNotation": {
+      "dataProperties": {
+        "owl:versionInfo": [
+          "rdf:Literal"
+        ],
+        "euvoc:status": [
+          "rdf:Literal"
+        ],
+        "dcterm:created": [
+          "rdf:Literal"
+        ],
+        "rdf:value": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "openlinks:QuadMapColumn": {
+      "dataProperties": {
+        "openlinks:qmvcAlias": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmvcColumnName": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "gr:BusinessEntity": {
+      "dataProperties": {
+        "foaf:logo": [
+          "rdf:Literal"
+        ],
+        "rdfs:seeAlso": [
+          "rdf:Literal"
+        ],
+        "owl:sameAs": [
+          "rdf:Literal"
+        ],
+        "owl:equivalentClass": [
+          "rdf:Literal"
+        ],
+        "foaf:homepage": [
+          "rdf:Literal"
+        ],
+        "ns_8:ADR": [
+          "rdf:Literal"
+        ],
+        "gr:legalName": [
+          "rdf:Literal"
+        ],
+        "rdfs:isDefinedBy": [
+          "rdf:Literal"
+        ],
+        "foaf:maker": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "adms:identifier": [
+          "adms:Identifier"
+        ],
+        "regorg:registration": [
+          "adms:Identifier"
+        ],
+        "gr:offers": [
+          "gr:Offering"
+        ]
+      }
+    },
+    "owl:OntologyProperty": {
+      "dataProperties": {
+        "rdfs:label": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "rdfs:domain": [
+          "rdfs:Class"
+        ],
+        "rdfs:range": [
+          "rdfs:Class"
+        ]
+      }
+    },
+    "gr:ProductOrServiceSomeInstancePlaceholder": {
+      "dataProperties": {
+        "rdfs:subClassOf": [
+          "rdf:Literal"
+        ],
+        "rdfs:comment": [
+          "rdf:Literal"
+        ],
+        "rdfs:label": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "ns_4:DcatApSparql": {
+      "dataProperties": {
+        "foaf:homepage": [
+          "rdf:Literal"
+        ],
+        "dcat:endpointURL": [
+          "rdf:Literal"
+        ],
+        "dcterm:title": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "dcat:dataset": [
+          "ns_0:DcatLkodSparql",
+          "dcat:Dataset"
+        ],
+        "dcat:contactPoint": [
+          "vcard2006:Organization"
+        ],
+        "dcterm:isPartOf": [
+          "dcat:Catalog"
+        ]
+      }
+    },
+    "sd:Service": {
+      "dataProperties": {
+        "sd:resultFormat": [
+          "rdf:Literal"
+        ],
+        "sd:supportedLanguage": [
+          "rdf:Literal"
+        ],
+        "sd:feature": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "sd:endpoint": [
+          "sd:Service"
+        ],
+        "sd:url": [
+          "sd:Service"
+        ]
+      }
+    },
+    "openlinks:QuadMapFText": {
+      "dataProperties": {
+        "openlinks:qmvftTableName": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmvftColumnName": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmvftConds": [
+          "openlinks:array-of-string"
+        ],
+        "openlinks:qmvftXmlIndex": [
+          "rdf:Literal"
+        ],
+        "openlinks:qmvftAlias": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "vcard2006:Individual": {
+      "dataProperties": {
+        "vcard2006:hasEmail": [
+          "rdf:Literal"
+        ],
+        "vcard2006:fn": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "gr:LocationOfSalesOrServiceProvisioning": {
+      "dataProperties": {
+        "rdfs:label": [
+          "rdf:Literal"
+        ],
+        "ns_8:ADR": [
+          "rdf:Literal"
+        ],
+        "rdfs:isDefinedBy": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "openlinks:array-of-QuadMapATable": {
+      "dataProperties": {},
+      "objectProperties": {
+        "rdf:_1": [
+          "openlinks:QuadMapATable"
+        ]
+      }
+    },
+    "ns_1:StavDatovéSchránky": {
+      "dataProperties": {
+        "skos:notation": [
+          "rdf:Literal"
+        ],
+        "skos:prefLabel": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "skos:topConceptOf": [
+          "skos:ConceptScheme"
+        ],
+        "skos:inScheme": [
+          "skos:ConceptScheme"
+        ]
+      }
+    },
+    "eco:C_AKE112003-tax": {
+      "dataProperties": {
+        "rdfs:seeAlso": [
+          "rdf:Literal"
+        ],
+        "rdfs:comment": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "rdf:Property": {
+      "dataProperties": {
+        "rdfs:label": [
+          "rdf:Literal"
+        ],
+        "rdfs:subPropertyOf": [
+          "rdf:Literal"
+        ],
+        "rdfs:range": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {
+        "rdfs:range": [
+          "rdfs:Class"
+        ],
+        "rdfs:domain": [
+          "rdfs:Class"
+        ]
+      }
+    },
+    "openlinks:array-of-QuadMapColumn": {
+      "dataProperties": {},
+      "objectProperties": {
+        "rdf:_1": [
+          "openlinks:QuadMapColumn"
+        ]
+      }
+    },
+    "dcterm:PeriodOfTime": {
+      "dataProperties": {
+        "sorg:endDate": [
+          "rdf:Literal"
+        ],
+        "sorg:startDate": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "vcard2006:Kind": {
+      "dataProperties": {
+        "vcard2006:fn": [
+          "rdf:Literal"
+        ],
+        "vcard2006:hasEmail": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "gr:ActualProductOrServicesInstance": {
+      "dataProperties": {
+        "rdfs:subClassOf": [
+          "rdf:Literal"
+        ],
+        "rdfs:comment": [
+          "rdf:Literal"
+        ],
+        "rdfs:label": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "gr:ProductOrServicesSomeInstancesPlaceholder": {
+      "dataProperties": {
+        "rdfs:comment": [
+          "rdf:Literal"
+        ],
+        "rdfs:seeAlso": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "gr:PriceSpecification": {
+      "dataProperties": {
+        "rdfs:label": [
+          "rdf:Literal"
+        ],
+        "rdfs:subClassOf": [
+          "rdf:Literal"
+        ],
+        "rdfs:comment": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "owl:InverseFunctionalProperty": {
+      "dataProperties": {
+        "rdfs:subPropertyOf": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "eco:C_AKJ315005-tax": {
+      "dataProperties": {
+        "rdfs:comment": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "gr:Manufacturer": {
+      "dataProperties": {
+        "owl:equivalentClass": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    },
+    "eco:C_AAB316003-tax": {
+      "dataProperties": {
+        "rdfs:comment": [
+          "rdf:Literal"
+        ]
+      },
+      "objectProperties": {}
+    }
+  },
+  "__prefixes__": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#": "rdf",
+    "http://onto.fel.cvut.cz/ontologies/dataset-descriptor/s-p-o-summary/": "ns_",
+    "http://www.w3.org/ns/dcat#": "dcat",
+    "https://data.gov.cz/slovník/nkod/typ-datové-sady-dle-zdroje/": "ns_0",
+    "http://www.w3.org/2004/02/skos/core#": "skos",
+    "http://purl.org/dc/terms/": "dcterm",
+    "http://schema.org/": "sorg",
+    "https://data.gov.cz/slovník/ovm/": "ns_1",
+    "http://www.w3.org/2006/vcard/ns#": "vcard2006",
+    "http://xmlns.com/foaf/0.1/": "foaf",
+    "http://data.europa.eu/m8g/": "cpov",
+    "http://purl.org/goodrelations/v1#": "gr",
+    "http://www.w3.org/2002/07/owl#": "owl",
+    "http://publications.europa.eu/ontology/euvoc#": "euvoc",
+    "http://www.w3.org/2008/05/skos-xl#": "skosxl",
+    "http://www.w3.org/ns/regorg#": "regorg",
+    "http://www.w3.org/ns/adms#": "adms",
+    "http://www.w3.org/ns/locn#": "locn",
+    "https://data.gov.cz/slovník/datové-schránky/": "ns_2",
+    "http://www.w3.org/2000/01/rdf-schema#": "rdfs",
+    "http://www.openlinksw.com/schemas/virtrdf#": "openlinks",
+    "http://www.ebusiness-unibw.org/ontologies/eclass/5.1.4/#": "eco",
+    "https://data.gov.cz/slovník/podmínky-užití/": "ns_3",
+    "https://data.gov.cz/slovník/nkod/": "ns_4",
+    "http://publications.europa.eu/ontology/authority/": "ns_5",
+    "https://data.gov.cz/slovník/ruian/linky/": "ns_6",
+    "https://data.gov.cz/slovník/nkod/typ-úložiště-datové-sady/": "ns_7",
+    "http://creativecommons.org/ns#": "ccrel",
+    "http://www.w3.org/2007/05/powder-s#": "wdrs",
+    "http://purl.org/vocab/vann/": "vann",
+    "http://www.w3.org/2001/vcard-rdf/3.0#": "ns_8",
+    "http://www.w3.org/ns/sparql-service-description#": "sd"
+  }
+}

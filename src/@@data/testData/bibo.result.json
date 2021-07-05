@@ -1,0 +1,34 @@
+{
+  "data": {
+    "bibo:Collection": {
+      "dataProperties": {
+        "dcterm:title": [
+          "xml:String"
+        ]
+      },
+      "objectProperties": {
+        "dcterm:hasPart": [
+          "bibo:Collection"
+        ],
+        "dcterm:owner": [
+          "dcterm:Actor"
+        ]
+      }
+    },
+    "dcterm:Actor": {
+      "dataProperties": {
+        "dcterm:title": [
+          "xml:String"
+        ]
+      },
+      "objectProperties": {}
+    }
+  },
+  "__prefixes__": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#": "rdf",
+    "http://onto.fel.cvut.cz/ontologies/dataset-descriptor/s-p-o-summary/": "ns_",
+    "http://purl.org/ontology/bibo/": "bibo",
+    "http://purl.org/dc/terms/": "dcterm",
+    "http://www.w3.org/2001/XMLSchema#": "xml"
+  }
+}
