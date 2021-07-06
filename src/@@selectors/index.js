@@ -3,10 +3,22 @@ import * as SolidState from '@@app-state/solid/state';
 import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
 import * as ControlState from '@@app-state/controls/state';
-import { path, view, pipe } from 'ramda';
+import { path, view, pipe, keys, filter, omit, prop, values } from 'ramda';
 
 export const getPropertyById = (id, s) => view(ModelState.propertyById(id), s);
 export const getClassById = (id, s) => view(ModelState.classById(id), s);
+
+export const getIgnoredEntityIds = s => {
+  const properties = pipe(getProperties, filter(prop('selected')), values)(s);
+  const toKeep = properties
+    .reduce((acc, p) => Object.assign(acc, {
+      [p.target]: true,
+      [p.source]: true
+    }), {});
+
+  return keys(filter(c => !c.selected, omit(keys(toKeep), getClasses(s))));
+};
+
 
 export const getSelectedClasses = ModelState.getSelectedClasses;
 export const getViewSelection = ModelState.getSelectedEntities;
