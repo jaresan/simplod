@@ -5,7 +5,7 @@ import {pipe, path, assocPath, identity, replace, view, mergeDeepRight} from 'ra
 import { message, notification } from 'antd';
 import auth from 'solid-auth-client';
 import rdf from 'rdflib';
-import { generateSaveData } from '@@actions/save-load';
+import { generateSaveData } from '@@actions/save';
 import { changePermissions, saveFile } from '@@actions/solid/files';
 import { getSession, getSessionOrLogin } from '@@actions/solid/auth';
 

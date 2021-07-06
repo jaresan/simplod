@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Modal, Select, Space, Typography } from 'antd';
-import { getCurlFetchString, getDirectFetchUrl, getYasguiShareUrl } from '@@actions/interactions/yasgui';
+import { getCurlFetchString, getDirectFetchUrl, getYasguiShareUrl } from '@@actions/yasgui';
 import { getCurrentFileShareableUrl } from '@@actions/solid/share';
 import { openSaveDialogModal } from '@@components/controls/file-dialog';
 import { getModelFileLocation } from '@@selectors';

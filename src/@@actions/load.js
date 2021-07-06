@@ -1,6 +1,6 @@
 /**
  * @file Handles loading of the model
- * @module @@actions/model/load.js
+ * @module @@actions/load.js
  */
 
 import { onDataLoaded } from '@@actions/lifecycle';
@@ -9,17 +9,18 @@ import { fetchDataSchema } from '@@api';
 import { dispatch, dispatchSet, getState } from '@@app-state';
 import { invertObj, view } from 'ramda';
 import * as ModelState from '@@app-state/model/state';
-import * as SettingsState from '@@app-state/settings/state';
 import { fetchFile, hasPermissions } from '@@actions/solid/files';
-import { loadModel } from '@@actions/save-load';
 import { withLoadingP, withLoading } from '@@components/with-loading';
-import { loadHumanReadableData } from '@@actions/interactions/load-human-readable';
+import { loadHumanReadableData } from '@@actions/load-human-readable';
 import { message, Modal } from 'antd';
 import {notification} from 'antd';
 import LoadingLabelsFeedback from '@@components/controls/loading-labels-feedback';
-import { applyCustomPrefixes } from '@@actions/custom-prefix';
+import { applyCustomPrefixes, loadCustomPrefixes } from '@@actions/custom-prefix';
 import { translated } from '@@localization';
 import * as ControlState from '@@app-state/controls/state';
+import { getLastLocalState } from '@@storage';
+import * as SettingsState from '@@app-state/settings/state';
+import * as ControlsState from '@@app-state/controls/state';
 
 /**
  * Loads the graph for the provided URL.
@@ -107,4 +108,48 @@ export const loadGraphFromURL = async ({modelURL, dataSchemaURL, endpointURL}) =
   dispatchSet(ModelState.dirty, false);
 
   return {modelURL, hasPermissions};
+};
+
+
+/**
+ * @function
+ */
+export const loadLocalSettings = () => {
+  const settings = getLastLocalState().settings;
+  if (settings) {
+    dispatchSet(SettingsState.rootLens, Object.assign(SettingsState.initial, settings));
+  }
+}
+
+/**
+ * Loads the model from json and initializes the graph.
+ * @function
+ * @param json
+ */
+export const loadModel = json => {
+  dispatchSet(ControlsState.importingModelFile, true);
+  const newData = view(ModelState.rootLens, json);
+  Graph.clear();
+  withLoading('Initializing graph...')(Graph.initialize(json));
+  dispatchSet(ModelState.rootLens, newData);
+  dispatch(loadCustomPrefixes(view(ModelState.customPrefixes, getState())));
+  Graph.updatePositions(view(ModelState.classes, getState()));
+  dispatchSet(ControlsState.importingModelFile, false);
+}
+
+/**
+ * Loads model data from browser storage.
+ * @returns {Promise<void>}
+ */
+export const loadLocalData = async () => {
+  const state = getLastLocalState();
+  loadModel(state);
+  const dataSchemaURL = view(ModelState.dataSchemaURL, getState());
+  withLoadingP('Fetching RDF Schema...')(fetchDataSchema(dataSchemaURL))
+    .then(({prefixes}) => dispatchSet(ModelState.prefixes, invertObj(prefixes)))
+    .catch(() => message.error(translated('There was a problem downloading prefixes for this file.')))
+    .finally(() => {
+      loadLabels();
+      dispatchSet(ModelState.dirty, false);
+    });
 };

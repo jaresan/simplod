@@ -6,7 +6,8 @@ import hotkeys from 'hotkeys-js';
 import { dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import { mapObjIndexed, view } from 'ramda';
-import { loadLocalData, loadLocalSettings, saveData } from '@@actions/save-load';
+import { loadLocalData, loadLocalSettings } from '@@actions/load';
+import { saveData } from '@@actions/save';
 import { onSolidStart } from '@@actions/solid/lifecycle';
 
 /**

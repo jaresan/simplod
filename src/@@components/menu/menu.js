@@ -18,7 +18,7 @@ import styled from '@emotion/styled';
 import { openSettingsModal } from '@@components/controls/settings';
 import { FileMenu } from '@@components/menu/file-menu';
 import { translated } from '@@localization';
-import { saveData } from '@@actions/save-load';
+import { saveData } from '@@actions/save';
 import { openYasguiModal } from '@@components/Yasgui';
 
 const FilenameInput = styled(Input)`

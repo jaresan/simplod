@@ -2,7 +2,7 @@ import React, {createRef, useState} from 'react';
 import { Space, Button, Modal, Tabs, Input, Upload } from 'antd';
 import FileList from '@@components/controls/file-list';
 import { saveViewByUri } from '@@actions/solid';
-import { loadGraphFromURL } from '@@actions/model/load';
+import { loadGraphFromURL } from '@@actions/load';
 import { loginToSolid } from '@@actions/solid/auth';
 import {
   getFilename,
@@ -10,7 +10,8 @@ import {
   getUser
 } from '@@selectors';
 import { getState, store } from '@@app-state';
-import { downloadData, loadLocalData, loadModel, saveDataLocally } from '@@actions/save-load';
+import { downloadData, saveDataLocally } from '@@actions/save';
+import { loadLocalData, loadModel } from '@@actions/load';
 import { path, pipe } from 'ramda';
 import { connect, Provider } from 'react-redux';
 import { getLastLocalState } from '@@storage';

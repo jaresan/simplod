@@ -17,7 +17,7 @@ const withAutoSave = k => compose(rootLens, lens(prop(k), (toSet, state) => {
   const newSettings = assoc(k, toSet, state);
 
   // Require directly to prevent circular dependencies
-  require('@@actions/save-load').updateLocalSettings({[k]: toSet});
+  require('@@actions/save').updateLocalSettings({[k]: toSet});
   return newSettings;
 }));
 

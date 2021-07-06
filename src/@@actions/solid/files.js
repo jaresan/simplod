@@ -12,7 +12,7 @@ import { getSession, getSessionOrLogin } from '@@actions/solid/auth';
 import { identity, tap } from 'ramda';
 import { translated } from '@@localization';
 import { WithRetry } from '@@components/controls/with-retry';
-import { downloadData } from '@@actions/save-load';
+import { downloadData } from '@@actions/save';
 
 /**
  * Notifies the user that they are not authorized to use a requested resource.

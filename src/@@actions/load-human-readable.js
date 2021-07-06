@@ -1,6 +1,6 @@
 /**
  * @file Load human readable data for the entities in the application.
- * @module @@actions/interactions/load-human-readable.js
+ * @module @@actions/load-human-readable.js
  */
 
 import { dispatch, dispatchSet, getState } from '@@app-state';

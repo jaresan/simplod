@@ -14,11 +14,6 @@ import { Graph } from '@@graph';
 import { saveFile } from '@@actions/solid/files';
 import { message } from 'antd';
 import { openSaveOverwritePrompt } from '@@components/controls/save-overwrite-modal';
-import { loadCustomPrefixes } from '@@actions/custom-prefix';
-import { withLoading, withLoadingP } from '@@components/with-loading';
-import { loadLabels } from '@@actions/model/load';
-import { fetchDataSchema } from '@@api';
-import { translated } from '@@localization';
 
 /**
  * Generates JSON save data.
@@ -34,11 +29,6 @@ export const generateSaveData = () => {
 
 /**
  * @function
- */
-export const clearLocalSettings = () => saveLocalState({settings: {}});
-
-/**
- * @function
  * @param update
  */
 export const updateLocalSettings = update => {
@@ -46,15 +36,6 @@ export const updateLocalSettings = update => {
   saveLocalState({settings: mergeDeepRight(settings, update)});
 }
 
-/**
- * @function
- */
-export const loadLocalSettings = () => {
-  const settings = getLastLocalState().settings;
-  if (settings) {
-    dispatchSet(SettingsState.rootLens, Object.assign(SettingsState.initial, settings));
-  }
-}
 
 /**
  * Saves data either remotely or locally, based on whether a remote save location is already established.
@@ -124,36 +105,3 @@ export const saveDataLocally = () => {
     onOk();
   }
 }
-
-/**
- * Loads the model from json and initializes the graph.
- * @function
- * @param json
- */
-export const loadModel = json => {
-  dispatchSet(ControlsState.importingModelFile, true);
-  const newData = view(ModelState.rootLens, json);
-  Graph.clear();
-  withLoading('Initializing graph...')(Graph.initialize(json));
-  dispatchSet(ModelState.rootLens, newData);
-  dispatch(loadCustomPrefixes(view(ModelState.customPrefixes, getState())));
-  Graph.updatePositions(view(ModelState.classes, getState()));
-  dispatchSet(ControlsState.importingModelFile, false);
-}
-
-/**
- * Loads model data from browser storage.
- * @returns {Promise<void>}
- */
-export const loadLocalData = async () => {
-  const state = getLastLocalState();
-  loadModel(state);
-  const dataSchemaURL = view(ModelState.dataSchemaURL, getState());
-  withLoadingP('Fetching RDF Schema...')(fetchDataSchema(dataSchemaURL))
-    .then(({prefixes}) => dispatchSet(ModelState.prefixes, invertObj(prefixes)))
-    .catch(() => message.error(translated('There was a problem downloading prefixes for this file.')))
-    .finally(() => {
-      loadLabels();
-      dispatchSet(ModelState.dirty, false);
-    });
-};

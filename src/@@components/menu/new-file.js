@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { Button, Modal } from 'antd';
 import { dispatchSet, store } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
-import { loadGraphFromURL } from '@@actions/model/load';
+import { loadGraphFromURL } from '@@actions/load';
 import { getDataSchemaURL, getEndpoint } from '@@selectors';
 import { connect, Provider } from 'react-redux';
 import { FilePropertyFields } from '@@components/menu/file-property-fields';

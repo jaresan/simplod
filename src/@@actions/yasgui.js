@@ -1,6 +1,6 @@
 /**
  * @file Returns different shareable strings for YASGUI
- * @module @@actions/interactions/yasgui.js
+ * @module @@actions/yasgui.js
  */
 
 import { view } from 'ramda';
