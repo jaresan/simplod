@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: @@actions/solid/files.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: @@actions/solid/files.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file Handling of Solid pod files interaction. Deletions, saves, feedback on failed permissions etc.
+ * @module @@actions/solid/files
+ */
+import React from 'react';
+import { Button, message, notification, Space } from 'antd';
+import auth from 'solid-auth-client';
+import { dispatch, dispatchSet } from '@@app-state';
+import * as ModelState from '@@app-state/model/state';
+import * as SolidState from '@@app-state/solid/state';
+import { getSession, getSessionOrLogin } from '@@actions/solid/auth';
+import { identity, tap } from 'ramda';
+import { translated } from '@@localization';
+import { WithRetry } from '@@components/controls/with-retry';
+import { downloadData } from '@@actions/save';
+
+/**
+ * Notifies the user that they are not authorized to use a requested resource.
+ * @function
+ * @returns {Promise&lt;void>}
+ */
+const notifyUnauthorized = async () => {
+  const {webId} = await getSession();
+  const logStatus = webId ? translated(`You are logged in as ${webId}.`) : translated('You are not logged in.');
+  notification.error({
+    message: translated('Unauthorized'),
+    description: `${logStatus}
+      ${translated('Either you don\'t have access to the requested resource or the permissions on it are not set up correctly.')}`,
+    duration: 8
+  });
+}
+
+/**
+ * Downloads a file using the Solid auth client.
+ * Notifies the user if they're unauthorized.
+ * @function
+ * @param url
+ * @returns {Promise&lt;*>}
+ */
+export const fetchFile = async url => {
+  const res = await auth.fetch(url);
+
+  if (res.status === 401) {
+    await notifyUnauthorized();
+    throw new Error(translated('Unauthenticated'));
+  } else if (res.status &lt; 200 || res.status >= 300) {
+    console.log(res);
+    message.error(translated('An error occured while trying to fetch the file.'))
+  }
+
+  return res;
+}
+
+/**
+ * Notifies the user that a save try has failed.
+ * Retries the save command multiple times.
+ * @function
+ * @param retryFn
+ * @param uri
+ * @returns {Promise&lt;unknown>}
+ */
+const notifyAboutFailureWithRetry = ({retryFn, uri}) => {
+  const notificationKey = 'solid-fail-notification';
+  const closeNotification = () => notification.close(notificationKey);
+
+  return new Promise((res, rej) => {
+    notification.error({
+      duration: 0,
+      key: notificationKey,
+      message: translated('File save failed'),
+      description: &lt;WithRetry
+        retryFn={retryFn}
+        retryTime={4000}
+        maxRetries={3}
+        onSuccess={d => {
+          closeNotification();
+          res(d);
+        }}
+        onFail={e => {
+          closeNotification();
+          rej(e);
+        }}
+        onCancel={() => {
+          closeNotification();
+          res(null);
+        }}
+      >
+        &lt;div>{translated('Saving the file to {uri} failed, retrying...')}&lt;/div>
+      &lt;/WithRetry>
+    });
+  });
+};
+
+/**
+ * Saves the file using the Solid auth client to the given uri.
+ * If fail saves, retries a given number of times.
+ * @function
+ * @param uri
+ * @param data
+ * @returns {Promise&lt;*>}
+ */
+export const saveFile = async ({uri, data}) => {
+  const loading = message.loading(translated('Saving view...'));
+  const trySave = () => auth.fetch(uri, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  }).then(tap(() => {
+    notification.success({message: translated(`Saved to ${uri}!`)});
+    dispatchSet(SolidState.modelFileLocation, uri);
+    dispatchSet(ModelState.dirty, false);
+  }));
+
+  const onFail = () => {
+    const key = 'save-failed-final-notification';
+    notification.error({
+      message: translated(`Saving to ${uri} failed`),
+      key,
+      description: &lt;>
+        &lt;Space>
+          &lt;Button onClick={() => {
+            notification.close(key);
+            saveFile({uri, data});
+          }}>{translated('Try again')}&lt;/Button>
+          &lt;Button onClick={() => {
+            downloadData();
+            notification.close(key);
+          }}>{translated('Download file')}&lt;/Button>
+        &lt;/Space>
+      &lt;/>
+    });
+  }
+
+  return trySave()
+    .then(({status}) => {
+      loading();
+      if (status === 401) {
+        notifyUnauthorized();
+      } else if (status &lt; 200 || status >= 300) {
+        return Promise.reject(translated('Something went wrong.'));
+      }
+    })
+    .catch(() => {
+      loading();
+      return notifyAboutFailureWithRetry({retryFn: trySave, uri});
+    })
+    .catch(() => onFail());
+};
+
+/**
+ * Changes the permissions of a file at the given URI by modifying the file's .acl.
+ * @function
+ * @param uri
+ * @param permissions
+ * @returns {Promise&lt;void>}
+ */
+export const changePermissions = async ({uri, permissions}) => {
+  const {webId} = await getSessionOrLogin();
+  const loading = message.loading(translated('Setting permissions...'));
+  const errMsg = translated('An error occurred while trying change the permissions.');
+
+  const publicPermissions = permissions.includes('public/write') ? 'acl:mode acl:Read, acl:Write.' : 'acl:mode acl:Read.';
+  const publicPart = permissions.includes('public') ? `
+    &lt;#public>
+      a acl:Authorization;
+      acl:agentClass foaf:Agent;
+      acl:accessTo &lt;${uri}>;
+      ${publicPermissions}
+    ` : '';
+
+  const data = `
+    @prefix acl: &lt;http://www.w3.org/ns/auth/acl#>.
+    @prefix foaf: &lt;http://xmlns.com/foaf/0.1/>.
+    
+    &lt;#owner>
+        a acl:Authorization;
+        acl:agent &lt;${webId}>;
+        acl:accessTo &lt;${uri}>;
+        acl:mode acl:Read, acl:Write, acl:Control.
+    ${publicPart}`;
+
+  try {
+    const res = await auth.fetch(`${uri}.acl`, {
+      method: 'PUT',
+      headers: {'Content-Type': 'text/turtle'},
+      body: data
+    });
+
+    if (res.status === 401) {
+      await notifyUnauthorized();
+    } else if (res.status &lt; 200 || res.status >= 300) {
+      message.error(errMsg)
+    } else {
+      message.success(translated('Updated permissions!'));
+    }
+  } catch (e) {
+    message.error(errMsg)
+  } finally {
+    loading();
+  }
+};
+
+/**
+ * Tries to delete a Solid Pod file hosted at uri.
+ * @param uri
+ * @returns {Promise&lt;void>}
+ */
+export const deleteFile = async uri  => {
+  const loading = message.loading(translated('Deleting view...'));
+  try {
+    const {webId} = await getSessionOrLogin();
+    const {origin} = new URL(webId);
+    uri = `${origin}/${uri.replace(origin, '').replace(/^\//, '')}`; // Enforce domain if relative URL provided
+
+    const res = await auth.fetch(uri, {method: 'DELETE'});
+
+    if (res.status &lt; 200 || res.status >= 300) {
+      message.error(translated('An error occured while trying to delete the view.'));
+    } else {
+      message.success(translated(`${uri} deleted.`));
+      const filePath = ['/'].concat(uri.replace(origin, '').split('/')).filter(identity);
+      dispatch(SolidState.deleteFile(filePath));
+    }
+  } catch (e) {
+    console.error(e);
+    message.error(translated('An error occured while trying to delete the view.'));
+  } finally {
+    loading();
+  }
+}
+
+/**
+ * Returns whether a user has read/write permissions to the resource under given uri.
+ * @param uri
+ * @param write
+ * @returns {Promise&lt;boolean|*>}
+ */
+export const hasPermissions = async (uri, write) => {
+  try {
+    const json = await auth.fetch(uri).then(a => a.json());
+    if (!write) return true;
+    return auth.fetch(uri, {method: 'PUT', body: JSON.stringify(json)}).then(({status}) => status >= 200 &amp;&amp; status &lt; 300);
+  } catch (e) {
+    return false;
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="@@actions_load.module_js.html">@@actions/load.js</a></li><li><a href="@@actions_load-human-readable.module_js.html">@@actions/load-human-readable.js</a></li><li><a href="@@actions_yasgui.module_js.html">@@actions/yasgui.js</a></li><li><a href="module-@@actions_custom-prefix.html">@@actions/custom-prefix</a></li><li><a href="module-@@actions_lifecycle.html">@@actions/lifecycle</a></li><li><a href="module-@@actions_save.html">@@actions/save</a></li><li><a href="module-@@actions_solid_auth.html">@@actions/solid/auth</a></li><li><a href="module-@@actions_solid_files.html">@@actions/solid/files</a></li><li><a href="module-@@actions_solid_lifecycle.html">@@actions/solid/lifecycle</a></li><li><a href="module-@@actions_solid_share.html">@@actions/solid/share</a></li><li><a href="module-@@api.html">@@api</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getQuery">getQuery</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue Jul 06 2021 20:53:55 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

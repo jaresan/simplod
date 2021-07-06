@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: @@actions/save.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: @@actions/save.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file Save and load functionality
+ * @module @@actions/save
+ */
+import { dispatch, dispatchSet, getState } from '@@app-state';
+import * as ModelState from '@@app-state/model/state';
+import * as SettingsState from '@@app-state/settings/state';
+import * as SolidState from '@@app-state/solid/state';
+import * as ControlsState from '@@app-state/controls/state';
+import { view, mergeDeepRight, isEmpty, invertObj } from 'ramda';
+import {getEndpoint, getDataSchemaURL, getFilename} from '@@selectors';
+import { getLastLocalState, saveLocalState } from '@@storage';
+import { Graph } from '@@graph';
+import { saveFile } from '@@actions/solid/files';
+import { message } from 'antd';
+import { openSaveOverwritePrompt } from '@@components/controls/save-overwrite-modal';
+
+/**
+ * Generates JSON save data.
+ * First updates the entities with their respective graph node positions and exports this data.
+ * @function
+ * @returns {{model: (*|(function(*=): (*)))}}
+ */
+export const generateSaveData = () => {
+  const bBoxesById = Graph.getBBoxesById();
+  dispatch(ModelState.setBoundingBoxes(bBoxesById));
+  return {model: view(ModelState.rootLens, getState())};
+}
+
+/**
+ * @function
+ * @param update
+ */
+export const updateLocalSettings = update => {
+  const {settings} = getLastLocalState();
+  saveLocalState({settings: mergeDeepRight(settings, update)});
+}
+
+
+/**
+ * Saves data either remotely or locally, based on whether a remote save location is already established.
+ * @function
+ * @returns {void|Promise&lt;*>}
+ */
+export const saveData = () => {
+  const state = getState();
+  const remoteFileURL = view(SolidState.modelFileLocation, state);
+
+  if (remoteFileURL) {
+    return saveFile({uri: remoteFileURL, data: generateSaveData(), webId: view(SolidState.webId, state)});
+  } else {
+    return saveDataLocally();
+  }
+};
+
+/**
+ * Downloads the model data as .json
+ * @function
+ */
+export const downloadData = () => {
+  const data = generateSaveData();
+  const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+  const downloadNode = document.createElement('a');
+  downloadNode.setAttribute('href', dataStr);
+  downloadNode.setAttribute('download', 'application-model.json');
+  document.body.appendChild(downloadNode);
+  downloadNode.click();
+  downloadNode.remove();
+};
+
+/**
+ * Saves data locally, prompting the user if they want to overwrite their current browser data should it change significantly.
+ * @function
+ */
+export const saveDataLocally = () => {
+  const saveData = generateSaveData();
+  // endpoint/data schema/filename
+  const toCheck = [getDataSchemaURL, getFilename, getEndpoint];
+
+  const oldSave = getLastLocalState();
+  const promptOverwrite = !isEmpty(oldSave) &amp;&amp; toCheck.some(s => s(oldSave)) &amp;&amp; toCheck.some(s => s(saveData)) &amp;&amp; toCheck.some(selector => selector(saveData) !== selector(oldSave));
+  const onOk = () => {
+    saveLocalState(saveData);
+    dispatchSet(ModelState.dirty, false);
+    dispatchSet(SettingsState.lastSave, Date.now());
+    message.success('Data saved locally.');
+  };
+  if (promptOverwrite) {
+    openSaveOverwritePrompt({
+      onOk,
+      dataSchemaURL: {
+        old: getDataSchemaURL(oldSave),
+        new: getDataSchemaURL(saveData)
+      },
+      filename: {
+        old: getFilename(oldSave),
+        new: getFilename(saveData)
+      },
+      endpointURL: {
+        old: getEndpoint(oldSave),
+        new: getEndpoint(saveData)
+      },
+    })
+  } else {
+    onOk();
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="@@actions_load.module_js.html">@@actions/load.js</a></li><li><a href="@@actions_load-human-readable.module_js.html">@@actions/load-human-readable.js</a></li><li><a href="@@actions_yasgui.module_js.html">@@actions/yasgui.js</a></li><li><a href="module-@@actions_custom-prefix.html">@@actions/custom-prefix</a></li><li><a href="module-@@actions_lifecycle.html">@@actions/lifecycle</a></li><li><a href="module-@@actions_save.html">@@actions/save</a></li><li><a href="module-@@actions_solid_auth.html">@@actions/solid/auth</a></li><li><a href="module-@@actions_solid_files.html">@@actions/solid/files</a></li><li><a href="module-@@actions_solid_lifecycle.html">@@actions/solid/lifecycle</a></li><li><a href="module-@@actions_solid_share.html">@@actions/solid/share</a></li><li><a href="module-@@api.html">@@api</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getQuery">getQuery</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue Jul 06 2021 20:53:55 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
