@@ -62,7 +62,7 @@ class Yasgui extends Component {
 	}
 
 	componentDidUpdate(prevProps, prevState, snapshot) {
-		if (prevProps.query !== this.props.query) {
+		if (prevProps.query !== this.props.query && !this.props.modelQuery) { // If modelQuery exists, it's being already edited, no need to update
 			this.update();
 		}
 	}
