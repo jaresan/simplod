@@ -66,7 +66,8 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "pages": "cd docs && bundle exec jekyll serve",
-    "heroku-postbuild": "react-scripts build"
+    "heroku-postbuild": "react-scripts build",
+    "docs": "jsdoc -r src -d docs/documentation"
   },
   "browserslist": [
     ">0.2%",
