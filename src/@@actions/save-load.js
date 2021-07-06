@@ -131,14 +131,14 @@ export const saveDataLocally = () => {
  * @param json
  */
 export const loadModel = json => {
-  dispatchSet(ControlsState.loadingModel, true);
+  dispatchSet(ControlsState.importingModelFile, true);
   const newData = view(ModelState.rootLens, json);
   Graph.clear();
   withLoading('Initializing graph...')(Graph.initialize(json));
   dispatchSet(ModelState.rootLens, newData);
   dispatch(loadCustomPrefixes(view(ModelState.customPrefixes, getState())));
   Graph.updatePositions(view(ModelState.classes, getState()));
-  dispatchSet(ControlsState.loadingModel, false);
+  dispatchSet(ControlsState.importingModelFile, false);
 }
 
 /**

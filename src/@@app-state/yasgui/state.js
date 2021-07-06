@@ -63,7 +63,7 @@ export const middleware = curry((oldState, newState) => {
   const newQuery = getQuery(newState);
 
   if (oldQuery !== newQuery) {
-    const modelBeingLoaded = view(ControlsState.loadingModel, newState);
+    const modelBeingLoaded = view(ControlsState.importingModelFile, newState);
     const updateModelQuery = modelBeingLoaded ? identity : set(ModelState.query, '');
     return pipe(
       set(query, newQuery),
