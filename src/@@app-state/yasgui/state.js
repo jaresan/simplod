@@ -19,7 +19,6 @@ import * as ControlsState from '@@app-state/controls/state';
 import { parseSPARQLQuery } from '@@data/parseQuery';
 
 export const initial = {
-  prefixes: {},
   query: '',
   instance: null
 };
@@ -28,8 +27,6 @@ export const root = lensProp('yasgui');
 
 const forKey = k => compose(root, lensProp(k));
 
-export const prefixes = forKey('prefixes');
-export const prefixById = id => compose(prefixes, lensProp(id));
 export const query = forKey('query');
 export const instance = forKey('instance');
 

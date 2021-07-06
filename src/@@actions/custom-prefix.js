@@ -13,7 +13,7 @@ import * as ModelState from '@@app-state/model/state';
  */
 export const renamePrefix = curry((oldName, newName, s) => {
   const existingKey = invertObj(view(ModelState.customPrefixes, s))[oldName];
-  const iri = view(ModelState.prefixById(existingKey), s);
+  const iri = view(ModelState.prefixById(existingKey), s) || view(ModelState.prefixById(oldName), s);
 
   return pipe(
     over(ModelState.prefixes, omit([oldName, existingKey])),
