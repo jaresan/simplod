@@ -3,19 +3,15 @@ import { assoc, compose, lens, lensProp, prop } from 'ramda';
 export const initial = {
   language: navigator.language,
   labelLanguage: navigator.language,
-  labelsLoadingProgress: 0,
   showHumanReadable: true,
   limitEnabled: true,
   limit: 100,
   lastSave: 0,
-  loaded: true,
   horizontalLayout: false
 };
 
 const root = 'settings';
 export const rootLens = lensProp(root);
-
-const forKey = k => compose(rootLens, lensProp(k));
 
 const withAutoSave = k => compose(rootLens, lens(prop(k), (toSet, state) => {
   const newSettings = assoc(k, toSet, state);
@@ -26,11 +22,9 @@ const withAutoSave = k => compose(rootLens, lens(prop(k), (toSet, state) => {
 }));
 
 export const lastSave = withAutoSave('lastSave');
-export const labelsLoadingProgress = forKey('labelsLoadingProgress');
 export const limit = withAutoSave('limit');
 export const limitEnabled = withAutoSave('limitEnabled');
 export const showHumanReadable = withAutoSave('showHumanReadable');
 export const language = withAutoSave('language');
 export const labelLanguage = withAutoSave('labelLanguage');
-export const loaded = forKey('loaded');
 export const horizontalLayout = withAutoSave('horizontalLayout');

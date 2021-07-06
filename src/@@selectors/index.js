@@ -29,12 +29,12 @@ export const getModelQuery = view(ModelState.query);
 
 export const getLanguage = view(SettingsState.language);
 export const getLabelLanguage = view(SettingsState.labelLanguage);
-export const getLoadingHumanReadable = view(SettingsState.labelsLoadingProgress);
+export const getLoadingHumanReadable = view(ControlState.labelsLoadingProgress);
 export const getLimit = view(SettingsState.limit);
 export const getLimitEnabled = view(SettingsState.limitEnabled);
 export const getLastSave = view(SettingsState.lastSave);
 export const getHorizontalLayout = view(SettingsState.horizontalLayout);
-export const getAppLoaded = view(SettingsState.loaded);
+export const getAppLoaded = view(ControlState.loaded);
 
 export const getFiles = view(SolidState.files);
 export const getCurrentFileLocation = view(SolidState.modelFileLocation);

@@ -8,13 +8,14 @@ import * as ModelState from '@@app-state/model/state';
 import { invertObj, isEmpty, view } from 'ramda';
 import * as SettingsState from '@@app-state/settings/state';
 import { getHumanReadableDataPromises } from '@@api';
+import * as ControlState from '@@app-state/controls/state';
 
 /**
  * Loads label and comment information for the existing entities in the application.
  * @function
  */
 export const loadHumanReadableData = () => {
-  dispatchSet(SettingsState.labelsLoadingProgress, 0);
+  dispatchSet(ControlState.labelsLoadingProgress, 0);
   const state = getState();
   const prefixes = view(ModelState.prefixes, state);
   const language = view(SettingsState.language, state);
@@ -43,10 +44,10 @@ export const loadHumanReadableData = () => {
         .catch(() => {})
         .finally(() => {
           resolved++;
-          dispatchSet(SettingsState.labelsLoadingProgress, Math.round(resolved / arr.length * 100));
+          dispatchSet(ControlState.labelsLoadingProgress, Math.round(resolved / arr.length * 100));
         })
     });
 
   return Promise.all(promises)
-    .then(() => dispatchSet(SettingsState.labelsLoadingProgress, 100));
+    .then(() => dispatchSet(ControlState.labelsLoadingProgress, 100));
 }

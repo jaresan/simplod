@@ -56,12 +56,11 @@ const defaultEntityProps = {
   [entityTypes.class]: {
     selected: false,
     asVariable: true,
-    name: '',
+    varName: '',
     info: {
       label: '', // From remote
       description: '' // From remote
     },
-    dummy: false, // False - node is displayed in the graph, true - node is just present to allow for linking properties to additional objects
     propertyIds: [],
     hidden: false,
     expanded: false
@@ -353,7 +352,6 @@ const createNewClassInstance = (id, s) => {
   return {
     newId,
     instance: Object.assign(toRegister, {
-      dummy: true,
       type: entity.type,
       propertyIds,
       varName,

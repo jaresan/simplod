@@ -19,6 +19,7 @@ import {notification} from 'antd';
 import LoadingLabelsFeedback from '@@components/controls/loading-labels-feedback';
 import { applyCustomPrefixes } from '@@actions/custom-prefix';
 import { translated } from '@@localization';
+import * as ControlState from '@@app-state/controls/state';
 
 /**
  * Loads the graph for the provided URL.
@@ -90,7 +91,7 @@ const loadNewGraph = async dataSchemaURL => {
  * @returns {Promise<{hasPermissions: boolean, modelURL}>}
  */
 export const loadGraphFromURL = async ({modelURL, dataSchemaURL, endpointURL}) => {
-  dispatchSet(SettingsState.loaded, false);
+  dispatchSet(ControlState.loaded, false);
   let hasPermissions = false;
   if (modelURL) {
     hasPermissions = await loadDataFromFile(modelURL);
@@ -101,7 +102,7 @@ export const loadGraphFromURL = async ({modelURL, dataSchemaURL, endpointURL}) =
       dispatchSet(ModelState.endpoint, endpointURL);
     }
   }
-  dispatchSet(SettingsState.loaded, true);
+  dispatchSet(ControlState.loaded, true);
   dispatch(applyCustomPrefixes(view(ModelState.customPrefixes, getState())));
   dispatchSet(ModelState.dirty, false);
 
