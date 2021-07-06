@@ -36,13 +36,11 @@ export const getLastSave = view(SettingsState.lastSave);
 export const getHorizontalLayout = view(SettingsState.horizontalLayout);
 export const getAppLoaded = view(SettingsState.loaded);
 
-export const getFolderUriChanging = view(SolidState.folderUriChanging);
 export const getFiles = view(SolidState.files);
 export const getCurrentFileLocation = view(SolidState.modelFileLocation);
 export const getUser = view(SolidState.webId);
 export const getSessionValid = pipe(view(SolidState.session), path(['idClaims', 'exp']), exp => exp * 1000 > Date.now());
 export const getAvatar = view(SolidState.avatar);
-export const getFolderUri = view(SolidState.folderUri);
 export const getModelFileLocation = view(SolidState.modelFileLocation);
 
 export const getQuery = s => view(ModelState.query, s) || view(YasguiState.query, s);
