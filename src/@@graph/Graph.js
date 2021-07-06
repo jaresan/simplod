@@ -66,6 +66,30 @@ export class Graph {
     this.loadData(data);
   }
 
+  static gridLayout() {
+    const rowCount = 5;
+    const columnGap = 250;
+    const rowGap = 200;
+    const nodes = this.instance.getNodes();
+
+    let rowIndex = 0;
+    let columnIndex = 0;
+    nodes.forEach(n => {
+      n.updatePosition({
+        x: columnIndex * columnGap,
+        y: rowIndex * rowGap
+      })
+
+      n.getEdges().forEach(e => e.refresh());
+
+      columnIndex++;
+      if (columnIndex === rowCount) {
+        columnIndex = 0;
+        rowIndex++;
+      }
+    });
+  }
+
   static loadData(data) {
     console.time('getNodes')
     const nodes = getNodes(data);
