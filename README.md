@@ -36,6 +36,8 @@ Since this application is created with [Create React App](https://create-react-a
   * The server listens to changes to the codebase, and if any are detected, reloads the application. 
 * OPTIONAL - Add localhost to your trusted apps
   
-  If you wish to use a Solid Pod while running the application locally, you have to add the hosting address to your Solid Pod.
-  
-  This can be done automatically through signing to the Solid Pod in the upper right corner, or by following the steps mentions in \autoref{a:troubleshooting}
+If you wish to use a Solid Pod while running the application locally, you have to add the hosting address to your Solid Pod.
+This can be done automatically through signing to the Solid Pod in the upper right corner
+
+## Code documentation
+Documentation generated from the code annotations is available on [GitHub Pages](https://jaresan.github.io/simplod/documentation/).
