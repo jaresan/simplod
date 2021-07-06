@@ -60,6 +60,7 @@ class Yasgui extends Component {
 	}
 
 	componentDidMount() {
+		console.log(this.props);
 		this.yasguiContainer.appendChild(yasguiRoot);
 		this.update();
 		this.tab().getYasqe().on('change', this.onQueryChange);

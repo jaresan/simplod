@@ -36,7 +36,7 @@ export const instance = forKey('instance');
 /**
  * Updates the generated SPARQL query.
  */
-export const getQuery = state => {
+const getQuery = state => {
   const customPrefixes = view(ModelState.customPrefixes, state);
   const usedPrefixes = view(ModelState.prefixes, state);
   const overriddenPrefixes = Object.assign(omit(values(customPrefixes), usedPrefixes), mapObjIndexed((p, key) => usedPrefixes[key], customPrefixes));
@@ -62,12 +62,12 @@ export const getQuery = state => {
 }
 
 export const middleware = curry((oldState, newState) => {
-  const oldQuery = getQuery(oldState);
+  const oldQuery = view(query, oldState);
   const newQuery = getQuery(newState);
 
   if (oldQuery !== newQuery) {
-    const loadingModel = view(ControlsState.loadingModel, newState);
-    const updateModelQuery = loadingModel ? identity : set(ModelState.query, '');
+    const modelBeingLoaded = view(ControlsState.loadingModel, newState);
+    const updateModelQuery = modelBeingLoaded ? identity : set(ModelState.query, '');
     return pipe(
       set(query, newQuery),
       updateModelQuery
