@@ -72,7 +72,7 @@ class App extends Component {
       // this.endpointURL = 'https://data.gov.cz/sparql';
       this.schemaURL = 'https://jaresan.github.io/simplod/examples/nobel_prizes.ttl';
       this.schemaURL = '/samples/example.ttl';
-      this.endpointURL = 'http://data.nobelprize.org/sparql';
+      this.endpointURL = 'https://data.nobelprize.org/store/sparql';
     }
   }
 

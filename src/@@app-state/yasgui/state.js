@@ -16,7 +16,7 @@ import {
 import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
 import * as ControlsState from '@@app-state/controls/state';
-import { parseSPARQLQuery } from '@@utils/parseQuery';
+import { parseSPARQLQuery } from '@@data/parseQuery';
 
 export const initial = {
   prefixes: {},

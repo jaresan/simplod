@@ -204,36 +204,6 @@
   <rdf:predicate> <nobel:nobelPrize>;
   <rdf:subject> <foaf:Organization/instance> .
 
-<urn:uuid:3e2f8f70-132c-43e4-9ebb-3a797a2aef89>
-  <rdf:object> <rdf:Literal>;
-  <rdf:predicate> <skos:hiddenLabel>;
-  <rdf:subject> <nobel:Category/instance> .
-
-<urn:uuid:072cc1fe-d7a1-4128-9f98-206452ee3ede>
-  <rdf:object> <rdf:Literal>;
-  <rdf:predicate> <owl:sameAs>;
-  <rdf:subject> <nobel:Category/instance> .
-
-<urn:uuid:0b707518-d733-49df-b51c-7b77e141befe>
-  <rdf:object> <rdf:Literal>;
-  <rdf:predicate> <rdfs:label>;
-  <rdf:subject> <nobel:Category/instance> .
-
-<urn:uuid:862f5d48-5f40-4ce1-9069-3ea6379b5172>
-  <rdf:object> <rdf:Literal>;
-  <rdf:predicate> <skos:prefLabel>;
-  <rdf:subject> <nobel:Category/instance> .
-
-<urn:uuid:e37eb9df-3739-488d-ac8a-69b9b70dcb53>
-  <rdf:object> <rdf:Literal>;
-  <rdf:predicate> <rdfs:value>;
-  <rdf:subject> <nobel:Category/instance> .
-
-<urn:uuid:1ecefd86-e2dd-4bf8-927a-39b3201bffe7>
-  <rdf:object> <rdf:Literal>;
-  <rdf:predicate> <skos:altLabel>;
-  <rdf:subject> <nobel:Category/instance> .
-
 <urn:uuid:8d0b4a7a-b103-44ce-a82c-cb19602c7938>
   <rdf:object> <rdf:Literal>;
   <rdf:predicate> <rdfs:label>;

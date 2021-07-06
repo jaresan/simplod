@@ -15,7 +15,7 @@ import { saveFile } from '@@actions/solid/files';
 import { message } from 'antd';
 import { openSaveOverwritePrompt } from '@@components/controls/save-overwrite-modal';
 import { loadCustomPrefixes } from '@@actions/custom-prefix';
-import { withLoading, withLoadingP } from '@@utils/with-loading';
+import { withLoading, withLoadingP } from '@@components/with-loading';
 import { loadLabels } from '@@actions/model/load';
 import { fetchDataSchema } from '@@api';
 import { translated } from '@@localization';

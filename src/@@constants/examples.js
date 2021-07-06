@@ -18,7 +18,7 @@ export const examples = [
   },
   {
     dataSchemaURL: 'https://jaresan.github.io/simplod/examples/nobel_prizes.ttl',
-    endpointURL: 'http://data.nobelprize.org/sparql',
+    endpointURL: 'https://data.nobelprize.org/store/sparql',
     title: 'Nobel prizes'
   }
 ];

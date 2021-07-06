@@ -12,7 +12,7 @@ import * as ModelState from '@@app-state/model/state';
 import * as SettingsState from '@@app-state/settings/state';
 import { fetchFile, hasPermissions } from '@@actions/solid/files';
 import { loadModel } from '@@actions/save-load';
-import { withLoadingP, withLoading } from '@@utils/with-loading';
+import { withLoadingP, withLoading } from '@@components/with-loading';
 import { loadHumanReadableData } from '@@actions/interactions/load-human-readable';
 import { message, Modal } from 'antd';
 import {notification} from 'antd';

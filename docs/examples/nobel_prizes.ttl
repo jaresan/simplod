@@ -243,36 +243,6 @@
   <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://data.nobelprize.org/terms/nobelPrize>;
   <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://xmlns.com/foaf/0.1/Organization/instance> .
 
-<urn:uuid:3e2f8f70-132c-43e4-9ebb-3a797a2aef89> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2004/02/skos/core#hiddenLabel>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:072cc1fe-d7a1-4128-9f98-206452ee3ede> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2002/07/owl#sameAs>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:0b707518-d733-49df-b51c-7b77e141befe> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#label>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:862f5d48-5f40-4ce1-9069-3ea6379b5172> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2004/02/skos/core#prefLabel>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:e37eb9df-3739-488d-ac8a-69b9b70dcb53> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#value>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:1ecefd86-e2dd-4bf8-927a-39b3201bffe7> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2004/02/skos/core#altLabel>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
 <urn:uuid:8d0b4a7a-b103-44ce-a82c-cb19602c7938> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
     <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
   <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#label>;
@@ -456,31 +426,6 @@
     <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
   <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#label>;
   <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://xmlns.com/foaf/0.1/Person/instance> .
-
-<urn:uuid:96978343-0610-412a-9ee6-a01ec9804618> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#label>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:67d72c8e-1e00-4333-b188-08dc4b42e09f> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2004/02/skos/core#altLabel>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:18eaa3e8-b11e-4e37-8855-3195b7bb9dfd> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2002/07/owl#sameAs>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:7190328d-a86d-459c-bb71-e0f959fa9583> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2004/02/skos/core#prefLabel>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:3bd1bf94-095c-45d8-a540-ce84d7f5a8ec> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#value>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
 
 <urn:uuid:ab61bec7-f00d-4ef3-a1d4-ecd36c433c89> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
     <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
@@ -836,56 +781,6 @@
     <http://dbpedia.org/ontology/City/instance>;
   <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://dbpedia.org/ontology/deathPlace>;
   <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://xmlns.com/foaf/0.1/Person/instance> .
-
-<urn:uuid:f62ffb62-e7e5-4c9d-a98d-b7001fad99bf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2002/07/owl#sameAs>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:fc92ae42-3136-40b6-855d-98999afb0142> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2004/02/skos/core#prefLabel>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:5ab3d7b0-23a7-41cd-98a5-4190408e252e> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#value>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:60dc4746-f629-4e52-98fa-56095a250815> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#label>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:d91abdd3-6a37-43b8-8250-51fa7150dc49> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2004/02/skos/core#altLabel>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:cdea90c3-dc2c-4fd9-88fc-0f6f664c3397> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#value>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:e0b848a4-7c39-4d52-9a4f-aacd285b19e9> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#label>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:75434294-ac19-4784-84ea-d7dd33732569> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2002/07/owl#sameAs>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:8dcda0f4-ecc4-4259-9a4c-d8100c4349cf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2004/02/skos/core#altLabel>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:d8d7a755-6dd2-47fc-919e-6a6adf5d380b> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2004/02/skos/core#prefLabel>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
 
 <urn:uuid:8c7b0f3c-fd5c-4fc1-a383-e3b4d5193681> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
     <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
@@ -1996,31 +1891,6 @@
     <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
   <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#label>;
   <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://dbpedia.org/ontology/University/instance> .
-
-<urn:uuid:981f22de-1235-4864-a080-5ec11f37ebd5> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2004/02/skos/core#altLabel>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:b20afc32-8307-48b3-b403-cb5cf5692d9d> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#label>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:9623b6ec-0b0b-4425-98b7-ddd0e683dcc1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2002/07/owl#sameAs>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:1b1e889e-e474-4027-85f4-5820f0295141> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2004/02/skos/core#prefLabel>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
-
-<urn:uuid:6c3fc89d-123a-4267-8bc6-1edc21cc013f> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
-    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#value>;
-  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://data.nobelprize.org/terms/Category/instance> .
 
 <urn:uuid:a6a49cab-d20a-468a-a065-df3b9e6238dc> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
     <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;

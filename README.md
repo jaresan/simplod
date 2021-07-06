@@ -25,7 +25,7 @@ Since this application is created with [Create React App](https://create-react-a
   * `endpointURL=` - URL of the endpoint to be used
   * `modelURL=` - URL of the file to be loaded, works the same way as File &rarr; Load &rarr; By URI
     * Overrides both `schemaURL` and `endpointURL`
-* Example `https://jaresan.github.io/simplod/build/index.html?schemaURL=https%3A%2F%2Fjaresan.github.io%2Fsimplod%2Fexamples%2Fnobel_prizes.ttl&endpointURL=http%3A%2F%2Fdata.nobelprize.org%2Fsparql`
+* Example `https://jaresan.github.io/simplod/build/index.html?schemaURL=https%3A%2F%2Fjaresan.github.io%2Fsimplod%2Fexamples%2Fnobel_prizes.ttl&endpointURL=http%3A%2F%2Fdata.nobelprize.org%2Fstore%2Fsparql`
 
 
 ## Local development
