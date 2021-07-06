@@ -1,6 +1,6 @@
 /**
  * @file Save and load functionality
- * @module @@actions/save-load
+ * @module @@actions/save
  */
 import { dispatch, dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
