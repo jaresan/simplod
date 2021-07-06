@@ -46,7 +46,9 @@ class Yasgui extends Component {
 	update() {
 		this.tab().setQuery(this.props.query);
 		this.tab().setEndpoint(this.props.endpoint);
+		this.autoformatting = true;
 		this.tab().yasqe.autoformat();
+		this.autoformatting = false;
 	}
 
 	tab() {
@@ -54,13 +56,18 @@ class Yasgui extends Component {
 	}
 
 	onQueryChange = (_, {origin}) => {
-		if (origin !== 'setValue') {
+		if (origin && origin !== 'setValue' && !this.autoformatting) {
 			dispatchSet(ModelState.query, this.tab().getQuery());
 		}
 	}
 
+	componentDidUpdate(prevProps, prevState, snapshot) {
+		if (prevProps.query !== this.props.query) {
+			this.update();
+		}
+	}
+
 	componentDidMount() {
-		console.log(this.props);
 		this.yasguiContainer.appendChild(yasguiRoot);
 		this.update();
 		this.tab().getYasqe().on('change', this.onQueryChange);
