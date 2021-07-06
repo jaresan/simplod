@@ -460,7 +460,7 @@
   <rdf:subject> <nobel:Laureate/instance> .
 
 <urn:uuid:dc0c95a8-dcfc-4387-afb6-95184fe292ff>
-  <rdf:object> <rdf:Literal>;
+  <rdf:object> <rdf:langString>;
   <rdf:predicate> <rdfs:label>;
   <rdf:subject> <onto:Country/instance> .
 

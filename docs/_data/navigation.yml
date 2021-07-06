@@ -7,4 +7,4 @@ docs:
   - title: Data schema example
     url: ./dataSchema.html
   - title: Demo
-    url: ./demo.html?schemaURL=https%3A%2F%2Fjaresan.github.io%2Fsimplod%2Fexamples%2Fnobel_prizes.ttl&endpointURL=http%3A%2F%2Fdata.nobelprize.org%2Fstore%2Fsparql
+    url: ./demo.html?schemaURL=https%3A%2F%2Fjaresan.github.io%2Fsimplod%2Fexamples%2Fexample.ttl&endpointURL=http%3A%2F%2Fdata.nobelprize.org%2Fstore%2Fsparql
