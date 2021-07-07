@@ -32,7 +32,7 @@ Since this application is created with [Create React App](https://create-react-a
 
 * Install the dependencies via `npm i`
 * Run the local environment by `npm run start:dev` or `npm run start:dev:https` to use SSL
-  * The applicatio is now accessible on http[s]://localhost:3000
+  * The application is now accessible on http(s)://localhost:3000
   * The server listens to changes to the codebase, and if any are detected, reloads the application. 
 * OPTIONAL - Add localhost to your trusted apps
   

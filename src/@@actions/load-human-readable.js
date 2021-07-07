@@ -14,7 +14,7 @@ import * as ControlState from '@@app-state/controls/state';
  * Loads label and comment information for the existing entities in the application.
  * @function
  */
-export const loadHumanReadableData = () => {
+export const loadHumanReadableData = async () => {
   dispatchSet(ControlState.labelsLoadingProgress, 0);
   const state = getState();
   const prefixes = view(ModelState.prefixes, state);
@@ -24,7 +24,7 @@ export const loadHumanReadableData = () => {
   const urls = Object.keys(view(ModelState.classes, state));
 
   let resolved = 0;
-  const promises = getHumanReadableDataPromises({urls, prefixToIri, iriToPrefix})
+  const promises = (await getHumanReadableDataPromises({urls, prefixToIri, iriToPrefix}))
     .map((p, i, arr) => {
       return p.then(data => {
         const classes = view(ModelState.classes, getState());

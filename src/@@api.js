@@ -6,6 +6,14 @@
 import {humanReadableData} from '@@constants/api';
 import { parseTTL } from '@@data/parseTTL';
 import {keys} from 'ramda';
+import { fetchLabels } from '@@data/labels-parsing';
+
+/**
+ * Pings the /getData route to see if a proxy is used.
+ * @function
+ * @returns {Promise<Response>}
+ */
+const pingDataFetchingRoute = () => fetch(humanReadableData, {method: 'HEAD'});
 
 /**
  * Fetches human readable data
@@ -22,13 +30,17 @@ const downloadHumanReadableData = ({urls, prefixToIri, iriToPrefix}) => fetch(hu
 
 /**
  * Returns an array of promises for getting the human readable data.
+ * If the proxy route exists, uses it, otherwise creates direct requests.
  * @function
  * @param urls [String] Prefixed iris of the entities to search for
  * @param prefixToIri Map of prefix --> IRI
  * @param iriToPrefix Map of IRI --> prefix
  * @returns Array of promises for getting the human readable data.
  */
-export const getHumanReadableDataPromises = ({urls, prefixToIri, iriToPrefix}) => urls.map(url => downloadHumanReadableData({urls: [url], prefixToIri, iriToPrefix}));
+export const getHumanReadableDataPromises = async ({urls, prefixToIri, iriToPrefix}) =>
+  await pingDataFetchingRoute()
+    .then(() => urls.map(url => downloadHumanReadableData({urls: [url], prefixToIri, iriToPrefix})))
+    .catch(() => urls.map(url => fetchLabels({urls: [url], prefixToIri, iriToPrefix})));
 
 /**
  * Fetches the .ttl data schema, parses it and returns the parsed data with prefixes
