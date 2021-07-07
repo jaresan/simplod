@@ -10,11 +10,11 @@ import {
   FullscreenExitOutlined,
   StopOutlined,
   EyeInvisibleOutlined,
-  EyeOutlined
+  EyeOutlined, DeleteOutlined
 } from '@ant-design/icons';
 import { openYasguiModal } from '@@components/Yasgui';
 import { translated } from '@@localization';
-import { getSelectedEdgePropertyIds, getProperties, getClasses } from '@@selectors';
+import { getSelectedEdgePropertyIds, getProperties, getClasses, getIgnoredEntityIds } from '@@selectors';
 import {connect} from 'react-redux';
 import { PropertyList } from '@@components/entityList/property-list';
 import { isEmpty, pick, values } from 'ramda';
@@ -114,7 +114,7 @@ class GraphContainerComponent extends React.Component {
   clearSelection = () => dispatch(ModelState.deselectAll);
 
   showAll = () => dispatch(ModelState.showAll);
-  hideUnselected = () => dispatch(ModelState.hideUnselected);
+  deleteUnselected = () => this.props.ignoredEntityIds.forEach(id => Graph.onDeleteEntity(id));
 
   render() {
     const {properties, entities} = this.props;
@@ -125,8 +125,8 @@ class GraphContainerComponent extends React.Component {
             <Tooltip title={translated('Show all entities')}>
               <EyeOutlined onClick={this.showAll}/>
             </Tooltip>
-            <Tooltip title={translated('Hide not selected entities')}>
-              <EyeInvisibleOutlined onClick={this.hideUnselected}/>
+            <Tooltip title={translated('Delete not selected entities')}>
+              <DeleteOutlined onClick={this.deleteUnselected}/>
             </Tooltip>
             <Tooltip title={translated('Fit to view')}>
               <FullscreenExitOutlined onClick={this.fitView}/>
@@ -151,12 +151,14 @@ class GraphContainerComponent extends React.Component {
 
 const mapStateToProps = appState => {
   const selectedEdgePropertyIds = getSelectedEdgePropertyIds(appState);
+  const ignoredEntityIds = getIgnoredEntityIds(appState);
   if (selectedEdgePropertyIds.length) {
     const properties = pick(selectedEdgePropertyIds, getProperties(appState));
 
     if (isEmpty(properties)) {
       return {
-        properties: null
+        properties: null,
+        ignoredEntityIds
       };
     }
 
@@ -164,12 +166,14 @@ const mapStateToProps = appState => {
     const entities = pick([source, target], getClasses(appState));
     return {
       properties,
-      entities
+      entities,
+      ignoredEntityIds
     }
   }
 
   return {
-    selectedEdgePropertyIds
+    selectedEdgePropertyIds,
+    ignoredEntityIds
   }
 };
 
