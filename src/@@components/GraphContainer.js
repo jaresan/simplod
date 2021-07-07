@@ -10,7 +10,7 @@ import {
   FullscreenExitOutlined,
   StopOutlined,
   EyeInvisibleOutlined,
-  EyeOutlined
+  EyeOutlined, BorderlessTableOutlined
 } from '@ant-design/icons';
 import { openYasguiModal } from '@@components/Yasgui';
 import { translated } from '@@localization';
@@ -122,6 +122,12 @@ class GraphContainerComponent extends React.Component {
       <GraphMountContainer ref={ref => this.mountNode = ref}>
         <GraphControlsContainer>
           <Space>
+            <Tooltip title={translated('Layout nodes in a grid')}>
+              <BorderlessTableOutlined onClick={() => {
+                Graph.gridLayout();
+                this.fitView();
+              }} />
+            </Tooltip>
             <Tooltip title={translated('Show all entities')}>
               <EyeOutlined onClick={this.showAll}/>
             </Tooltip>
