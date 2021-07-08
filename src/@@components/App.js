@@ -15,6 +15,8 @@ import { getCartesianProduct, getHorizontalLayout, getModelQuery } from '@@selec
 import { connect } from 'react-redux';
 import { translated } from '@@localization';
 import {css} from '@emotion/css';
+import configs from '../dev_examples';
+import {Button} from 'antd';
 
 const {Content, Footer} = Layout;
 

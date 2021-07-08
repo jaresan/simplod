@@ -18,7 +18,7 @@ import { Alert, InputNumber, Modal, Switch, Space } from 'antd';
 import * as SettingsState from '@@app-state/settings/state';
 import { translated } from '@@localization';
 import "@triply/yasgui/build/yasgui.min.css";
-import { sparqlProxy } from '@@constants/api';
+import { sparqlProxy, useProxy } from '@@constants/api';
 
 const YasguiContainer = styled.div`
 	width: fit-content;
@@ -30,9 +30,9 @@ const YasguiContainer = styled.div`
 `;
 
 const yasguiRoot = document.createElement('div');
-const yasgui = new YASGUI(yasguiRoot, {
+const yasgui = new YASGUI(yasguiRoot, useProxy ? {
 	corsProxy: sparqlProxy
-});
+} : {});
 
 dispatchSet(YasguiState.instance, yasgui);
 // localStorage.removeItem('yagui__config') // Remove old saved data -- "yagui" instead of "yasgui" is on purpose

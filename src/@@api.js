@@ -3,7 +3,7 @@
  * @type {string}
  * @module @@api
  */
-import {humanReadableData} from '@@constants/api';
+import {humanReadableData, useProxy} from '@@constants/api';
 import { parseTTL } from '@@data/parseTTL';
 import {keys} from 'ramda';
 import { fetchLabels } from '@@data/labels-parsing';
@@ -13,7 +13,7 @@ import { fetchLabels } from '@@data/labels-parsing';
  * @function
  * @returns {Promise<Response>}
  */
-const pingDataFetchingRoute = () => fetch(humanReadableData, {method: 'HEAD'});
+const pingDataFetchingRoute = () => useProxy ? fetch(humanReadableData, {method: 'HEAD'}) : Promise.reject();
 
 /**
  * Fetches human readable data
