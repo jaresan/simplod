@@ -26,13 +26,11 @@ const handle = curry((methodName, e) => {
 });
 
 export class Graph {
-  // TODO: Use specific node events, not using graph events?
   static behaviours = {
     click: 'onClick',
-    dblclick: 'onDoubleClick',
+    touchend: 'onClick',
     mouseover: 'onHover',
-    mouseout: 'onBlur',
-    contextmenu: 'onContextMenu'
+    mouseout: 'onBlur'
   };
 
   static setInstance(graph) {
