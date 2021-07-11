@@ -101,11 +101,11 @@ class App extends Component {
               <GraphContainer />
             </div>
             <div style={getMenuStyle(horizontalLayout)}>
-              {/*{*/}
-              {/*  configs.map(([file, endpoint, size, name]) =>*/}
-              {/*    <Button onClick={() => loadGraphFromURL({dataSchemaURL: file, endpointURL: endpoint})}>{size} - {name}</Button>*/}
-              {/*  )*/}
-              {/*}*/}
+              {
+                configs.map(([file, endpoint, size, name]) =>
+                  <Button onClick={() => loadGraphFromURL({dataSchemaURL: file, endpointURL: endpoint})}>{size} - {name}</Button>
+                )
+              }
               {modelQuery && <Alert type='error' showIcon={false} message={translated('Current SPARQL Query has been manually edited, making any changes in the application will remove these edits.')} banner />}
               {cartesianProduct && <Alert message={translated('Current selection is not a connected graph and might result in querying a cartesian product.')} banner />}
               <Tabs className={TabHeight} style={{width: '100%', height: '90vh'}} onChange={this.updateTabKey}>

@@ -22,6 +22,17 @@ const tab = () => {
 }
 
 /**
+ * Returns plain encoded URL which returns CSV directly
+ * @function
+ * @returns {string} URL with the encoded query against the current endpoint
+ */
+export const getCsvFetchUrl = () => {
+  const url = new URL(tab().yasr.config.getPlainQueryLinkToEndpoint());
+  url.searchParams.append('format', 'text/csv');
+  return `${url}`;
+}
+
+/**
  * Returns plain encoded URL to return SPARQL results for the current query in the YASGUI tool
  * @function
  * @returns {string} URL with the encoded query against the current endpoint
@@ -33,7 +44,7 @@ export const getDirectFetchUrl = () => tab().yasr.config.getPlainQueryLinkToEndp
  * @function
  * @returns {string} cURL command
  */
-export const getCurlFetchString = () => tab().yasqe.getAsCurlString();
+export const getCurlFetchString = () => tab().yasqe.getAsCurlString({method: 'POST', endpoint: tab().getEndpoint()});
 
 /**
  * @function

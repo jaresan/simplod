@@ -1,0 +1,202 @@
+
+<urn:uuid:209aa4e0-3b1c-4944-b247-47aa3063f97d> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://ns.adobe.com/photoshop/1.0/DateCreated>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<https://w3id.org/lio/v1#Image/instance> a <https://w3id.org/lio/v1#Image> .
+
+<urn:uuid:0d1941af-60f9-41c5-b981-28567cfd4044> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/1999/U2/22-rdf-syntax-ns#type>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:added8c8-0d86-4b91-8038-334e456c2a48> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#seeAlso>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:95063e3b-29ed-4f5d-993b-c4ae942536b1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://schema.org/thumbnail>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:e1ab157d-4d65-4e7b-b3e5-f2c6e8332316> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/1999/U2/22-rdf-syntax-ns#type>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:26c58408-1b84-4226-a2d7-f38c2a3a1b8f> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.org/dc/elements/1.1/subject>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:cabb8fc3-4290-44a0-aec1-d8ee0d1ace99> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://schema.org/thumbnail>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:6c486c53-9e04-4fd8-9b30-b727c02d27b3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#seeAlso>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:adbcced7-c47a-4948-ad0a-b6e72a0874c3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.org/dc/elements/1.1/title>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:1acf78fe-4eb3-429c-9aad-890109fbd532> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.iptc.org/std/Iptc4xmpCore/1.0/xmlns/Scene>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:a3d57756-8300-4cf1-aee0-2eeb2e4ba06e> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://schema.org/thumbnail>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:9aa4f066-6166-4ad1-826e-f230c3a9303d> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <https://w3id.org/lio/v1#hasSceneLocation>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:c1b63747-d7c7-4cfc-9843-7f23ae6c40b5> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <https://w3id.org/lio/v1#technique>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:8f0094b8-22ad-4ad0-adc6-bb85e70fb8c3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.org/dc/elements/1.1/creator>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:0b6a058b-945e-4f58-ac46-c548f93dd4ad> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#seeAlso>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:4dd45d00-b5c4-42e7-8691-f8c659dde6a9> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <https://w3id.org/lio/v1#depicts>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:567a8f7d-48cf-475a-be7c-2c01ade73adf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://schema.org/about>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:8d013af9-54ed-4d68-b4f6-047a46802500> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/1999/U2/22-rdf-syntax-ns#type>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:52671f00-b455-4dab-965d-a4054769f5fe> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://ns.adobe.com/photoshop/1.0/DateCreated>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:8a04f8f4-3dbd-4eb9-84cb-b52382841676> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://ns.adobe.com/xap/1.0/rights/usageTerms>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:4c93a30b-671d-4d68-950f-621e52cb905a> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.org/dc/elements/1.1/subject>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:29992971-c43d-456b-b73e-5176ebd65a13> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#comment>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:7f80095e-fd5e-47c7-890d-a386414f8a25> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.iptc.org/std/Iptc4xmpCore/1.0/xmlns/Scene>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:09f36770-ec36-49a7-a97b-f221e1f7588d> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://ns.adobe.com/xap/1.0/rights/usageTerms>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:75617a62-f1d9-4ac7-b374-7ef5e9f289eb> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://schema.org/thumbnail>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:90aee33c-86df-4eb1-adbd-0b621e8603d3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <https://w3id.org/lio/v1#hasSceneLocation>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:65dfb58f-b45e-484a-b26b-0ad89f12df04> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#comment>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:6816c381-3b2b-4b34-b4ac-402808fcb094> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#seeAlso>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:fdead5e5-eb94-4424-b8ef-82354fcb7b76> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/1999/U2/22-rdf-syntax-ns#type>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:3987095c-1922-4bd3-a903-740cf6da3986> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.org/dc/elements/1.1/subject>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:651824d9-9e34-4ae9-bec7-496c03b325c2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://ns.adobe.com/photoshop/1.0/DateCreated>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:511467da-890c-4e43-9624-7aca20fde85b> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.iptc.org/std/Iptc4xmpCore/1.0/xmlns/Scene>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:a6a6c221-b7cd-491d-a526-f29fdd8c9d72> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://ns.adobe.com/photoshop/1.0/DateCreated>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:a87347b1-841f-4afc-9b32-aeb85c2c4b82> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://ns.adobe.com/xap/1.0/rights/usageTerms>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:91e6de65-73b3-4a0f-8dfb-b43b38c01ad0> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://schema.org/thumbnail>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:2aa7601a-c5f4-4bf1-9a35-3f3405d9846c> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#comment>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:204744b0-ef0d-4b7e-a31d-18523d78daf8> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <https://w3id.org/lio/v1#hasSceneLocation>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:568730da-d37e-45f8-a1e5-db6b0d5319b7> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/2000/01/rdf-schema#seeAlso>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:db2b09ec-d726-4d89-aaa7-7978b31f0a78> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://purl.org/dc/elements/1.1/subject>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .
+
+<urn:uuid:f329c8b9-f5a9-4032-ae5e-91510d009b42> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#Literal>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://www.w3.org/1999/U2/22-rdf-syntax-ns#type>;
+  <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <https://w3id.org/lio/v1#Image/instance> .

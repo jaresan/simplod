@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Modal, Select, Space, Typography } from 'antd';
-import { getCurlFetchString, getDirectFetchUrl, getYasguiShareUrl } from '@@actions/yasgui';
+import { getCsvFetchUrl, getCurlFetchString, getDirectFetchUrl, getYasguiShareUrl } from '@@actions/yasgui';
 import { getCurrentFileShareableUrl } from '@@actions/solid/share';
 import { openSaveDialogModal } from '@@components/controls/file-dialog';
 import { getModelFileLocation } from '@@selectors';
@@ -52,6 +52,7 @@ const ShareMenuComponent = ({modelFileLocation}) =>
   <>
     <Title level={3}>Data fetching links</Title>
     <CopyableField title="YASGUI Query Tool" text={getYasguiShareUrl()} openable />
+    <CopyableField title="CSV URL" text={getCsvFetchUrl()} openable/>
     <CopyableField title="Direct Web URL" text={getDirectFetchUrl()}/>
     <CopyableField title="cURL POST Request" text={getCurlFetchString()} />
     <Title level={3}>App links</Title>
