@@ -16,7 +16,8 @@ import { indentByBrackets } from '@@string';
  */
 const tab = () => {
   const tab = view(YasguiState.instance, getState()).getTab();
-  tab.setQuery(indentByBrackets(view(YasguiState.query, getState())));
+  tab.setQuery(indentByBrackets(view(ModelState.query, getState()) || view(YasguiState.query, getState())));
+  tab.setEndpoint(view(ModelState.endpoint, getState()));
 
   return tab;
 }
