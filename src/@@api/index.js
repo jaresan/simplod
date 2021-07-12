@@ -1,12 +1,11 @@
 /**
  * @file File containing different API calls
- * @type {string}
  * @module @@api
  */
 import {humanReadableData, useProxy} from '@@constants/api';
 import { parseTTL } from '@@data/parseTTL';
 import {keys} from 'ramda';
-import { fetchLabels } from '@@data/labels-parsing';
+import { fetchLabels } from '@@api/labels-parsing';
 
 /**
  * Pings the /getData route to see if a proxy is used.

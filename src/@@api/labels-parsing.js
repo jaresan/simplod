@@ -1,9 +1,19 @@
-const { prefix } = require('./parsePrefix');
+/**
+ * @file Human readable label parsing logic
+ * @module @@api/labels-parsing
+ */
+const { prefix } = require('@@data/parsePrefix');
 const { Parser, DataFactory, Store } = require('n3');
 const { namedNode } = DataFactory;
 const { get } = require('axios');
 const { RdfXmlParser } = require('rdfxml-streaming-parser');
 
+/**
+ * Tries to parse RDF in XML format.
+ * @function
+ * @param txt
+ * @returns {Promise<unknown>}
+ */
 const tryParseXML = txt => new Promise((res, err) => {
   const myParser = new RdfXmlParser();
 
@@ -17,6 +27,11 @@ const tryParseXML = txt => new Promise((res, err) => {
   myParser.end();
 });
 
+/**
+ * Tries to parse RDF in TTL format.
+ * @param txt
+ * @returns {Promise<unknown>}
+ */
 const tryParseTTL = txt => new Promise((res, err) => {
   const parser = new Parser();
   const quads = [];
@@ -32,6 +47,13 @@ const tryParseTTL = txt => new Promise((res, err) => {
   });
 });
 
+/**
+ * Unwraps prefixed IRI into an absolute one.
+ * @function
+ * @param prefixes
+ * @param iri
+ * @returns {string|*}
+ */
 const getFullIri = (prefixes, iri) => {
   const [prefix, suffix] = iri.split(':');
   if (!suffix) {
@@ -45,6 +67,13 @@ const dataMapping = {
   label: namedNode('http://www.w3.org/2000/01/rdf-schema#label'),
   description: namedNode('http://www.w3.org/2000/01/rdf-schema#comment')
 }
+
+/**
+ * Aggregates data for entity ids by language and key.
+ * @param quads
+ * @param prefixes
+ * @returns {{}}
+ */
 const getData = (quads, prefixes) => {
   quads = quads.map(q => {delete q.graph; return q;});
   const store = new Store(quads);
@@ -63,17 +92,20 @@ const getData = (quads, prefixes) => {
   }, {});
 };
 
+/**
+ * Downloads human readable data by accessing the IRIs directly and looking for entity descriptions in
+ * the RDF schema.
+ * @param url
+ * @param prefixToIri
+ * @param iriToPrefix
+ * @returns {Promise<{}|{}>}
+ */
 const downloadHumanReadableData = async (url, prefixToIri, iriToPrefix) => {
   try {
     const {data} = await get(getFullIri(prefixToIri, url), {headers: {Accept: 'text/turtle'}});
-    // console.log('Downloaded ttl:', data.length, data);
-    // console.log('parsing');
     const quads = await tryParseXML(data).catch(() => tryParseTTL(data));
-    // console.log('Parsed quads');
-    // console.log('Getting labels:', quads.length);
     return getData(quads, iriToPrefix);
   } catch (e) {
-    // console.log('failed');
     console.error(e);
 
     // Swallow the exception and return empty mapping
@@ -81,6 +113,13 @@ const downloadHumanReadableData = async (url, prefixToIri, iriToPrefix) => {
   }
 };
 
+/**
+ * Returns human readable data for provided URLs.
+ * @param urls
+ * @param prefixToIri
+ * @param iriToPrefix
+ * @returns {Promise<*>}
+ */
 const getHumanReadableDataForUrls = async (urls, prefixToIri, iriToPrefix) => {
   return await urls.reduce(async (acc, url) => {
     acc = await acc;
@@ -93,4 +132,11 @@ const getHumanReadableDataForUrls = async (urls, prefixToIri, iriToPrefix) => {
   }, {});
 };
 
+/**
+ * Fetches labels for entities provided by their URLs.
+ * @param urls
+ * @param prefixToIri
+ * @param iriToPrefix
+ * @returns {Promise<*>}
+ */
 export const fetchLabels = async ({urls, prefixToIri, iriToPrefix}) => await getHumanReadableDataForUrls(urls, prefixToIri, iriToPrefix);
