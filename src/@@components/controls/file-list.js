@@ -9,8 +9,7 @@ import {
 } from '@@selectors';
 import { connect, Provider } from 'react-redux';
 import { store } from '@@app-state';
-import {loadFiles, saveViewByUri, getFileUrl} from '@@actions/solid';
-import {deleteFile} from '@@actions/solid/files';
+import { deleteFile, loadFiles, saveViewByUri, getFileUrl } from '@@actions/solid/files';
 import { loadGraphFromURL } from '@@actions/load';
 import { openFileOptionsInfoModal } from '@@components/controls/modal-info-edit-file';
 

@@ -5,7 +5,7 @@
 import { dispatchSet } from '@@app-state';
 import * as SolidState from '@@app-state/solid/state';
 import auth from 'solid-auth-client';
-import { loadFiles } from '@@actions/solid/index';
+import { loadFiles } from '@@actions/solid/files';
 import rdf from 'rdflib';
 import { path } from 'ramda';
 import { getSession } from '@@actions/solid/auth';

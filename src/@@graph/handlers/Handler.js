@@ -66,9 +66,8 @@ export class Handler {
 
     Object.values(this.recipients)
       .forEach(recipient => {
-        // FIXME: @reference don't use 'entities'
         const subState = path(['entities', recipient.handler.entityType, recipient.id], state);
-          // FIXME: Map to relevant properties for the wrapper instead of sending subState as a whole
+          // TODO: Map to relevant properties for the wrapper instead of sending subState as a whole
           // define selectors and mapping between redux state -> UI state in Wrappers themselves,
           // e.g. stateToStyle = {selected: {selected: true}} and then react to the child keys
         recipient.onStateChanged(subState);

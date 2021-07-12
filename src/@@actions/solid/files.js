@@ -5,14 +5,15 @@
 import React from 'react';
 import { Button, message, notification, Space } from 'antd';
 import auth from 'solid-auth-client';
-import { dispatch, dispatchSet } from '@@app-state';
+import { dispatch, dispatchSet, getState } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
 import * as SolidState from '@@app-state/solid/state';
 import { getSession, getSessionOrLogin } from '@@actions/solid/auth';
-import { identity, tap } from 'ramda';
+import { assocPath, identity, mergeDeepRight, path, pipe, replace, tap, view } from 'ramda';
 import { translated } from '@@localization';
 import { WithRetry } from '@@components/controls/with-retry';
-import { downloadData } from '@@actions/save';
+import { downloadData, generateSaveData } from '@@actions/save';
+import rdf from 'rdflib';
 
 /**
  * Notifies the user that they are not authorized to use a requested resource.
@@ -243,3 +244,93 @@ export const hasPermissions = async (uri, write) => {
     return false;
   }
 }
+
+
+/**
+ * Saves the current project at given uri.
+ * Sets permissions if provided.
+ * @function
+ * @param uri
+ * @param permissions
+ * @returns {Promise<void>}
+ */
+export const saveViewByUri = async (uri, permissions) => {
+  const saveData = generateSaveData();
+  const {valid} = await getSession();
+
+  uri = uri.replace(/^\//, ''); // Enforce domain if relative URL provided
+  uri = uri.replace(/(.json)?$/, '.json');
+
+  await saveFile({uri, data: saveData});
+
+  if (permissions) {
+    await changePermissions({uri, permissions});
+  }
+
+  if (valid) {
+    await loadFiles(uri.replace(/\/[^/]*$/, ''));
+  }
+};
+
+/**
+ * Returns absolute file URL for provided relative path based on user's Solid Pod.
+ * @function
+ * @param relativePath
+ * @returns {Promise<string>}
+ */
+export const getFileUrl = async relativePath => {
+  const webId = view(SolidState.webId, getState());
+  const url = new URL(webId);
+  relativePath = relativePath.replace(/^\//, '');
+  return `${url.origin}/${relativePath}`;
+}
+
+/**
+ * Fetches file and folder definitions from user's Solid Pod.
+ * @function
+ * @param url
+ * @returns {Promise<void>}
+ */
+export const loadFiles = async url  => {
+  const {webId} = await getSessionOrLogin();
+  const {origin} = new URL(webId);
+
+  url = `${origin}/${url.replace(origin, '').replace(/^\//, '')}`; // Enforce domain if relative URL provided
+  url = url.replace(/\/?$/, '/');
+  const suffix = s => s.replace(url, '');
+  const isTypeValid = s => s.match(/.json$/);
+  const getValue = pipe(path(['subject', 'value']), suffix, replace(/\/$/, ''));
+  const filePath = ['/'].concat(url.replace(origin, '').split('/')).filter(identity);
+  const res = await auth.fetch(url);
+  const ttl = await res.text();
+
+  const store = rdf.graph();
+  rdf.parse(ttl, store, url);
+  const LDP = rdf.Namespace('http://www.w3.org/ns/ldp#')
+  const NS = rdf.Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+
+  const resource = LDP('Resource');
+  const container = LDP('Container');
+  const type = NS('type');
+
+  const folders = store.statementsMatching(null, type, container)
+    .map(getValue)
+    .reduce((acc, folderUrl) => {
+      if (folderUrl !== suffix(url)) {
+        return Object.assign(acc, {[folderUrl]: { __loaded: false }});
+      }
+
+      return acc;
+    }, {});
+
+  const files = store.statementsMatching(null, type, resource)
+    .map(getValue)
+    .filter(name => !folders[name] && isTypeValid(name))
+    .reduce((acc, name) => Object.assign(acc, {[name]: null}), {});
+
+  const state = getState();
+  const oldFiles = view(SolidState.files, state);
+  const newFiles = assocPath(filePath, {...folders, ...files, __loaded: true}, {});
+  dispatchSet(SolidState.files, mergeDeepRight(oldFiles, newFiles));
+}
+

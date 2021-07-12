@@ -1,7 +1,7 @@
 import React, {createRef, useState} from 'react';
 import { Space, Button, Modal, Tabs, Input, Upload } from 'antd';
 import FileList from '@@components/controls/file-list';
-import { saveViewByUri } from '@@actions/solid';
+import { saveViewByUri } from '@@actions/solid/files';
 import { loadGraphFromURL } from '@@actions/load';
 import { loginToSolid } from '@@actions/solid/auth';
 import {
