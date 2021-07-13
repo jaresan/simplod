@@ -45,7 +45,12 @@ export const getDirectFetchUrl = () => tab().yasr.config.getPlainQueryLinkToEndp
  * @function
  * @returns {string} cURL command
  */
-export const getCurlFetchString = () => tab().yasqe.getAsCurlString({method: 'POST', endpoint: tab().getEndpoint()});
+export const getCurlFetchString = () => tab()
+  .yasqe
+  .getAsCurlString({
+    method: 'POST',
+    endpoint: tab().getEndpoint()
+  }) + " -H 'Accept: text/csv'"; // can't use headers, as getAsCurlString adds spaces before ':' which breaks the command
 
 /**
  * @function
