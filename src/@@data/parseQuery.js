@@ -12,7 +12,7 @@ const sanitizeVarName = (str = '') => str.replace(
 const getPropertiesBySource = (getEntityVariable, properties) => {
   const getProperty = ([id, data]) => {
     const sourceVarName = getEntityVariable(data.source); // Use existing queried entity if available to prevent cartesian products
-    const targetVarName = getEntityVariable(data.target) || data.varName; // Use existing queried entity if available to prevent cartesian products
+    const targetVarName = getEntityVariable(data.target) || sanitizeVarName(data.varName); // Use existing queried entity if available to prevent cartesian products
 
     return {
       ...data,
@@ -63,7 +63,7 @@ const getObjectPropertyRows = (edges, nodes, languages) => values(edges)
 
 const getNodeEntry = (n, nodes, languages) => {
   const {type, varName, dataProperties, edges} = n;
-  const typeRow = `?${varName} a ${type}.`;
+  const typeRow = `?${sanitizeVarName(varName)} a ${type}.`;
 
   const dataPropertyRows = getDataPropertyRows(dataProperties, languages);
   const objectPropertyRows = getObjectPropertyRows(edges, nodes, languages);
@@ -125,7 +125,5 @@ export const parseSPARQLQuery = ({
   return `${getPrefixDefinition(selectedProperties, selectedClasses, prefixes)}
     SELECT DISTINCT ${selectText} WHERE {
      ${query}
-    }
-    ${limitEnabled ? `LIMIT ${limit}` : ''} 
-  `;
+    }${limitEnabled ? `\nLIMIT ${limit}` : ''}`;
 };

@@ -4,10 +4,10 @@
 @prefix dcterm: <http://purl.org/dc/terms/> .
 @prefix xml: <http://www.w3.org/2001/XMLSchema#> .
 
-<urn:uuid:1cf291d4-a8ca-478f-bb67-44f4a1738d31> #1
-  <rdf:subject> <bibo:Collection/instance>; #2
-  <rdf:predicate> <dcterm:hasPart>; #3
-  <rdf:object> <bibo:Collection/instance> . #4
+<urn:uuid:1cf291d4-a8ca-478f-bb67-44f4a1738d31>
+  <rdf:subject> <bibo:Collection/instance>;
+  <rdf:predicate> <dcterm:hasPart>;
+  <rdf:object> <bibo:Collection/instance> .
 
 <urn:uuid:1cf291d4-a8ca-478f-bb67-44f4a1738d32>
   <rdf:subject> <bibo:Collection/instance>;
@@ -24,5 +24,10 @@
   <rdf:predicate> <dcterm:title>;
   <rdf:object> <xml:String> .
 
-<bibo:Collection/instance> a <bibo:Collection> . #5
-<dcterm:Actor/instance> a <dcterm:Actor> . #5
+<urn:uuid:1cf291d4-a8ca-478f-bb67-44f4a1738d35>
+  <rdf:subject> <_improperIri_>;
+  <rdf:predicate> <dcterm:title>;
+  <rdf:object> <xml:String> .
+
+<bibo:Collection/instance> a <bibo:Collection> .
+<dcterm:Actor/instance> a <dcterm:Actor> .

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Select, Space, Input, message } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
-import { fromEvent } from '@@data/utils';
+import { fromEvent } from '@@dom';
 import { invertObj } from 'ramda';
 import { translated } from '@@localization';
 

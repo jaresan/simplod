@@ -1,5 +1,13 @@
 {
   "data": {
+    "_improperIri_": {
+      "dataProperties": {
+        "dcterm:title": [
+          "xml:String"
+        ]
+      },
+      "objectProperties": {}
+    },
     "bibo:Collection": {
       "dataProperties": {
         "dcterm:title": [

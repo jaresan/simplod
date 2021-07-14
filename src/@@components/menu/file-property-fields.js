@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Input, Space } from 'antd';
-import { fromEvent } from '@@data/utils';
+import { fromEvent } from '@@dom';
 import { withInfoIcon } from '@@components/controls/with-info-icon';
 
 const labels = {

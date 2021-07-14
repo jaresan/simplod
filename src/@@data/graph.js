@@ -10,7 +10,6 @@ import {
   partition,
   omit,
   mergeRight,
-  mergeDeepRight,
   clone, assoc
 } from 'ramda';
 

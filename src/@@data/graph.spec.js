@@ -1,4 +1,4 @@
-const {getConnectedEntities, isConnected, expandRoot} = require('@@data/graph');
+import {getConnectedEntities, isConnected, expandRoot} from './graph';
 const {fromPairs} = require('ramda');
 const {should} = require('chai');
 
@@ -227,6 +227,13 @@ describe('@@data/graph', () => {
           }
         }
       });
+    })
+
+    it('should stop expansion when node already in ancestors', () => {
+      const expandedNodes = {
+        [nodeC.id]: nodeC
+      };
+      expandRoot({...props, n: nodeC, expandedNodes}).should.eql({nodes: expandedNodes, root: nodeC});
     })
   });
 });
