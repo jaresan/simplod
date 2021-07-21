@@ -69,7 +69,7 @@
     "build:pages": "react-scripts build && rm -rf docs/build && cp -r build docs/build",
     "test": "NODE_PATH=./src mocha -r esm --config .mocharc.json -w --reporter min",
     "test:nowatch": "NODE_PATH=./src mocha -r esm --config .mocharc.json --reporter dot",
-    "test:coverage": "nyc --reporter=lcov npm run test:nowatch",
+    "test:coverage": "nyc npm run test:nowatch",
     "test:coverage:show": "open coverage/lcov-report/index.html",
     "eject": "react-scripts eject",
     "pages": "cd docs && bundle exec jekyll serve",

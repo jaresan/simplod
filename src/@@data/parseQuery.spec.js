@@ -1,7 +1,10 @@
+import { should } from 'chai';
 import { indentByBrackets } from '@@string';
 import { assocPath, clone } from 'ramda';
 
-const {parseSPARQLQuery} = require('./parseQuery');
+should();
+
+import {parseSPARQLQuery} from './parseQuery';
 
 describe('@@data/parseQuery()', () => {
   const data = {

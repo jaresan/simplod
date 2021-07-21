@@ -1,12 +1,12 @@
 import {parseTTL} from './parseTTL';
-import chai from 'chai';
+import { should } from 'chai';
 import fs from 'fs';
 import path from 'path';
 
 import govExampleResult from './testData/data.gov.cz.sparql.results.json';
 import biboResult from './testData/bibo.result.json';
 
-chai.should();
+should();
 
 describe('parseTTL', () => {
   it('should parse bibo file', async () => {

@@ -1,5 +1,5 @@
-const {should, expect} = require('chai');
-const {parsePrefix, prefix, getSuffix, getPrefix} = require('./parsePrefix');
+import {should, expect} from 'chai';
+import {parsePrefix, prefix, getSuffix, getPrefix} from './parsePrefix';
 
 should();
 
