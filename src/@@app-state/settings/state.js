@@ -7,7 +7,7 @@ export const initial = {
   limitEnabled: true,
   limit: 100,
   lastSave: 0,
-  horizontalLayout: false
+  horizontalLayout: true
 };
 
 const root = 'settings';

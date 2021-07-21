@@ -2,8 +2,6 @@ docs_list_title: Documentation
 docs:
   - title: Introduction
     url: .
-  - title: Installation
-    url: ./install.html
   - title: Data schema example
     url: ./dataSchema.html
   - title: Demo
