@@ -32,15 +32,24 @@ With the application, the data schema in question would be visualized as follows
 The user can immediately see the connections between the entities and
 can create selections to query for the data they are interested in.
 
-Querying for the Nobel prizes and their laureates would then be as easy as doing the following:
+Querying for the Nobel prizes and their laureates would then be as easy as doing the following,
+which would in turn create the query mentioned above:
 
-![Selected Nobel prize data](https://jaresan.github.io/simplod/images/selected.png)
+<img src="https://jaresan.github.io/simplod/images/selected.png" alt="drawing" width="512"/>
+
+The user can then just run the query using the
+<img src="https://cdn3.iconfinder.com/data/icons/iconic-1/32/play_alt-512.png" alt="drawing" width="16"/> button
+to produce the following results:
+![Query results](https://jaresan.github.io/simplod/images/query.png)
+
+Additional examples providing a closer look at the functionality of the application can be found
+in the [PDF Documentation](https://jaresan.github.io/simplod/documentation.pdf) under 5.1.5 Examples.
 
 
 # Navigation
-- Data schema example &rarr; example data schema describing Nobel prize information
-- Live Demo &rarr; Live demo of the application with Nobel prize data schema loaded
-- Development &rarr; How to start developing the application
-- Deployment &rarr; How to deploy the application
-- JSDoc &rarr; JavaScript generated documentation
-- PDF Documentation &rarr; Extensive PDF documentation describing the application, its the means of deployment and development 
+- [Data schema example](https://jaresan.github.io/simplod/dataSchema.html) &rarr; example data schema describing Nobel prize information
+- [Live Demo](https://jaresan.github.io/simplod/demo.html?schemaURL=https%3A%2F%2Fjaresan.github.io%2Fsimplod%2Fexamples%2Fexample.ttl&endpointURL=http%3A%2F%2Fdata.nobelprize.org%2Fstore%2Fsparql) &rarr; Live demo of the application with Nobel prize data schema loaded
+- [Development](https://jaresan.github.io/simplod/development.html) &rarr; How to start developing the application
+- [Deployment](https://jaresan.github.io/simplod/deployment.html) &rarr; How to deploy the application
+- [JSDoc](https://jaresan.github.io/simplod/documentation/index.html) &rarr; JavaScript generated documentation
+- [PDF Documentation](https://jaresan.github.io/simplod/documentation.pdf) &rarr; Extensive PDF documentation describing the application, its means of deployment and development 
