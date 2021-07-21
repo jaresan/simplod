@@ -2,11 +2,15 @@ docs_list_title: Documentation
 docs:
   - title: Introduction
     url: .
-  - title: Data schema example
+  - title: .ttl schema example
     url: ./dataSchema.html
-  - title: Demo
+  - title: Live Demo
     url: ./demo.html?schemaURL=https%3A%2F%2Fjaresan.github.io%2Fsimplod%2Fexamples%2Fexample.ttl&endpointURL=http%3A%2F%2Fdata.nobelprize.org%2Fstore%2Fsparql
+  - title: Development
+    url: ./development.html
+  - title: Deployment
+    url: ./deployment.html
   - title: JSDoc
     url: ./documentation/index.html
-  - title: Documentation
+  - title: PDF Documentation
     url: ./documentation.pdf
