@@ -1,3 +1,7 @@
+/**
+ * @file Helper functions displaying the loading message while a process is ongoing
+ * @module @@components/with-loading
+ */
 import {message} from 'antd';
 
 export const withLoading = msg => {

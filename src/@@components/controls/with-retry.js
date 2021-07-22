@@ -1,5 +1,10 @@
+/**
+ * @file Helper component for running async callbacks with retries and showing feedback to the user
+ * @module @@components/controls/with-retry
+ */
 import React from 'react';
 import { Button, Space } from 'antd';
+import { translated } from '@@localization';
 
 export class WithRetry extends React.Component {
   constructor(props) {
@@ -90,9 +95,9 @@ export class WithRetry extends React.Component {
     return !!failed && <div {...containerProps}>
       <Space direction="vertical">
         {children}
-        <span>Tries left: {maxRetries - failed}</span>
+        <span>{translated('Tries left:')} {maxRetries - failed}</span>
         <Space>
-          <Button loading={retryInProgress} onClick={this.onClickRetry}>Retrying in {Math.round(this.state.timeLeft / 1000)}s</Button>
+          <Button loading={retryInProgress} onClick={this.onClickRetry}>{translated('Retrying in')} {Math.round(this.state.timeLeft / 1000)}s</Button>
           <Button onClick={this.onClickCancel}>Cancel</Button>
         </Space>
       </Space>

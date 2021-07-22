@@ -1,3 +1,7 @@
+/**
+ * @file Represents list of properties for each entity in the list view
+ * @module @@components/entityList/PropertyList
+ */
 import React from 'react';
 import { PropertyEntry } from '@@components/entityList/PropertyEntry';
 import { Card } from 'antd';

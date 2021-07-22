@@ -1,3 +1,8 @@
+/**
+ * @file List view showing the entity rows, allowing for interactions similar to the graph.
+ * Also contains search bar to filter through items quickly.
+ * @module @@components/entityList/EntityList
+ */
 import React from 'react';
 import {connect} from 'react-redux';
 import { getAppLoaded, getClasses, getProperties } from '@@selectors';
@@ -6,6 +11,7 @@ import {List, Empty, Spin} from 'antd';
 import { filter, mapObjIndexed, path, any, mergeRight } from 'ramda';
 import {withSearch} from '../withSearch';
 import styled from '@emotion/styled';
+import { translated } from '@@localization';
 
 const EntityRow = styled(List.Item)`
 	width: 100%;
@@ -41,7 +47,6 @@ class EntityListComponent extends React.Component {
 		let entities = this.props.entities;
 
 		if (this.props.onlySelected && !this.didRecalculate) {
-			// FIXME: @reference don't use e.selected e.propertyIds, 'selected'
 			entities = filter(e => e.selected || any(pId => path([pId, 'selected'], this.props.properties), e.propertyIds), entities);
 			this.oldEntities = entities;
 			this.didRecalculate = true;
@@ -77,7 +82,7 @@ class EntityListComponent extends React.Component {
 							<Empty
 								description={
 									<span>
-										No data selected, begin by selecting some properties in the "Available" tab.
+										{translated('No data selected, begin by selecting some properties in the "Available" tab.')}
 									</span>
 								}
 							/>

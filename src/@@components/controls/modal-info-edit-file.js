@@ -1,3 +1,7 @@
+/**
+ * @file Modal component displayed when the user loads a new project, allowing them to make save interactions.
+ * @module @@components/controls/modal-info-edit-file
+ */
 import React from 'react';
 import { Button, Modal, Space, Tooltip } from 'antd';
 import { translated } from '@@localization';
@@ -23,27 +27,27 @@ export const openFileOptionsInfoModal = ({modelURL, hasPermissions}) => {
     title: translated('Do you want to save the file?'),
     width: 520,
     content: <Container>
-      {translated(`Please select how you would like to save the file loaded from ${modelURL}.`)}
+      {translated('Please select how you would like to save the file loaded from {modelURL}.', {modelURL})}
       <ButtonContainer>
         {
           hasPermissions ?
             <Button onClick={() => {
               dispatchSet(SolidState.modelFileLocation, modelURL);
               modal.destroy();
-            }}>Edit original file</Button>
+            }}>{translated('Edit original file')}</Button>
             :
             <Tooltip title={translated('You do not have permission to edit this file')}>
               <Button disabled onClick={() => {
                 dispatchSet(SolidState.modelFileLocation, modelURL);
                 modal.destroy();
-              }}>Edit original file</Button>
+              }}>{translated('Edit original file')}</Button>
             </Tooltip>
         }
         <Button onClick={() => {
           openSaveDialogModal();
           modal.destroy();
-        }}>Save</Button>
-        <Button danger onClick={() => modal.destroy()}>Do not save</Button>
+        }}>{translated('Save')}</Button>
+        <Button danger onClick={() => modal.destroy()}>{translated('Do not save')}</Button>
       </ButtonContainer>
     </Container>,
     okButtonProps: {

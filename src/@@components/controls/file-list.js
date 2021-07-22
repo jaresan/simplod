@@ -1,3 +1,7 @@
+/**
+ * @file File list for displaying user's files
+ * @module @@components/controls/file-list
+ */
 import React, { Component } from 'react';
 import { message, Button, Input, Tree, Space, Popover, Modal } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
@@ -12,6 +16,7 @@ import { store } from '@@app-state';
 import { deleteFile, loadFiles, saveViewByUri, getFileUrl } from '@@actions/solid/files';
 import { loadGraphFromURL } from '@@actions/load';
 import { openFileOptionsInfoModal } from '@@components/controls/modal-info-edit-file';
+import { translated } from '@@localization';
 
 const newViewSuffix = '__newView'; // Used to add a key to the rendered empty node in the same folder so that it doesn't clash with the folder's key itself
 
@@ -56,7 +61,7 @@ class FileList extends Component {
         onPressEnter={onSave}
         placeholder="New view name"
       />
-      <Button onClick={onSave}>Save</Button>
+      <Button onClick={onSave}>{translated('Save')}</Button>
     </>
   }
 
@@ -75,9 +80,9 @@ class FileList extends Component {
           trigger="click"
           cancelText="Cancel"
           content={<Space direction="horizontal">
-            {this.props.canSave && <Button danger onClick={() => this.saveNewView(key)}>Overwrite</Button>}
-            {this.props.canLoad && <Button onClick={() => this.onLoadView(key)}>Load</Button>}
-            <Button danger onClick={() => this.onDeleteFile(key)}>Delete</Button>
+            {this.props.canSave && <Button danger onClick={() => this.saveNewView(key)}>{translated('Overwrite')}</Button>}
+            {this.props.canLoad && <Button onClick={() => this.onLoadView(key)}>{translated('Load')}</Button>}
+            <Button danger onClick={() => this.onDeleteFile(key)}>{translated('Delete')}</Button>
           </Space>}
         >
           {title}
@@ -115,7 +120,7 @@ class FileList extends Component {
       this.fileFetchMap[key] = {
         resolve,
         timeout: setTimeout(() => {
-          message.error('There was a problem fetching files from the folder.');
+          message.error(translated('There was a problem fetching files from the folder.'));
           resolve();
         }, 10000)
       }
@@ -170,7 +175,6 @@ class FileList extends Component {
 }
 
 
-// FIXME: @dispatch @store remove hacky connection and use @@app-state connect
 const mapStateToProps = appState => ({
   user: getUser(appState),
   files: getFiles(appState),

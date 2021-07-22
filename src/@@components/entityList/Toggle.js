@@ -1,3 +1,7 @@
+/**
+ * @file Helper toggle component for displaying tooltips and icons based on the given flag
+ * @module @@components/entityList/Toggle
+ */
 import React from 'react';
 import styled from '@emotion/styled';
 import {Tooltip} from 'antd';

@@ -1,13 +1,18 @@
+/**
+ * @file Fields describing properties of the project
+ * @module @@components/menu/file-property-fields
+ */
 import React from 'react';
 import { Button, Input, Space } from 'antd';
 import { fromEvent } from '@@dom';
 import { withInfoIcon } from '@@components/controls/with-info-icon';
+import { translated } from '@@localization';
 
 const labels = {
-  dataSchema: ['Data schema URL:', 'URL from which the data schema should be retrieved'],
-  endpoint: ['SPARQL endpoint:', 'URL of the SPARQL endpoint against which the query is run'],
-  title: ['Title:', 'Title of the project'],
-  description: ['Description:', 'Text description of what this project represents']
+  dataSchema: [translated('Data schema URL:'), translated('URL from which the data schema should be retrieved')],
+  endpoint: [translated('SPARQL endpoint:'), translated('URL of the SPARQL endpoint against which the query is run')],
+  title: [translated('Title:'), translated('Title of the project')],
+  description: [translated('Description:'), translated('Text description of what this project represents')]
 };
 
 export const FilePropertyFields = ({
@@ -24,7 +29,7 @@ export const FilePropertyFields = ({
       type="text"
       value={schemaURL}
       onChange={fromEvent(onSchemaChange)}
-      placeholder="Data schema URL"
+      placeholder={translated('Data schema URL')}
     />
     {
       onSchemaReload && <Button onClick={onSchemaReload}>
@@ -36,20 +41,20 @@ export const FilePropertyFields = ({
       type="text"
       value={endpointURL}
       onChange={fromEvent(onEndpointChange)}
-      placeholder="Endpoint URL"
+      placeholder={translated('Endpoint URL')}
     />
     {withInfoIcon(labels.title)}
     <Input
       type="text"
       onChange={fromEvent(onTitleChange)}
       value={title}
-      placeholder="Project title"
+      placeholder={translated('Project title')}
     />
     {withInfoIcon(labels.description)}
     <Input.TextArea
       type="text"
       onChange={fromEvent(onDescriptionChange)}
       value={description}
-      placeholder="File description"
+      placeholder={translated('File description')}
     />
   </Space>;

@@ -1,3 +1,7 @@
+/**
+ * @file AntD tag draggable wrapper
+ * @module @@components/DraggableTag
+ */
 import React from 'react';
 import { Tag } from 'antd';
 import {DragOutlined} from '@ant-design/icons';

@@ -1,3 +1,7 @@
+/**
+ * @file Menu bar specification
+ * @module @@components/menu/menu
+ */
 import React from 'react';
 import {connect} from 'react-redux';
 import { Avatar, Menu, Input, Affix, Button, Space } from 'antd';
@@ -35,7 +39,7 @@ const HiddenSpan = styled.span`
 
 const getSaveIcons = (modelFileLocation, isDirty) => {
   const localProps = isDirty ? {color: 'orange', text: translated('Changes not saved')} : {color: 'green', text: translated('Changes saved')};
-  const cloudProps = isDirty ? {color: 'orange', text: translated(`Latest changes not saved to ${modelFileLocation}`)} : {color: 'green', text: translated(`File saved at ${modelFileLocation}`)};
+  const cloudProps = isDirty ? {color: 'orange', text: translated('Latest changes not saved to {modelFileLocation}', {modelFileLocation})} : {color: 'green', text: translated('File saved at {modelFileLocation}', {modelFileLocation})};
 
   return <div style={{display: 'flex', alignItems: 'center'}} onClick={saveData}>
     {!modelFileLocation && <DesktopOutlined style={{color: localProps.color, fontSize: 16}}/>}
@@ -81,19 +85,19 @@ class MenuComponent extends React.Component {
         </Menu.Item>
         <br/>
         {FileMenu({modelFileLocation, loggedIn})}
-        <Menu.Item title="Settings" onClick={openSettingsModal}>Settings</Menu.Item>
+        <Menu.Item title={translated('Settings')} onClick={openSettingsModal}>Settings</Menu.Item>
         <Menu.SubMenu style={{height: 64, width: 64, position: 'absolute', top: 8, right: 0}}
                       icon={<Avatar style={iconStyle} size="large" src={avatar}
                                     icon={<UserOutlined style={iconStyle}/>}/>}>
           {
-            loggedIn ? <Menu.Item onClick={logoutSolid}>Logout</Menu.Item> :
-              <Menu.Item onClick={loginToSolid}>Login</Menu.Item>
+            loggedIn ? <Menu.Item onClick={logoutSolid}>{translated('Logout')}</Menu.Item> :
+              <Menu.Item onClick={loginToSolid}>{translated('Login')}</Menu.Item>
           }
         </Menu.SubMenu>
         <Menu.Item style={{position: 'absolute', top: 12, right: 84}}><Button onClick={openShareModal}
-                                                                              type="primary"><ShareAltOutlined/>Share</Button></Menu.Item>
+                                                                              type="primary"><ShareAltOutlined/>{translated('Share')}</Button></Menu.Item>
         <Menu.Item style={{position: 'absolute', top: 12, right: 176}}><Button
-          onClick={() => openYasguiModal({runQuery: true})} type="primary"><PlaySquareOutlined/>Run SPARQL Query</Button></Menu.Item>
+          onClick={() => openYasguiModal({runQuery: true})} type="primary"><PlaySquareOutlined/>{translated('Run SPARQL Query')}</Button></Menu.Item>
       </Menu>
     </Affix>;
   }

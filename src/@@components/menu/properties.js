@@ -1,4 +1,8 @@
-import React, {useState} from 'react';
+/**
+ * @file Project properties menu
+ * @module @@components/menu/properties
+ */
+import React from 'react';
 import { Modal, Select, Space } from 'antd';
 import { dispatch, dispatchSet, store } from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
@@ -40,7 +44,7 @@ const Properties = ({description, dataSchemaURL, endpointURL, title, prefixes, c
     />
     <Space direction="vertical" style={{ width: '100%', paddingTop: 8 }}>
       <span>{withInfoIcon([translated('Property languages:'), translated('Languages that should appear in the resulting query. Will return every available language if empty.')])}</span>
-      <Select value={propertyLanguages} placeholder="All languages" mode="multiple" style={{ width: '100%' }} onChange={dispatchProps.updatePropertyLanguages} tokenSeparators={[',']}>
+      <Select value={propertyLanguages} placeholder={translated('All languages')} mode="multiple" style={{ width: '100%' }} onChange={dispatchProps.updatePropertyLanguages} tokenSeparators={[',']}>
         {languageOptions}
       </Select>
     </Space>

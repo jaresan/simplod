@@ -1,3 +1,7 @@
+/**
+ * @file Overwrite prompt if changes are detected when saving via ctrl+s
+ * @module @@components/controls/save-overwrite-modal
+ */
 import React from 'react';
 import { Input, Modal, Space, Tooltip } from 'antd';
 import styled from '@emotion/styled';

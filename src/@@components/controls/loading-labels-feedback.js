@@ -1,12 +1,17 @@
+/**
+ * @file Loading component for displaying loading feedback to the user
+ * @module @@components/controls/file-list
+ */
 import React from 'react';
 import { Progress } from 'antd';
 import { connect, Provider } from 'react-redux';
 import { getLoadingHumanReadable } from '@@selectors';
 import { store } from '@@app-state';
+import { translated } from '@@localization';
 
 const Loading = ({loadingHumanReadable}) => (
   <>
-    Downloading human readable labels:
+    {translated('Downloading human readable labels:')}
     <Progress style={{width: 256}} percent={loadingHumanReadable} status={loadingHumanReadable < 100 && "active"} />
   </>
 );

@@ -1,3 +1,7 @@
+/**
+ * @file Helper container to display tooltip over '?' for SPARQL variables
+ * @module @@components/controls/var-name-container
+ */
 import React from 'react';
 import { Tooltip } from 'antd';
 import styled from '@emotion/styled';

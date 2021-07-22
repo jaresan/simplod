@@ -1,3 +1,7 @@
+/**
+ * @file Info icon
+ * @module @@components/controls/info-icon
+ */
 import React from 'react';
 import { Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';

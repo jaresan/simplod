@@ -1,3 +1,7 @@
+/**
+ * @file Component to show prefixed text with a popup displaying the full IRI on hover
+ * @module @@components/entityList/PrefixedText
+ */
 import {Tooltip} from 'antd';
 import React from 'react';
 import { connect } from 'react-redux';

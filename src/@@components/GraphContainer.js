@@ -1,3 +1,7 @@
+/**
+ * @file Container for the graph part of the application. Handles displaying the AntV graph and the added controls.
+ * @module @@components/GraphContainer
+ */
 import React from 'react';
 import G6 from '@antv/g6';
 import {Graph} from '@@graph';
@@ -16,14 +20,8 @@ import { openYasguiModal } from '@@components/Yasgui';
 import { translated } from '@@localization';
 import { getSelectedEdgePropertyIds, getProperties, getClasses } from '@@selectors';
 import {connect} from 'react-redux';
-import { PropertyList } from '@@components/entityList/property-list';
+import { PropertyList } from '@@components/entityList/PropertyList';
 import { isEmpty, pick, values } from 'ramda';
-
-// const minimap = new G6.Minimap({
-//   size: [300, 300],
-//   className: 'minimap',
-//   type: 'delegate',
-// });
 
 const Container = styled.div`
   width: 100%;
@@ -68,16 +66,9 @@ class GraphContainerComponent extends React.Component {
       container: this.mountNode,
       width: this.mountNode.clientWidth,
       height: this.mountNode.clientHeight,
-      // renderer: 'svg',
       fitView: true,
       modes: {
         default: [
-          // {
-          //   type: 'activate-relations',
-          //   trigger: 'click',
-          //   activeState: 'inRelation',
-          //   inactiveState: 'notInRelation',
-          // },
           'drag-canvas', 'drag-node',
           {
             type: 'zoom-canvas',
@@ -93,7 +84,6 @@ class GraphContainerComponent extends React.Component {
         minNodeSpacing: 50,
         workerEnabled: true
       },
-      // plugins: [minimap]
     });
 
     this.graph = graph;

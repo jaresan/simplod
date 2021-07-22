@@ -1,3 +1,7 @@
+/**
+ * @file Component handling custom prefix changes
+ * @module @@components/menu/custom-prefix-row
+ */
 import React, { useState } from 'react';
 import { Select, Space, Input, message } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';

@@ -1,13 +1,18 @@
+/**
+ * @file Project sharing modal menu
+ * @module @@components/menu/share-menu
+ */
 import React, { useState } from 'react';
 import { Button, Modal, Select, Space, Typography } from 'antd';
 import { getCsvFetchUrl, getCurlFetchString, getDirectFetchUrl, getYasguiShareUrl } from '@@actions/yasgui';
 import { getCurrentFileShareableUrl } from '@@actions/solid/share';
 import { openSaveDialogModal } from '@@components/controls/file-dialog';
-import { getEndpoint, getModelFileLocation } from '@@selectors';
+import { getModelFileLocation } from '@@selectors';
 import { connect, Provider } from 'react-redux';
 import { store } from '@@app-state';
 import { changePermissions } from '@@actions/solid/files';
 import { PlayCircleOutlined } from '@ant-design/icons';
+import { translated } from '@@localization';
 
 const {Paragraph, Title, Text} = Typography;
 const {Option} = Select;
@@ -19,14 +24,14 @@ const CopyableField = ({text, title, openable}) => <Paragraph>
 </Paragraph>;
 
 const getAppLinks = modelFileLocation => <>
-  <CopyableField title="Direct application URL" text={getCurrentFileShareableUrl()} />
-  <CopyableField title="Current file URL" text={modelFileLocation} />
+  <CopyableField title={translated('Direct application URL')} text={getCurrentFileShareableUrl()} />
+  <CopyableField title={translated('Current file URL')} text={modelFileLocation} />
 </>;
 
 const getFileModalButton = () => <>
-  <Text>To be able to share this file via this application, please save it first.</Text>
+  <Text>{translated('To be able to share this file via this application, please save it first.')}</Text>
   <br />
-  <Button type="primary" onClick={openSaveDialogModal}>Save file</Button>
+  <Button type="primary" onClick={openSaveDialogModal}>{translated('Save file')}</Button>
 </>
 
 const AppShareMenu = (modelFileLocation) => {
@@ -40,9 +45,9 @@ const AppShareMenu = (modelFileLocation) => {
         setPermissions(permissions);
         changePermissions({uri: modelFileLocation, permissions})
       }} defaultValue="private" style={{ width: 120 }}>
-        <Option value="private">Private</Option>
-        <Option value="public/read">Public/Read</Option>
-        <Option value="public/write">Public/Write</Option>
+        <Option value="private">{translated('Private')}</Option>
+        <Option value="public/read">{translated('Public/Read')}</Option>
+        <Option value="public/write">{translated('Public/Write')}</Option>
       </Select>
     </Space>
   </>;
@@ -50,12 +55,12 @@ const AppShareMenu = (modelFileLocation) => {
 
 const ShareMenuComponent = ({modelFileLocation}) =>
   <>
-    <Title level={3}>Data fetching links</Title>
+    <Title level={3}>{translated('Data fetching links')}</Title>
     <CopyableField title="YASGUI Query Tool" text={getYasguiShareUrl()} openable />
     <CopyableField title="CSV URL" text={getCsvFetchUrl()} openable/>
     <CopyableField title="Direct Web URL" text={getDirectFetchUrl()} openable/>
     <CopyableField title="cURL POST Request" text={getCurlFetchString()} />
-    <Title level={3}>App links</Title>
+    <Title level={3}>{translated('App links')}</Title>
     {
       modelFileLocation ? AppShareMenu(modelFileLocation) : getFileModalButton()
     }

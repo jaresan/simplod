@@ -1,3 +1,7 @@
+/**
+ * @file Represents a property entry in the list view
+ * @module @@components/entityList/PropertyEntry
+ */
 import React from 'react';
 import { Checkbox, Space, List, Tooltip, Input } from 'antd';
 import { PrefixedText } from './PrefixedText';
@@ -35,7 +39,7 @@ const DataContainer = styled.div`
 
 const getIcon = dataProperty => {
   const TypeIcon = dataProperty ? TagOutlined : LinkOutlined;
-  const title = dataProperty ? 'Data property' : 'Object property';
+  const title = dataProperty ? translated('Data property') : translated('Object property');
 
   return <Tooltip title={title}><TypeIcon/></Tooltip>;
 }
@@ -114,8 +118,8 @@ class PropertyEntryComponent extends React.Component {
             {this.getNameInput()}
             <Controls.Toggle
               flag={asVariable}
-              tooltipTextOn="Hide from result set"
-              tooltipTextOff="Show in result set"
+              tooltipTextOn={translated('Hide from result set')}
+              tooltipTextOff={translated('Show in result set')}
               onClick={() => onSetAsVariable(id, !asVariable)}
               OnIcon={EyeOutlined}
               OffIcon={EyeInvisibleOutlined}
@@ -123,8 +127,8 @@ class PropertyEntryComponent extends React.Component {
             <Controls.Toggle
               flag={optional}
               onClick={() => onSetOptional(id, !optional)}
-              tooltipTextOn="Mark as required"
-              tooltipTextOff="Mark as optional"
+              tooltipTextOn={translated('Mark as required')}
+              tooltipTextOff={translated('Mark as optional')}
               OnIcon={QuestionCircleFilled}
               OffIcon={QuestionCircleOutlined}
             />

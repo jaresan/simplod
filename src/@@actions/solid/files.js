@@ -22,7 +22,7 @@ import rdf from 'rdflib';
  */
 const notifyUnauthorized = async () => {
   const {webId} = await getSession();
-  const logStatus = webId ? translated(`You are logged in as ${webId}.`) : translated('You are not logged in.');
+  const logStatus = webId ? translated('You are logged in as {webId}.', {webId}) : translated('You are not logged in.');
   notification.error({
     message: translated('Unauthorized'),
     description: `${logStatus}
@@ -106,7 +106,7 @@ export const saveFile = async ({uri, data}) => {
     method: 'PUT',
     body: JSON.stringify(data)
   }).then(tap(() => {
-    notification.success({message: translated(`Saved to ${uri}!`)});
+    notification.success({message: translated('Saved to {uri}!', {uri})});
     dispatchSet(SolidState.modelFileLocation, uri);
     dispatchSet(ModelState.dirty, false);
   }));
@@ -114,7 +114,7 @@ export const saveFile = async ({uri, data}) => {
   const onFail = () => {
     const key = 'save-failed-final-notification';
     notification.error({
-      message: translated(`Saving to ${uri} failed`),
+      message: translated('Saving to {uri} failed', {uri}),
       key,
       description: <>
         <Space>
@@ -217,7 +217,7 @@ export const deleteFile = async uri  => {
     if (res.status < 200 || res.status >= 300) {
       message.error(translated('An error occured while trying to delete the view.'));
     } else {
-      message.success(translated(`${uri} deleted.`));
+      message.success(translated('{uri} deleted.', {uri}));
       const filePath = ['/'].concat(uri.replace(origin, '').split('/')).filter(identity);
       dispatch(SolidState.deleteFile(filePath));
     }

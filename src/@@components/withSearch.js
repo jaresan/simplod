@@ -1,3 +1,7 @@
+/**
+ * @file HOC adding a search bar to the given component
+ * @module @@components/withSearch
+ */
 import React from 'react';
 import {Input} from 'antd';
 import {useState} from 'react';

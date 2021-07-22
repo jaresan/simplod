@@ -1,3 +1,8 @@
+/**
+ * @file Container for the YASGUI SPARQL editor tool. Reflects changes made to the application model and allows
+ * for direct query edits.
+ * @module @@components/Yasgui
+ */
 import React, { Component } from 'react';
 import { connect, Provider } from 'react-redux';
 import {
@@ -35,7 +40,6 @@ const yasgui = new YASGUI(yasguiRoot, useProxy ? {
 } : {});
 
 dispatchSet(YasguiState.instance, yasgui);
-// localStorage.removeItem('yagui__config') // Remove old saved data -- "yagui" instead of "yasgui" is on purpose
 
 class Yasgui extends Component {
 	constructor(props) {
@@ -101,8 +105,8 @@ class Yasgui extends Component {
 				</div>
 			}
 			<Space direction="vertical">
-				<div>Maximum number of results (limit): <InputNumber value={limit} onChange={this.updateLimit} /></div>
-				<div>Use limit: <Switch checked={limitEnabled} onChange={this.toggleLimit}/></div>
+				<div>{translated('Maximum number of results (limit):')} <InputNumber value={limit} onChange={this.updateLimit} /></div>
+				<div>{translated('Use limit:')} <Switch checked={limitEnabled} onChange={this.toggleLimit}/></div>
 				<YasguiContainer ref={ref => this.yasguiContainer = ref}/>
 			</Space>
 		</>;

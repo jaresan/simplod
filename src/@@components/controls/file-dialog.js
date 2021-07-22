@@ -1,3 +1,7 @@
+/**
+ * @file File dialog allowing the users to save and load files
+ * @module @@components/controls/file-dialog
+ */
 import React, {createRef, useState} from 'react';
 import { Space, Button, Modal, Tabs, Input, Upload } from 'antd';
 import FileList from '@@components/controls/file-list';
@@ -17,6 +21,7 @@ import { connect, Provider } from 'react-redux';
 import { getLastLocalState } from '@@storage';
 import { DesktopOutlined, UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import { openFileOptionsInfoModal } from '@@components/controls/modal-info-edit-file';
+import { translated } from '@@localization';
 
 const {TabPane} = Tabs;
 
@@ -34,29 +39,29 @@ const TabContents = ({canSave, canLoad, lastLocalSave, localFilename}) => {
   const inputRef = createRef();
   const [loggedIn, setLoggedIn] = useState(getUser(getState()))
   return <Space direction="vertical">
-    {canSave && <Button onClick={downloadData}>Download file<DownloadOutlined/></Button>}
+    {canSave && <Button onClick={downloadData}>{translated('Download file')}<DownloadOutlined/></Button>}
     {canLoad && <Upload
       accept=".json"
       beforeUpload={f => {
         Modal.destroyAll();
         return loadUploadedFile(f);
       }}>
-        <Button>Upload file<UploadOutlined/></Button>
+        <Button>{translated('Upload file')}<UploadOutlined/></Button>
       </Upload>
     }
-    {canSave && <Button onClick={saveDataLocally}>Save to browser storage <DesktopOutlined/></Button>}
-    {canLoad && <Button onClick={loadLocalData}>Load from browser storage <DesktopOutlined/></Button>}
-    {((canSave || canLoad) && lastLocalSave) ? <div>Last file: {localFilename} @{new Date(lastLocalSave).toLocaleString()}</div> : null}
+    {canSave && <Button onClick={saveDataLocally}>{translated('Save to browser storage')}<DesktopOutlined/></Button>}
+    {canLoad && <Button onClick={loadLocalData}>{translated('Load from browser storage')}<DesktopOutlined/></Button>}
+    {((canSave || canLoad) && lastLocalSave) ? <div>{translated('Last file:')} {localFilename} @{new Date(lastLocalSave).toLocaleString()}}</div> : null}
     <Tabs>
       <TabPane tab="Solid pod" key="1">
         {
           loggedIn ? <>
-            <h3>Your files:</h3>
+            <h3>{translated('Your files:')}</h3>
             <FileList canSave={canSave} canLoad={canLoad}/>
           </>
             :
           <Button type="primary" onClick={() => loginToSolid().then(() => setLoggedIn(true))}>
-            Login to see your Solid Pod files
+            {translated('Login to see your Solid Pod files')}
           </Button>
         }
       </TabPane>
@@ -64,14 +69,14 @@ const TabContents = ({canSave, canLoad, lastLocalSave, localFilename}) => {
         <Space direction="horizontal">
           <Input ref={inputRef} />
           {
-            canSave && <Button danger onClick={() => saveViewByUri(inputRef.current.input.value)}>Save</Button>
+            canSave && <Button danger onClick={() => saveViewByUri(inputRef.current.input.value)}>{translated('Save')}</Button>
           }
           {
             canLoad && <Button onClick={() => loadGraphFromURL({modelURL: inputRef.current.input.value})
               .then(({modelURL, hasPermissions}) => {
                 Modal.destroyAll();
                 openFileOptionsInfoModal({modelURL, hasPermissions})
-              })}>Load</Button>
+              })}>{translated('Load')}</Button>
           }
         </Space>
       </TabPane>

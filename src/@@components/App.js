@@ -1,3 +1,8 @@
+/**
+ * @file Root application component displaying two main parts, the graph and list view along with additional controls.
+ * Loads the data (graph, model, endpoint) on load based on the URL parameters specified.
+ * @module @@components/App
+ */
 import React, {Component} from 'react';
 import {GraphContainer} from './GraphContainer';
 import { Alert, Layout } from 'antd';
@@ -15,8 +20,6 @@ import { getCartesianProduct, getHorizontalLayout, getModelQuery } from '@@selec
 import { connect } from 'react-redux';
 import { translated } from '@@localization';
 import {css} from '@emotion/css';
-import configs from '../dev_examples';
-import {Button} from 'antd';
 
 const {Content, Footer} = Layout;
 
@@ -51,31 +54,6 @@ class App extends Component {
     this.schemaURL = url.searchParams.get('schemaURL');
     this.endpointURL = url.searchParams.get('endpointURL');
     this.modelURL = url.searchParams.get('modelURL');
-
-    this.courtExampleURL = 'https://sparql-proxy-api.jaresantonin.now.sh/spo-court.ttl';
-    this.applicantsURL = 'https://sparql-proxy-api.jaresantonin.now.sh/spo-job-applicants.ttl';
-    // this.govURL = "https://sparql-proxy-api.jaresantonin.now.sh/data.gov.cz.ttl";
-    // this.beefURL = '/samples/http---linked.opendata.cz-sparql.ttl'
-    // this.beefEndpointURL = 'http://linked.opendata.cz/sparql'
-    // this.ukURL = '/samples/http---data.open.ac.uk-query.ttl';
-    // this.ukEndpointURL = 'http://data.open.ac.uk/query';
-    // // this.beefURL = '/samples/http---nl.dbpedia.org-sparql.ttl';
-    // // this.endpointURL = 'http://nl.dbpedia.org/sparql';
-    // const examples = [
-    //   ['/samples/http---www.imagesnippets.com-sparql-images.ttl', 'https://imagesnippets.com/sparql/images']
-    // ];
-    // this.schemaURL = ;
-    // this.endpointURL = ;
-    if (process.env.NODE_ENV === 'development') {
-      this.schemaURL = this.courtExampleURL;
-      // this.schemaURL = this.schemaURL || this.applicantsURL;
-      // this.schemaURL = this.govURL;
-      // this.schemaURL = this.beefURL;
-      // this.endpointURL = 'https://data.gov.cz/sparql';
-      this.schemaURL = 'https://jaresan.github.io/simplod/examples/nobel_prizes.ttl';
-      this.schemaURL = '/samples/example.ttl';
-      this.endpointURL = 'https://data.nobelprize.org/store/sparql';
-    }
   }
 
   componentDidMount() {
@@ -101,20 +79,15 @@ class App extends Component {
               <GraphContainer />
             </div>
             <div style={getMenuStyle(horizontalLayout)}>
-              {/*{*/}
-              {/*  configs.map(([file, endpoint, size, name]) =>*/}
-              {/*    <Button onClick={() => loadGraphFromURL({dataSchemaURL: file, endpointURL: endpoint})}>{size} - {name}</Button>*/}
-              {/*  )*/}
-              {/*}*/}
               {modelQuery && <Alert type='error' showIcon={false} message={translated('Current SPARQL Query has been manually edited, making any changes in the application will remove these edits.')} banner />}
               {cartesianProduct && <Alert message={translated('Current selection is not a connected graph and might result in querying a cartesian product.')} banner />}
               <Tabs className={TabHeight} style={{width: '100%', height: '90vh'}} onChange={this.updateTabKey}>
-                <TabPane tab="Available" key="available">
+                <TabPane tab={translated('Available')} key="available">
                   <EntityListContainer>
                     <EntityList />
                   </EntityListContainer>
                 </TabPane>
-                <TabPane tab="Selected" key="selected">
+                <TabPane tab={translated('Selected')} key="selected">
                   <ColumnList />
                   <EntityListContainer>
                     <EntityList active={this.state.tabKey === 'selected'} onlySelected />

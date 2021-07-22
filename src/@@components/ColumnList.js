@@ -1,3 +1,7 @@
+/**
+ * @file Orderable column list with draggable tags, allowing the users to reorder their variables in the SELECT query
+ * @module @@components/ColumnList
+ */
 import React, { Component } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { DragOutlined } from '@ant-design/icons';
@@ -7,6 +11,7 @@ import { connect } from 'react-redux';
 import { getProperties, getClasses, getSelectionOrder } from '@@selectors';
 import {dispatchSet} from '@@app-state';
 import * as ModelState from '@@app-state/model/state';
+import { translated } from '@@localization';
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -67,7 +72,7 @@ class ColumnListComponent extends Component {
 
   getEmptyMessage = () => {
     return <h3>
-      You can reorder the result set columns here after selecting some properties.
+      {translated('You can reorder the result set columns here after selecting some properties.')}
     </h3>
   };
 
@@ -78,7 +83,7 @@ class ColumnListComponent extends Component {
 
     return (
       <div>
-        Result column order:
+        {translated('Result column order:')}
         <DragDropContext onDragEnd={this.onDragEnd}>
           <Droppable droppableId="droppable" direction="vertical">
             {(provided, snapshot) => (
@@ -119,7 +124,6 @@ const mapStateToProps = appState => ({
   selectionOrder: getSelectionOrder(appState)
 });
 
-// TODO: @dispatch
 const dispatchProps = {
   updateSelectionOrder: dispatchSet(ModelState.selectionOrder)
 };

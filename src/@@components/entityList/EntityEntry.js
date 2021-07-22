@@ -1,3 +1,7 @@
+/**
+ * @file Represents an entity entry in the list view
+ * @module @@components/entityList/EntityEntry
+ */
 import React from 'react';
 import { path, pipe } from 'ramda';
 import { List, Card, Space, Checkbox, Tooltip, Input } from 'antd';
@@ -20,6 +24,7 @@ import * as ModelState from '@@app-state/model/state';
 import { dispatch } from '@@app-state';
 import { VarNameContainer } from '@@components/controls/var-name-container';
 import { Graph } from '@@graph';
+import { translated } from '@@localization';
 
 const ExpandIconContainer = styled.div`
   display: inline-block;
@@ -82,7 +87,7 @@ class EntityEntryComponent extends React.Component {
               onPressEnter={() => updateName(id, varName)}
             />
           </VarNameContainer>
-          <Tooltip title={`${selected ? 'Hide' : 'Show'} entity in the result set`}>
+          <Tooltip title={`${selected ? translated('Hide entity in the result set') : translated('Show entity in the result set')}`}>
             <Checkbox
               onChange={e => toggleSelected(id, e.target.checked)}
               name="Select"
@@ -91,20 +96,20 @@ class EntityEntryComponent extends React.Component {
           </Tooltip>
           <Controls.Toggle
             flag={true}
-            tooltipTextOn="Copy entity"
+            tooltipTextOn={translated('Copy entity')}
             onClick={() => onCopyEntity(id)}
             OnIcon={CopyOutlined}
           />
           <Controls.Toggle
             flag={true}
-            tooltipTextOn="Delete entity"
+            tooltipTextOn={translated('Delete entity')}
             onClick={() => deleteClass(id)}
             OnIcon={DeleteOutlined}
           />
           <Controls.Toggle
             flag={!hidden}
-            tooltipTextOn="Hide entity in the graph"
-            tooltipTextOff="Show entity in the graph"
+            tooltipTextOn={translated('Hide entity in the graph')}
+            tooltipTextOff={translated('Show entity in the graph')}
             onClick={() => toggleHidden(id, !hidden)}
             OnIcon={EyeOutlined}
             OffIcon={EyeInvisibleOutlined}

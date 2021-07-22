@@ -1,3 +1,7 @@
+/**
+ * @file Settings menu
+ * @module @@components/controls/settings
+ */
 import React from 'react';
 import { Select, Space, Switch, Modal, Radio } from 'antd';
 import { connect, Provider } from 'react-redux';
