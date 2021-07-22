@@ -1,3 +1,9 @@
+/**
+ * @file Helper functions for mapping strings between languages.
+ * All of the strings throughout the application are in English and are translated directly
+ * via 1-1 mapping.
+ * @module @@localization
+ */
 import { path, view } from 'ramda';
 import { getState } from '@@app-state';
 import * as SettingsState from '@@app-state/settings/state';
@@ -101,11 +107,20 @@ const texts = {
   en, cs
 };
 
+/**
+ * Returns translation for given text based on current application language selected.
+ * @function
+ * @param t
+ * @returns {*}
+ */
 export const translated = t => {
   const language = view(SettingsState.language, getState());
   return path([language, t], texts) || t;
 }
 
+/**
+ * Writes warnings into the console for missing translations
+ */
 Object.entries(texts).forEach(([ lang, dict]) => {
   Object.keys(keys).forEach(k => !dict[k] && console.warn(`Missing key: '${k}' in the ${lang} variant!`));
 });

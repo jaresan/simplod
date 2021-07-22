@@ -1,7 +1,19 @@
+/**
+ * @file Definition of middleware for model
+ * @module @@app-state/model/middleware
+ */
 import { curry, set, view } from 'ramda';
 import { dirty, rootLens, getSelectedProperties, getSelectedClasses, cartesianProduct } from '@@app-state/model/state';
 import { isConnected } from '@@data/graph';
 
+/**
+ * Middleware to be run on every state change.
+ * Checks for the possibility of a cartesian product and flags the state as such.
+ * Also marks the state as dirty if any changes are detected, for feedback to the user,
+ * if some changes are not saved.
+ * @function
+ * @type {*}
+ */
 export const middleware = curry((oldState, newState) => {
   let state = set(dirty, view(dirty, newState), newState);
   const cartesianProductPossible = !isConnected({

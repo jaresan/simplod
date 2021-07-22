@@ -1,3 +1,7 @@
+/**
+ * @file Definition of state keys for solid
+ * @module @@app-state/solid
+ */
 import {compose, lensProp, dissocPath, set} from 'ramda';
 
 export const initial = {

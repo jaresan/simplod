@@ -1,3 +1,7 @@
+/**
+ * @file Definition of state keys for controls
+ * @module @@app-state/controls
+ */
 import { compose, lensProp } from 'ramda';
 
 export const initial = {

@@ -1,4 +1,7 @@
-// Prefix file specification downloaded from https://prefix.cc/context
+/**
+ * @file Prefix file specification downloaded from https://prefix.cc/context
+ * @module @@constants/possible-prefixes
+ */
 export default {
 	"http://linked.opendata.cz/resource/court/cz/kinds#": "courts",
 	"http://www.loc.gov/mads/rdf/v1#": "mads",

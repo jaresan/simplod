@@ -1,3 +1,7 @@
+/**
+ * @file Definition of the state keys for model and their changes
+ * @module @@app-state/model/state
+ */
 import {
   compose,
   lensProp,
@@ -130,6 +134,13 @@ const updateClass = update(entityTypes.class);
 const updateEdge = update(entityTypes.edge);
 
 export const togglePropertyOptional = updateProperty('optional');
+
+/**
+ * Marks the property if it should be queried as a variable or not.
+ * For object properties also propagates the change to the target classes.
+ * @function
+ * @type {*}
+ */
 export const togglePropertyAsVariable = curry((id, asVariable, s) => {
   const {target, dataProperty} = view(propertyById(id), s);
 
@@ -151,6 +162,11 @@ export const unhighlightEdges = cond([
 
 const getLanguageField = (languageOrder, field, data) => paths(languageOrder.map(l => [l, field]), data).find(a => a);
 
+/**
+ * Extracts the language information for given language to the root info object of the entity.
+ * @function
+ * @type {*}
+ */
 export const updateLanguageInfo = curry((language, e) => {
   const languageOrder = [language, 'en', 'de', 'default'];
 
@@ -185,6 +201,12 @@ const updateSelected = curry((type, id, selected, s) => {
   return set(selectionOrder, order, s);
 });
 
+/**
+ * Toggles the property as selected.
+ * Based on whether it is the last deselected or first selected also selected/deselects the target and source entities.
+ * @function
+ * @type {*}
+ */
 export const togglePropertySelected = curry((id, selected, s) => {
   const property = view(propertyById(id), s);
   const {source, target, dataProperty} = property;
@@ -269,6 +291,11 @@ export const registerResources = curry((entityType, resources, s) => {
   return set(entitiesByType[entityType], withDefaultProps, s);
 });
 
+/**
+ * For a list of property ids binds their names to their current target.
+ * @function
+ * @type {*}
+ */
 export const bindProperties = curry((propertyIds, state) => {
   if (!propertyIds || !propertyIds.length) {
     propertyIds = Object.keys(view(properties, state));
@@ -338,6 +365,14 @@ const createNewPropertiesForTargetType = curry(({type: targetType, id: target, v
   }, s);
 });
 
+/**
+ * Creates a new class entity based on the provided id.
+ * This in turn creates duplicate properties on other entities that can target this new entity.
+ * @function
+ * @param id
+ * @param s
+ * @returns {{instance: any, newId: *, state: *}}
+ */
 const createNewClassInstance = (id, s) => {
   const entity = view(classById(id), s);
   const newId = suffixId(classById, s, entity.type || id);

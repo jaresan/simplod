@@ -1,4 +1,8 @@
-import { set, curry, compose, view, pipe } from 'ramda';
+/**
+ * @file Definition of the application state and its root reducer
+ * @module @@app-state/index
+ */
+import { set, curry, compose, pipe } from 'ramda';
 import { createStore } from 'redux';
 import { middleware as modelMiddleware } from '@@app-state/model/middleware';
 import { middleware as yasguiMiddleware } from '@@app-state/yasgui/state';
@@ -12,8 +16,10 @@ let middleware = compose;
 // 	middleware = window.__REDUX_DEVTOOLS_EXTENSION__();
 // }
 
-export const compare = curry((oldState, newState, lens) => view(lens, oldState) === view(lens, newState));
-
+/**
+ * Definition of the store with the root reducer.
+ * @type {Store<*, Action>}
+ */
 export const store = createStore(
 	(s, a) => {
 		const oldState = s;
@@ -25,31 +31,25 @@ export const store = createStore(
 				break;
 		}
 
+		// Pass through middlewares with old and new states
 		return pipe(modelMiddleware(oldState), yasguiMiddleware(oldState))(s);
 	},
 	initial,
 	middleware
 );
 
+/**
+ * Dispatches a state-altering function
+ * @function
+ * @param f
+ * @returns {{fn, type: symbol}}
+ */
 export const dispatch = f => store.dispatch({type: fn, fn: f});
+
+/**
+ * Dispatches a direct set for given lens and value
+ * @function
+ * @type {*}
+ */
 export const dispatchSet = curry((ln, v) => dispatch(set(ln, v)));
 export const getState = () => store.getState();
-
-if (process.env.NODE_ENV === 'development') {
-	const ModelState = require('./model/state');
-	Object.assign(window,
-		{
-			dispatch,
-			dispatchSet,
-			ModelState,
-			simplod: {
-				registerCube: () => dispatch(ModelState.registerNewClass('cube:Observation')),
-			},
-			SettingsState: require('./settings/state'),
-			YasguiState: require('./yasgui/state'),
-			getState,
-			renamePrefix: require('@@actions/custom-prefix').renamePrefix
-		},
-		require('ramda')
-	);
-}

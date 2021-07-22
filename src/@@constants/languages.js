@@ -1,4 +1,7 @@
-// TODO: Enable languages dynamically based on the data
+/**
+ * @file Language and code definitions
+ * @module @@constants/languages
+ */
 export const interfaceLanguages = ['cs', 'en'];
 
 export const labelLanguages = [
