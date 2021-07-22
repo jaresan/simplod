@@ -28,9 +28,13 @@ const tab = () => {
  * @returns {string} URL with the encoded query against the current endpoint
  */
 export const getCsvFetchUrl = () => {
-  const url = new URL(tab().yasr.config.getPlainQueryLinkToEndpoint());
-  url.searchParams.append('format', 'text/csv');
-  return `${url}`;
+  try {
+    const url = new URL(tab().yasr.config.getPlainQueryLinkToEndpoint());
+    url.searchParams.append('format', 'text/csv');
+    return `${url}`;
+  } catch (e) {
+    return tab().yasr.config.getPlainQueryLinkToEndpoint();
+  }
 }
 
 /**

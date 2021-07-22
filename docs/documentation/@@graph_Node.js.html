@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: @@graph/Node.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: @@graph/Node.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file Creation of nodes according to the AntV specification
+ * @module @@graph/Node
+ */
+import G6 from '@antv/g6';
+import { flatten, last } from 'ramda';
+import E from '@@graph/ElementCreators';
+import Group from '@@graph/wrappers/Group';
+import { getSuffix } from '@@data/parsePrefix';
+export const NODE_TYPE = 'graphNode';
+
+export const PROP_LINE_HEIGHT = 12;
+const nodeContainerColor = 'lightgrey';
+const textColor = 'black';
+const getAttrs = ctx => ({
+  'node-container': ({label}) => ({
+    width: ctx.measureText(label).width + 8,
+    height: 20,
+    stroke: textColor, // Apply the color to the stroke. For filling, use fill: cfg.color instead
+    fill: nodeContainerColor,
+    opacity: 1
+  }),
+  'node-title': (width, text) => ({
+    x: width / 2, // center
+    y: 4,
+    textAlign: 'center',
+    textBaseline: 'top',
+    text,
+    fill: textColor,
+  }),
+  property: ({predicate, type, i, ctx}) => {
+    const text = `${predicate}: ${type}`;
+    return {
+      x: 4, // center
+      y: PROP_LINE_HEIGHT * (i+1) + PROP_LINE_HEIGHT - 2,
+      textAlign: 'left',
+      textBaseline: 'top',
+      width: Math.round(ctx.measureText(text).width + 8),
+      text,
+      fill: textColor,
+      stroke: textColor
+    }
+  },
+  'property-container': propArr => ({
+    y: PROP_LINE_HEIGHT * 2 - 4,
+    width: Math.max(...propArr.map(p => p.attrs.width)),
+    height: propArr.length * PROP_LINE_HEIGHT + 6,
+    stroke: 'black',
+    fill: nodeContainerColor,
+    opacity: 1
+  })
+});
+
+const registeredNames = {};
+const getVarName = (iri, sourceId) => {
+  const propSuffix = getSuffix(iri);
+  const entitySuffix = getSuffix(sourceId)
+
+  if (registeredNames[propSuffix]) {
+    return `${entitySuffix}_${propSuffix}`;
+  } else {
+    registeredNames[propSuffix] = true;
+    return propSuffix;
+  }
+};
+
+const getAddPropertyFn = (group, ctx, attrs) => ({source, predicate, target, targetType, varName, dataProperty}) => {
+  const propertyCount = Object.values(group.get('wrapper').propertyWrappers).length;
+  const id = `property_${source}-${predicate}-${target}`;
+  group.addShape(E.ObjectProperty({
+    id,
+    attrs: attrs.property({predicate, type: target, i: propertyCount, ctx}),
+    name: id,
+    data: {target, source, predicate, targetType, varName: varName || getVarName(predicate, source), dataProperty}
+  }));
+  const node = last(group.getChildren());
+  const wrapper = node.get('wrapper');
+  if (wrapper) {
+    wrapper.setNode(node)
+
+    const containerNode = group.get('item');
+    node.set('containerNode', containerNode);
+    wrapper.setContainerNode(containerNode);
+  }
+  group.get('wrapper').registerProperty(node);
+}
+
+const NodeImplementation = {
+  draw(cfg, group) {
+    const {data, id} = cfg;
+    const ctx = group.get('canvas').get('context');
+    ctx.save();
+    ctx.font = '12px sans-serif';
+    const attrs = getAttrs(ctx);
+    const dataPropertyCount = Object.keys(data.dataProperties).length;
+    const containerAttrs = attrs['node-container']({label: cfg.label});
+    const {width, height} = containerAttrs;
+    const dataProperties = Object.entries(data.dataProperties).map(([predicate, objects], i)=> {
+      const propId = `property_${id}-${predicate}-${objects[0]}`;
+      return E.DataProperty({
+        id: propId,
+        attrs: attrs.property({predicate, type: objects[0], i, ctx}),
+        name: propId,
+        data: {target: objects[0], targetType: objects[0], source: id, predicate, varName: getVarName(predicate, id), dataProperty: true}
+      })
+    });
+
+    let i = 0;
+    const objectProperties = flatten(Object.entries(data.objectProperties).map(([predicate, objects]) =>
+      objects.map(target => {
+        const propId = `property_${id}-${predicate}-${target}`;
+        return E.ObjectProperty({
+          id: propId,
+          attrs: attrs.property({predicate, type: target, i: i + dataPropertyCount, ctx}),
+          name: propId,
+          data: {target, source: id, predicate, targetType: target, varName: getVarName(predicate, id)}
+        })
+      })
+    ));
+
+    const propertyContainerAttrs = attrs['property-container'](dataProperties.concat(objectProperties));
+    const expandIconAttrs = {
+      x: width + 3,
+      y: 5,
+      img: 'images/expand.png',
+      width: 10,
+      height: 10
+    };
+
+    const copyNodeIconAttrs = {
+      x: -14,
+      y: -14,
+      img: 'images/copy-icon.png',
+      width: 12,
+      height: 12
+    };
+
+    const deleteNodeIconAttrs = {
+      x: -30,
+      y: -14,
+      img: 'images/delete-icon.png',
+      width: 12,
+      height: 12
+    };
+
+    const selectAllIconAttrs = {
+      x: -15,
+      y: 3,
+      img: 'images/plus.png',
+      width: 14,
+      height: 14
+    };
+
+    const hideIconAttrs = {
+      x: -30,
+      y: 4,
+      img: 'images/eye-invisible.png',
+      width: 12,
+      height: 12
+    };
+
+    group.set('objectProperties', objectProperties);
+    group.set('data', data);
+    group.set('addProperty', getAddPropertyFn(group, ctx, attrs));
+    group.entityId = id;
+    const result = E.create(group, [
+      E.Node({id, attrs: containerAttrs, name: 'node-container', data: {varName: getSuffix(id), type: id} }),
+      E.Rect({id: `node_${id}-delete-node-container`, name: 'delete-node-container', attrs: {x: -32, y: -16, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}}),
+      E.Image({id: `node_${id}-delete-node-icon`, name: 'delete-node-icon', attrs: deleteNodeIconAttrs}),
+      E.Rect({id: `node_${id}-copy-node-container`, name: 'copy-node-container', attrs: {x: -16, y: -16, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}}),
+      E.Image({id: `node_${id}-copy-node-icon`, name: 'copy-node-icon', attrs: copyNodeIconAttrs}),
+      E.Rect({id: `node_${id}-varName-container`, attrs: {x: 0, y: -16, width: 32, height: 16, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'node-varName-container'}),
+      E.Text({id: `node_${id}-varName`, attrs: {...attrs['node-title'](width, cfg.varName || cfg.label), y: -14, textAlign: 'left', x: 2}, name: 'node-varName'}),
+      E.Text({id: `node_${id}-title`, attrs: attrs['node-title'](width, cfg.label), name: 'node-title'}),
+      E.Rect({id: `node_${id}-select-all-container`, attrs: {x: -16, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'select-all-container'}),
+      E.Image({id: `node_${id}-select-all-icon`, name: 'select-all-icon', attrs: selectAllIconAttrs}),
+      E.Rect({id: `node_${id}-hide-icon-container`, attrs: {x: hideIconAttrs.x - 2, width: hideIconAttrs.width + 4, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'hide-icon-container'}),
+      E.Image({id: `node_${id}-hide-icon`, name: 'hide-icon', attrs: hideIconAttrs}),
+      E.Rect({id: `node_${id}-expand-icon-container`, attrs: {x: width, width: 16, height, fill: containerAttrs.fill, stroke: containerAttrs.stroke}, name: 'expand-icon-container'}),
+      E.Image({id: `node_${id}-expand-icon`, name: 'expand-icon', attrs: expandIconAttrs}),
+      E.Rect({id: `node_${id}-prop-container`, attrs: propertyContainerAttrs, name: 'property-container'}),
+      ...dataProperties,
+      ...objectProperties
+    ])[0];
+
+    ctx.restore();
+    return result;
+  },
+
+  afterDraw(cfg, group) {
+    group.getChildren().forEach(node => {
+      const wrapper = node.get('wrapper');
+      if (wrapper) {
+        wrapper.setNode(node)
+
+        const containerNode = group.get('item');
+        node.set('containerNode', containerNode);
+        wrapper.setContainerNode(containerNode);
+      }
+    });
+    const wrapper = new Group(group.entityId, group);
+    group.set('wrapper', wrapper);
+  }
+};
+
+export const createNode = data => ({
+  ...data,
+  type: NODE_TYPE
+});
+export const getNodes = data => Object.entries(data).map(([id, {objectProperties, dataProperties}]) => createNode({
+  id: id,
+  label: id,
+  data: {objectProperties, dataProperties}
+}));
+
+export const measureText = (node, txt) => {
+  const ctx = node.get('canvas').get('context');
+  ctx.save();
+  ctx.font = '12px sans-serif';
+  const res = ctx.measureText(txt);
+  ctx.restore();
+  return res;
+};
+
+G6.registerNode(NODE_TYPE, NodeImplementation, 'single-node');
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="@@actions_load.module_js.html">@@actions/load.js</a></li><li><a href="@@actions_load-human-readable.module_js.html">@@actions/load-human-readable.js</a></li><li><a href="@@actions_yasgui.module_js.html">@@actions/yasgui.js</a></li><li><a href="index.module_js.html">index.js</a></li><li><a href="module-@@actions_custom-prefix.html">@@actions/custom-prefix</a></li><li><a href="module-@@actions_lifecycle.html">@@actions/lifecycle</a></li><li><a href="module-@@actions_save.html">@@actions/save</a></li><li><a href="module-@@actions_solid_auth.html">@@actions/solid/auth</a></li><li><a href="module-@@actions_solid_files.html">@@actions/solid/files</a></li><li><a href="module-@@actions_solid_lifecycle.html">@@actions/solid/lifecycle</a></li><li><a href="module-@@actions_solid_share.html">@@actions/solid/share</a></li><li><a href="module-@@api.html">@@api</a></li><li><a href="module-@@api_labels-parsing.html">@@api/labels-parsing</a></li><li><a href="module-@@app-state_controls.html">@@app-state/controls</a></li><li><a href="module-@@app-state_index.html">@@app-state/index</a></li><li><a href="module-@@app-state_initial.html">@@app-state/initial</a></li><li><a href="module-@@app-state_model_middleware.html">@@app-state/model/middleware</a></li><li><a href="module-@@app-state_model_state.html">@@app-state/model/state</a></li><li><a href="module-@@app-state_settings.html">@@app-state/settings</a></li><li><a href="module-@@app-state_solid.html">@@app-state/solid</a></li><li><a href="module-@@app-state_yasgui.html">@@app-state/yasgui</a></li><li><a href="module-@@components_App.html">@@components/App</a></li><li><a href="module-@@components_ColumnList.html">@@components/ColumnList</a></li><li><a href="module-@@components_controls_file-dialog.html">@@components/controls/file-dialog</a></li><li><a href="module-@@components_controls_file-list.html">@@components/controls/file-list</a></li><li><a href="module-@@components_controls_info-icon.html">@@components/controls/info-icon</a></li><li><a href="module-@@components_controls_modal-info-edit-file.html">@@components/controls/modal-info-edit-file</a></li><li><a href="module-@@components_controls_save-overwrite-modal.html">@@components/controls/save-overwrite-modal</a></li><li><a href="module-@@components_controls_settings.html">@@components/controls/settings</a></li><li><a href="module-@@components_controls_var-name-container.html">@@components/controls/var-name-container</a></li><li><a href="module-@@components_controls_with-info-icon.html">@@components/controls/with-info-icon</a></li><li><a href="module-@@components_controls_with-retry.html">@@components/controls/with-retry</a></li><li><a href="module-@@components_DraggableTag.html">@@components/DraggableTag</a></li><li><a href="module-@@components_entityList_EntityEntry.html">@@components/entityList/EntityEntry</a></li><li><a href="module-@@components_entityList_EntityList.html">@@components/entityList/EntityList</a></li><li><a href="module-@@components_entityList_PrefixedText.html">@@components/entityList/PrefixedText</a></li><li><a href="module-@@components_entityList_PropertyEntry.html">@@components/entityList/PropertyEntry</a></li><li><a href="module-@@components_entityList_PropertyList.html">@@components/entityList/PropertyList</a></li><li><a href="module-@@components_entityList_Toggle.html">@@components/entityList/Toggle</a></li><li><a href="module-@@components_GraphContainer.html">@@components/GraphContainer</a></li><li><a href="module-@@components_menu_custom-prefix-row.html">@@components/menu/custom-prefix-row</a></li><li><a href="module-@@components_menu_file-menu.html">@@components/menu/file-menu</a></li><li><a href="module-@@components_menu_file-property-fields.html">@@components/menu/file-property-fields</a></li><li><a href="module-@@components_menu_menu.html">@@components/menu/menu</a></li><li><a href="module-@@components_menu_new-file.html">@@components/menu/new-file</a></li><li><a href="module-@@components_menu_properties.html">@@components/menu/properties</a></li><li><a href="module-@@components_menu_share-menu.html">@@components/menu/share-menu</a></li><li><a href="module-@@components_with-loading.html">@@components/with-loading</a></li><li><a href="module-@@components_withSearch.html">@@components/withSearch</a></li><li><a href="module-@@components_Yasgui.html">@@components/Yasgui</a></li><li><a href="module-@@constants_api.html">@@constants/api</a></li><li><a href="module-@@constants_entity-types.html">@@constants/entity-types</a></li><li><a href="module-@@constants_examples.html">@@constants/examples</a></li><li><a href="module-@@constants_languages.html">@@constants/languages</a></li><li><a href="module-@@constants_possible-prefixes.html">@@constants/possible-prefixes</a></li><li><a href="module-@@data_graph.html">@@data/graph</a></li><li><a href="module-@@data_parsePrefix.html">@@data/parsePrefix</a></li><li><a href="module-@@data_parseQuery.html">@@data/parseQuery</a></li><li><a href="module-@@data_parseTTL.html">@@data/parseTTL</a></li><li><a href="module-@@dom.html">@@dom</a></li><li><a href="module-@@graph_Edge.html">@@graph/Edge</a></li><li><a href="module-@@graph_ElementCreators.html">@@graph/ElementCreators</a></li><li><a href="module-@@graph_Graph.html">@@graph/Graph</a></li><li><a href="module-@@graph_handlers_Canvas.html">@@graph/handlers/Canvas</a></li><li><a href="module-@@graph_handlers_Edge.html">@@graph/handlers/Edge</a></li><li><a href="module-@@graph_handlers_Handler.html">@@graph/handlers/Handler</a></li><li><a href="module-@@graph_handlers_Node.html">@@graph/handlers/Node</a></li><li><a href="module-@@graph_handlers_Property.html">@@graph/handlers/Property</a></li><li><a href="module-@@graph_Node.html">@@graph/Node</a></li><li><a href="module-@@graph_wrappers_Canvas.html">@@graph/wrappers/Canvas</a></li><li><a href="module-@@graph_wrappers_DataProperty.html">@@graph/wrappers/DataProperty</a></li><li><a href="module-@@graph_wrappers_Edge.html">@@graph/wrappers/Edge</a></li><li><a href="module-@@graph_wrappers_Node.html">@@graph/wrappers/Node</a></li><li><a href="module-@@graph_wrappers_ObjectProperty.html">@@graph/wrappers/ObjectProperty</a></li><li><a href="module-@@graph_wrappers_property.html">@@graph/wrappers/property</a></li><li><a href="module-@@graph_wrappers_Wrapper.html">@@graph/wrappers/Wrapper</a></li><li><a href="module-@@localization.html">@@localization</a></li><li><a href="module-@@selectors.html">@@selectors</a></li><li><a href="module-@@storage.html">@@storage</a></li><li><a href="module-@@string.html">@@string</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Jul 22 2021 22:32:21 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -8,13 +8,6 @@ import { fromEvent } from '@@dom';
 import { withInfoIcon } from '@@components/controls/with-info-icon';
 import { translated } from '@@localization';
 
-const labels = {
-  dataSchema: [translated('Data schema URL:'), translated('URL from which the data schema should be retrieved')],
-  endpoint: [translated('SPARQL endpoint:'), translated('URL of the SPARQL endpoint against which the query is run')],
-  title: [translated('Title:'), translated('Title of the project')],
-  description: [translated('Description:'), translated('Text description of what this project represents')]
-};
-
 export const FilePropertyFields = ({
   onSchemaReload,
   onTitleChange,
@@ -22,8 +15,15 @@ export const FilePropertyFields = ({
   onSchemaChange,
   onDescriptionChange,
   schemaURL, endpointURL, title, description
-}) =>
-  <Space direction="vertical" style={{width: '100%'}}>
+}) => {
+  const labels = {
+    dataSchema: [translated('Data schema URL:'), translated('URL from which the data schema should be retrieved')],
+    endpoint: [translated('SPARQL endpoint:'), translated('URL of the SPARQL endpoint against which the query is run')],
+    title: [translated('Title:'), translated('Title of the project')],
+    description: [translated('Description:'), translated('Text description of what this project represents')]
+  };
+
+  return <Space direction="vertical" style={{width: '100%'}}>
     {withInfoIcon(labels.dataSchema)}
     <Input
       type="text"
@@ -33,7 +33,7 @@ export const FilePropertyFields = ({
     />
     {
       onSchemaReload && <Button onClick={onSchemaReload}>
-        Reload schema
+        {translated('Reload schema')}
       </Button>
     }
     {withInfoIcon(labels.endpoint)}
@@ -58,3 +58,4 @@ export const FilePropertyFields = ({
       placeholder={translated('File description')}
     />
   </Space>;
+}

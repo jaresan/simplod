@@ -56,13 +56,14 @@ class App extends Component {
     this.modelURL = url.searchParams.get('modelURL');
   }
 
+  componentWillMount() {
+    onAppStart();
+  }
+
   componentDidMount() {
-    onAppStart()
-      .then(() => {
-        if (this.schemaURL || this.modelURL) {
-          loadGraphFromURL({dataSchemaURL: this.schemaURL, endpointURL: this.endpointURL, modelURL: this.modelURL})
-        }
-      });
+    if (this.schemaURL || this.modelURL) {
+      loadGraphFromURL({dataSchemaURL: this.schemaURL, endpointURL: this.endpointURL, modelURL: this.modelURL})
+    }
   }
 
   updateTabKey = tabKey => this.setState({tabKey});

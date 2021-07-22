@@ -49,7 +49,7 @@ export const getConnectedEntities = (p, edgesByNode) => {
  * @function
  * @param properties
  * @param entityIds
- * @returns {*|(function(*=): (*))|boolean}
+ * @returns {*}
  */
 export const isConnected = ({properties, entityIds}) => {
   if (!properties.length) {
@@ -88,7 +88,7 @@ export const isConnected = ({properties, entityIds}) => {
  * @param expandedNodes
  * @param ancestors
  * @param classes
- * @returns {{nodes: {}, root: *}|{nodes: {}, root: (*&{dataProperties: *, edges: *|(function(*=): (*))})}}
+ * @returns {*}
  */
 export const expandRoot = ({n, propertiesBySource, expandedEdges = {}, expandedNodes = {}, ancestors = {}, classes}) => {
   if (expandedNodes[n.id]) {

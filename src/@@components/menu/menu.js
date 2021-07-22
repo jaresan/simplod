@@ -85,7 +85,7 @@ class MenuComponent extends React.Component {
         </Menu.Item>
         <br/>
         {FileMenu({modelFileLocation, loggedIn})}
-        <Menu.Item title={translated('Settings')} onClick={openSettingsModal}>Settings</Menu.Item>
+        <Menu.Item title={translated('Settings')} onClick={openSettingsModal}>{translated('Settings')}</Menu.Item>
         <Menu.SubMenu style={{height: 64, width: 64, position: 'absolute', top: 8, right: 0}}
                       icon={<Avatar style={iconStyle} size="large" src={avatar}
                                     icon={<UserOutlined style={iconStyle}/>}/>}>

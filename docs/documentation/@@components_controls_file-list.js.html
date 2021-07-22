@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: @@components/controls/file-list.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: @@components/controls/file-list.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file File list for displaying user's files
+ * @module @@components/controls/file-list
+ */
+import React, { Component } from 'react';
+import { message, Button, Input, Tree, Space, Popover, Modal } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { curry } from 'ramda';
+import path from 'path';
+import {
+  getFiles, getSessionValid,
+  getUser
+} from '@@selectors';
+import { connect, Provider } from 'react-redux';
+import { store } from '@@app-state';
+import { deleteFile, loadFiles, saveViewByUri, getFileUrl } from '@@actions/solid/files';
+import { loadGraphFromURL } from '@@actions/load';
+import { openFileOptionsInfoModal } from '@@components/controls/modal-info-edit-file';
+import { translated } from '@@localization';
+
+const newViewSuffix = '__newView'; // Used to add a key to the rendered empty node in the same folder so that it doesn't clash with the folder's key itself
+
+class FileList extends Component {
+  state = {
+    creatingView: false,
+    folderWithNewView: ''
+  };
+
+  fileFetchMap = {};
+
+  saveNewView = async key => {
+    saveViewByUri(await getFileUrl(key), this.props.permissions)
+      .then(() => Modal.destroyAll());
+  }
+
+  onLoadView = async uri => {
+    loadGraphFromURL({modelURL: await getFileUrl(uri)})
+      .then(({modelURL, hasPermissions}) => {
+        Modal.destroyAll();
+        openFileOptionsInfoModal({modelURL, hasPermissions})
+      });
+  }
+
+  onDeleteFile = uri => deleteFile(uri);
+
+  getNewFileInput = ({key}) => {
+    const ref = React.createRef();
+    const onSave = () => {
+      this.saveNewView(path.join(key, ref.current.input.value));
+      ref.current.setValue('');
+      this.setState({folderWithNewView: ''});
+    }
+    return &lt;>
+      &lt;Input
+        autoFocus
+        ref={ref}
+        style={{width: 128}}
+        name="View name"
+        autoComplete="off"
+        type="text"
+        onPressEnter={onSave}
+        placeholder="New view name"
+      />
+      &lt;Button onClick={onSave}>{translated('Save')}&lt;/Button>
+    &lt;/>
+  }
+
+  getCreateNewFileIcon = ({key}) => {
+    if (this.props.canSave) {
+      return &lt;PlusOutlined onClick={() => {this.setState({folderWithNewView: key})}} style={{color: 'blue'}}/>;
+    }
+  };
+
+  getFileWithControls = ({title, key}) => {
+    return (
+      &lt;Space size={4}>
+        &lt;Popover
+          onConfirm={() => this.saveNewView(key)}
+          okText="Save"
+          trigger="click"
+          cancelText="Cancel"
+          content={&lt;Space direction="horizontal">
+            {this.props.canSave &amp;&amp; &lt;Button danger onClick={() => this.saveNewView(key)}>{translated('Overwrite')}&lt;/Button>}
+            {this.props.canLoad &amp;&amp; &lt;Button onClick={() => this.onLoadView(key)}>{translated('Load')}&lt;/Button>}
+            &lt;Button danger onClick={() => this.onDeleteFile(key)}>{translated('Delete')}&lt;/Button>
+          &lt;/Space>}
+        >
+          {title}
+        &lt;/Popover>
+      &lt;/Space>
+    );
+  };
+
+  renderTreeNode = ({title, isLeaf, key, isNewFileInput, isNewFilePrompt}) => {
+    key = key.replace(newViewSuffix, '');
+    if (isNewFileInput) {
+      return this.getNewFileInput({key});
+    }
+
+    if (isNewFilePrompt) {
+      return this.getCreateNewFileIcon({key});
+    }
+
+    if (!isLeaf) {
+      return &lt;span>{title}&lt;/span>;
+    }
+
+    return this.getFileWithControls({title, key});
+  }
+
+  loadTreeNodeData = ({ key, children }) => {
+    return new Promise(resolve => {
+      if (children) {
+        resolve();
+        return;
+      }
+
+      loadFiles(key);
+
+      this.fileFetchMap[key] = {
+        resolve,
+        timeout: setTimeout(() => {
+          message.error(translated('There was a problem fetching files from the folder.'));
+          resolve();
+        }, 10000)
+      }
+    });
+  };
+
+  getFileSubtree = curry((curr, [title, content]) => {
+    const key = path.join(curr, title);
+
+    const {timeout, resolve} = (this.fileFetchMap[key] || {});
+    const {__loaded, ...rest} = (content || {});
+    if (resolve &amp;&amp; __loaded) {
+      resolve();
+      clearTimeout(timeout);
+      delete this.fileFetchMap[key];
+    }
+    let children = null;
+    const isLeaf = content === null;
+    const folderInitialized = !isLeaf &amp;&amp; __loaded;
+    if (folderInitialized) {
+      const isNewFileInput = key === this.state.folderWithNewView &amp;&amp; this.props.canSave;
+
+      children = Object.entries(rest).map(this.getFileSubtree(key));
+      if (this.props.canSave) {
+        children.push({isNewFilePrompt: !isNewFileInput, isNewFileInput, key: `${key}${newViewSuffix}`, isLeaf: true});
+      }
+    }
+
+    return {
+      title,
+      key,
+      children,
+      isLeaf
+    };
+  });
+
+  getFileTreeData() {
+    const {files} = this.props;
+    return Object.entries(files).map(this.getFileSubtree(''));
+  }
+
+  render() {
+    return &lt;Tree.DirectoryTree
+      showLine={{showLeafIcon: false}}
+      selectable={false}
+      titleRender={this.renderTreeNode}
+      loadData={this.loadTreeNodeData}
+      defaultExpandedKeys={['/']}
+      treeData={this.getFileTreeData()}
+    />
+  }
+}
+
+
+const mapStateToProps = appState => ({
+  user: getUser(appState),
+  files: getFiles(appState),
+  sessionValid: getSessionValid(appState)
+});
+
+// Connect component to enable use in modal content
+const Connected = connect(mapStateToProps, null)(FileList);
+
+export default props => &lt;Provider store={store}>&lt;Connected {...props}/>&lt;/Provider>;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="@@actions_load.module_js.html">@@actions/load.js</a></li><li><a href="@@actions_load-human-readable.module_js.html">@@actions/load-human-readable.js</a></li><li><a href="@@actions_yasgui.module_js.html">@@actions/yasgui.js</a></li><li><a href="index.module_js.html">index.js</a></li><li><a href="module-@@actions_custom-prefix.html">@@actions/custom-prefix</a></li><li><a href="module-@@actions_lifecycle.html">@@actions/lifecycle</a></li><li><a href="module-@@actions_save.html">@@actions/save</a></li><li><a href="module-@@actions_solid_auth.html">@@actions/solid/auth</a></li><li><a href="module-@@actions_solid_files.html">@@actions/solid/files</a></li><li><a href="module-@@actions_solid_lifecycle.html">@@actions/solid/lifecycle</a></li><li><a href="module-@@actions_solid_share.html">@@actions/solid/share</a></li><li><a href="module-@@api.html">@@api</a></li><li><a href="module-@@api_labels-parsing.html">@@api/labels-parsing</a></li><li><a href="module-@@app-state_controls.html">@@app-state/controls</a></li><li><a href="module-@@app-state_index.html">@@app-state/index</a></li><li><a href="module-@@app-state_initial.html">@@app-state/initial</a></li><li><a href="module-@@app-state_model_middleware.html">@@app-state/model/middleware</a></li><li><a href="module-@@app-state_model_state.html">@@app-state/model/state</a></li><li><a href="module-@@app-state_settings.html">@@app-state/settings</a></li><li><a href="module-@@app-state_solid.html">@@app-state/solid</a></li><li><a href="module-@@app-state_yasgui.html">@@app-state/yasgui</a></li><li><a href="module-@@components_App.html">@@components/App</a></li><li><a href="module-@@components_ColumnList.html">@@components/ColumnList</a></li><li><a href="module-@@components_controls_file-dialog.html">@@components/controls/file-dialog</a></li><li><a href="module-@@components_controls_file-list.html">@@components/controls/file-list</a></li><li><a href="module-@@components_controls_info-icon.html">@@components/controls/info-icon</a></li><li><a href="module-@@components_controls_modal-info-edit-file.html">@@components/controls/modal-info-edit-file</a></li><li><a href="module-@@components_controls_save-overwrite-modal.html">@@components/controls/save-overwrite-modal</a></li><li><a href="module-@@components_controls_settings.html">@@components/controls/settings</a></li><li><a href="module-@@components_controls_var-name-container.html">@@components/controls/var-name-container</a></li><li><a href="module-@@components_controls_with-info-icon.html">@@components/controls/with-info-icon</a></li><li><a href="module-@@components_controls_with-retry.html">@@components/controls/with-retry</a></li><li><a href="module-@@components_DraggableTag.html">@@components/DraggableTag</a></li><li><a href="module-@@components_entityList_EntityEntry.html">@@components/entityList/EntityEntry</a></li><li><a href="module-@@components_entityList_EntityList.html">@@components/entityList/EntityList</a></li><li><a href="module-@@components_entityList_PrefixedText.html">@@components/entityList/PrefixedText</a></li><li><a href="module-@@components_entityList_PropertyEntry.html">@@components/entityList/PropertyEntry</a></li><li><a href="module-@@components_entityList_PropertyList.html">@@components/entityList/PropertyList</a></li><li><a href="module-@@components_entityList_Toggle.html">@@components/entityList/Toggle</a></li><li><a href="module-@@components_GraphContainer.html">@@components/GraphContainer</a></li><li><a href="module-@@components_menu_custom-prefix-row.html">@@components/menu/custom-prefix-row</a></li><li><a href="module-@@components_menu_file-menu.html">@@components/menu/file-menu</a></li><li><a href="module-@@components_menu_file-property-fields.html">@@components/menu/file-property-fields</a></li><li><a href="module-@@components_menu_menu.html">@@components/menu/menu</a></li><li><a href="module-@@components_menu_new-file.html">@@components/menu/new-file</a></li><li><a href="module-@@components_menu_properties.html">@@components/menu/properties</a></li><li><a href="module-@@components_menu_share-menu.html">@@components/menu/share-menu</a></li><li><a href="module-@@components_with-loading.html">@@components/with-loading</a></li><li><a href="module-@@components_withSearch.html">@@components/withSearch</a></li><li><a href="module-@@components_Yasgui.html">@@components/Yasgui</a></li><li><a href="module-@@constants_api.html">@@constants/api</a></li><li><a href="module-@@constants_entity-types.html">@@constants/entity-types</a></li><li><a href="module-@@constants_examples.html">@@constants/examples</a></li><li><a href="module-@@constants_languages.html">@@constants/languages</a></li><li><a href="module-@@constants_possible-prefixes.html">@@constants/possible-prefixes</a></li><li><a href="module-@@data_graph.html">@@data/graph</a></li><li><a href="module-@@data_parsePrefix.html">@@data/parsePrefix</a></li><li><a href="module-@@data_parseQuery.html">@@data/parseQuery</a></li><li><a href="module-@@data_parseTTL.html">@@data/parseTTL</a></li><li><a href="module-@@dom.html">@@dom</a></li><li><a href="module-@@graph_Edge.html">@@graph/Edge</a></li><li><a href="module-@@graph_ElementCreators.html">@@graph/ElementCreators</a></li><li><a href="module-@@graph_Graph.html">@@graph/Graph</a></li><li><a href="module-@@graph_handlers_Canvas.html">@@graph/handlers/Canvas</a></li><li><a href="module-@@graph_handlers_Edge.html">@@graph/handlers/Edge</a></li><li><a href="module-@@graph_handlers_Handler.html">@@graph/handlers/Handler</a></li><li><a href="module-@@graph_handlers_Node.html">@@graph/handlers/Node</a></li><li><a href="module-@@graph_handlers_Property.html">@@graph/handlers/Property</a></li><li><a href="module-@@graph_Node.html">@@graph/Node</a></li><li><a href="module-@@graph_wrappers_Canvas.html">@@graph/wrappers/Canvas</a></li><li><a href="module-@@graph_wrappers_DataProperty.html">@@graph/wrappers/DataProperty</a></li><li><a href="module-@@graph_wrappers_Edge.html">@@graph/wrappers/Edge</a></li><li><a href="module-@@graph_wrappers_Node.html">@@graph/wrappers/Node</a></li><li><a href="module-@@graph_wrappers_ObjectProperty.html">@@graph/wrappers/ObjectProperty</a></li><li><a href="module-@@graph_wrappers_property.html">@@graph/wrappers/property</a></li><li><a href="module-@@graph_wrappers_Wrapper.html">@@graph/wrappers/Wrapper</a></li><li><a href="module-@@localization.html">@@localization</a></li><li><a href="module-@@selectors.html">@@selectors</a></li><li><a href="module-@@storage.html">@@storage</a></li><li><a href="module-@@string.html">@@string</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Jul 22 2021 22:32:21 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
