@@ -1,6 +1,8 @@
 # simplod
 Visualization tool for simplifying access to Linked Data.
 
+Further documentation with examples can be found on [GitHub Pages](https://jaresan.github.io/simplod/).
+
 ## Requirements
 Node version > 10
 

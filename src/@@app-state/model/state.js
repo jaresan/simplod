@@ -322,13 +322,15 @@ const createNewPropertiesForTargetType = curry(({type: targetType, id: target, v
   const propertiesBySource = map(pipe(values, uniqBy(prop('predicate'))), groupBy(P.source, values(properties)))
 
   return Object.entries(propertiesBySource).reduce((acc, [source, properties]) => {
-    const pIds = view(classById(source), s).propertyIds;
+    const pIds = view(classById(source), s).propertyIds.slice();
+
     s = values(properties).reduce((acc, p) => {
       const property = mergeRight(p, defaultEntityProps[entityTypes.property])
       const newId = `property_${source}-${property.predicate}-${target}`;
       property.target = target;
       property.varName = varName;
       pIds.push(newId);
+
       return set(propertyById(newId), property, acc);
     }, s);
 
