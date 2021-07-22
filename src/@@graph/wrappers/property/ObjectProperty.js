@@ -1,3 +1,7 @@
+/**
+ * @file Wrapper describing functionality for object properties
+ * @module @@graph/wrappers/ObjectProperty
+ */
 import {Property} from './index';
 
 export class ObjectProperty extends Property {

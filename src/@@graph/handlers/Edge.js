@@ -1,3 +1,7 @@
+/**
+ * @file Handling of actions on the Edge wrapper
+ * @module @@graph/handlers/Edge
+ */
 import {Handler} from '@@graph/handlers/Handler';
 import { entityTypes } from '@@constants/entity-types';
 import { dispatchSet, dispatch } from '@@app-state';

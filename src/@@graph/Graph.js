@@ -1,3 +1,7 @@
+/**
+ * @file Handling of interactions and side-effects in the AntV graph instance
+ * @module @@graph/Graph
+ */
 import { curry, fromPairs, path, view, groupBy, head, prop } from 'ramda';
 import {Canvas as CanvasWrapper} from '@@graph/wrappers';
 import {Property, Node, Edge} from '@@graph/handlers';
@@ -176,6 +180,11 @@ export class Graph {
     this.instance.removeItem(item);
   }
 
+  /**
+   * Copies given node --> creates a new class in the model and adds the node to the graph
+   * @function
+   * @param node
+   */
   static copyNode(node) {
     const {cfg} = node;
 

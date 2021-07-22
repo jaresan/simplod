@@ -1,3 +1,7 @@
+/**
+ * @file Wrapper describing functionality for edges
+ * @module @@graph/wrappers/Edge
+ */
 import {Wrapper} from '@@graph/wrappers/Wrapper';
 import {path, view, filter, prop, isEmpty, all} from 'ramda';
 import {Edge as EdgeHandler} from '@@graph/handlers';

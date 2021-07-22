@@ -1,3 +1,7 @@
+/**
+ * @file Handling of actions on the Property wrapper
+ * @module @@graph/handlers/Property
+ */
 import {Handler} from '@@graph/handlers/Handler';
 import {entityTypes} from '@@constants/entity-types';
 

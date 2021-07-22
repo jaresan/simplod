@@ -1,3 +1,7 @@
+/**
+ * @file Logic of parsing .ttl files
+ * @module @@data/parseTTL
+ */
 import { Parser } from 'n3';
 import { invertObj } from 'ramda';
 import possiblePrefixes from '@@constants/possible-prefixes';

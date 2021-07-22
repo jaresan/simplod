@@ -1,3 +1,7 @@
+/**
+ * @file Creation of edges according to the AntV specification
+ * @module @@graph/Edge
+ */
 import G6 from '@antv/g6';
 import { flatten, values, concat, path, assocPath } from 'ramda';
 import {entityTypes} from '@@constants/entity-types';

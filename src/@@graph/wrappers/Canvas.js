@@ -1,3 +1,7 @@
+/**
+ * @file Wrapper describing functionality for Canvas
+ * @module @@graph/wrappers/Canvas
+ */
 import {Canvas as CanvasHandler} from '@@graph/handlers/Canvas';
 
 export class Canvas {

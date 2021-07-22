@@ -1,3 +1,14 @@
+/**
+ * @file Contains helper functions for text operations
+ * @module @@string
+ */
+
+/**
+ * Indents text based on curly brackets
+ * @function
+ * @param s
+ * @returns {string|string|*}
+ */
 export const indentByBrackets = s => s
   .split('\n')
   .reduce((acc, row) => {

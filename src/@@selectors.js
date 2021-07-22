@@ -1,3 +1,7 @@
+/**
+ * @file File containing different selectors to query the state
+ * @module @@selectors
+ */
 import * as YasguiState from '@@app-state/yasgui/state';
 import * as SolidState from '@@app-state/solid/state';
 import * as ModelState from '@@app-state/model/state';

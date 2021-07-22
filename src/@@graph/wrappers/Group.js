@@ -1,3 +1,7 @@
+/**
+ * @file Wrapper describing functionality for groups, which represent the graph node as a whole with all its elements
+ * @module @@graph/wrappers/Node
+ */
 import { pick, assocPath, path, identity, map, filter, prop, forEachObjIndexed, sortBy, is, omit, keys, values, uniq, any } from 'ramda';
 import {ObjectProperty, Property, Node} from '@@graph/wrappers/index';
 import { Handler } from '@@graph/handlers/Handler';
@@ -64,8 +68,6 @@ class GroupController {
     this.edges = container.getOutEdges().concat(container.getInEdges()).map(e => e.get('wrapper'));
   }
 
-  // FIXME: Apply styles as an array so that multiple different effects can take place at once and cancelling them
-  // wouldn't mess up styles applied later
   applyStyle(target, stylePath) {
     if (!path([target.get('id'), ...stylePath], this.defaultChildAttrs)) {
       this.defaultChildAttrs = assocPath([target.get('id'), ...stylePath], pick(Object.keys(path(stylePath, styles)), target.attrs), this.defaultChildAttrs);
@@ -123,9 +125,7 @@ class GroupController {
     this.childrenWrappers = omit(affectedIds, this.childrenWrappers);
     this.propertyWrappers = omit(affectedIds, this.propertyWrappers);
     this.updatePropertyContainer();
-    if (this.entityId === 'prov:Entity') {
-      window.prop = this.propertyWrappers['property_prov:Entity-void:vocabulary-owl:Thing'];
-    }
+
     return affectedEntityIds;
   }
 
@@ -170,6 +170,11 @@ class GroupController {
     this.updatePropertyContainer();
   }
 
+  /**
+   * Updates the property container dimensions based on whether the container is expanded
+   * or properties are selected
+   * @function
+   */
   updatePropertyContainer() {
     let i = 0;
     let maxWidth = 0;
@@ -194,7 +199,6 @@ class GroupController {
   }
 
 
-  // TODO: Take dynamically from the object (save the paths to the attrs)
   updateExpandIcon() {
     const icon = this.children['expand-icon'];
     const collapseIconPath = 'images/collapse.png';
@@ -217,10 +221,13 @@ class GroupController {
 
   selectAllProperties() {
     this.handler.batchSelect(entityTypes.property, Object.values(this.propertyWrappers).map(prop('id')));
-    // FIXME: Select edges as well / select them through properties? / add the highlight logic in edge wrappers directly? --> check any property selected
     this.updatePropertyContainer();
   }
 
+  /**
+   * Implements different functionalities based on the direct target that was clicked
+   * @param target
+   */
   onClick(target) {
     const name = target.get('name');
 

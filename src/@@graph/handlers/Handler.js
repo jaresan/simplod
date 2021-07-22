@@ -1,7 +1,8 @@
 /**
- * Handler classes only know about Redux and represent logic around model handling.
+ * @file Handler classes only know about Redux and represent logic around model handling.
  * No UI logic is directly handled here, everything is delegated to the UI layer which
  * handles the changes by itself.
+ * @module @@graph/handlers/Handler
  */
 import {store, dispatch} from '@@app-state';
 import { fromPairs, path, omit } from 'ramda';
@@ -60,6 +61,7 @@ export class Handler {
 
   /**
    * Subscription method to redux store responding to changes on the store;
+   * @function
    */
   static onStateChange(state) {
     if (state === this.lastState) return;
@@ -67,9 +69,6 @@ export class Handler {
     Object.values(this.recipients)
       .forEach(recipient => {
         const subState = path(['entities', recipient.handler.entityType, recipient.id], state);
-          // TODO: Map to relevant properties for the wrapper instead of sending subState as a whole
-          // define selectors and mapping between redux state -> UI state in Wrappers themselves,
-          // e.g. stateToStyle = {selected: {selected: true}} and then react to the child keys
         recipient.onStateChanged(subState);
       });
     this.lastState = state;

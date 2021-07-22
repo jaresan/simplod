@@ -1,3 +1,7 @@
+/**
+ * @file Helper functions for handling graph operations
+ * @module @@data/graph
+ */
 import {
   keys,
   all,
@@ -15,13 +19,18 @@ import {
 
 const isObjectProperty = complement(prop('dataProperty'));
 
+/**
+ * Returns all connected entities for a given property by following the edges.
+ * @function
+ * @param p
+ * @param edgesByNode
+ * @returns {{}}
+ */
 export const getConnectedEntities = (p, edgesByNode) => {
   const stack = p;
   let reachableNodes = {};
   while (stack.length) {
     const {target, source, dataProperty} = stack.pop();
-    // FIXME: Care for edges having direction
-    // FIXME: Optional edges in reverse direction do not add to the connectivity of the graph
     if (!reachableNodes[source]) {
       stack.push(...(edgesByNode[source] || []));
       reachableNodes[source] = true;
@@ -35,6 +44,13 @@ export const getConnectedEntities = (p, edgesByNode) => {
   return reachableNodes;
 };
 
+/**
+ * Returns whether a graph consisting of given properties and entityIds is a connected component.
+ * @function
+ * @param properties
+ * @param entityIds
+ * @returns {*|(function(*=): (*))|boolean}
+ */
 export const isConnected = ({properties, entityIds}) => {
   if (!properties.length) {
     return entityIds.length <= 1;
@@ -63,6 +79,17 @@ export const isConnected = ({properties, entityIds}) => {
   return all(k => subGraph[k], keys(queriedEntities))
 };
 
+/**
+ * Performs a DFS to get all the nodes for the given graph starting with provided node.
+ * @function
+ * @param n
+ * @param propertiesBySource
+ * @param expandedEdges
+ * @param expandedNodes
+ * @param ancestors
+ * @param classes
+ * @returns {{nodes: {}, root: *}|{nodes: {}, root: (*&{dataProperties: *, edges: *|(function(*=): (*))})}}
+ */
 export const expandRoot = ({n, propertiesBySource, expandedEdges = {}, expandedNodes = {}, ancestors = {}, classes}) => {
   if (expandedNodes[n.id]) {
     return {

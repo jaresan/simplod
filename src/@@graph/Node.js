@@ -1,3 +1,7 @@
+/**
+ * @file Creation of nodes according to the AntV specification
+ * @module @@graph/Node
+ */
 import G6 from '@antv/g6';
 import { flatten, last } from 'ramda';
 import E from '@@graph/ElementCreators';

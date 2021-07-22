@@ -1,3 +1,7 @@
+/**
+ * @file File containing the logic for parsing the SPARQL SELECT query based on given arguments
+ * @module @@data/parseQuery
+ */
 import { groupBy, path, prop, map, indexBy, pipe, uniq, keys, values, reduce, mergeRight, omit } from 'ramda';
 import { expandRoot } from '@@data/graph';
 import { getPrefix } from '@@data/parsePrefix';

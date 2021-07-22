@@ -1,3 +1,7 @@
+/**
+ * @file Helper functions to wrap newly created AntV entities with appropriate wrapper classes
+ * @module @@graph/ElementCreators
+ */
 import {DataProperty, ObjectProperty, Node, Edge} from '@@graph/wrappers';
 
 const create = (group, elements = []) => elements.map(el => group.addShape(el));

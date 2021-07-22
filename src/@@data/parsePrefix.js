@@ -1,3 +1,14 @@
+/**
+ * @file File handling prefix parsing
+ * @module @@data/parsePrefix
+ */
+
+/**
+ * Returns alias, suffix, and prefix iri for given prefixes and iri
+ * @param prefixes
+ * @param iri
+ * @returns {{prefixIri, alias: (*|string), suffix}}
+ */
 export const parsePrefix = (prefixes, iri) => {
   const suffix = iri.replace(/.*(\/|#)/, '');
   const prefixIri = iri.replace(/(\/|#)[^/#]*$/, '$1');

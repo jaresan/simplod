@@ -1,3 +1,7 @@
+/**
+ * @file Definition of state keys for settings
+ * @module @@app-state/settings
+ */
 import { assoc, compose, lens, lensProp, prop } from 'ramda';
 
 export const initial = {
@@ -13,6 +17,11 @@ export const initial = {
 const root = 'settings';
 export const rootLens = lensProp(root);
 
+/**
+ * Taking a key, changes to this key get automatically saved to the local storage
+ * @function
+ * @param k
+ */
 const withAutoSave = k => compose(rootLens, lens(prop(k), (toSet, state) => {
   const newSettings = assoc(k, toSet, state);
 

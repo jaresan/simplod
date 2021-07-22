@@ -1,3 +1,7 @@
+/**
+ * @file Definition of state keys for yasgui
+ * @module @@app-state/yasgui
+ */
 import {
   compose,
   filter,
@@ -31,7 +35,8 @@ export const query = forKey('query');
 export const instance = forKey('instance');
 
 /**
- * Updates the generated SPARQL query.
+ * Parses a query for given state
+ * @function
  */
 const getQuery = state => {
   const customPrefixes = view(ModelState.customPrefixes, state);
@@ -58,6 +63,13 @@ const getQuery = state => {
   });
 }
 
+/**
+ * Middleware to be run on every state change.
+ * Checks if the new query is different from the old one and updates it, if necessary, both in yasgui and in the
+ * model state.
+ * @function
+ * @type {*}
+ */
 export const middleware = curry((oldState, newState) => {
   const oldQuery = view(query, oldState);
   const newQuery = getQuery(newState);

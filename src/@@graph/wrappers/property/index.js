@@ -1,9 +1,12 @@
+/**
+ * @file Parent Property wrapper describing shared functionality for data and object property wrappers
+ * @module @@graph/wrappers/property
+ */
 import {Wrapper} from '@@graph/wrappers/Wrapper';
 import {Property as PropertyHandler} from '@@graph/handlers';
 import { measureText, PROP_LINE_HEIGHT } from '@@graph/Node';
 import { prop } from 'ramda';
 
-// FIXME: Add this to @@graph/node
 const defaultStyle = {
   opacity: 1,
   lineWidth: 1,

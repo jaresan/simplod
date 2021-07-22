@@ -1,3 +1,7 @@
+/**
+ * @file Abstract Wrapper class, describing shared functionality for wrappers
+ * @module @@graph/wrappers/Wrapper
+ */
 import {Canvas} from '@@graph/handlers';
 import { mergeRight } from 'ramda';
 

@@ -87,7 +87,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="@@api.js.html">@@api.js</a>, <a href="@@api.js.html#line1">line 1</a>
+        <a href="@@api_index.js.html">@@api/index.js</a>, <a href="@@api_index.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -240,7 +240,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="@@api.js.html">@@api.js</a>, <a href="@@api.js.html#line39">line 39</a>
+        <a href="@@api_index.js.html">@@api/index.js</a>, <a href="@@api_index.js.html#line50">line 50</a>
     </li></ul></dd>
     
 
@@ -307,6 +307,7 @@
 
 <div class="description">
     Returns an array of promises for getting the human readable data.
+If the proxy route exists, uses it, otherwise creates direct requests.
 </div>
 
 
@@ -430,7 +431,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="@@api.js.html">@@api.js</a>, <a href="@@api.js.html#line31">line 31</a>
+        <a href="@@api_index.js.html">@@api/index.js</a>, <a href="@@api_index.js.html#line39">line 39</a>
     </li></ul></dd>
     
 
@@ -528,7 +529,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="@@api.js.html">@@api.js</a>, <a href="@@api.js.html#line14">line 14</a>
+        <a href="@@api_index.js.html">@@api/index.js</a>, <a href="@@api_index.js.html#line21">line 21</a>
     </li></ul></dd>
     
 
@@ -559,6 +560,112 @@
 
 
         
+            
+
+    
+
+    
+    <h4 class="name" id="~pingDataFetchingRoute"><span class="type-signature">(inner) </span>pingDataFetchingRoute<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Response>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Pings the /getData route to see if a proxy is used.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="@@api_index.js.html">@@api/index.js</a>, <a href="@@api_index.js.html#line15">line 15</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;Response></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
     
 
     
@@ -574,13 +681,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="@@actions_load.module_js.html">@@actions/load.js</a></li><li><a href="@@actions_load-human-readable.module_js.html">@@actions/load-human-readable.js</a></li><li><a href="@@actions_yasgui.module_js.html">@@actions/yasgui.js</a></li><li><a href="module-@@actions_custom-prefix.html">@@actions/custom-prefix</a></li><li><a href="module-@@actions_lifecycle.html">@@actions/lifecycle</a></li><li><a href="module-@@actions_save.html">@@actions/save</a></li><li><a href="module-@@actions_solid_auth.html">@@actions/solid/auth</a></li><li><a href="module-@@actions_solid_files.html">@@actions/solid/files</a></li><li><a href="module-@@actions_solid_lifecycle.html">@@actions/solid/lifecycle</a></li><li><a href="module-@@actions_solid_share.html">@@actions/solid/share</a></li><li><a href="module-@@api.html">@@api</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getQuery">getQuery</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="@@actions_load.module_js.html">@@actions/load.js</a></li><li><a href="@@actions_load-human-readable.module_js.html">@@actions/load-human-readable.js</a></li><li><a href="@@actions_yasgui.module_js.html">@@actions/yasgui.js</a></li><li><a href="index.module_js.html">index.js</a></li><li><a href="module-@@actions_custom-prefix.html">@@actions/custom-prefix</a></li><li><a href="module-@@actions_lifecycle.html">@@actions/lifecycle</a></li><li><a href="module-@@actions_save.html">@@actions/save</a></li><li><a href="module-@@actions_solid_auth.html">@@actions/solid/auth</a></li><li><a href="module-@@actions_solid_files.html">@@actions/solid/files</a></li><li><a href="module-@@actions_solid_lifecycle.html">@@actions/solid/lifecycle</a></li><li><a href="module-@@actions_solid_share.html">@@actions/solid/share</a></li><li><a href="module-@@api.html">@@api</a></li><li><a href="module-@@api_labels-parsing.html">@@api/labels-parsing</a></li><li><a href="module-@@app-state_controls.html">@@app-state/controls</a></li><li><a href="module-@@app-state_index.html">@@app-state/index</a></li><li><a href="module-@@app-state_initial.html">@@app-state/initial</a></li><li><a href="module-@@app-state_model_middleware.html">@@app-state/model/middleware</a></li><li><a href="module-@@app-state_model_state.html">@@app-state/model/state</a></li><li><a href="module-@@app-state_settings.html">@@app-state/settings</a></li><li><a href="module-@@app-state_solid.html">@@app-state/solid</a></li><li><a href="module-@@app-state_yasgui.html">@@app-state/yasgui</a></li><li><a href="module-@@constants_api.html">@@constants/api</a></li><li><a href="module-@@constants_entity-types.html">@@constants/entity-types</a></li><li><a href="module-@@constants_examples.html">@@constants/examples</a></li><li><a href="module-@@constants_languages.html">@@constants/languages</a></li><li><a href="module-@@constants_possible-prefixes.html">@@constants/possible-prefixes</a></li><li><a href="module-@@dom.html">@@dom</a></li><li><a href="module-@@localization.html">@@localization</a></li><li><a href="module-@@selectors.html">@@selectors</a></li><li><a href="module-@@storage.html">@@storage</a></li><li><a href="module-@@string.html">@@string</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue Jul 06 2021 20:53:55 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Jul 22 2021 19:49:32 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>
